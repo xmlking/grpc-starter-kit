@@ -1,0 +1,12 @@
+{
+  "extends": [
+    "config:base"
+  ],
+  "postUpdateOptions": [
+    "gomodTidy"
+  ],
+  "ignoreDeps": [],
+  "labels": [
+    "dependencies"
+  ]
+}
