@@ -14,9 +14,9 @@ import (
 
     mLogger "github.com/micro/go-micro/v2/logger" // TODO: remove
 
-    "github.com/xmlking/micro-starter-kit/shared/logger/gcp"
-    zeroToGrpcAdopter "github.com/xmlking/micro-starter-kit/shared/logger/grpc"
-    zeroToMicroAdopter "github.com/xmlking/micro-starter-kit/shared/logger/micro"
+    "github.com/xmlking/grpc-starter-kit/shared/logger/gcp"
+    zeroToGrpcAdopter "github.com/xmlking/grpc-starter-kit/shared/logger/grpc"
+    zeroToMicroAdopter "github.com/xmlking/grpc-starter-kit/shared/logger/micro"
 )
 
 var (

@@ -6,8 +6,8 @@ import (
     "github.com/stretchr/testify/assert"
     "github.com/stretchr/testify/mock"
 
-    "github.com/xmlking/micro-starter-kit/shared/config"
-    "github.com/xmlking/micro-starter-kit/shared/email"
+    "github.com/xmlking/grpc-starter-kit/shared/config"
+    "github.com/xmlking/grpc-starter-kit/shared/email"
 )
 
 type FakeEmailSender struct {

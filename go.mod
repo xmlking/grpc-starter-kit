@@ -2,14 +2,12 @@ module github.com/xmlking/grpc-starter-kit
 
 go 1.14
 
-// for local development, you can repoint go-micro to local development go-micro workspace
-// replace github.com/micro/go-micro/v2 => /Users/schintha/Developer/Work/go/3rd-party/go-micro
 replace google.golang.org/grpc => google.golang.org/grpc v1.26.0
-
-// replace github.com/xmlking/configor => /Users/schintha/Developer/Work/go/configor
 
 require (
 	github.com/DATA-DOG/go-sqlmock v1.4.1 // indirect
+	// github.com/cloudevents/sdk-go/protocol/pubsub/v2 v2.0.1-0.20200608152019-2ab697c8fc0b
+	github.com/cloudevents/sdk-go/v2 v2.0.0
 	github.com/envoyproxy/protoc-gen-validate v0.1.0
 	github.com/gogo/protobuf v1.3.1
 	github.com/golang/protobuf v1.4.2
@@ -25,6 +23,6 @@ require (
 	github.com/stretchr/testify v1.6.1
 	github.com/thoas/go-funk v0.6.0
 	github.com/xmlking/configor v0.1.0
-	google.golang.org/genproto v0.0.0-20191216164720-4f79533eabd1
-	google.golang.org/grpc v1.26.0
+	google.golang.org/genproto v0.0.0-20200331122359-1ee6d9798940
+	google.golang.org/grpc v1.29.1
 )

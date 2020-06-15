@@ -63,17 +63,17 @@ images:
     newName: docker.io/envoyproxy/envoy-alpine
     newTag: v1.14.2
   - name: micro/micro
-    newName: docker.pkg.github.com/xmlking/micro-starter-kit/micro
+    newName: docker.pkg.github.com/xmlking/grpc-starter-kit/micro
     newTag: v2.0.0
   - name: xmlking/account-service
-    newName: docker.pkg.github.com/xmlking/micro-starter-kit/account-service
+    newName: docker.pkg.github.com/xmlking/grpc-starter-kit/account-service
     newTag: $(IMAGE_VERSION)
   - name: xmlking/emailer-service
-    newName: docker.pkg.github.com/xmlking/micro-starter-kit/emailer-service
+    newName: docker.pkg.github.com/xmlking/grpc-starter-kit/emailer-service
     newTag: $(IMAGE_VERSION)
   - name: xmlking/greeter-service
-    newName: docker.pkg.github.com/xmlking/micro-starter-kit/greeter-service
+    newName: docker.pkg.github.com/xmlking/grpc-starter-kit/greeter-service
     newTag: $(IMAGE_VERSION)
   - name: xmlking/recorder-service
-    newName: docker.pkg.github.com/xmlking/micro-starter-kit/recorder-service
+    newName: docker.pkg.github.com/xmlking/grpc-starter-kit/recorder-service
     newTag: $(IMAGE_VERSION)

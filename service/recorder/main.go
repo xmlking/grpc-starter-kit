@@ -6,13 +6,13 @@ import (
     "github.com/micro/go-micro/v2/server"
     "github.com/rs/zerolog/log"
 
-    transactionPB "github.com/xmlking/micro-starter-kit/service/recorder/proto/transaction"
-    "github.com/xmlking/micro-starter-kit/service/recorder/registry"
-    "github.com/xmlking/micro-starter-kit/shared/config"
-    "github.com/xmlking/micro-starter-kit/shared/constants"
-    myMicro "github.com/xmlking/micro-starter-kit/shared/util/micro"
-    logWrapper "github.com/xmlking/micro-starter-kit/shared/wrapper/log"
-    validatorWrapper "github.com/xmlking/micro-starter-kit/shared/wrapper/validator"
+    transactionPB "github.com/xmlking/grpc-starter-kit/service/recorder/proto/transaction"
+    "github.com/xmlking/grpc-starter-kit/service/recorder/registry"
+    "github.com/xmlking/grpc-starter-kit/shared/config"
+    "github.com/xmlking/grpc-starter-kit/shared/constants"
+    myMicro "github.com/xmlking/grpc-starter-kit/shared/util/micro"
+    logWrapper "github.com/xmlking/grpc-starter-kit/shared/wrapper/log"
+    validatorWrapper "github.com/xmlking/grpc-starter-kit/shared/wrapper/validator"
 )
 
 func main() {

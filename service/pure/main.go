@@ -3,10 +3,10 @@ import (
     "github.com/rs/zerolog/log"
     "google.golang.org/grpc"
 
-    "github.com/xmlking/micro-starter-kit/service/pure/handler"
-    purePB "github.com/xmlking/micro-starter-kit/service/pure/proto/pure"
-    "github.com/xmlking/micro-starter-kit/shared/config"
-    "github.com/xmlking/micro-starter-kit/shared/constants"
+    "github.com/xmlking/grpc-starter-kit/service/pure/handler"
+    purePB "github.com/xmlking/grpc-starter-kit/service/pure/proto/pure"
+    "github.com/xmlking/grpc-starter-kit/shared/config"
+    "github.com/xmlking/grpc-starter-kit/shared/constants"
 )
 
 func main() {

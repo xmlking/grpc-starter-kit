@@ -11,11 +11,11 @@ import (
 
     "github.com/golang/protobuf/ptypes/wrappers"
 
-    userPB "github.com/xmlking/micro-starter-kit/service/account/proto/user"
-    "github.com/xmlking/micro-starter-kit/shared/config"
-    "github.com/xmlking/micro-starter-kit/shared/constants"
-    _ "github.com/xmlking/micro-starter-kit/shared/logger"
-    logWrapper "github.com/xmlking/micro-starter-kit/shared/wrapper/log"
+    userPB "github.com/xmlking/grpc-starter-kit/service/account/proto/user"
+    "github.com/xmlking/grpc-starter-kit/shared/config"
+    "github.com/xmlking/grpc-starter-kit/shared/constants"
+    _ "github.com/xmlking/grpc-starter-kit/shared/logger"
+    logWrapper "github.com/xmlking/grpc-starter-kit/shared/wrapper/log"
 )
 
 var (

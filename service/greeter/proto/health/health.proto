@@ -5,7 +5,7 @@ syntax = "proto3";
 
 package mkit.service.health.v1;
 
-option go_package = "github.com/xmlking/micro-starter-kit/service/greeter/proto/health";
+option go_package = "github.com/xmlking/grpc-starter-kit/service/greeter/proto/health";
 option java_multiple_files = true;
 option java_package = "mkit.service.health.v1";
 

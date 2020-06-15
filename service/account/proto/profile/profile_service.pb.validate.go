@@ -17,7 +17,7 @@ import (
 
 	"github.com/golang/protobuf/ptypes"
 
-	entities "github.com/xmlking/micro-starter-kit/service/account/proto/entities"
+	entities "github.com/xmlking/grpc-starter-kit/service/account/proto/entities"
 )
 
 // ensure the imports are used

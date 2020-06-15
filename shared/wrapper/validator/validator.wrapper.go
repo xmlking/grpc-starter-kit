@@ -6,7 +6,7 @@ import (
 
     "github.com/micro/go-micro/v2/server"
 
-    "github.com/xmlking/micro-starter-kit/shared/errors"
+    "github.com/xmlking/grpc-starter-kit/shared/errors"
 )
 
 type Validator interface {

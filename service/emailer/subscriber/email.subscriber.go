@@ -6,8 +6,8 @@ import (
     "github.com/micro/go-micro/v2/metadata"
     "github.com/rs/zerolog/log"
 
-    emailerPB "github.com/xmlking/micro-starter-kit/service/emailer/proto/emailer"
-    "github.com/xmlking/micro-starter-kit/service/emailer/service"
+    emailerPB "github.com/xmlking/grpc-starter-kit/service/emailer/proto/emailer"
+    "github.com/xmlking/grpc-starter-kit/service/emailer/service"
 )
 
 // EmailSubscriber is Subscriber

@@ -2,7 +2,7 @@ syntax = "proto3";
 
 package mkit.service.recorder.v1;
 
-option go_package = "github.com/xmlking/micro-starter-kit/service/recorder/proto/transaction";
+option go_package = "github.com/xmlking/grpc-starter-kit/service/recorder/proto/transaction";
 option java_multiple_files = true;
 option java_package = "mkit.service.recorder.v1";
 

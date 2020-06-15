@@ -6,10 +6,10 @@ import (
     "github.com/rs/zerolog/log"
     "github.com/sarulabs/di/v2"
 
-    "github.com/xmlking/micro-starter-kit/service/recorder/handler"
-    "github.com/xmlking/micro-starter-kit/service/recorder/repository"
-    "github.com/xmlking/micro-starter-kit/service/recorder/subscriber"
-    configPB "github.com/xmlking/micro-starter-kit/shared/proto/config"
+    "github.com/xmlking/grpc-starter-kit/service/recorder/handler"
+    "github.com/xmlking/grpc-starter-kit/service/recorder/repository"
+    "github.com/xmlking/grpc-starter-kit/service/recorder/subscriber"
+    configPB "github.com/xmlking/grpc-starter-kit/shared/proto/config"
 )
 
 // Container - provide di Container

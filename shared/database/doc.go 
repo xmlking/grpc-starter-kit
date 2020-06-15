@@ -6,5 +6,5 @@
 // add 	_ "github.com/jinzhu/gorm/dialects/sqlite"
 
 // set connection settings in congig.yaml
-// depends on "github.com/xmlking/micro-starter-kit/shared/config"
+// depends on "github.com/xmlking/grpc-starter-kit/shared/config"
 package database

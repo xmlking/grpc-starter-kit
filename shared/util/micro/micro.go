@@ -6,7 +6,7 @@ import (
     gs "github.com/micro/go-micro/v2/server/grpc"
     "github.com/rs/zerolog/log"
 
-    "github.com/xmlking/micro-starter-kit/shared/config"
+    "github.com/xmlking/grpc-starter-kit/shared/config"
 )
 
 

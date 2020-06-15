@@ -5,7 +5,7 @@ import (
 
     "github.com/rs/zerolog/log"
 
-    greeterPB "github.com/xmlking/micro-starter-kit/service/greeter/proto/greeter"
+    greeterPB "github.com/xmlking/grpc-starter-kit/service/greeter/proto/greeter"
 )
 
 // Greeter struct

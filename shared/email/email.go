@@ -9,8 +9,8 @@ import (
 
     "github.com/rs/zerolog/log"
 
-    myErrors "github.com/xmlking/micro-starter-kit/shared/errors"
-    configPB "github.com/xmlking/micro-starter-kit/shared/proto/config"
+    myErrors "github.com/xmlking/grpc-starter-kit/shared/errors"
+    configPB "github.com/xmlking/grpc-starter-kit/shared/proto/config"
 )
 
 var emailTmpl *template.Template

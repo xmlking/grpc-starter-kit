@@ -2,7 +2,7 @@ syntax = "proto3";
 
 package mkit.shared.common.v1;
 
-option go_package = "github.com/xmlking/micro-starter-kit/shared/proto/common";
+option go_package = "github.com/xmlking/grpc-starter-kit/shared/proto/common";
 option java_multiple_files = true;
 option java_package = "mkit.shared.common.v1";
 

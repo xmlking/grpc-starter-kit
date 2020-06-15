@@ -9,7 +9,7 @@ import (
 	proto "github.com/golang/protobuf/proto"
 	_ "github.com/golang/protobuf/ptypes/timestamp"
 	_ "github.com/golang/protobuf/ptypes/wrappers"
-	_ "github.com/xmlking/micro-starter-kit/service/account/proto/entities"
+	_ "github.com/xmlking/grpc-starter-kit/service/account/proto/entities"
 	math "math"
 )
 

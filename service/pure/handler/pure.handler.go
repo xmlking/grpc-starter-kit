@@ -4,7 +4,7 @@ import (
     "context"
     "log"
 
-    purePB "github.com/xmlking/micro-starter-kit/service/pure/proto/pure"
+    purePB "github.com/xmlking/grpc-starter-kit/service/pure/proto/pure"
 )
 
 

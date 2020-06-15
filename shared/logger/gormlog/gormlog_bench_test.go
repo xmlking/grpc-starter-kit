@@ -7,8 +7,8 @@ import (
     "github.com/rs/zerolog"
     "github.com/rs/zerolog/log"
 
-    "github.com/xmlking/micro-starter-kit/shared/logger"
-    "github.com/xmlking/micro-starter-kit/shared/logger/gormlog"
+    "github.com/xmlking/grpc-starter-kit/shared/logger"
+    "github.com/xmlking/grpc-starter-kit/shared/logger/gormlog"
 )
 
 func BenchmarkLogger_Print(b *testing.B) {

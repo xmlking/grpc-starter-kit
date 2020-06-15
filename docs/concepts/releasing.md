@@ -1,6 +1,6 @@
 # Releasing
 
-[release page]: https://github.com/xmlking/micro-starter-kit/releases
+[release page]: https://github.com/xmlking/grpc-starter-kit/releases
 [`cloud-build-local`]: https://github.com/GoogleCloudPlatform/cloud-build-local
 [google cloud build]: https://cloud.google.com/cloud-build
 [semver]: https://semver.org

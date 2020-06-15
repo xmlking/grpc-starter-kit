@@ -6,15 +6,15 @@ import (
     "github.com/micro/go-micro/v2/server"
     "github.com/rs/zerolog/log"
 
-    "github.com/xmlking/micro-starter-kit/service/greeter/handler"
-    greeterPB "github.com/xmlking/micro-starter-kit/service/greeter/proto/greeter"
-    healthPB "github.com/xmlking/micro-starter-kit/service/greeter/proto/health"
-    "github.com/xmlking/micro-starter-kit/shared/config"
-    "github.com/xmlking/micro-starter-kit/shared/constants"
-    myMicro "github.com/xmlking/micro-starter-kit/shared/util/micro"
-    logWrapper "github.com/xmlking/micro-starter-kit/shared/wrapper/log"
-    transWrapper "github.com/xmlking/micro-starter-kit/shared/wrapper/transaction"
-    validatorWrapper "github.com/xmlking/micro-starter-kit/shared/wrapper/validator"
+    "github.com/xmlking/grpc-starter-kit/service/greeter/handler"
+    greeterPB "github.com/xmlking/grpc-starter-kit/service/greeter/proto/greeter"
+    healthPB "github.com/xmlking/grpc-starter-kit/service/greeter/proto/health"
+    "github.com/xmlking/grpc-starter-kit/shared/config"
+    "github.com/xmlking/grpc-starter-kit/shared/constants"
+    myMicro "github.com/xmlking/grpc-starter-kit/shared/util/micro"
+    logWrapper "github.com/xmlking/grpc-starter-kit/shared/wrapper/log"
+    transWrapper "github.com/xmlking/grpc-starter-kit/shared/wrapper/transaction"
+    validatorWrapper "github.com/xmlking/grpc-starter-kit/shared/wrapper/validator"
 )
 
 func main() {

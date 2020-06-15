@@ -11,12 +11,12 @@ import (
     uuid "github.com/satori/go.uuid"
     "github.com/thoas/go-funk"
 
-    account_entities "github.com/xmlking/micro-starter-kit/service/account/proto/entities"
-    userPB "github.com/xmlking/micro-starter-kit/service/account/proto/user"
-    "github.com/xmlking/micro-starter-kit/service/account/repository"
-    emailerPB "github.com/xmlking/micro-starter-kit/service/emailer/proto/emailer"
-    greeterPB "github.com/xmlking/micro-starter-kit/service/greeter/proto/greeter"
-    myErrors "github.com/xmlking/micro-starter-kit/shared/errors"
+    account_entities "github.com/xmlking/grpc-starter-kit/service/account/proto/entities"
+    userPB "github.com/xmlking/grpc-starter-kit/service/account/proto/user"
+    "github.com/xmlking/grpc-starter-kit/service/account/repository"
+    emailerPB "github.com/xmlking/grpc-starter-kit/service/emailer/proto/emailer"
+    greeterPB "github.com/xmlking/grpc-starter-kit/service/greeter/proto/greeter"
+    myErrors "github.com/xmlking/grpc-starter-kit/shared/errors"
 )
 
 // UserHandler struct

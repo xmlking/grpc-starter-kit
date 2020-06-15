@@ -103,7 +103,7 @@ proto proto-%:
 			echo ✓ compiled: $$f; \
 		done \
 	fi
-	@rsync -a github.com/xmlking/micro-starter-kit/service/account/proto/ service/account/proto && rm -Rf github.com
+	@rsync -a github.com/xmlking/grpc-starter-kit/service/account/proto/ service/account/proto && rm -Rf github.com
 
 proto_shared:
 	@for f in ./shared/proto/**/*.proto; do \

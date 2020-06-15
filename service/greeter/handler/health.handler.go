@@ -7,7 +7,7 @@ import (
     "google.golang.org/grpc/codes"
     "google.golang.org/grpc/status"
 
-    healthPB "github.com/xmlking/micro-starter-kit/service/greeter/proto/health"
+    healthPB "github.com/xmlking/grpc-starter-kit/service/greeter/proto/health"
 )
 
 // Greeter struct

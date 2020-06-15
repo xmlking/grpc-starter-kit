@@ -8,7 +8,7 @@ import (
     "github.com/micro/go-micro/v2/store"
     "github.com/rs/zerolog/log"
 
-    transactionPB "github.com/xmlking/micro-starter-kit/service/recorder/proto/transaction"
+    transactionPB "github.com/xmlking/grpc-starter-kit/service/recorder/proto/transaction"
 )
 
 // TransactionRepository interface

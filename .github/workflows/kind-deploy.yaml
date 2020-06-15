@@ -15,7 +15,7 @@ jobs:
           echo "Downloading $RELEASE_URL"
           # curl -O -L $RELEASE_URL
           # FIXME Workaround
-          curl -s https://api.github.com/repos/xmlking/micro-starter-kit/releases/latest | grep browser_download_url | grep kubernetes.local.yaml | cut -d '"' -f 4 | wget -qi -
+          curl -s https://api.github.com/repos/xmlking/grpc-starter-kit/releases/latest | grep browser_download_url | grep kubernetes.local.yaml | cut -d '"' -f 4 | wget -qi -
       - name: "deployment pending"
         uses: "deliverybot/deployment-status@master"
         with:

@@ -6,7 +6,7 @@ import (
     "github.com/rs/zerolog/log"
     uuid "github.com/satori/go.uuid"
 
-    account_entities "github.com/xmlking/micro-starter-kit/service/account/proto/entities"
+    account_entities "github.com/xmlking/grpc-starter-kit/service/account/proto/entities"
 )
 
 // UserRepository interface

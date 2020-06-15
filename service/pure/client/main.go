@@ -8,9 +8,9 @@ import (
 
     "google.golang.org/grpc"
 
-    purePB "github.com/xmlking/micro-starter-kit/service/pure/proto/pure"
-    "github.com/xmlking/micro-starter-kit/shared/config"
-    "github.com/xmlking/micro-starter-kit/shared/constants"
+    purePB "github.com/xmlking/grpc-starter-kit/service/pure/proto/pure"
+    "github.com/xmlking/grpc-starter-kit/shared/config"
+    "github.com/xmlking/grpc-starter-kit/shared/constants"
 )
 
 func main() {

@@ -177,7 +177,7 @@ kubectl apply -k ./deploy/overlays/production
 
 # update image version
 IMAGE_VERSION=v0.1.0-118-g21f8a30
-cd deploy && kustomize edit set image docker.pkg.github.com/xmlking/micro-starter-kit/service/account:$IMAGE_VERSION && cd ..
+cd deploy && kustomize edit set image docker.pkg.github.com/xmlking/grpc-starter-kit/service/account:$IMAGE_VERSION && cd ..
 
 kustomize build deploy/overlays/staging | kubectl apply -f -
 kustomize build deploy/overlays/production | kubectl apply -f -

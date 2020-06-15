@@ -6,11 +6,11 @@ import (
 
     "github.com/rs/zerolog/log"
 
-    "github.com/xmlking/micro-starter-kit/service/account/handler"
-    account_entities "github.com/xmlking/micro-starter-kit/service/account/proto/entities"
-    "github.com/xmlking/micro-starter-kit/service/account/repository"
-    "github.com/xmlking/micro-starter-kit/shared/database"
-    configPB "github.com/xmlking/micro-starter-kit/shared/proto/config"
+    "github.com/xmlking/grpc-starter-kit/service/account/handler"
+    account_entities "github.com/xmlking/grpc-starter-kit/service/account/proto/entities"
+    "github.com/xmlking/grpc-starter-kit/service/account/repository"
+    "github.com/xmlking/grpc-starter-kit/shared/database"
+    configPB "github.com/xmlking/grpc-starter-kit/shared/proto/config"
 )
 
 // Container - provide di Container

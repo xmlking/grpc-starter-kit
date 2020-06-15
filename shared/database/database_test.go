@@ -6,8 +6,8 @@ import (
 
     _ "github.com/jinzhu/gorm/dialects/sqlite"
 
-    _ "github.com/xmlking/micro-starter-kit/shared/logger"
-    configPB "github.com/xmlking/micro-starter-kit/shared/proto/config"
+    _ "github.com/xmlking/grpc-starter-kit/shared/logger"
+    configPB "github.com/xmlking/grpc-starter-kit/shared/proto/config"
 )
 
 func TestDatabase(t *testing.T) {

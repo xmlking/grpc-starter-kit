@@ -8,9 +8,9 @@ import (
     "github.com/pkg/errors"
     "github.com/rs/zerolog/log"
 
-    transactionPB "github.com/xmlking/micro-starter-kit/service/recorder/proto/transaction"
-    "github.com/xmlking/micro-starter-kit/service/recorder/repository"
-    "github.com/xmlking/micro-starter-kit/shared/constants"
+    transactionPB "github.com/xmlking/grpc-starter-kit/service/recorder/proto/transaction"
+    "github.com/xmlking/grpc-starter-kit/service/recorder/repository"
+    "github.com/xmlking/grpc-starter-kit/shared/constants"
 )
 
 type TransactionSubscriber struct {

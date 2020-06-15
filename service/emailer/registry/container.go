@@ -5,10 +5,10 @@ import (
 
     "github.com/rs/zerolog/log"
 
-    "github.com/xmlking/micro-starter-kit/service/emailer/service"
-    "github.com/xmlking/micro-starter-kit/service/emailer/subscriber"
-    "github.com/xmlking/micro-starter-kit/shared/email"
-    configPB "github.com/xmlking/micro-starter-kit/shared/proto/config"
+    "github.com/xmlking/grpc-starter-kit/service/emailer/service"
+    "github.com/xmlking/grpc-starter-kit/service/emailer/subscriber"
+    "github.com/xmlking/grpc-starter-kit/shared/email"
+    configPB "github.com/xmlking/grpc-starter-kit/shared/proto/config"
 )
 
 // Container - provide di Container

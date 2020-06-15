@@ -8,7 +8,7 @@ import (
 	_ "github.com/envoyproxy/protoc-gen-validate/validate"
 	proto "github.com/golang/protobuf/proto"
 	_ "github.com/golang/protobuf/ptypes/wrappers"
-	_ "github.com/xmlking/micro-starter-kit/service/account/proto/entities"
+	_ "github.com/xmlking/grpc-starter-kit/service/account/proto/entities"
 	math "math"
 )
 

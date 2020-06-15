@@ -2,7 +2,7 @@ syntax = "proto3";
 
 package mkit.service.account.profile.v1;
 
-option go_package = "github.com/xmlking/micro-starter-kit/service/account/proto/profile";
+option go_package = "github.com/xmlking/grpc-starter-kit/service/account/proto/profile";
 option java_multiple_files = true;
 option java_package = "mkit.service.account.profile.v1";
 
