@@ -96,7 +96,7 @@ make pkger-greeter
 make pkger
 # other pkger commands
 pkger list -include /config/config.yaml -include /config/config.prod.yaml -include /config/certs
-pkger info github.com/xmlking/micro-starter-kit
+pkger info github.com/xmlking/grpc-starter-kit
 ```
 
 ### build
@@ -129,8 +129,8 @@ make docker-account VERSION=v0.1.1
 make docker-account-service VERSION=v0.1.1
 make docker TARGET=account VERSION=v0.1.1
 make docker TARGET=account TYPE=service VERSION=v0.1.1
-make docker TARGET=account DOCKER_REGISTRY=us.gcr.io DOCKER_CONTEXT_PATH=<MY_PROJECT_ID>/micro-starter-kit
-make docker TARGET=account DOCKER_REGISTRY=us.gcr.io DOCKER_CONTEXT_PATH=<MY_PROJECT_ID>/micro-starter-kit GO_MICRO_VERSION=v1.17.1
+make docker TARGET=account DOCKER_REGISTRY=us.gcr.io DOCKER_CONTEXT_PATH=<MY_PROJECT_ID>/grpc-starter-kit
+make docker TARGET=account DOCKER_REGISTRY=us.gcr.io DOCKER_CONTEXT_PATH=<MY_PROJECT_ID>/grpc-starter-kit GO_MICRO_VERSION=v1.17.1
 # short hand for TARGET and TYPE args
 make docker-emailer-service
 
@@ -138,9 +138,9 @@ make docker-emailer-service
 make docker
 make docker DOCKER_REGISTRY=us.gcr.io
 make docker VERSION=v0.3.2 GO_MICRO_VERSION=v2.3.0
-make docker DOCKER_REGISTRY=docker.pkg.github.com DOCKER_CONTEXT_PATH=xmlking/micro-starter-kit
-make docker DOCKER_REGISTRY=docker.pkg.github.com DOCKER_CONTEXT_PATH=xmlking/micro-starter-kit VERSION=v0.2.9
-make docker DOCKER_REGISTRY=docker.pkg.github.com DOCKER_CONTEXT_PATH=xmlking/micro-starter-kit VERSION=v0.2.9 GO_MICRO_VERSION=v1.17.1
+make docker DOCKER_REGISTRY=docker.pkg.github.com DOCKER_CONTEXT_PATH=xmlking/grpc-starter-kit
+make docker DOCKER_REGISTRY=docker.pkg.github.com DOCKER_CONTEXT_PATH=xmlking/grpc-starter-kit VERSION=v0.2.9
+make docker DOCKER_REGISTRY=docker.pkg.github.com DOCKER_CONTEXT_PATH=xmlking/grpc-starter-kit VERSION=v0.2.9 GO_MICRO_VERSION=v1.17.1
 
 # publish all microservices images
 make docker_push

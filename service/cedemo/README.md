@@ -46,3 +46,5 @@ curl -X POST \
 
 ## Reference
 - https://github.com/knative/docs/blob/master/docs/serving/samples/cloudevents/cloudevents-go/README.md
+- https://github.com/knative/docs/blob/master/docs/serving/samples/cloudevents/cloudevents-go/cloudevents.go
+- https://github.com/spencer-p/moroncloudevents

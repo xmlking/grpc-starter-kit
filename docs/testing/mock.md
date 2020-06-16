@@ -23,5 +23,5 @@ bloomrpc-mock e2e/account.bloomrpc.proto \
 -r config/base/secrets/certs/upstream-cert.pem \
 -k config/base/secrets/certs/client-key.pem,config/base/secrets/certs/client-cert.pem \
 -i ~/go/src  -i /usr/local/Cellar/protobuf/3.11.2/include \
--i ~/Developer/Work/go/micro-starter-kit
+-i ~/Developer/Work/go/grpc-starter-kit
 ```

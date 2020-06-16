@@ -32,7 +32,7 @@
   curl POST -H "Authorization: token $GITHUB_TOKEN" \
             -H "Accept: application/vnd.github.ant-man-preview+json"  \
             -H "Content-Type: application/json" \
-            https://api.github.com/repos/xmlking/micro-starter-kit/deployments \
+            https://api.github.com/repos/xmlking/grpc-starter-kit/deployments \
             --data '{"ref": "develop", "environment": "e2e", "payload":   "payload": { "what": "deployment for e2e testing"}}'
   ```
 

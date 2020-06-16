@@ -1,6 +1,6 @@
 # Buf
 
-[Buf](https://buf.build/) is a tool for **Protobuf** files:
+[Buf](https://buf.build/) is a tool for __Protobuf__ files:
 
 - [Linter](https://buf.build/docs/lint-usage) that enforces good API design choices and structure.
 - [Breaking change detector](https://buf.build/docs/breaking-usage) that enforces compatibility at the source code or wire level
@@ -45,7 +45,10 @@ buf check lint
 # We can also output errors in a format you can then copy into your buf.yaml file
 buf check lint --error-format=config-ignore-yaml
 # Run breaking change detection
+# for dev local
 buf check breaking --against-input image.bin
+buf check breaking --against-input '.git#branch=master'
+# for CI
 export HTTPS_GIT=https://github.com/xmlking/yeti.git
 buf check breaking --against-input "$(HTTPS_GIT)#branch=master"
 ```
@@ -53,7 +56,7 @@ buf check breaking --against-input "$(HTTPS_GIT)#branch=master"
 ### Format
 
 ```bash
-make proto_format
+prototool format -w proto;
 ```
 
 ### Generate

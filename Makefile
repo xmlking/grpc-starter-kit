@@ -3,7 +3,7 @@
 # make clean  	# remove ALL binaries and objects
 # make release  # add git TAG and push
 GITHUB_REPO_OWNER 				:= xmlking
-GITHUB_REPO_NAME 					:= micro-starter-kit
+GITHUB_REPO_NAME 					:= grpc-starter-kit
 GITHUB_RELEASES_UI_URL 		:= https://github.com/$(GITHUB_REPO_OWNER)/$(GITHUB_REPO_NAME)/releases
 GITHUB_RELEASES_API_URL 	:= https://api.github.com/repos/$(GITHUB_REPO_OWNER)/$(GITHUB_REPO_NAME)/releases
 GITHUB_RELEASE_ASSET_URL	:= https://uploads.github.com/repos/$(GITHUB_REPO_OWNER)/$(GITHUB_REPO_NAME)/releases
@@ -26,6 +26,7 @@ GIT_BRANCH  		:= $(shell git rev-parse --abbrev-ref HEAD)
 HAS_GOVVV				:= $(shell command -v govvv 2> /dev/null)
 HAS_PKGER				:= $(shell command -v pkger 2> /dev/null)
 HAS_KO					:= $(shell command -v ko 2> /dev/null)
+HTTPS_GIT 				:= https://github.com/$(GITHUB_REPO_OWNER)/$(GITHUB_REPO_NAME).git
 
 # Type of service e.g api, service, web, cmd (default: "service")
 TYPE = $(or $(word 2,$(subst -, ,$*)), service)
@@ -113,15 +114,29 @@ proto_shared:
 		echo ✓ compiled: $$f; \
 	done
 
+proto_clean:
+	@echo "Deleting generated Go files....";
+	@for g in ./mkit/**/*.pb.*; do \
+  		echo Deleting $$f; \
+  		rmxdd -f $$f; \
+  	done
+
 proto_lint:
-	@echo "Linting all protos"; \
+	@echo "Linting protos";
 	@${GOPATH}/bin/buf check lint
+
+proto_breaking:
+	@echo "Breaking check protos";
 	@${GOPATH}/bin/buf check breaking --against-input '.git#branch=master'
+#	@${GOPATH}/bin/buf check breaking --against-input "$(HTTPS_GIT)#branch=master"
 
 # I prefer VS Code's proto plugin to format my code then prototool
 proto_format: proto_lint
-	@echo "Formating all protos"; \
-	@${GOPATH}/bin/prototool format -d .;
+	@echo "Formatting protos";
+	@${GOPATH}/bin/prototool format -w proto;
+	@echo "✓ Proto: Formated"
+
+proto_check: proto_lint proto_breaking proto_format
 
 gomod_lint:
 	@goup -v -m ./...

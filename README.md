@@ -2,8 +2,8 @@
 
 Microservices starter kit for **Golang**, aims to be developer friendly.
 
-[![GoDoc](https://godoc.org/github.com/xmlking/micro-starter-kit?status.svg)](https://godoc.org/github.com/xmlking/micro-starter-kit)
-[![Go](https://img.shields.io/github/go-mod/go-version/xmlking/micro-starter-kit/develop)](https://golang.org/dl/)
+[![GoDoc](https://godoc.org/github.com/xmlking/grpc-starter-kit?status.svg)](https://godoc.org/github.com/xmlking/grpc-starter-kit)
+[![Go](https://img.shields.io/github/go-mod/go-version/xmlking/grpc-starter-kit/develop)](https://golang.org/dl/)
 [![Renovate dependency Status](https://img.shields.io/badge/renovate-enabled-brightgreen.svg)](https://renovatebot.com/)
 [![MIT license](https://img.shields.io/badge/license-MIT-brightgreen.svg)](https://opensource.org/licenses/MIT)
 
@@ -11,10 +11,10 @@ Microservices starter kit for **Golang**, aims to be developer friendly.
 [![Build Status](https://github.com/xmlking/grpc-starter-kit/workflows/Test%20on%20Push/badge.svg?branch=develop)](https://github.com/xmlking/grpc-starter-kit/actions?query=branch%3Adevelop+event%3Apush+workflow%3A%22Test+on+Push%22)
 
 ### Quality
-[![Go Report Card](https://goreportcard.com/badge/github.com/xmlking/micro-starter-kit)](https://goreportcard.com/report/github.com/xmlking/micro-starter-kit)
-[![Total alerts](https://img.shields.io/lgtm/alerts/g/xmlking/micro-starter-kit.svg?logo=lgtm&logoWidth=18)](https://lgtm.com/projects/g/xmlking/micro-starter-kit/alerts/)
-[![codecov](https://codecov.io/gh/xmlking/micro-starter-kit/branch/develop/graph/badge.svg)](https://codecov.io/gh/xmlking/micro-starter-kit)
-[![Language grade: Go](https://img.shields.io/lgtm/grade/go/g/xmlking/micro-starter-kit.svg?logo=lgtm&logoWidth=18)](https://lgtm.com/projects/g/xmlking/micro-starter-kit/context:go)
+[![Go Report Card](https://goreportcard.com/badge/github.com/xmlking/grpc-starter-kit)](https://goreportcard.com/report/github.com/xmlking/grpc-starter-kit)
+[![Total alerts](https://img.shields.io/lgtm/alerts/g/xmlking/grpc-starter-kit.svg?logo=lgtm&logoWidth=18)](https://lgtm.com/projects/g/xmlking/grpc-starter-kit/alerts/)
+[![codecov](https://codecov.io/gh/xmlking/grpc-starter-kit/branch/develop/graph/badge.svg)](https://codecov.io/gh/xmlking/grpc-starter-kit)
+[![Language grade: Go](https://img.shields.io/lgtm/grade/go/g/xmlking/grpc-starter-kit.svg?logo=lgtm&logoWidth=18)](https://lgtm.com/projects/g/xmlking/grpc-starter-kit/context:go)
 [![fuzzit](https://app.fuzzit.dev/badge?org_id=xmlkinggithub&branch=develop)](https://app.fuzzit.dev/orgs/xmlkinggithub/dashboard)
 
 ## Overview
@@ -59,7 +59,7 @@ Also Refer [scaffolding](docs/introduction/scaffolding.md) docs
 > clone the repo
 
 ```bash
-git clone https://github.com/xmlking/micro-starter-kit ~/Developer/Work/go/micro-starter-kit
+git clone https://github.com/xmlking/grpc-starter-kit ~/Developer/Work/go/grpc-starter-kit
 # pull dependencies (when every time `go.mod` changed)
 go mod download
 ```
@@ -137,7 +137,7 @@ Refer [releasing](docs/concepts/releasing.md) docs
 ### Deploy
 
 ```bash
-make docker DOCKER_REGISTRY=docker.pkg.github.com DOCKER_CONTEXT_PATH=xmlking/micro-starter-kit
+make docker DOCKER_REGISTRY=docker.pkg.github.com DOCKER_CONTEXT_PATH=xmlking/grpc-starter-kit
 docker rmi $(docker images -f "dangling=true" -q)
 
 # make kustomize OVERLAY=e2e NS=default VERSION=v0.1.0-440-g6c7fb7a

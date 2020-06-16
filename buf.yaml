@@ -1,24 +1,30 @@
 build:
   roots:
-    - .
-  excludes:
-    - e2e
+    - proto
+    - third_party/proto
+
 lint:
   use:
     - DEFAULT
     - FILE_LOWER_SNAKE_CASE
-  except:
-    - PACKAGE_DIRECTORY_MATCH
   ignore:
-    - third_party
-    - e2e
+    - protoc-gen-gorm
+    - validate
+    - gogoproto
   ignore_only:
     RPC_RESPONSE_STANDARD_NAME:
-      - service/recorder/proto/transaction/transaction.proto
+      - mkit/service/transaction/v1/transaction.proto
+      - mkit/shared/config/v1/config.proto
+    RPC_REQUEST_STANDARD_NAME:
+      - mkit/shared/config/v1/config.proto
+    RPC_REQUEST_RESPONSE_UNIQUE:
+      - mkit/shared/config/v1/config.proto
+  rpc_allow_google_protobuf_empty_requests: true
   rpc_allow_google_protobuf_empty_responses: true
+
 breaking:
   use:
-    - FILE
+    - WIRE_JSON
   ignore:
-    - third_party
-    - e2e
+    - protoc-gen-gorm
+    - validate

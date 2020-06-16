@@ -16,7 +16,7 @@ PATH=${PATH}:"${GOB}"
 # target name can only contain lower-case letters (a-z), digits (0-9) and a dash (-)
 # to add another target, make sure to create it with `fuzzit create target`
 # before using `fuzzit create job`
-TARGET=micro-starter-kit
+TARGET=grpc-starter-kit
 
 go-fuzz-build -libfuzzer -o ${TARGET}.a .
 clang -fsanitize=fuzzer ${TARGET}.a -o ${TARGET}

@@ -53,10 +53,10 @@ gcloud components install appctl
 
 ```bash
 # Initialize existing repository
-# make sure the `git remote -v` show `git@github.com:xmlking/micro-starter-kit.git`
+# make sure the `git remote -v` show `git@github.com:xmlking/grpc-starter-kit.git`
 cd ..
-appctl init micro-starter-kit --app-config-repo=github.com/xmlking/micro-starter-kit
-cd micro-starter-kit
+appctl init grpc-starter-kit --app-config-repo=github.com/xmlking/grpc-starter-kit
+cd grpc-starter-kit
 # Create the configuration for your Kubernetes workload. i.e., add/update `config/base`, then test:
 # kubectl apply -k config/base/ --dry-run=client -o yaml
 kustomize build config/base

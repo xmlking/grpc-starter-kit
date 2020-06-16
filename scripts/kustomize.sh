@@ -5,7 +5,7 @@ env
 set -x
 NS=test
 
-echo "Deploying micro-starter-kit..."
+echo "Deploying grpc-starter-kit..."
 
 # Set the image tag to the sha hash that we just built in the previous stage.
 # K8S will do a rolling deployment

@@ -68,7 +68,7 @@ USER nobody:nobody
 ARG DOCKER_REGISTRY
 ARG DOCKER_CONTEXT_PATH=xmlking
 ARG BUILD_DATE
-ARG VCS_URL=micro-starter-kit
+ARG VCS_URL=grpc-starter-kit
 ARG VCS_REF=1
 ARG VENDOR=sumo
 
