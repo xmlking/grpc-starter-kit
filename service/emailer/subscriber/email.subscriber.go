@@ -3,7 +3,9 @@ package subscriber
 import (
     "context"
 
-    "github.com/micro/go-micro/v2/metadata"
+    //pscontext "github.com/cloudevents/sdk-go/protocol/pubsub/v2/context"
+    cloudevents "github.com/cloudevents/sdk-go/v2"
+    "github.com/cloudevents/sdk-go/v2/protocol"
     "github.com/rs/zerolog/log"
 
     emailerPB "github.com/xmlking/grpc-starter-kit/service/emailer/proto/emailer"
@@ -22,17 +24,42 @@ func NewEmailSubscriber(emailService service.EmailService) *EmailSubscriber {
     }
 }
 
-// Handle is a method to send emails, Method can be of any name
-func (s *EmailSubscriber) Handle(ctx context.Context, msg *emailerPB.Message) error {
-    md, _ := metadata.FromContext(ctx)
-    log.Info().Msgf("EmailSubscriber: Received msg %+v with metadata %+v\n", msg, md)
-    return s.emailService.Welcome(msg.Subject, msg.To)
+// Handle is a method to send emails
+func (s *EmailSubscriber) HandleSend(ctx context.Context, event cloudevents.Event) error {
+    log.Debug().Msgf("Event Context: %+v\n", event.Context)
+    log.Debug().Msgf("Event Source from Context: %+v\n",event.Context.AsV1().Source)
+    //log.Debug().Msgf("Transport Context: %+v\n", pscontext.ProtocolContextFrom(ctx))
+
+    // validate event conforms to cloudevents specification
+    if err := event.Validate(); err != nil {
+        log.Error().Err(err).Send()
+        return err
+    }
+
+    data := &emailerPB.Message{}
+    if err := event.DataAs(data); err != nil {
+        log.Error().Err(err).Send()
+        return err
+    }
+
+    return s.emailService.Welcome(data.Subject, data.To)
+    // return cloudevents.ResultACK
 }
 
-// Handler is a function to send emails
-func Handler(ctx context.Context, msg *emailerPB.Message) error {
-    md, _ := metadata.FromContext(ctx)
-    log.Info().Msgf("Function: Received msg %+v with metadata %+v\n", msg, md)
-    // TODO delegate to emailService.Welcome
-    return nil
+func (s *EmailSubscriber) HandleRequest(ctx context.Context, event cloudevents.Event) (*cloudevents.Event,  cloudevents.Result) {
+    log.Debug().Msgf("Event Context: %+v\n", event.Context)
+    log.Debug().Msgf("Event Source from Context: %+v\n",event.Context.AsV1().Source)
+
+    data := &emailerPB.Message{}
+    if err := event.DataAs(data); err != nil {
+        log.Error().Err(err).Send()
+        return nil, err
+    }
+
+    responseEvent := cloudevents.NewEvent()
+    responseEvent.SetSource("/mod3")
+    responseEvent.SetType("samples.http.mod3")
+    _ = responseEvent.SetData(cloudevents.ApplicationJSON, &emailerPB.Message{Subject: "echo" + data.Subject})
+    return &responseEvent, protocol.ResultACK
+    // return &responseEvent, nil
 }

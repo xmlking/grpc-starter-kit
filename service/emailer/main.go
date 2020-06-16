@@ -3,23 +3,30 @@ package main
 import (
     "context"
 
-    cloudevents "github.com/cloudevents/sdk-go/v2"
-
     "github.com/rs/zerolog/log"
 
-    "github.com/xmlking/grpc-starter-kit/shared/broker"
+    "github.com/xmlking/grpc-starter-kit/service/emailer/registry"
+    "github.com/xmlking/grpc-starter-kit/service/emailer/subscriber"
+    "github.com/xmlking/grpc-starter-kit/shared/config"
     _ "github.com/xmlking/grpc-starter-kit/shared/constants"
+    "github.com/xmlking/grpc-starter-kit/shared/eventing"
     _ "github.com/xmlking/grpc-starter-kit/shared/logger"
 )
 
-func receive(event cloudevents.Event) {
-    // do something with event.
-    log.Info().Msgf("%s", event)
-}
-
 func main() {
-    client := broker.DefaultClient
-    if err := client.StartReceiver(context.Background(), receive); err != nil {
-        log.Fatal().Err(err).Send();
+    cfg := config.GetConfig()
+    // Initialize DI Container
+    ctn, err := registry.NewContainer(cfg)
+    defer ctn.Clean()
+    if err != nil {
+        log.Fatal().Msgf("failed to build container: %v", err)
+    }
+    emailSubscriber := ctn.Resolve("emailer-subscriber").(*subscriber.EmailSubscriber)
+
+    client := eventing.NewSinkClient()
+    log.Info().Msg("Subscriber Created, listening...")
+
+    if err := client.StartReceiver(context.Background(), emailSubscriber.HandleSend); err != nil {
+       log.Fatal().Err(err).Send();
     }
 }
