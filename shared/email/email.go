@@ -9,7 +9,6 @@ import (
 
     "github.com/rs/zerolog/log"
 
-    myErrors "github.com/xmlking/grpc-starter-kit/shared/errors"
     configPB "github.com/xmlking/grpc-starter-kit/shared/proto/config"
 )
 
@@ -56,11 +55,7 @@ func (sender *SendEmail) Send(subject, body string, to []string) error {
         return err1
     }
     log.Debug().Msgf("sending email to: %s from: %s, subject: %s, body: %s", to, sender.from, subject, doc.Bytes())
-    err := sender.send(sender.address, sender.auth, sender.from, to, doc.Bytes())
-    if err != nil {
-        return myErrors.AppError(myErrors.SME, err.Error())
-    }
-    return nil
+    return sender.send(sender.address, sender.auth, sender.from, to, doc.Bytes())
 }
 
 // NewSendEmail is constructor

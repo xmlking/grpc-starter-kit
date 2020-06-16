@@ -5,7 +5,6 @@ import (
 
     //pscontext "github.com/cloudevents/sdk-go/protocol/pubsub/v2/context"
     cloudevents "github.com/cloudevents/sdk-go/v2"
-    "github.com/cloudevents/sdk-go/v2/protocol"
     "github.com/rs/zerolog/log"
 
     emailerPB "github.com/xmlking/grpc-starter-kit/service/emailer/proto/emailer"
@@ -25,7 +24,7 @@ func NewEmailSubscriber(emailService service.EmailService) *EmailSubscriber {
 }
 
 // Handle is a method to send emails
-func (s *EmailSubscriber) HandleSend(ctx context.Context, event cloudevents.Event) error {
+func (s *EmailSubscriber) HandleSend(ctx context.Context, event cloudevents.Event) cloudevents.Result {
     log.Debug().Msgf("Event Context: %+v\n", event.Context)
     log.Debug().Msgf("Event Source from Context: %+v\n",event.Context.AsV1().Source)
     //log.Debug().Msgf("Transport Context: %+v\n", pscontext.ProtocolContextFrom(ctx))
@@ -42,11 +41,15 @@ func (s *EmailSubscriber) HandleSend(ctx context.Context, event cloudevents.Even
         return err
     }
 
-    return s.emailService.Welcome(data.Subject, data.To)
-    // return cloudevents.ResultACK
+    if err := s.emailService.Welcome(data.Subject, data.To); err != nil {
+        log.Error().Err(err).Send()
+        return cloudevents.ResultNACK
+    } else {
+        return cloudevents.ResultACK
+    }
 }
 
-func (s *EmailSubscriber) HandleRequest(ctx context.Context, event cloudevents.Event) (*cloudevents.Event,  cloudevents.Result) {
+func (s *EmailSubscriber) HandleRequest(ctx context.Context, event cloudevents.Event) (*cloudevents.Event, cloudevents.Result) {
     log.Debug().Msgf("Event Context: %+v\n", event.Context)
     log.Debug().Msgf("Event Source from Context: %+v\n",event.Context.AsV1().Source)
 
@@ -59,7 +62,6 @@ func (s *EmailSubscriber) HandleRequest(ctx context.Context, event cloudevents.E
     responseEvent := cloudevents.NewEvent()
     responseEvent.SetSource("/mod3")
     responseEvent.SetType("samples.http.mod3")
-    _ = responseEvent.SetData(cloudevents.ApplicationJSON, &emailerPB.Message{Subject: "echo" + data.Subject})
-    return &responseEvent, protocol.ResultACK
-    // return &responseEvent, nil
+    err := responseEvent.SetData(cloudevents.ApplicationJSON, &emailerPB.Message{Subject: "echo" + data.Subject})
+    return &responseEvent, err
 }

@@ -6,12 +6,6 @@ Showcase
 
 1. Async service
 
-## Configuration
-
-- FQDN: mkit.service.emailer
-- Type: service
-- Alias: emailer
-
 ## Usage
 
 A Makefile is included for convenience
@@ -26,9 +20,9 @@ Run the service
 
 ```bash
 make run-emailer
-make run-emailer ARGS="--server_address=:8082"
+make run-emailer
 # or
-go run service/emailer/main.go service/emailer/plugin.go
+go run service/emailer/main.go
 ```
 
 Build a docker image
@@ -40,5 +34,12 @@ make docker TARGET=emailer TYPE=service VERSION=v0.1.1
 Test the service
 
 ```bash
-micro publish mkit.service.emailer  '{ "to" : "sumo@demo.com", "from": "demo@sumo.com", "subject": "sub", "body": "mybody"  }'
+curl -X POST \
+    -H "content-type: application/json"  \
+    -H "ce-specversion: 1.0"  \
+    -H "ce-source: curl-command"  \
+    -H "ce-type: curl.demo"  \
+    -H "ce-id: 123-abc"  \
+    -d '{"Subject": "Sumo", "To": "sumo@demo.com"}' \
+    http://localhost:8080
 ```
