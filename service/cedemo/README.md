@@ -1,6 +1,6 @@
-# Emailer Service
+# ceDemo Service
 
-This is the Emailer service
+This is the CE Demo service
 
 Showcase
 
@@ -13,21 +13,21 @@ A Makefile is included for convenience
 Build the binary
 
 ```bash
-make build TARGET=emailer TYPE=service VERSION=v0.1.1
+make build TARGET=cedemo TYPE=service VERSION=v0.1.1
 ```
 
 Run the service
 
 ```bash
-make run-emailer
+make run-cedemo
 # or
-go run service/emailer/main.go
+go run service/cedemo/main.go
 ```
 
 Build a docker image
 
 ```bash
-make docker TARGET=emailer TYPE=service VERSION=v0.1.1
+make docker TARGET=cedemo TYPE=service VERSION=v0.1.1
 ```
 
 Test the service
@@ -39,6 +39,10 @@ curl -X POST \
     -H "ce-source: curl-command"  \
     -H "ce-type: curl.demo"  \
     -H "ce-id: 123-abc"  \
-    -d '{"Subject": "Sumo", "To": "sumo@demo.com"}' \
+    -d '{"name":"Sumo"}' \
     http://localhost:8080
 ```
+
+
+## Reference
+- https://github.com/knative/docs/blob/master/docs/serving/samples/cloudevents/cloudevents-go/README.md
