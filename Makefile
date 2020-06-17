@@ -126,7 +126,7 @@ proto_lint:
 	@${GOPATH}/bin/buf check lint
 
 proto_breaking:
-	@echo "Breaking check protos";
+	@echo "Checking proto breaking changes";
 	@${GOPATH}/bin/buf check breaking --against-input '.git#branch=master'
 #	@${GOPATH}/bin/buf check breaking --against-input "$(HTTPS_GIT)#branch=master"
 
@@ -134,9 +134,12 @@ proto_breaking:
 proto_format: proto_lint
 	@echo "Formatting protos";
 	@${GOPATH}/bin/prototool format -w proto;
-	@echo "✓ Proto: Formated"
+	@echo "✓ Proto: Formatted"
 
 proto_check: proto_lint proto_breaking proto_format
+
+proto_gen:
+	@${GOPATH}/bin/prototool generate proto;
 
 gomod_lint:
 	@goup -v -m ./...

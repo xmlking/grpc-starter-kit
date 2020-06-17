@@ -1,0 +1,16 @@
+syntax = "proto3";
+
+package mkit.shared.common.v1;
+
+//option go_package = "github.com/xmlking/grpc-starter-kit/mkit/shared/common/v1;commonv1";
+option go_package = "commonv1";
+option java_multiple_files = true;
+option java_package = "mkit.shared.common.v1";
+
+import "google/protobuf/wrappers.proto";
+
+// Generic Error message
+message Error {
+    string code = 1 [json_name = "code"];
+    google.protobuf.StringValue msg = 2 [json_name = "msg"];
+}

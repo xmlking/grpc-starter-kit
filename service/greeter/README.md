@@ -2,11 +2,9 @@
 
 This is the Greeter service
 
-## Configuration
+Showcase
 
-- FQDN: mkit.service.greeter
-- Type: service
-- Alias: greeter
+1. Async service
 
 ## Usage
 
@@ -22,9 +20,8 @@ Run the service
 
 ```bash
 make run-greeter
-make run-greeter ARGS="--server_address=:8081"
 # or
-go run service/greeter/main.go service/greeter/plugin.go
+go run service/greeter/main.go
 ```
 
 Build a docker image

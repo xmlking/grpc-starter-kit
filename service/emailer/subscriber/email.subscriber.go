@@ -7,7 +7,7 @@ import (
     cloudevents "github.com/cloudevents/sdk-go/v2"
     "github.com/rs/zerolog/log"
 
-    emailerPB "github.com/xmlking/grpc-starter-kit/service/emailer/proto/emailer"
+    "github.com/xmlking/grpc-starter-kit/mkit/service/emailer/v1"
     "github.com/xmlking/grpc-starter-kit/service/emailer/service"
 )
 
@@ -35,7 +35,7 @@ func (s *EmailSubscriber) HandleSend(ctx context.Context, event cloudevents.Even
         return err
     }
 
-    data := &emailerPB.Message{}
+    data := &emailerv1.Message{}
     if err := event.DataAs(data); err != nil {
         log.Error().Err(err).Send()
         return err
@@ -53,7 +53,7 @@ func (s *EmailSubscriber) HandleRequest(ctx context.Context, event cloudevents.E
     log.Debug().Msgf("Event Context: %+v\n", event.Context)
     log.Debug().Msgf("Event Source from Context: %+v\n",event.Context.AsV1().Source)
 
-    data := &emailerPB.Message{}
+    data := &emailerv1.Message{}
     if err := event.DataAs(data); err != nil {
         log.Error().Err(err).Send()
         return nil, err
@@ -62,6 +62,6 @@ func (s *EmailSubscriber) HandleRequest(ctx context.Context, event cloudevents.E
     responseEvent := cloudevents.NewEvent()
     responseEvent.SetSource("/mod3")
     responseEvent.SetType("samples.http.mod3")
-    err := responseEvent.SetData(cloudevents.ApplicationJSON, &emailerPB.Message{Subject: "echo" + data.Subject})
+    err := responseEvent.SetData(cloudevents.ApplicationJSON, &emailerv1.Message{Subject: "echo" + data.Subject})
     return &responseEvent, err
 }
