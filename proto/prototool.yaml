@@ -48,6 +48,11 @@ generate:
       output: ../
       type: gogo
     - name: validate
-      flags: lang=go
+      flags: lang=gogo
       output: ../
       type: gogo
+    - name: gorm
+      flags: engine=postgres,enums=string
+      output: ../
+      type: gogo
+

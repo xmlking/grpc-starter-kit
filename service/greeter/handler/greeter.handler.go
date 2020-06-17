@@ -5,7 +5,7 @@ import (
 
     "github.com/rs/zerolog/log"
 
-    greeterv1 "github.com/xmlking/grpc-starter-kit/mkit/service/greeter/v1"
+    "github.com/xmlking/grpc-starter-kit/mkit/service/greeter/v1"
 )
 
 type greeterHandler struct {

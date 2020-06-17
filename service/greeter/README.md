@@ -37,19 +37,6 @@ Test the service
 make run-greeter
 
 # test with grpc cli
-grpcurl -plaintext -proto service/greeter/proto/greeter/greeter.proto list
-grpcurl -plaintext -proto service/greeter/proto/greeter/greeter.proto describe
-grpcurl -plaintext -proto service/greeter/proto/greeter/greeter.proto -d '{"name": "sumo"}' localhost:8081  mkit.service.greeter.v1.GreeterService/Hello
-# testing via micro-cli
-micro call mkit.service.greeter GreeterService.Hello  '{"name": "John"}'
-
-# start REST gateway
-micro api --enable_rpc=true
-
-# testing via rest proxy
-curl --request POST \
---url http://localhost:8080/rpc \
---header 'accept: application/json' \
---header 'content-type: application/json' \
---data '{"service": "mkit.service.greeter", "method": "GreeterService.Hello","request": {"name": "sumo"}}'
-```
+grpcurl -plaintext -proto proto/mkit/service/greeter/v1/greeter.proto list
+grpcurl -plaintext -proto proto/mkit/service/greeter/v1/greeter.proto describe
+grpcurl -plaintext -proto proto/mkit/service/greeter/v1/greeter.proto -d '{"name": "sumo"}' localhost:8081  mkit.service.greeter.v1.GreeterService/Hello

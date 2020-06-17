@@ -13,7 +13,8 @@ import (
     "github.com/rs/zerolog"
     uuid "github.com/satori/go.uuid"
 
-    account_entities "github.com/xmlking/grpc-starter-kit/service/account/proto/entities"
+    account_entities "github.com/xmlking/grpc-starter-kit/mkit/service/account/entities/v1"
+      "github.com/xmlking/grpc-starter-kit/mkit/service/account/profile/v1"
     profilePB "github.com/xmlking/grpc-starter-kit/service/account/proto/profile"
     "github.com/xmlking/grpc-starter-kit/service/account/repository"
     myErrors "github.com/xmlking/grpc-starter-kit/shared/errors"
@@ -26,14 +27,14 @@ type profileHandler struct {
 }
 
 // NewProfileHandler returns an instance of `ProfileServiceHandler`.
-func NewProfileHandler(repo repository.ProfileRepository, logger zerolog.Logger) profilePB.ProfileServiceHandler {
+func NewProfileHandler(repo repository.ProfileRepository, logger zerolog.Logger) profilev1.ProfileServiceServer {
     return &profileHandler{
         profileRepository: repo,
         contextLogger:     logger,
     }
 }
 
-func (ph *profileHandler) List(ctx context.Context, req *profilePB.ListRequest, rsp *profilePB.ListResponse) error {
+func (ph *profileHandler) List(ctx context.Context, req *profilev1.ListRequest, ) (rsp *profilev1.ListResponse, err error) {
     ph.contextLogger.Debug().Msg("Received ProfileHandler.List request")
     preferredTheme := req.PreferredTheme.GetValue()
     model := account_entities.ProfileORM{
@@ -44,9 +45,9 @@ func (ph *profileHandler) List(ctx context.Context, req *profilePB.ListRequest, 
 
     total, profiles, err := ph.profileRepository.List(req.Limit.GetValue(), req.Page.GetValue(), req.Sort.GetValue(), &model)
     if err != nil {
-        return myErrors.AppError(myErrors.DBE, err)
+        return nil, myErrors.AppError(myErrors.DBE, err)
     }
-    rsp.Total = total
+    rsp = &profilev1.ListResponse{Total: total}
     // newProfiles := make([]*pb.Profile, len(profiles))
     // for index, profile := range profiles {
     // 	tempProfile, _ := profile.ToPB(ctx)
@@ -58,41 +59,39 @@ func (ph *profileHandler) List(ctx context.Context, req *profilePB.ListRequest, 
     }).([]*account_entities.Profile)
 
     rsp.Results = newProfiles
-    return nil
+    return
 }
 
-func (ph *profileHandler) Get(ctx context.Context, req *profilePB.GetRequest, rsp *profilePB.GetResponse) error {
+func (ph *profileHandler) Get(ctx context.Context, req *profilev1.GetRequest) (rsp *profilev1.GetResponse, err error) {
     ph.contextLogger.Debug().Msg("Received ProfileHandler.Get request")
     var profile *account_entities.ProfileORM
-    var err error
+
     switch id := req.Id.(type) {
-    case *profilePB.GetRequest_UserId:
+    case *profilev1.GetRequest_UserId:
         println("GetRequest_UserId")
         println(req.GetId())
         profile, err = ph.profileRepository.GetByUserID(id.UserId.GetValue())
-    case *profilePB.GetRequest_ProfileId:
+    case *profilev1.GetRequest_ProfileId:
         println("GetRequest_ProfileId")
         println(req.GetId())
         profile, err = ph.profileRepository.Get(id.ProfileId.GetValue())
     case nil:
-        return myErrors.ValidationError("mkit.service.account.profile.get", "validation error: Missing Id")
+        return nil, myErrors.ValidationError("mkit.service.account.profile.get", "validation error: Missing Id")
     default:
-        return myErrors.ValidationError("mkit.service.account.profile.get", "validation error: Profile.Id has unexpected type %T", id)
+        return nil, myErrors.ValidationError("mkit.service.account.profile.get", "validation error: Profile.Id has unexpected type %T", id)
     }
     if err != nil {
         if err == gorm.ErrRecordNotFound {
-            rsp.Result = nil
-            return nil
+            return &profilev1.GetResponse{Result: nil}, nil
         }
-        return myErrors.AppError(myErrors.DBE, err)
+        return nil, myErrors.AppError(myErrors.DBE, err)
     }
 
     tempProfile, _ := profile.ToPB(ctx)
-    rsp.Result = &tempProfile
-    return nil
+    return &profilev1.GetResponse{Result: &tempProfile}, nil
 }
 
-func (ph *profileHandler) Create(ctx context.Context, req *profilePB.CreateRequest, rsp *profilePB.CreateResponse) error {
+func (ph *profileHandler) Create(ctx context.Context, req *profilev1.CreateRequest) (rsp *profilev1.CreateResponse, err error) {
     ph.contextLogger.Debug().Msg("Received ProfileHandler.Create request")
     model := account_entities.ProfileORM{}
     userId := uuid.FromStringOrNil(req.UserId.GetValue())
@@ -104,7 +103,7 @@ func (ph *profileHandler) Create(ctx context.Context, req *profilePB.CreateReque
         var t time.Time
         var err error
         if t, err = ptypes1.Timestamp(req.Birthday); err != nil {
-            return myErrors.ValidationError("mkit.service.account.profile.rceate", "Invalid birthday: %v", err)
+            return nil, myErrors.ValidationError("mkit.service.account.profile.rceate", "Invalid birthday: %v", err)
         }
         model.Birthday = &t
     }
@@ -112,7 +111,7 @@ func (ph *profileHandler) Create(ctx context.Context, req *profilePB.CreateReque
     model.PreferredTheme = &preferredTheme
 
     if err := ph.profileRepository.Create(&model); err != nil {
-        return myErrors.AppError(myErrors.DBE, err)
+        return nil, myErrors.AppError(myErrors.DBE, err)
     }
-    return nil
+    return
 }

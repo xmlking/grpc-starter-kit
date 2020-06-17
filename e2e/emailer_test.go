@@ -11,7 +11,7 @@ import (
 
     "github.com/rs/zerolog/log"
 
-    emailerPB "github.com/xmlking/grpc-starter-kit/service/emailer/proto/emailer"
+    "github.com/xmlking/grpc-starter-kit/mkit/service/emailer/v1"
     _ "github.com/xmlking/grpc-starter-kit/shared/constants"
     "github.com/xmlking/grpc-starter-kit/shared/eventing"
     _ "github.com/xmlking/grpc-starter-kit/shared/logger"
@@ -22,14 +22,14 @@ func TestEmailSubscriber_Handle_Send_E2E(t *testing.T) {
         t.Skip("skipping e2e test")
     }
 
-    client  := eventing.NewSourceClient()
-    topic   := "mkit.service.emailer"
+    client := eventing.NewSourceClient()
+    topic := "mkit.service.emailer"
 
     // Create an Event.
     event := cloudevents.NewEvent()
     event.SetSource("github.com/xmlking/grpc-starter-kit/service/emailer")
     event.SetType("account.welcome.email")
-    event.SetData(cloudevents.ApplicationJSON, &emailerPB.Message{Subject: "Sumo", To: "sumo@demo.com"})
+    event.SetData(cloudevents.ApplicationJSON, &emailerv1.Message{Subject: "Sumo", To: "sumo@demo.com"})
 
     // Set a target.
     // ctx := cecontext.WithTopic(context.Background(), topic) // for GCP PubSub
@@ -51,14 +51,14 @@ func TestEmailSubscriber_Handle_Request_E2E(t *testing.T) {
         t.Skip("skipping e2e test")
     }
 
-    client  := eventing.NewSourceClient()
-    topic   := "mkit.service.emailer"
+    client := eventing.NewSourceClient()
+    topic := "mkit.service.emailer"
 
     // Create an Event.
     event := cloudevents.NewEvent()
     event.SetSource("github.com/xmlking/grpc-starter-kit/service/emailer")
     event.SetType("account.welcome.email")
-    event.SetData(cloudevents.ApplicationJSON, &emailerPB.Message{Subject: "Sumo", To: "sumo@demo.com"})
+    event.SetData(cloudevents.ApplicationJSON, &emailerv1.Message{Subject: "Sumo", To: "sumo@demo.com"})
 
     // Set a target.
     // ctx := cecontext.WithTopic(context.Background(), topic) // for GCP PubSub

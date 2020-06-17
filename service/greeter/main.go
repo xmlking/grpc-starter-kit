@@ -16,7 +16,7 @@ import (
     _ "github.com/xmlking/grpc-starter-kit/shared/logger"
 )
 
-func main1() {
+func main() {
     serviceName := constants.GREETER_SERVICE
     cfg := config.GetConfig()
 
@@ -28,7 +28,7 @@ func main1() {
     // Create a cmux.
     mux := cmux.New(lis)
     // Match connections in order:
-    grpcL := mux.Match(cmux.HTTP2HeaderField("content-type", "application/grpc"))
+    grpcL := mux.MatchWithWriters(cmux.HTTP2MatchHeaderFieldSendSettings("content-type", "application/grpc"))
     httpL := mux.Match(cmux.HTTP1Fast())
 
 
@@ -41,25 +41,25 @@ func main1() {
         Handler: handler.NewHttpHandler(),
     }
 
-      hsrv := health.NewServer()
-      for name, _ := range grpcS.GetServiceInfo() {
-         hsrv.SetServingStatus(name, grpc_health_v1.HealthCheckResponse_SERVING)
-      }
-      grpc_health_v1.RegisterHealthServer(grpcS, hsrv)
-
-
-    println(config.GetBuildInfo())
-    println(serviceName)
+    // Add HealthChecks
+    hsrv := health.NewServer()
+    for name, _ := range grpcS.GetServiceInfo() {
+       hsrv.SetServingStatus(name, grpc_health_v1.HealthCheckResponse_SERVING)
+    }
+    grpc_health_v1.RegisterHealthServer(grpcS, hsrv)
 
     // Use the muxed listeners for your servers.
     go grpcS.Serve(grpcL)
     go httpS.Serve(httpL)
 
     // Start serving!
+    println(config.GetBuildInfo())
+    log.Info().Msgf("Server (%s) started at: %s", serviceName, lis.Addr())
     mux.Serve()
+
 }
 
-func main() {
+func main2() {
     serviceName := constants.GREETER_SERVICE
     cfg := config.GetConfig()
 
@@ -75,7 +75,10 @@ func main() {
     grpcServer := grpc.NewServer()
     // attach the Ping service to the server
     greeterv1.RegisterGreeterServiceServer(grpcServer, s)
+
     // start the server
+    println(config.GetBuildInfo())
+    log.Info().Msgf("Server (%s) started at: %s", serviceName, lis.Addr())
     if err := grpcServer.Serve(lis); err != nil {
         log.Fatal().Err(err).Send()
     }

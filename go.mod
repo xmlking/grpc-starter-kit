@@ -24,6 +24,7 @@ require (
 	github.com/stretchr/testify v1.6.1
 	github.com/thoas/go-funk v0.6.0
 	github.com/xmlking/configor v0.1.0
+	golang.org/x/sync v0.0.0-20190911185100-cd5d95a43a6e // indirect
 	google.golang.org/genproto v0.0.0-20200331122359-1ee6d9798940
 	google.golang.org/grpc v1.29.1
 )

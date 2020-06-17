@@ -15,7 +15,7 @@ import (
 	"time"
 	"unicode/utf8"
 
-	"github.com/golang/protobuf/ptypes"
+	"github.com/gogo/protobuf/types"
 )
 
 // ensure the imports are used
@@ -30,7 +30,7 @@ var (
 	_ = time.Duration(0)
 	_ = (*url.URL)(nil)
 	_ = (*mail.Address)(nil)
-	_ = ptypes.DynamicAny{}
+	_ = types.DynamicAny{}
 )
 
 // define the regex for a UUID once up-front

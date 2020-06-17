@@ -11,11 +11,11 @@ import (
     uuid "github.com/satori/go.uuid"
     "github.com/thoas/go-funk"
 
-    account_entities "github.com/xmlking/grpc-starter-kit/service/account/proto/entities"
-    userPB "github.com/xmlking/grpc-starter-kit/service/account/proto/user"
+    account_entities "github.com/xmlking/grpc-starter-kit/mkit/service/account/entities/v1"
+    "github.com/xmlking/grpc-starter-kit/mkit/service/account/user/v1"
+    "github.com/xmlking/grpc-starter-kit/mkit/service/emailer/v1"
+    "github.com/xmlking/grpc-starter-kit/mkit/service/greeter/v1"
     "github.com/xmlking/grpc-starter-kit/service/account/repository"
-    emailerPB "github.com/xmlking/grpc-starter-kit/service/emailer/proto/emailer"
-    greeterPB "github.com/xmlking/grpc-starter-kit/service/greeter/proto/greeter"
     myErrors "github.com/xmlking/grpc-starter-kit/shared/errors"
 )
 
@@ -23,11 +23,11 @@ import (
 type userHandler struct {
     userRepository   repository.UserRepository
     Event            micro.Event
-    greeterSrvClient greeterPB.GreeterService
+    greeterSrvClient greeterv1.GreeterServiceServer
 }
 
 // NewUserHandler returns an instance of `UserServiceHandler`.
-func NewUserHandler(repo repository.UserRepository, eve micro.Event, greeterClient greeterPB.GreeterService) userPB.UserServiceHandler {
+func NewUserHandler(repo repository.UserRepository, eve micro.Event, greeterClient greeterv1.GreeterServiceServer) userv1.UserServiceServer {
     return &userHandler{
         userRepository:   repo,
         Event:            eve,
@@ -35,7 +35,7 @@ func NewUserHandler(repo repository.UserRepository, eve micro.Event, greeterClie
     }
 }
 
-func (h *userHandler) Exist(ctx context.Context, req *userPB.ExistRequest, rsp *userPB.ExistResponse) error {
+func (h *userHandler) Exist(ctx context.Context, req *userv1.ExistRequest) (rsp *userv1.ExistResponse, err error) {
     log.Info().Msg("Received UserHandler.Exist request")
     model := account_entities.UserORM{}
     model.Id = uuid.FromStringOrNil(req.Id.GetValue())
@@ -45,11 +45,10 @@ func (h *userHandler) Exist(ctx context.Context, req *userPB.ExistRequest, rsp *
 
     exists := h.userRepository.Exist(&model)
     log.Info().Msgf("user exists? %t", exists)
-    rsp.Result = exists
-    return nil
+    return &userv1.ExistResponse{Result: exists}, nil
 }
 
-func (h *userHandler) List(ctx context.Context, req *userPB.ListRequest, rsp *userPB.ListResponse) error {
+func (h *userHandler) List(ctx context.Context, req *userv1.ListRequest) (rsp *userv1.ListResponse, err error) {
     log.Info().Msg("Received UserHandler.List request")
     model := account_entities.UserORM{}
     username := req.Username.GetValue()
@@ -60,9 +59,9 @@ func (h *userHandler) List(ctx context.Context, req *userPB.ListRequest, rsp *us
 
     total, users, err := h.userRepository.List(req.Limit.GetValue(), req.Page.GetValue(), req.Sort.GetValue(), &model)
     if err != nil {
-        return errors.NotFound("mkit.service.account.user.list", "Error %v", err.Error())
+        return nil, errors.NotFound("mkit.service.account.user.list", "Error %v", err.Error())
     }
-    rsp.Total = total
+    rsp = &userv1.ListResponse{Total : total}
 
     // newUsers := make([]*accountPB.User, len(users))
     // for index, user := range users {
@@ -76,32 +75,29 @@ func (h *userHandler) List(ctx context.Context, req *userPB.ListRequest, rsp *us
     }).([]*account_entities.User)
 
     rsp.Results = newUsers
-    return nil
+    return
 }
 
-func (h *userHandler) Get(ctx context.Context, req *userPB.GetRequest, rsp *userPB.GetResponse) error {
+func (h *userHandler) Get(ctx context.Context, req *userv1.GetRequest) (rsp *userv1.GetResponse, err error) {
     log.Info().Msg("Received UserHandler.Get request")
 
     id := req.Id.GetValue()
     if id == "" {
-        return myErrors.ValidationError("mkit.service.account.user.get", "validation error: Missing Id")
+        return nil, myErrors.ValidationError("mkit.service.account.user.get", "validation error: Missing Id")
     }
     user, err := h.userRepository.Get(id)
     if err != nil {
         if err == gorm.ErrRecordNotFound {
-            rsp.Result = nil
-            return nil
+            return &userv1.GetResponse{Result: nil}, nil
         }
-        return myErrors.AppError(myErrors.DBE, err)
+        return nil, myErrors.AppError(myErrors.DBE, err)
     }
 
     tempUser, _ := user.ToPB(ctx)
-    rsp.Result = &tempUser
-
-    return nil
+    return &userv1.GetResponse{Result: &tempUser}, nil
 }
 
-func (h *userHandler) Create(ctx context.Context, req *userPB.CreateRequest, rsp *userPB.CreateResponse) error {
+func (h *userHandler) Create(ctx context.Context, req *userv1.CreateRequest) (rsp *userv1.CreateResponse, err error) {
     log.Info().Msg("Received UserHandler.Create request")
 
     model := account_entities.UserORM{}
@@ -112,39 +108,39 @@ func (h *userHandler) Create(ctx context.Context, req *userPB.CreateRequest, rsp
     model.Email = req.Email.GetValue()
 
     if err := h.userRepository.Create(&model); err != nil {
-        return myErrors.AppError(myErrors.DBE, err)
+        return nil, myErrors.AppError(myErrors.DBE, err)
     }
 
     // send email (TODO: async `go h.Event.Publish(...)`)
-    if err := h.Event.Publish(ctx, &emailerPB.Message{To: req.Email.GetValue()}); err != nil {
+    if err := h.Event.Publish(ctx, &emailerv1.Message{To: req.Email.GetValue()}); err != nil {
         log.Error().Err(err).Msg("Received Event.Publish request error")
-        return myErrors.AppError(myErrors.PSE, err)
+        return nil, myErrors.AppError(myErrors.PSE, err)
     }
 
     // call greeter
     // if res, err := h.greeterSrvClient.Hello(ctx, &greeterPB.Request{Name: req.GetFirstName().GetValue()}); err != nil {
-    if res, err := h.greeterSrvClient.Hello(ctx, &greeterPB.HelloRequest{Name: req.GetFirstName().GetValue()}); err != nil {
+    if res, err := h.greeterSrvClient.Hello(ctx, &greeterv1.HelloRequest{Name: req.GetFirstName().GetValue()}); err != nil {
         log.Error().Err(err).Msg("Received greeterService.Hello request error")
-        return myErrors.AppError(myErrors.PSE, err)
+        return nil, myErrors.AppError(myErrors.PSE, err)
     } else {
         log.Info().Msgf("Got greeterService responce %s", res.Msg)
     }
 
-    return nil
+    return
 }
 
-func (h *userHandler) Update(ctx context.Context, req *userPB.UpdateRequest, rsp *userPB.UpdateResponse) error {
+func (h *userHandler) Update(ctx context.Context, req *userv1.UpdateRequest) (rsp *userv1.UpdateResponse, err error) {
     log.Info().Msg("Received UserHandler.Update request")
     // Identify the user
     acc, ok := auth.AccountFromContext(ctx)
     if !ok {
-        return errors.Unauthorized("mkit.service.account.user.update", "A valid auth token is required")
+        return nil, errors.Unauthorized("mkit.service.account.user.update", "A valid auth token is required")
     }
     log.Info().Msgf("Caller Account: %v", acc)
 
     id := req.Id.GetValue()
     if id == "" {
-        return myErrors.ValidationError("mkit.service.account.user.update", "validation error: Missing Id")
+        return nil, myErrors.ValidationError("mkit.service.account.user.update", "validation error: Missing Id")
     }
 
     model := account_entities.UserORM{}
@@ -155,26 +151,26 @@ func (h *userHandler) Update(ctx context.Context, req *userPB.UpdateRequest, rsp
     model.Email = req.Email.GetValue()
 
     if err := h.userRepository.Update(id, &model); err != nil {
-        return myErrors.AppError(myErrors.DBE, err)
+        return nil, myErrors.AppError(myErrors.DBE, err)
     }
 
-    return nil
+    return
 }
 
-func (h *userHandler) Delete(ctx context.Context, req *userPB.DeleteRequest, rsp *userPB.DeleteResponse) error {
+func (h *userHandler) Delete(ctx context.Context, req *userv1.DeleteRequest) (rsp *userv1.DeleteResponse, err error) {
     log.Info().Msg("Received UserHandler.Delete request")
 
     id := req.Id.GetValue()
     if id == "" {
-        return myErrors.ValidationError("mkit.service.account.user.update", "validation error: Missing Id")
+        return nil, myErrors.ValidationError("mkit.service.account.user.update", "validation error: Missing Id")
     }
 
     model := account_entities.UserORM{}
     model.Id = uuid.FromStringOrNil(id)
 
     if err := h.userRepository.Delete(&model); err != nil {
-        return myErrors.AppError(myErrors.DBE, err)
+        return nil, myErrors.AppError(myErrors.DBE, err)
     }
 
-    return nil
+    return
 }
