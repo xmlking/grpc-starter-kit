@@ -3,12 +3,11 @@ kind: Service
 metadata:
   name: service
 spec:
-  type: ClusterIP
+  clusterIP: None
   # We want the servers to become available even if they're not ready
   publishNotReadyAddresses: true
   ports:
-    - name: grpc-web
-      appProtocol: grpc-web
+    - name: grpc-port
       port: 8080
       protocol: TCP
       targetPort: grpc-port

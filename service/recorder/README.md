@@ -5,22 +5,31 @@ Transactions are published by other micro services i.e., `account`, `emailer`, `
 
 ## Usage
 
-Run the service
+### Build the binary
+
+```bash
+make build TARGET=recorder TYPE=service
+# then run with custom env
+CONFIGOR_ENV_PREFIX=APP APP_FEATURES_TLS_ENABLED=true ./build/recorder-service
+```
+
+### Run the service
 
 > (optional) set broker to googlepubsub
 
 ```bash
-export MICRO_BROKER=googlepubsub
-export GOOGLEPUBSUB_PROJECT_ID=<my-project-id>
-export GOOGLE_APPLICATION_CREDENTIALS=<path_to.json>
+make run-recorder
+# or
+go run service/recorder/main.go
 ```
+
+### Build a docker image
 
 ```bash
-make run-recorder
-make run-recorder ARGS="--server_address=:8083"
+make docker TARGET=recorder TYPE=service VERSION=v0.1.1
 ```
 
-Test the service
+### Test the service
 
 ```bash
 micro call mkit.service.recorder Transaction.Read  '{"key": "0edc8bb2-33e0-4766-bc13-e62a346465be#accountsrv"}'

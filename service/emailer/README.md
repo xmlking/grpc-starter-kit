@@ -10,13 +10,13 @@ Showcase
 
 A Makefile is included for convenience
 
-Build the binary
+### Build the binary
 
 ```bash
 make build TARGET=emailer TYPE=service VERSION=v0.1.1
 ```
 
-Run the service
+### Run the service
 
 ```bash
 make run-emailer
@@ -24,13 +24,13 @@ make run-emailer
 go run service/emailer/main.go
 ```
 
-Build a docker image
+### Build a docker image
 
 ```bash
 make docker TARGET=emailer TYPE=service VERSION=v0.1.1
 ```
 
-Test the service
+### Test the service
 
 ```bash
 curl -X POST \

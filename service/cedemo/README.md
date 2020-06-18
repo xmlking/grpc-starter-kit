@@ -8,15 +8,13 @@ Showcase
 
 ## Usage
 
-A Makefile is included for convenience
-
-Build the binary
+### Build the binary
 
 ```bash
 make build TARGET=cedemo TYPE=service VERSION=v0.1.1
 ```
 
-Run the service
+### Run the service
 
 ```bash
 make run-cedemo
@@ -24,13 +22,13 @@ make run-cedemo
 go run service/cedemo/main.go
 ```
 
-Build a docker image
+### Build a docker image
 
 ```bash
 make docker TARGET=cedemo TYPE=service VERSION=v0.1.1
 ```
 
-Test the service
+### Test the service
 
 ```bash
 curl -X POST \
