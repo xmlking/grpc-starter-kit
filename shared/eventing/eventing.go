@@ -1,8 +1,6 @@
 package eventing
 
 import (
-    "strings"
-
     cloudevents "github.com/cloudevents/sdk-go/v2"
 
     "github.com/rs/zerolog/log"
@@ -22,7 +20,6 @@ func NewSourceClient(target string) cloudevents.Client {
     // The default client is HTTP.
     // client, err := cloudevents.NewDefaultClient()
 
-    target = strings.Replace(target, "dns:///", "http://", 1) // FIXME ???
     p, err := cloudevents.NewHTTP(cloudevents.WithTarget(target))
     if err != nil {
         log.Fatal().Err(err).Msg("failed to create protocol")
@@ -54,7 +51,7 @@ func NewSinkClient(target string) cloudevents.Client {
         log.Fatal().Err(err).Msgf("failed to create listener for target: %v", target)
     }
 
-    p, err := cloudevents.NewHTTP(cloudevents.WithTarget(target), cloudevents.WithListener(lis))
+    p, err := cloudevents.NewHTTP(cloudevents.WithListener(lis))
     if err != nil {
         log.Fatal().Err(err).Msg("failed to create protocol")
     }

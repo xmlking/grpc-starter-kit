@@ -3,13 +3,17 @@ package registry
 import (
     "github.com/jinzhu/gorm"
     "github.com/sarulabs/di/v2"
+    "google.golang.org/grpc"
+    "google.golang.org/grpc/balancer/roundrobin"
 
     "github.com/rs/zerolog/log"
 
     account_entities "github.com/xmlking/grpc-starter-kit/mkit/service/account/entities/v1"
+    greeterv1 "github.com/xmlking/grpc-starter-kit/mkit/service/greeter/v1"
     "github.com/xmlking/grpc-starter-kit/service/account/handler"
     "github.com/xmlking/grpc-starter-kit/service/account/repository"
     "github.com/xmlking/grpc-starter-kit/shared/database"
+    "github.com/xmlking/grpc-starter-kit/shared/eventing"
     configPB "github.com/xmlking/grpc-starter-kit/shared/proto/config"
 )
 
@@ -43,6 +47,35 @@ func NewContainer(cfg configPB.Configuration) (*Container, error) {
             Name:  "profile-repository",
             Scope: di.App,
             Build: buildProfileRepository,
+        },
+        {
+            Name:  "email-publisher",
+            Scope: di.App,
+            Build: func(ctn di.Container) (interface{}, error) {
+                return eventing.NewSourceClient(cfg.Services.Emailer.Endpoint), nil
+            },
+        },
+        {
+            Name:  "greeter-connection",
+            Scope: di.App,
+            Build: func(ctn di.Container) (greeterConn interface{}, err error) {
+                greeterConn, err = grpc.Dial(cfg.Services.Greeter.Endpoint, grpc.WithInsecure(), grpc.WithBalancerName(roundrobin.Name))
+                if err != nil {
+                    log.Fatal().Msgf("did not connect: %s", err)
+                }
+                return
+            },
+            Close: func(obj interface{}) error {
+                return obj.(*grpc.ClientConn).Close()
+            },
+        },
+        {
+            Name:  "greeter-client",
+            Scope: di.App,
+            Build: func(ctn di.Container) (interface{}, error) {
+                greeterConn := ctn.Get("greeter-connection").(*grpc.ClientConn)
+                return greeterv1.NewGreeterServiceClient(greeterConn), nil
+            },
         },
         {
             Name:  "user-handler",

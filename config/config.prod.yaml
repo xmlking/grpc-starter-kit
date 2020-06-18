@@ -4,7 +4,7 @@ services:
   greeter:
     endpoint: dns:///greeter:8080
   emailer:
-    endpoint: dns:///emailer:8080
+    endpoint: http://emailer:8080
   recorder:
     endpoint: dns:///recorder:8080
 

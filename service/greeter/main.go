@@ -52,11 +52,10 @@ func main() {
     go grpcS.Serve(grpcL)
     go httpS.Serve(httpL)
 
-    // Start serving!
+    // Start server!
     println(config.GetBuildInfo())
     log.Info().Msgf("Server (%s) started at: %s", serviceName, lis.Addr())
     mux.Serve()
-
 }
 
 func main2() {

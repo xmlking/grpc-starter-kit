@@ -4,6 +4,7 @@ import (
     "crypto/tls"
     "fmt"
     "net"
+    "net/url"
     "os"
     "runtime"
     "strings"
@@ -12,7 +13,6 @@ import (
     "github.com/pkg/errors"
     "github.com/rs/zerolog/log"
     "github.com/xmlking/configor"
-    "google.golang.org/grpc/resolver"
 
     configPB "github.com/xmlking/grpc-starter-kit/shared/proto/config"
     uTLS "github.com/xmlking/grpc-starter-kit/shared/util/tls"
@@ -102,20 +102,18 @@ func IsSecure() bool {
 func GetListener(endpoint string) (lis net.Listener, err error) {
     configLock.RLock()
     defer configLock.RUnlock()
-
-    target := ParseTarget(endpoint)
+    var target Target
+    target, err = ParseTarget(endpoint)
+    if err != nil {
+        return
+    }
 
     switch target.Scheme {
     case "unix":
-        return net.Listen("unix", target.Endpoint)
-    case "tcp", "dns", "kubernetes":
-        var port string
-        if _, port, err = net.SplitHostPort(target.Endpoint); err == nil {
-            if port == "" {
-                port = "0"
-            }
-        } else {
-            return nil, errors.New(fmt.Sprintf("unable to parse host and port from endpoint: %s", endpoint))
+        return net.Listen("unix", target.Path)
+    case "tcp", "dns", "http", "https", "kubernetes":
+        if target.Port == "" {
+            target.Port = "0"
         }
 
         tlsConf := cfg.Features.Tls
@@ -123,40 +121,44 @@ func GetListener(endpoint string) (lis net.Listener, err error) {
             if tlsConfig, err := uTLS.GetTLSConfig(tlsConf.CertFile, tlsConf.KeyFile, tlsConf.CaFile, tlsConf.Servername); err != nil {
                 return nil, err
             } else {
-                return tls.Listen("tcp", fmt.Sprintf("0:%s", port), tlsConfig)
+                return tls.Listen("tcp", fmt.Sprintf("0:%s", target.Port), tlsConfig)
             }
         } else {
-            return net.Listen("tcp", fmt.Sprintf("0:%s", port))
+            return net.Listen("tcp", fmt.Sprintf("0:%s", target.Port))
         }
     default:
         return nil, errors.New(fmt.Sprintf("unknown scheme: %s in endpoint: %s", target.Scheme, endpoint))
     }
 }
 
-//*** Copied from https://github.com/grpc/grpc-go/blob/master/internal/grpcutil/target.go ***/
-// split2 returns the values from strings.SplitN(s, sep, 2).
-// If sep is not found, it returns ("", "", false) instead.
-func split2(s, sep string) (string, string, bool) {
-    spl := strings.SplitN(s, sep, 2)
-    if len(spl) < 2 {
-        return "", "", false
-    }
-    return spl[0], spl[1], true
+type Target struct {
+    Scheme string
+    Host   string
+    Port   string
+    Path   string
 }
 
-// ParseTarget splits target into a resolver.Target struct containing scheme,
-// authority and endpoint.
-//
-// If target is not a valid scheme://authority/endpoint, it returns {Endpoint: target}.
-func ParseTarget(target string) (ret resolver.Target) {
-    var ok bool
-    ret.Scheme, ret.Endpoint, ok = split2(target, "://")
-    if !ok {
-        return resolver.Target{Endpoint: target}
+// ParseTarget splits target into a Target struct containing scheme, host, port and path.
+// If target is not a valid scheme://host:port/path, it returns error.
+func ParseTarget(target string) (ret Target, err error) {
+    if strings.HasPrefix(target, "unix://") {
+        spl := strings.SplitN(target, "://", 2)
+        ret.Scheme = spl[0]
+        ret.Path = spl[1]
+        return
     }
-    ret.Authority, ret.Endpoint, ok = split2(ret.Endpoint, "/")
-    if !ok {
-        return resolver.Target{Endpoint: target}
+    target = strings.Replace(target, ":///", "://", 1)
+    var u *url.URL
+    if u, err = url.Parse(target); err == nil {
+        ret.Scheme = u.Scheme
+        ret.Path = u.Path
+        if u.Host != "" {
+            var portError error
+            if ret.Host, ret.Port, portError = net.SplitHostPort(u.Host); portError != nil {
+                log.Debug().Err(portError)
+                ret.Host = u.Host
+            }
+        }
     }
-    return ret
+    return
 }

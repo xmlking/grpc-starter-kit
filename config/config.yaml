@@ -25,7 +25,7 @@ services:
 #    endpoint: unix:///tmp/greeter.sock
     version: v0.1.0
   emailer:
-    endpoint: dns:///emailer.test:8082
+    endpoint: http://emailer.test:8082
     version: v0.1.0
   recorder:
     endpoint: dns:///recorder.test:8083

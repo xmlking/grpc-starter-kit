@@ -1,13 +1,11 @@
 package config_test
 
 import (
-	"fmt"
-	"testing"
-	"time"
+    "fmt"
+    "testing"
+    "time"
 
-	"google.golang.org/grpc/resolver"
-
-	"github.com/xmlking/grpc-starter-kit/shared/config"
+    "github.com/xmlking/grpc-starter-kit/shared/config"
 )
 
 // CONFIGOR_DEBUG_MODE=true go test -v ./shared/config/... -count=1
@@ -52,39 +50,20 @@ func ExampleGetConfig_check_defaults() {
 func TestParseTargetString(t *testing.T) {
 	for _, test := range []struct {
 		targetStr string
-		want      resolver.Target
+		want   config.Target
 	}{
-		{targetStr: "", want: resolver.Target{Scheme: "", Authority: "", Endpoint: ""}},
-		{targetStr: ":///", want: resolver.Target{Scheme: "", Authority: "", Endpoint: ""}},
-		{targetStr: "a:///", want: resolver.Target{Scheme: "a", Authority: "", Endpoint: ""}},
-		{targetStr: "://a/", want: resolver.Target{Scheme: "", Authority: "a", Endpoint: ""}},
-		{targetStr: ":///a", want: resolver.Target{Scheme: "", Authority: "", Endpoint: "a"}},
-		{targetStr: "a://b/", want: resolver.Target{Scheme: "a", Authority: "b", Endpoint: ""}},
-		{targetStr: "a:///b", want: resolver.Target{Scheme: "a", Authority: "", Endpoint: "b"}},
-		{targetStr: "://a/b", want: resolver.Target{Scheme: "", Authority: "a", Endpoint: "b"}},
-		{targetStr: "a://b/c", want: resolver.Target{Scheme: "a", Authority: "b", Endpoint: "c"}},
-		{targetStr: "dns:///google.com", want: resolver.Target{Scheme: "dns", Authority: "", Endpoint: "google.com"}},
-		{targetStr: "dns:///google.com:8080", want: resolver.Target{Scheme: "dns", Authority: "", Endpoint: "google.com:8080"}},
-		{targetStr: "dns://a.server.com/google.com", want: resolver.Target{Scheme: "dns", Authority: "a.server.com", Endpoint: "google.com"}},
-		{targetStr: "dns://a.server.com/google.com/?a=b", want: resolver.Target{Scheme: "dns", Authority: "a.server.com", Endpoint: "google.com/?a=b"}},
-        {targetStr: "https://www.server.com:9999", want: resolver.Target{Scheme: "", Authority: "", Endpoint: "https://www.server.com:9999"}},
-
-		{targetStr: "/", want: resolver.Target{Scheme: "", Authority: "", Endpoint: "/"}},
-		{targetStr: "google.com", want: resolver.Target{Scheme: "", Authority: "", Endpoint: "google.com"}},
-		{targetStr: "google.com/?a=b", want: resolver.Target{Scheme: "", Authority: "", Endpoint: "google.com/?a=b"}},
-		{targetStr: "/unix/socket/address", want: resolver.Target{Scheme: "", Authority: "", Endpoint: "/unix/socket/address"}},
-		{targetStr: "unix:///tmp/mysrv.sock", want: resolver.Target{Scheme: "unix", Authority: "", Endpoint: "tmp/mysrv.sock"}},
-
-		// If we can only parse part of the target.
-		{targetStr: "://", want: resolver.Target{Scheme: "", Authority: "", Endpoint: "://"}},
-		{targetStr: "unix://domain", want: resolver.Target{Scheme: "", Authority: "", Endpoint: "unix://domain"}},
-		{targetStr: "a:b", want: resolver.Target{Scheme: "", Authority: "", Endpoint: "a:b"}},
-		{targetStr: "a/b", want: resolver.Target{Scheme: "", Authority: "", Endpoint: "a/b"}},
-		{targetStr: "a:/b", want: resolver.Target{Scheme: "", Authority: "", Endpoint: "a:/b"}},
-		{targetStr: "a//b", want: resolver.Target{Scheme: "", Authority: "", Endpoint: "a//b"}},
-		{targetStr: "a://b", want: resolver.Target{Scheme: "", Authority: "", Endpoint: "a://b"}},
+		{targetStr: "", want: config.Target{Scheme: "", Host: "", Port: "", Path: ""}},
+		{targetStr: "dns:///google.com:8080", want: config.Target{Scheme: "dns", Host: "google.com", Port: "8080", Path: ""}},
+		{targetStr: "dns:///google.com", want: config.Target{Scheme: "dns", Host: "google.com", Port: "", Path: ""}},
+		{targetStr: "dns:///google.com/?a=b", want: config.Target{Scheme: "dns", Host: "google.com", Port: "", Path: "/"}},
+        {targetStr: "https://www.server.com:9999", want: config.Target{Scheme: "https", Host: "www.server.com", Port: "9999", Path: ""}},
+		{targetStr: "/unix/socket/address", want: config.Target{Scheme: "", Host: "", Port: "", Path: "/unix/socket/address"}},
+		{targetStr: "unix:///tmp/mysrv.sock", want: config.Target{Scheme: "unix", Host: "", Port: "", Path: "/tmp/mysrv.sock"}},
 	} {
-		got := config.ParseTarget(test.targetStr)
+		got, err := config.ParseTarget(test.targetStr)
+		if err != nil {
+            t.Error(err)
+        }
 		if got != test.want {
 			t.Errorf("ParseTarget(%q) = %+v, want %+v", test.targetStr, got, test.want)
 		}
