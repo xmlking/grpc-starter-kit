@@ -11,29 +11,29 @@ import "google/protobuf/empty.proto";
 import "validate/validate.proto";
 
 service TransactionService {
-    rpc Read (ReadRequest) returns (ReadResponse);
-    rpc Write (WriteRequest) returns (google.protobuf.Empty);
+  rpc Read(ReadRequest) returns (ReadResponse);
+  rpc Write(WriteRequest) returns (google.protobuf.Empty);
 }
 
 message ReadRequest {
-    string key = 1;
+  string key = 1;
 }
 
 message ReadResponse {
-    option (validate.disabled) = true;
-    string key = 1;
-    TransactionEvent event = 2;
+  option (validate.disabled) = true;
+  string key = 1;
+  TransactionEvent event = 2;
 }
 
 message WriteRequest {
-    string key = 1;
-    TransactionEvent event = 2;
+  string key = 1;
+  TransactionEvent event = 2;
 }
 
 // Transaction Event
 message TransactionEvent {
-    // request
-    bytes req = 1;
-    // responce
-    bytes rsp = 2;
+  // request
+  bytes req = 1;
+  // responce
+  bytes rsp = 2;
 }
