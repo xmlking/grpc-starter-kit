@@ -41,9 +41,9 @@ BUILD_FLAGS = $(shell govvv -flags -version $(VERSION) -pkg $(VERSION_PACKAGE))
 # $(warning VERSION = $(VERSION), HAS_GOVVV = $(HAS_GOVVV), HAS_KO = $(HAS_KO))
 # $(warning VERSION_PACKAGE = $(VERSION_PACKAGE), BUILD_FLAGS = $(BUILD_FLAGS))
 
-.PHONY: all tools, check_dirty, clean, update_deps
-.PHONY: proto proto-% proto_lint proto_format
-.PHONY: lint lint-%, gomod_lint
+.PHONY: all tools check_dirty clean update_dep
+.PHONY: proto proto_lint proto_breaking proto_format proto_gen proto_shared
+.PHONY: lint lint-% gomod_lint
 .PHONY: format format-%
 .PHONY: pkger pkger-%
 .PHONY: build build-%
@@ -82,44 +82,16 @@ update_deps:
 	go mod verify
 	go mod tidy
 
-# FIXME: protoc-gen-gorm is dumb. it creates github.com dir
-
-proto proto-%:
-	@if [ -z $(TARGET) ]; then \
-		for d in $(TYPES); do \
-			for f in $$d/**/proto/**/*.proto; do \
-				protoc --proto_path=.:${GOPATH}/src \
-				--go_out=plugins=grpc,paths=source_relative:. \
-				--gorm_out=engine=postgres,enums=string,paths=source_relative:. \
-				--validate_out=lang=go,paths=source_relative:. $$f; \
-				echo ✓ compiled: $$f; \
-			done \
-		done \
-	else \
-		for f in ${TYPE}/${TARGET}/proto/**/*.proto; do \
-			protoc --proto_path=.:${GOPATH}/src \
-			--go_out=plugins=grpc,paths=source_relative:. \
-			--gorm_out=engine=postgres,enums=string,paths=source_relative:. \
-			--validate_out=lang=go,paths=source_relative:. $$f; \
-			echo ✓ compiled: $$f; \
-		done \
-	fi
-	@rsync -a github.com/xmlking/grpc-starter-kit/service/account/proto/ service/account/proto && rm -Rf github.com
-
-proto_shared:
-	@for f in ./shared/proto/**/*.proto; do \
-		protoc --proto_path=.:${GOPATH}/src \
-		--gofast_out=plugins=grpc,paths=source_relative:. \
-		--validate_out=lang=gogo,paths=source_relative:. $$f; \
-		echo ✓ compiled: $$f; \
-	done
-
 proto_clean:
 	@echo "Deleting generated Go files....";
-	@for g in ./mkit/**/*.pb.*; do \
-  		echo Deleting $$f; \
-  		rmxdd -f $$f; \
-  	done
+	@for f in ./mkit/**/**/**/**/*.pb.*; do \
+		echo ✓ deleting: $$f; \
+		rm -f $$f; \
+	done
+	@for f in ./mkit/**/**/**/*.pb.*; do \
+		echo ✓ deleting: $$f; \
+		rm -f $$f; \
+	done
 
 proto_lint:
 	@echo "Linting protos";
@@ -136,10 +108,18 @@ proto_format: proto_lint
 	@${GOPATH}/bin/prototool format -w proto;
 	@echo "✓ Proto: Formatted"
 
-proto_check: proto_lint proto_breaking proto_format
-
 proto_gen:
 	@${GOPATH}/bin/prototool generate proto;
+
+proto: proto_lint proto_breaking proto_format proto_gen
+
+proto_shared:
+	@for f in ./shared/proto/**/*.proto; do \
+		protoc --proto_path=.:${GOPATH}/src \
+		--gofast_out=plugins=grpc,paths=source_relative:. \
+		--validate_out=lang=gogo,paths=source_relative:. $$f; \
+		echo ✓ compiled: $$f; \
+	done
 
 gomod_lint:
 	@goup -v -m ./...
