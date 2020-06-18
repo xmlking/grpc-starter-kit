@@ -1,14 +1,17 @@
 package eventing
 
 import (
+    "strings"
+
     cloudevents "github.com/cloudevents/sdk-go/v2"
 
     "github.com/rs/zerolog/log"
 
+    "github.com/xmlking/grpc-starter-kit/shared/config"
     _ "github.com/xmlking/grpc-starter-kit/shared/constants"
 )
 
-func NewSourceClient() cloudevents.Client {
+func NewSourceClient(target string) cloudevents.Client {
     //cfg := config.GetConfig()
     //transport, err := cepubsub.New(context.Background(),
     //    cepubsub.WithProjectID(cfg.gcp.ProjectID),
@@ -17,14 +20,22 @@ func NewSourceClient() cloudevents.Client {
     //client, err := cloudevents.NewClient(transport, cloudevents.WithTimeNow(), cloudevents.WithUUIDs())
 
     // The default client is HTTP.
-    client, err := cloudevents.NewDefaultClient()
+    // client, err := cloudevents.NewDefaultClient()
+
+    target = strings.Replace(target, "dns:///", "http://", 1) // FIXME ???
+    p, err := cloudevents.NewHTTP(cloudevents.WithTarget(target))
+    if err != nil {
+        log.Fatal().Err(err).Msg("failed to create protocol")
+    }
+
+    client, err := cloudevents.NewClient(p, cloudevents.WithTimeNow(), cloudevents.WithUUIDs())
     if err != nil {
         log.Fatal().Err(err).Msgf("failed to create client")
     }
     return client
 }
 
-func NewSinkClient() cloudevents.Client {
+func NewSinkClient(target string) cloudevents.Client {
     //cfg := config.GetConfig()
     //transport, err := cepubsub.New(context.Background(),
     //    cepubsub.WithProjectID(cfg.gcp.ProjectID),
@@ -36,7 +47,19 @@ func NewSinkClient() cloudevents.Client {
     //client, err := cloudevents.NewClient(transport, cloudevents.WithTimeNow(), cloudevents.WithUUIDs())
 
     // The default client is HTTP.
-    client, err := cloudevents.NewDefaultClient()
+    //client, err := cloudevents.NewDefaultClient()
+
+    lis, err := config.GetListener(target)
+    if err != nil {
+        log.Fatal().Err(err).Msgf("failed to create listener for target: %v", target)
+    }
+
+    p, err := cloudevents.NewHTTP(cloudevents.WithTarget(target), cloudevents.WithListener(lis))
+    if err != nil {
+        log.Fatal().Err(err).Msg("failed to create protocol")
+    }
+
+    client, err := cloudevents.NewClient(p)
     if err != nil {
         log.Fatal().Err(err).Msgf("failed to create client")
     }

@@ -15,7 +15,7 @@ import (
 	"time"
 	"unicode/utf8"
 
-	"github.com/gogo/protobuf/types"
+	"github.com/golang/protobuf/ptypes"
 )
 
 // ensure the imports are used
@@ -30,7 +30,7 @@ var (
 	_ = time.Duration(0)
 	_ = (*url.URL)(nil)
 	_ = (*mail.Address)(nil)
-	_ = types.DynamicAny{}
+	_ = ptypes.DynamicAny{}
 )
 
 // define the regex for a UUID once up-front
@@ -215,17 +215,12 @@ func (m *DatabaseConfiguration) Validate() error {
 
 	// no validation rules for MaxIdleConns
 
-	{
-		tmp := m.GetConnMaxLifetime()
-
-		if v, ok := interface{}(tmp).(interface{ Validate() error }); ok {
-
-			if err := v.Validate(); err != nil {
-				return DatabaseConfigurationValidationError{
-					field:  "ConnMaxLifetime",
-					reason: "embedded message failed validation",
-					cause:  err,
-				}
+	if v, ok := interface{}(m.GetConnMaxLifetime()).(interface{ Validate() error }); ok {
+		if err := v.Validate(); err != nil {
+			return DatabaseConfigurationValidationError{
+				field:  "ConnMaxLifetime",
+				reason: "embedded message failed validation",
+				cause:  err,
 			}
 		}
 	}
@@ -296,92 +291,62 @@ func (m *Features) Validate() error {
 		return nil
 	}
 
-	{
-		tmp := m.GetMetrics()
-
-		if v, ok := interface{}(tmp).(interface{ Validate() error }); ok {
-
-			if err := v.Validate(); err != nil {
-				return FeaturesValidationError{
-					field:  "Metrics",
-					reason: "embedded message failed validation",
-					cause:  err,
-				}
+	if v, ok := interface{}(m.GetMetrics()).(interface{ Validate() error }); ok {
+		if err := v.Validate(); err != nil {
+			return FeaturesValidationError{
+				field:  "Metrics",
+				reason: "embedded message failed validation",
+				cause:  err,
 			}
 		}
 	}
 
-	{
-		tmp := m.GetTracing()
-
-		if v, ok := interface{}(tmp).(interface{ Validate() error }); ok {
-
-			if err := v.Validate(); err != nil {
-				return FeaturesValidationError{
-					field:  "Tracing",
-					reason: "embedded message failed validation",
-					cause:  err,
-				}
+	if v, ok := interface{}(m.GetTracing()).(interface{ Validate() error }); ok {
+		if err := v.Validate(); err != nil {
+			return FeaturesValidationError{
+				field:  "Tracing",
+				reason: "embedded message failed validation",
+				cause:  err,
 			}
 		}
 	}
 
-	{
-		tmp := m.GetTls()
-
-		if v, ok := interface{}(tmp).(interface{ Validate() error }); ok {
-
-			if err := v.Validate(); err != nil {
-				return FeaturesValidationError{
-					field:  "Tls",
-					reason: "embedded message failed validation",
-					cause:  err,
-				}
+	if v, ok := interface{}(m.GetTls()).(interface{ Validate() error }); ok {
+		if err := v.Validate(); err != nil {
+			return FeaturesValidationError{
+				field:  "Tls",
+				reason: "embedded message failed validation",
+				cause:  err,
 			}
 		}
 	}
 
-	{
-		tmp := m.GetValidator()
-
-		if v, ok := interface{}(tmp).(interface{ Validate() error }); ok {
-
-			if err := v.Validate(); err != nil {
-				return FeaturesValidationError{
-					field:  "Validator",
-					reason: "embedded message failed validation",
-					cause:  err,
-				}
+	if v, ok := interface{}(m.GetValidator()).(interface{ Validate() error }); ok {
+		if err := v.Validate(); err != nil {
+			return FeaturesValidationError{
+				field:  "Validator",
+				reason: "embedded message failed validation",
+				cause:  err,
 			}
 		}
 	}
 
-	{
-		tmp := m.GetReqlogs()
-
-		if v, ok := interface{}(tmp).(interface{ Validate() error }); ok {
-
-			if err := v.Validate(); err != nil {
-				return FeaturesValidationError{
-					field:  "Reqlogs",
-					reason: "embedded message failed validation",
-					cause:  err,
-				}
+	if v, ok := interface{}(m.GetReqlogs()).(interface{ Validate() error }); ok {
+		if err := v.Validate(); err != nil {
+			return FeaturesValidationError{
+				field:  "Reqlogs",
+				reason: "embedded message failed validation",
+				cause:  err,
 			}
 		}
 	}
 
-	{
-		tmp := m.GetTranslogs()
-
-		if v, ok := interface{}(tmp).(interface{ Validate() error }); ok {
-
-			if err := v.Validate(); err != nil {
-				return FeaturesValidationError{
-					field:  "Translogs",
-					reason: "embedded message failed validation",
-					cause:  err,
-				}
+	if v, ok := interface{}(m.GetTranslogs()).(interface{ Validate() error }); ok {
+		if err := v.Validate(); err != nil {
+			return FeaturesValidationError{
+				field:  "Translogs",
+				reason: "embedded message failed validation",
+				cause:  err,
 			}
 		}
 	}
@@ -450,62 +415,42 @@ func (m *Services) Validate() error {
 		return nil
 	}
 
-	{
-		tmp := m.GetAccount()
-
-		if v, ok := interface{}(tmp).(interface{ Validate() error }); ok {
-
-			if err := v.Validate(); err != nil {
-				return ServicesValidationError{
-					field:  "Account",
-					reason: "embedded message failed validation",
-					cause:  err,
-				}
+	if v, ok := interface{}(m.GetAccount()).(interface{ Validate() error }); ok {
+		if err := v.Validate(); err != nil {
+			return ServicesValidationError{
+				field:  "Account",
+				reason: "embedded message failed validation",
+				cause:  err,
 			}
 		}
 	}
 
-	{
-		tmp := m.GetGreeter()
-
-		if v, ok := interface{}(tmp).(interface{ Validate() error }); ok {
-
-			if err := v.Validate(); err != nil {
-				return ServicesValidationError{
-					field:  "Greeter",
-					reason: "embedded message failed validation",
-					cause:  err,
-				}
+	if v, ok := interface{}(m.GetGreeter()).(interface{ Validate() error }); ok {
+		if err := v.Validate(); err != nil {
+			return ServicesValidationError{
+				field:  "Greeter",
+				reason: "embedded message failed validation",
+				cause:  err,
 			}
 		}
 	}
 
-	{
-		tmp := m.GetEmailer()
-
-		if v, ok := interface{}(tmp).(interface{ Validate() error }); ok {
-
-			if err := v.Validate(); err != nil {
-				return ServicesValidationError{
-					field:  "Emailer",
-					reason: "embedded message failed validation",
-					cause:  err,
-				}
+	if v, ok := interface{}(m.GetEmailer()).(interface{ Validate() error }); ok {
+		if err := v.Validate(); err != nil {
+			return ServicesValidationError{
+				field:  "Emailer",
+				reason: "embedded message failed validation",
+				cause:  err,
 			}
 		}
 	}
 
-	{
-		tmp := m.GetRecorder()
-
-		if v, ok := interface{}(tmp).(interface{ Validate() error }); ok {
-
-			if err := v.Validate(); err != nil {
-				return ServicesValidationError{
-					field:  "Recorder",
-					reason: "embedded message failed validation",
-					cause:  err,
-				}
+	if v, ok := interface{}(m.GetRecorder()).(interface{ Validate() error }); ok {
+		if err := v.Validate(); err != nil {
+			return ServicesValidationError{
+				field:  "Recorder",
+				reason: "embedded message failed validation",
+				cause:  err,
 			}
 		}
 	}

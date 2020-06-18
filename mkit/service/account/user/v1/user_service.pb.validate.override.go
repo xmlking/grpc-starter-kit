@@ -1,4 +1,4 @@
-package profile
+package userv1
 
 import (
     "errors"
@@ -12,26 +12,8 @@ import (
 **/
 // PATCH for FIXME: https://github.com/envoyproxy/protoc-gen-validate/issues/223
 
-func (m *GetRequest) _validateEmail(addr string) error {
-    return _validateEmail(addr)
-}
-func (m *GetRequest) _validateHostname(host string) error {
-    return _validateHostname(host)
-}
-
-func (m *CreateRequest) _validateEmail(addr string) error {
-    return _validateEmail(addr)
-}
-func (m *CreateRequest) _validateHostname(host string) error {
-    return _validateHostname(host)
-}
-
-func (m *ListRequest) _validateUuid(uuid string) error {
-    return _validateUuid(uuid)
-}
-
 func _validateUuid(uuid string) error {
-    if matched := _profile_service_uuidPattern.MatchString(uuid); !matched {
+    if matched := _user_service_uuidPattern.MatchString(uuid); !matched {
         return errors.New("invalid uuid format")
     }
 

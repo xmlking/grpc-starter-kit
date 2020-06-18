@@ -23,8 +23,6 @@ func TestGreeter_Hello_E2E(t *testing.T) {
     serviceName := constants.GREETER_SERVICE
     cfg := config.GetConfig()
 
-    var conn *grpc.ClientConn
-
     conn, err := grpc.Dial(cfg.Services.Greeter.Endpoint, grpc.WithInsecure(), grpc.WithBalancerName(roundrobin.Name))
     if err != nil {
         log.Fatal().Msgf("did not connect: %s", err)

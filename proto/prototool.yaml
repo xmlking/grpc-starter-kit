@@ -39,20 +39,20 @@ generate:
 #      google/api/annotations.proto: github.com/gogo/googleapis/google/api
 
   plugins:
-#    - name: go
-#      flags: plugins=grpc
-#      output: ../
-#      type: go
-    - name: gofast
+    - name: go
       flags: plugins=grpc
       output: ../
-      type: gogo
+      type: go
+#    - name: gogofast
+#      flags: plugins=grpc
+#      output: ../
+#      type: gogo
     - name: validate
-      flags: lang=gogo
+      flags: lang=go
       output: ../
-      type: gogo
+      type: go
     - name: gorm
       flags: engine=postgres,enums=string
       output: ../
-      type: gogo
+      type: go
 

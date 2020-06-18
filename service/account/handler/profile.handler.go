@@ -4,18 +4,16 @@ import (
     "context"
     "time"
 
-    // "github.com/golang/protobuf/ptypes"
-
     "github.com/jinzhu/gorm"
     "github.com/thoas/go-funk"
 
+    // ptypes1 "github.com/gogo/protobuf/types"
     ptypes1 "github.com/golang/protobuf/ptypes"
     "github.com/rs/zerolog"
     uuid "github.com/satori/go.uuid"
 
     account_entities "github.com/xmlking/grpc-starter-kit/mkit/service/account/entities/v1"
-      "github.com/xmlking/grpc-starter-kit/mkit/service/account/profile/v1"
-    profilePB "github.com/xmlking/grpc-starter-kit/service/account/proto/profile"
+    "github.com/xmlking/grpc-starter-kit/mkit/service/account/profile/v1"
     "github.com/xmlking/grpc-starter-kit/service/account/repository"
     myErrors "github.com/xmlking/grpc-starter-kit/shared/errors"
 )
@@ -34,7 +32,7 @@ func NewProfileHandler(repo repository.ProfileRepository, logger zerolog.Logger)
     }
 }
 
-func (ph *profileHandler) List(ctx context.Context, req *profilev1.ListRequest, ) (rsp *profilev1.ListResponse, err error) {
+func (ph *profileHandler) List(ctx context.Context, req *profilev1.ListRequest) (rsp *profilev1.ListResponse, err error) {
     ph.contextLogger.Debug().Msg("Received ProfileHandler.List request")
     preferredTheme := req.PreferredTheme.GetValue()
     model := account_entities.ProfileORM{

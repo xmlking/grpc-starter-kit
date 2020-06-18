@@ -15,7 +15,7 @@ import (
 	"time"
 	"unicode/utf8"
 
-	"github.com/gogo/protobuf/types"
+	"github.com/golang/protobuf/ptypes"
 
 	v1 "github.com/xmlking/grpc-starter-kit/mkit/service/account/entities/v1"
 )
@@ -32,7 +32,7 @@ var (
 	_ = time.Duration(0)
 	_ = (*url.URL)(nil)
 	_ = (*mail.Address)(nil)
-	_ = types.DynamicAny{}
+	_ = ptypes.DynamicAny{}
 
 	_ = v1.Profile_GenderType(0)
 
@@ -72,17 +72,12 @@ func (m *ListRequest) Validate() error {
 
 	}
 
-	{
-		tmp := m.GetSort()
-
-		if v, ok := interface{}(tmp).(interface{ Validate() error }); ok {
-
-			if err := v.Validate(); err != nil {
-				return ListRequestValidationError{
-					field:  "Sort",
-					reason: "embedded message failed validation",
-					cause:  err,
-				}
+	if v, ok := interface{}(m.GetSort()).(interface{ Validate() error }); ok {
+		if err := v.Validate(); err != nil {
+			return ListRequestValidationError{
+				field:  "Sort",
+				reason: "embedded message failed validation",
+				cause:  err,
 			}
 		}
 	}
@@ -417,17 +412,12 @@ func (m *CreateRequest) Validate() error {
 
 	}
 
-	{
-		tmp := m.GetTz()
-
-		if v, ok := interface{}(tmp).(interface{ Validate() error }); ok {
-
-			if err := v.Validate(); err != nil {
-				return CreateRequestValidationError{
-					field:  "Tz",
-					reason: "embedded message failed validation",
-					cause:  err,
-				}
+	if v, ok := interface{}(m.GetTz()).(interface{ Validate() error }); ok {
+		if err := v.Validate(); err != nil {
+			return CreateRequestValidationError{
+				field:  "Tz",
+				reason: "embedded message failed validation",
+				cause:  err,
 			}
 		}
 	}
@@ -452,7 +442,7 @@ func (m *CreateRequest) Validate() error {
 	}
 
 	if t := m.GetBirthday(); t != nil {
-		ts, err := types.TimestampFromProto(t)
+		ts, err := ptypes.Timestamp(t)
 		if err != nil {
 			return CreateRequestValidationError{
 				field:  "Birthday",

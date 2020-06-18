@@ -67,6 +67,7 @@ func TestParseTargetString(t *testing.T) {
 		{targetStr: "dns:///google.com:8080", want: resolver.Target{Scheme: "dns", Authority: "", Endpoint: "google.com:8080"}},
 		{targetStr: "dns://a.server.com/google.com", want: resolver.Target{Scheme: "dns", Authority: "a.server.com", Endpoint: "google.com"}},
 		{targetStr: "dns://a.server.com/google.com/?a=b", want: resolver.Target{Scheme: "dns", Authority: "a.server.com", Endpoint: "google.com/?a=b"}},
+        {targetStr: "https://www.server.com:9999", want: resolver.Target{Scheme: "", Authority: "", Endpoint: "https://www.server.com:9999"}},
 
 		{targetStr: "/", want: resolver.Target{Scheme: "", Authority: "", Endpoint: "/"}},
 		{targetStr: "google.com", want: resolver.Target{Scheme: "", Authority: "", Endpoint: "google.com"}},

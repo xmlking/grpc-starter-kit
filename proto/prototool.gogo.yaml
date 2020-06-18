@@ -1,0 +1,58 @@
+# keep this file at proto/prototool.yaml
+
+# Paths to exclude when searching for Protobuf files.
+excludes:
+  - e2e
+  - build
+  - dist
+  - node_modules
+
+# Protoc directives.
+protoc:
+  version: 3.11.4
+  includes:
+    - ../third_party/proto
+
+# Create directives.
+create:
+  packages:
+    # This means that a file created "sumo.proto" in the `proto/mkit/service/sumo/v1` directory will have package "mkit.service.sumo.v1".
+    - directory: proto/mkit
+      name: mkit
+
+# Code generation directives.
+generate:
+  go_options:
+    import_path: github.com/xmlking/grpc-starter-kit/proto
+    extra_modifiers:
+#      google/api/annotations.proto: google.golang.org/genproto/googleapis/api/annotations
+      google/api/http.proto: google.golang.org/genproto/googleapis/api/annotations
+
+      google/protobuf/any.proto: github.com/gogo/protobuf/types
+      google/protobuf/empty.proto: github.com/gogo/protobuf/types
+      google/protobuf/duration.proto: github.com/gogo/protobuf/types
+      google/protobuf/field_mask.proto: github.com/gogo/protobuf/types
+      google/protobuf/struct.proto: github.com/gogo/protobuf/types
+      google/protobuf/timestamp.proto: github.com/gogo/protobuf/types
+      google/protobuf/wrappers.proto: github.com/gogo/protobuf/types
+      gogoproto/gogo.proto: github.com/gogo/protobuf/gogoproto
+      google/api/annotations.proto: github.com/gogo/googleapis/google/api
+
+  plugins:
+#    - name: go
+#      flags: plugins=grpc
+#      output: ../
+#      type: go
+    - name: gogofast
+      flags: plugins=grpc
+      output: ../
+      type: gogo
+    - name: validate
+      flags: lang=gogo
+      output: ../
+      type: gogo
+    - name: gorm
+      flags: engine=postgres,enums=string
+      output: ../
+      type: gogo
+

@@ -147,8 +147,7 @@ func split2(s, sep string) (string, string, bool) {
 // ParseTarget splits target into a resolver.Target struct containing scheme,
 // authority and endpoint.
 //
-// If target is not a valid scheme://authority/endpoint, it returns {Endpoint:
-// target}.
+// If target is not a valid scheme://authority/endpoint, it returns {Endpoint: target}.
 func ParseTarget(target string) (ret resolver.Target) {
     var ok bool
     ret.Scheme, ret.Endpoint, ok = split2(target, "://")

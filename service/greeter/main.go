@@ -63,7 +63,6 @@ func main2() {
     serviceName := constants.GREETER_SERVICE
     cfg := config.GetConfig()
 
-    println(serviceName)
     lis, err := config.GetListener(cfg.Services.Greeter.Endpoint)
     if err != nil {
         log.Fatal().Msgf("failed to create listener: %v", err)

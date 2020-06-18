@@ -40,5 +40,5 @@ curl -X POST \
     -H "ce-type: curl.demo"  \
     -H "ce-id: 123-abc"  \
     -d '{"Subject": "Sumo", "To": "sumo@demo.com"}' \
-    http://localhost:8080
+    http://localhost:8082
 ```

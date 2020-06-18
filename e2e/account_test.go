@@ -2,55 +2,58 @@
 package e2e
 
 import (
-	"context"
-	"testing"
+    "context"
+    "testing"
 
-	"github.com/golang/protobuf/ptypes/wrappers"
-	"github.com/micro/go-micro/v2/client"
-	"github.com/stretchr/testify/assert"
-	"github.com/stretchr/testify/require"
-	"github.com/stretchr/testify/suite"
+    "github.com/golang/protobuf/ptypes/wrappers"
+    "github.com/rs/zerolog/log"
+    "github.com/stretchr/testify/assert"
+    "github.com/stretchr/testify/require"
+    "github.com/stretchr/testify/suite"
+    "google.golang.org/grpc"
+    "google.golang.org/grpc/balancer/roundrobin"
 
-	// "github.com/xmlking/grpc-starter-kit/shared/micro/client/selector/static"
-	profilePB "github.com/xmlking/grpc-starter-kit/service/account/proto/profile"
-	userPB "github.com/xmlking/grpc-starter-kit/service/account/proto/user"
+    "github.com/xmlking/grpc-starter-kit/mkit/service/account/profile/v1"
+    "github.com/xmlking/grpc-starter-kit/mkit/service/account/user/v1"
+    "github.com/xmlking/grpc-starter-kit/shared/config"
 )
-
-/**
-* set envelopment variables for CI e2e tests with `memory` registry.
-* - export MICRO_REGISTRY=memory
-* - export MICRO_SELECTOR=static
-* (Or) Set envelopment variables for CI e2e tests via gRPC Proxy
-* - MICRO_PROXY_ADDRESS="localhost:8081"
-* You can also run this test againest your local running service with mDNS. i.e., `make run-account`
-**/
 
 // Define the suite, and absorb the built-in basic suite
 // functionality from testify - including a T() method which
 // returns the current testing context
 type AccountTestSuite struct {
 	suite.Suite
-	user    userPB.UserService
-	profile profilePB.ProfileService
+    conn *grpc.ClientConn
+    userClient    userv1.UserServiceClient
+    profileClient profilev1.ProfileServiceClient
 }
 
 // SetupSuite implements suite.SetupAllSuite
 func (suite *AccountTestSuite) SetupSuite() {
+    cfg := config.GetConfig()
 	suite.T().Log("in SetupSuite")
-	suite.user = userPB.NewUserService("mkit.service.account", client.NewClient())
-	suite.profile = profilePB.NewProfileService("mkit.service.account", client.NewClient())
+    var err error
+    suite.conn, err = grpc.Dial(cfg.Services.Account.Endpoint, grpc.WithInsecure(), grpc.WithBalancerName(roundrobin.Name))
+    if err != nil {
+        log.Fatal().Msgf("did not connect: %s", err)
+    }
+
+    println(suite.conn.Target())
+	suite.userClient = userv1.NewUserServiceClient(suite.conn)
+	suite.profileClient = profilev1.NewProfileServiceClient(suite.conn)
 }
 
 // TearDownSuite implements suite.TearDownAllSuite
 func (suite *AccountTestSuite) TearDownSuite() {
 	suite.T().Log("in TearDownSuite")
+    _ = suite.conn.Close()
 }
 
 // before each test
 func (suite *AccountTestSuite) SetupTest() {
 	t := suite.T()
 	t.Log("in SetupTest - creating user")
-	_, err := suite.user.Create(context.TODO(), &userPB.CreateRequest{
+	_, err := suite.userClient.Create(context.TODO(), &userv1.CreateRequest{
 		Username:  &wrappers.StringValue{Value: "sumo"},
 		FirstName: &wrappers.StringValue{Value: "sumo"},
 		LastName:  &wrappers.StringValue{Value: "demo"},
@@ -69,7 +72,7 @@ func (suite *AccountTestSuite) TestUserHandler_Exist_E2E() {
 	t := suite.T()
 	t.Log("in TestUserHandler_Exist_E2E, checking if user Exist")
 
-	rsp, err := suite.user.Exist(context.TODO(), &userPB.ExistRequest{
+	rsp, err := suite.userClient.Exist(context.TODO(), &userv1.ExistRequest{
 		Username: &wrappers.StringValue{Value: "sumo"},
 	})
 	require.Nil(t, err)

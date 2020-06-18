@@ -2,9 +2,10 @@ package handler
 
 import (
     "context"
+    "time"
 
+    cloudevents "github.com/cloudevents/sdk-go/v2"
     "github.com/jinzhu/gorm"
-    "github.com/micro/go-micro/v2"
     "github.com/micro/go-micro/v2/auth"
     "github.com/micro/go-micro/v2/errors"
     "github.com/rs/zerolog/log"
@@ -22,15 +23,15 @@ import (
 // UserHandler struct
 type userHandler struct {
     userRepository   repository.UserRepository
-    Event            micro.Event
-    greeterSrvClient greeterv1.GreeterServiceServer
+    Event            cloudevents.Client
+    greeterSrvClient greeterv1.GreeterServiceClient
 }
 
 // NewUserHandler returns an instance of `UserServiceHandler`.
-func NewUserHandler(repo repository.UserRepository, eve micro.Event, greeterClient greeterv1.GreeterServiceServer) userv1.UserServiceServer {
+func NewUserHandler(repo repository.UserRepository, emailerClient cloudevents.Client, greeterClient greeterv1.GreeterServiceClient) userv1.UserServiceServer {
     return &userHandler{
         userRepository:   repo,
-        Event:            eve,
+        Event:            emailerClient,
         greeterSrvClient: greeterClient,
     }
 }
@@ -112,9 +113,12 @@ func (h *userHandler) Create(ctx context.Context, req *userv1.CreateRequest) (rs
     }
 
     // send email (TODO: async `go h.Event.Publish(...)`)
-    if err := h.Event.Publish(ctx, &emailerv1.Message{To: req.Email.GetValue()}); err != nil {
-        log.Error().Err(err).Msg("Received Event.Publish request error")
-        return nil, myErrors.AppError(myErrors.PSE, err)
+    // ctx := cecontext.WithTopic(context.Background(), topic) // for GCP PubSub
+    ctxWithRetries := cloudevents.ContextWithRetriesLinearBackoff(ctx, 10*time.Millisecond, 3)
+
+    if err := h.Event.Send(ctxWithRetries, createEmailEvent(model.Email)); err != nil {
+        log.Error().Err(err).Msg("Received Event.Publish request error. Ignoring")
+        // return nil, myErrors.AppError(myErrors.PSE, err)
     }
 
     // call greeter
@@ -126,7 +130,8 @@ func (h *userHandler) Create(ctx context.Context, req *userv1.CreateRequest) (rs
         log.Info().Msgf("Got greeterService responce %s", res.Msg)
     }
 
-    return
+    newUser, _ := model.ToPB(ctx)
+    return &userv1.CreateResponse{Result: &newUser}, nil
 }
 
 func (h *userHandler) Update(ctx context.Context, req *userv1.UpdateRequest) (rsp *userv1.UpdateResponse, err error) {
@@ -154,7 +159,8 @@ func (h *userHandler) Update(ctx context.Context, req *userv1.UpdateRequest) (rs
         return nil, myErrors.AppError(myErrors.DBE, err)
     }
 
-    return
+    newUser, _ := model.ToPB(ctx)
+    return &userv1.UpdateResponse{Result: &newUser}, nil
 }
 
 func (h *userHandler) Delete(ctx context.Context, req *userv1.DeleteRequest) (rsp *userv1.DeleteResponse, err error) {
@@ -172,5 +178,15 @@ func (h *userHandler) Delete(ctx context.Context, req *userv1.DeleteRequest) (rs
         return nil, myErrors.AppError(myErrors.DBE, err)
     }
 
-    return
+    deletedUser, _ := model.ToPB(ctx)
+    return &userv1.DeleteResponse{Result: &deletedUser}, nil
+}
+
+func createEmailEvent(toEmail string) cloudevents.Event {
+    // Create an Event.
+    event := cloudevents.NewEvent()
+    event.SetSource("github.com/xmlking/grpc-starter-kit/service/emailer")
+    event.SetType("account.welcome.email")
+    event.SetData(cloudevents.ApplicationJSON, &emailerv1.Message{Subject: "Sumo", To: toEmail})
+    return event
 }

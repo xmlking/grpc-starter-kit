@@ -12,6 +12,7 @@ import (
     "github.com/rs/zerolog/log"
 
     "github.com/xmlking/grpc-starter-kit/mkit/service/emailer/v1"
+    "github.com/xmlking/grpc-starter-kit/shared/config"
     _ "github.com/xmlking/grpc-starter-kit/shared/constants"
     "github.com/xmlking/grpc-starter-kit/shared/eventing"
     _ "github.com/xmlking/grpc-starter-kit/shared/logger"
@@ -22,8 +23,9 @@ func TestEmailSubscriber_Handle_Send_E2E(t *testing.T) {
         t.Skip("skipping e2e test")
     }
 
-    client := eventing.NewSourceClient()
-    topic := "mkit.service.emailer"
+    cfg := config.GetConfig()
+    topic := cfg.Services.Emailer.Endpoint
+    client := eventing.NewSourceClient(topic)
 
     // Create an Event.
     event := cloudevents.NewEvent()
@@ -33,8 +35,8 @@ func TestEmailSubscriber_Handle_Send_E2E(t *testing.T) {
 
     // Set a target.
     // ctx := cecontext.WithTopic(context.Background(), topic) // for GCP PubSub
-    ctx := cloudevents.ContextWithTarget(context.Background(), "http://localhost:8080/")
-    ctxWithRetries := cloudevents.ContextWithRetriesLinearBackoff(ctx, 10*time.Millisecond, 3)
+    //ctx := cloudevents.ContextWithTarget(context.Background(), "http://localhost:8082/")
+    ctxWithRetries := cloudevents.ContextWithRetriesLinearBackoff(context.Background(), 10*time.Millisecond, 3)
     // if you want to send raw like Avro or protobuf
     // ctx = cloudevents.WithEncodingBinary(ctx)
 
@@ -51,8 +53,9 @@ func TestEmailSubscriber_Handle_Request_E2E(t *testing.T) {
         t.Skip("skipping e2e test")
     }
 
-    client := eventing.NewSourceClient()
-    topic := "mkit.service.emailer"
+    cfg := config.GetConfig()
+    topic := cfg.Services.Emailer.Endpoint
+    client := eventing.NewSourceClient(topic)
 
     // Create an Event.
     event := cloudevents.NewEvent()
@@ -62,8 +65,7 @@ func TestEmailSubscriber_Handle_Request_E2E(t *testing.T) {
 
     // Set a target.
     // ctx := cecontext.WithTopic(context.Background(), topic) // for GCP PubSub
-    ctx := cloudevents.ContextWithTarget(context.Background(), "http://localhost:8080/")
-    ctxWithRetries := cloudevents.ContextWithRetriesLinearBackoff(ctx, 10*time.Millisecond, 3)
+    ctxWithRetries := cloudevents.ContextWithRetriesLinearBackoff(context.Background(), 10*time.Millisecond, 3)
     // if you want to send raw like Avro or protobuf
     // ctx = cloudevents.WithEncodingBinary(ctx)
 

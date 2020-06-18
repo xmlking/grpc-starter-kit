@@ -1,78 +1,37 @@
 package main
 
 import (
-    "github.com/micro/go-micro/v2"
-    "github.com/micro/go-micro/v2/client"
-    "github.com/micro/go-micro/v2/server"
+    "google.golang.org/grpc"
+    "google.golang.org/grpc/balancer/roundrobin"
+
+    //"google.golang.org/grpc/balancer/roundrobin"
+
     "github.com/rs/zerolog/log"
 
+    profilev1 "github.com/xmlking/grpc-starter-kit/mkit/service/account/profile/v1"
+    userv1 "github.com/xmlking/grpc-starter-kit/mkit/service/account/user/v1"
+    greeterv1 "github.com/xmlking/grpc-starter-kit/mkit/service/greeter/v1"
     "github.com/xmlking/grpc-starter-kit/service/account/handler"
-    profilePB "github.com/xmlking/grpc-starter-kit/service/account/proto/profile"
-    userPB "github.com/xmlking/grpc-starter-kit/service/account/proto/user"
+
     "github.com/xmlking/grpc-starter-kit/service/account/registry"
     "github.com/xmlking/grpc-starter-kit/service/account/repository"
-    greeterPB "github.com/xmlking/grpc-starter-kit/service/greeter/proto/greeter"
+    "github.com/xmlking/grpc-starter-kit/shared/eventing"
+
+    _ "github.com/jinzhu/gorm/dialects/sqlite"
+
     "github.com/xmlking/grpc-starter-kit/shared/config"
     "github.com/xmlking/grpc-starter-kit/shared/constants"
-    myMicro "github.com/xmlking/grpc-starter-kit/shared/util/micro"
-    logWrapper "github.com/xmlking/grpc-starter-kit/shared/wrapper/log"
-    transWrapper "github.com/xmlking/grpc-starter-kit/shared/wrapper/transaction"
-    validatorWrapper "github.com/xmlking/grpc-starter-kit/shared/wrapper/validator"
+    _ "github.com/xmlking/grpc-starter-kit/shared/logger"
 )
 
 func main() {
+    serviceName := constants.ACCOUNT_SERVICE
     cfg := config.GetConfig()
 
-    // Initialize Features
-    var clientWrappers []client.Wrapper
-    var handlerWrappers []server.HandlerWrapper
-    var subscriberWrappers []server.SubscriberWrapper
-
-    // Wrappers are invoked in the order as they added
-    if cfg.Features.Reqlogs.Enabled {
-        clientWrappers = append(clientWrappers, logWrapper.NewClientWrapper())
-        handlerWrappers = append(handlerWrappers, logWrapper.NewHandlerWrapper())
-        subscriberWrappers = append(subscriberWrappers, logWrapper.NewSubscriberWrapper())
+    lis, err := config.GetListener(cfg.Services.Account.Endpoint)
+    if err != nil {
+        log.Fatal().Msgf("failed to create listener: %v", err)
     }
-    //if cfg.Features.Translogs.Enabled {
-    //    topic := cfg.Features.Translogs.Topic
-    //    publisher := micro.NewEvent(topic, client.DefaultClient) // service.Client())
-    //    handlerWrappers = append(handlerWrappers, transWrapper.NewHandlerWrapper(publisher))
-    //    subscriberWrappers = append(subscriberWrappers, transWrapper.NewSubscriberWrapper(publisher))
-    //}
-    if cfg.Features.Validator.Enabled {
-        handlerWrappers = append(handlerWrappers, validatorWrapper.NewHandlerWrapper())
-        subscriberWrappers = append(subscriberWrappers, validatorWrapper.NewSubscriberWrapper())
-    }
-
-    service := micro.NewService(
-        micro.Name(constants.ACCOUNT_SERVICE),
-        micro.Version(config.Version),
-        myMicro.WithTLS(),
-        // Wrappers are applied in reverse order so the last is executed first.
-        micro.WrapClient(clientWrappers...),
-        // Adding some optional lifecycle actions
-        micro.BeforeStart(func() (err error) {
-            log.Debug().Msg("called BeforeStart")
-            return
-        }),
-        micro.BeforeStop(func() (err error) {
-            log.Debug().Msg("called BeforeStop")
-            return
-        }),
-    )
-
-    if cfg.Features.Translogs.Enabled {
-        topic := cfg.Features.Translogs.Topic
-        publisher := micro.NewEvent(topic, service.Client())
-        handlerWrappers = append(handlerWrappers, transWrapper.NewHandlerWrapper(publisher))
-        subscriberWrappers = append(subscriberWrappers, transWrapper.NewSubscriberWrapper(publisher))
-    }
-
-    service.Init(
-        micro.WrapHandler(handlerWrappers...),
-        micro.WrapSubscriber(subscriberWrappers...),
-    )
 
     // Initialize DI Container
     ctn, err := registry.NewContainer(cfg)
@@ -82,22 +41,32 @@ func main() {
     }
 
     // Publisher publish to "mkit.service.emailer"
-    publisher := micro.NewEvent(constants.EMAILER_SERVICE, service.Client())
+    greeterConn, err := grpc.Dial(cfg.Services.Greeter.Endpoint, grpc.WithInsecure(), grpc.WithBalancerName(roundrobin.Name))
+    if err != nil {
+       log.Fatal().Msgf("did not connect: %s", err)
+    }
+    defer greeterConn.Close()
+    println(greeterConn.Target())
+
+    publisher := eventing.NewSourceClient(cfg.Services.Emailer.Endpoint)
     // greeterSrv Client to call "mkit.service.greeter"
-    greeterSrvClient := greeterPB.NewGreeterService(constants.GREETER_SERVICE, service.Client())
+    greeterSrvClient := greeterv1.NewGreeterServiceClient(greeterConn)
 
     // // Handlers
     userHandler := handler.NewUserHandler(ctn.Resolve("user-repository").(repository.UserRepository), publisher, greeterSrvClient)
-    profileHandler := ctn.Resolve("profile-handler").(profilePB.ProfileServiceHandler)
+    profileHandler := ctn.Resolve("profile-handler").(profilev1.ProfileServiceServer)
 
+    // create a gRPC server object
+    grpcServer := grpc.NewServer()
+    // attach the Ping service to the server
     // Register Handlers
-    userPB.RegisterUserServiceHandler(service.Server(), userHandler)
-    profilePB.RegisterProfileServiceHandler(service.Server(), profileHandler)
+    userv1.RegisterUserServiceServer(grpcServer, userHandler)
+    profilev1.RegisterProfileServiceServer(grpcServer, profileHandler)
 
+    // start the server
     println(config.GetBuildInfo())
-
-    // Run service
-    if err := service.Run(); err != nil {
+    log.Info().Msgf("Server (%s) started at: %s", serviceName, lis.Addr())
+    if err := grpcServer.Serve(lis); err != nil {
         log.Fatal().Err(err).Send()
     }
 }

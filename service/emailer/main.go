@@ -23,7 +23,7 @@ func main() {
     }
     emailSubscriber := ctn.Resolve("emailer-subscriber").(*subscriber.EmailSubscriber)
 
-    client := eventing.NewSinkClient()
+    client := eventing.NewSinkClient(cfg.Services.Emailer.Endpoint)
     log.Info().Msg("Subscriber Created, listening...")
 
     if err := client.StartReceiver(context.Background(), emailSubscriber.HandleSend); err != nil {

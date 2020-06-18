@@ -27,8 +27,8 @@ import ptypes1 "github.com/golang/protobuf/ptypes"
 import types1 "github.com/infobloxopen/protoc-gen-gorm/types"
 
 import math "math"
-import _ "github.com/gogo/protobuf/types"
-import google_protobuf1 "github.com/gogo/protobuf/types"
+import _ "github.com/golang/protobuf/ptypes/timestamp"
+import google_protobuf1 "github.com/golang/protobuf/ptypes/wrappers"
 import _ "github.com/envoyproxy/protoc-gen-validate/validate"
 
 // Reference imports to suppress errors if they are not otherwise used.

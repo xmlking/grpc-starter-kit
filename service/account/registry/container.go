@@ -6,8 +6,8 @@ import (
 
     "github.com/rs/zerolog/log"
 
+    account_entities "github.com/xmlking/grpc-starter-kit/mkit/service/account/entities/v1"
     "github.com/xmlking/grpc-starter-kit/service/account/handler"
-    account_entities "github.com/xmlking/grpc-starter-kit/service/account/proto/entities"
     "github.com/xmlking/grpc-starter-kit/service/account/repository"
     "github.com/xmlking/grpc-starter-kit/shared/database"
     configPB "github.com/xmlking/grpc-starter-kit/shared/proto/config"
