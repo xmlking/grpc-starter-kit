@@ -111,7 +111,7 @@ proto_format: proto_lint
 proto_gen:
 	@${GOPATH}/bin/prototool generate proto;
 
-proto: proto_lint proto_breaking proto_format proto_gen
+proto: proto_lint proto_breaking proto_format proto_clean proto_gen
 
 proto_shared:
 	@for f in ./shared/proto/**/*.proto; do \

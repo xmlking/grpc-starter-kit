@@ -17,11 +17,16 @@ using Makefile
 
 ```bash
 make proto
-make proto TARGET=account
-make proto-account
 ## generate for protos in shared package
-# make proto TARGET=shared TYPE=.
 make proto_shared
+```
+
+```bash
+make proto_lint
+make proto_breaking
+make proto_format
+make proto_clean
+make proto_gen
 ```
 
 ### test
