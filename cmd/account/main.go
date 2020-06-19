@@ -4,18 +4,19 @@ import (
     "context"
     "flag"
 
-    "github.com/micro/go-micro/v2"
-    "github.com/micro/go-micro/v2/client"
-    "github.com/micro/go-micro/v2/metadata"
+    grpc_middleware "github.com/grpc-ecosystem/go-grpc-middleware"
+    "google.golang.org/grpc/metadata"
+
     "github.com/rs/zerolog/log"
+    "google.golang.org/grpc"
+    "google.golang.org/grpc/balancer/roundrobin"
 
     "github.com/golang/protobuf/ptypes/wrappers"
 
-    userPB "github.com/xmlking/grpc-starter-kit/service/account/proto/user"
+    "github.com/xmlking/grpc-starter-kit/micro/middleware/rpclog"
+    userv1 "github.com/xmlking/grpc-starter-kit/mkit/service/account/user/v1"
     "github.com/xmlking/grpc-starter-kit/shared/config"
-    "github.com/xmlking/grpc-starter-kit/shared/constants"
     _ "github.com/xmlking/grpc-starter-kit/shared/logger"
-    logWrapper "github.com/xmlking/grpc-starter-kit/shared/wrapper/log"
 )
 
 var (
@@ -37,56 +38,40 @@ func main() {
 
     log.Debug().Str("username", *username).Str("email", *email).Uint64("limit", *limit).Msg("Flags Using:")
 
-    userService := userPB.NewUserService(constants.ACCOUNT_SERVICE, client.DefaultClient)
-
-    if _, err := userService.Create(context.TODO(), &userPB.CreateRequest{
-        Username:  &wrappers.StringValue{Value: *username},
-        FirstName: &wrappers.StringValue{Value: "sumo"},
-        LastName:  &wrappers.StringValue{Value: "demo"},
-        Email:     &wrappers.StringValue{Value: *email},
-    }); err != nil {
-        log.Fatal().Err(err).Msg("Unable to create User")
+    conn, err := grpc.Dial(
+        cfg.Services.Account.Endpoint, grpc.WithInsecure(), grpc.WithBalancerName(roundrobin.Name),
+        grpc.WithUnaryInterceptor(grpc_middleware.ChainUnaryClient(
+            rpclog.UnaryClientInterceptor(),
+        )),
+    )
+    if err != nil {
+        log.Fatal().Msgf("did not connect: %s", err)
     }
 
-    getUserList(userService, uint32(*limit))
-    getUserList2(uint32(*limit))
+    userClient := userv1.NewUserServiceClient(conn)
+
+    // Sending metadata - client side
+    //md := metadata.Pairs("k1", "v1", "k1", "v2", "k2", "v3")
+    //ctx := metadata.NewOutgoingContext(context.Background(), md)
+    // create a new context with some metadata - (Optional) Just for demonstration
+    ctx := metadata.AppendToOutgoingContext(context.Background(), "X-User-Id", "john", "X-From-Id", "script")
+
+    rsp, err := userClient.Create(ctx, &userv1.CreateRequest{
+        Username:  &wrappers.StringValue{Value: "sumo"},
+        FirstName: &wrappers.StringValue{Value: "sumo"},
+        LastName:  &wrappers.StringValue{Value: "demo"},
+        Email:     &wrappers.StringValue{Value: "sumo@demo.com"},
+    })
+
+    log.Info().Interface("createRsp", rsp).Send()
+
+    getUserList(userClient, uint32(*limit))
 }
 
-func getUserList(us userPB.UserService, limit uint32) {
-    if rsp, err := us.List(context.Background(), &userPB.ListRequest{Limit: &wrappers.UInt32Value{Value: limit}}); err != nil {
+func getUserList(us userv1.UserServiceClient, limit uint32) {
+    if rsp, err := us.List(context.Background(), &userv1.ListRequest{Limit: &wrappers.UInt32Value{Value: limit}}); err != nil {
         log.Fatal().Err(err).Msg("Unable to List Users")
     } else {
         log.Info().Interface("listRsp", rsp).Send()
-    }
-}
-
-// Just to showcase usage of generic micro client
-func getUserList2(limit uint32) {
-
-    // New Service
-    service := micro.NewService(
-        micro.Name(constants.ACCOUNT_CLIENT),
-        micro.Version(config.Version),
-        micro.WrapClient(logWrapper.NewClientWrapper()), // Showcase ClientWrapper usage
-    )
-
-    cl := service.Client()
-
-    // Create new request to service mkit.service.account, method UserService.List
-    listReq := cl.NewRequest(constants.ACCOUNT_SERVICE, "UserService.List", &userPB.ListRequest{
-        Limit: &wrappers.UInt32Value{Value: limit},
-    })
-    listRsp := &userPB.ListResponse{}
-
-    // Create context with metadata - (Optional) Just for demonstration
-    ctx := metadata.NewContext(context.Background(), map[string]string{
-        "X-User-Id": "john",
-        "X-From-Id": "script",
-    })
-
-    if err := cl.Call(ctx, listReq, listRsp); err != nil {
-        log.Fatal().Err(err).Msg("Unable to List Users")
-    } else {
-        log.Info().Interface("listRsp", listRsp).Send()
     }
 }

@@ -2,10 +2,13 @@ package handler
 
 import (
     "context"
+    "fmt"
     "time"
 
     "github.com/jinzhu/gorm"
     "github.com/thoas/go-funk"
+    "google.golang.org/grpc/codes"
+    "google.golang.org/grpc/status"
 
     // ptypes1 "github.com/gogo/protobuf/types"
     ptypes1 "github.com/golang/protobuf/ptypes"
@@ -15,7 +18,6 @@ import (
     account_entities "github.com/xmlking/grpc-starter-kit/mkit/service/account/entities/v1"
     "github.com/xmlking/grpc-starter-kit/mkit/service/account/profile/v1"
     "github.com/xmlking/grpc-starter-kit/service/account/repository"
-    myErrors "github.com/xmlking/grpc-starter-kit/shared/errors"
 )
 
 // ProfileHandler struct
@@ -43,7 +45,7 @@ func (ph *profileHandler) List(ctx context.Context, req *profilev1.ListRequest) 
 
     total, profiles, err := ph.profileRepository.List(req.Limit.GetValue(), req.Page.GetValue(), req.Sort.GetValue(), &model)
     if err != nil {
-        return nil, myErrors.AppError(myErrors.DBE, err)
+        return nil, status.Errorf(codes.Internal, fmt.Sprintf("database error: %v", err))
     }
     rsp = &profilev1.ListResponse{Total: total}
     // newProfiles := make([]*pb.Profile, len(profiles))
@@ -74,15 +76,15 @@ func (ph *profileHandler) Get(ctx context.Context, req *profilev1.GetRequest) (r
         println(req.GetId())
         profile, err = ph.profileRepository.Get(id.ProfileId.GetValue())
     case nil:
-        return nil, myErrors.ValidationError("mkit.service.account.profile.get", "validation error: Missing Id")
+        return nil, status.Errorf(codes.InvalidArgument, "validation error: Missing Id")
     default:
-        return nil, myErrors.ValidationError("mkit.service.account.profile.get", "validation error: Profile.Id has unexpected type %T", id)
+        return nil, status.Errorf(codes.InvalidArgument, fmt.Sprintf("validation error: Profile.Id has unexpected type %T", id))
     }
     if err != nil {
         if err == gorm.ErrRecordNotFound {
             return &profilev1.GetResponse{Result: nil}, nil
         }
-        return nil, myErrors.AppError(myErrors.DBE, err)
+        return nil, status.Errorf(codes.Internal, fmt.Sprintf("database error: %v", err))
     }
 
     tempProfile, _ := profile.ToPB(ctx)
@@ -101,7 +103,7 @@ func (ph *profileHandler) Create(ctx context.Context, req *profilev1.CreateReque
         var t time.Time
         var err error
         if t, err = ptypes1.Timestamp(req.Birthday); err != nil {
-            return nil, myErrors.ValidationError("mkit.service.account.profile.rceate", "Invalid birthday: %v", err)
+            return nil, status.Errorf(codes.InvalidArgument, fmt.Sprintf("Invalid birthday: %v", err))
         }
         model.Birthday = &t
     }
@@ -109,7 +111,7 @@ func (ph *profileHandler) Create(ctx context.Context, req *profilev1.CreateReque
     model.PreferredTheme = &preferredTheme
 
     if err := ph.profileRepository.Create(&model); err != nil {
-        return nil, myErrors.AppError(myErrors.DBE, err)
+        return nil, status.Errorf(codes.Internal, fmt.Sprintf("database error: %v", err))
     }
     return
 }

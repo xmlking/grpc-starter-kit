@@ -10,7 +10,8 @@ Add the following before you `grpc.Dial` either a client or server.
 logger := zerolog.New(os.Stdout).With().Timestamp().Logger()
 logger = logger.With().Str("module", "grpc").Logger()
 
-grpclog.SetLoggerV2(grpc.New(logger))
+#  replaces the grpc_.LoggerV2 with the provided logger and verbosity.
+grpclog.SetLoggerV2(grpc.New(gLogger, 99))
 ```
 
 Start your server/client with the following environment variable.

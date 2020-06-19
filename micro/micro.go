@@ -1,18 +1,30 @@
 package micro
 
 
+// https://github.com/stevepartridge/service
 
 import (
     "net"
 
     "github.com/pkg/errors"
     "github.com/soheilhy/cmux"
+    "google.golang.org/grpc"
     "google.golang.org/grpc/grpclog"
 )
 
-type MicroServer struct {
+type MicroService struct {
     mux cmux.CMux
     lis net.Listener
+
+    MaxReceiveSize int
+    MaxSendSize    int
+
+    DialOption      []grpc.DialOption
+    ServerOptions      []grpc.ServerOption
+    UnaryInterceptors  []grpc.UnaryServerInterceptor
+    StreamInterceptors []grpc.StreamServerInterceptor
+
+    Server *grpc.Server
 }
 type Interface interface {
     Serve(l net.Listener) error
@@ -20,14 +32,19 @@ type Interface interface {
 }
 
 func NewService(mux cmux.CMux, lis net.Listener) Interface {
-    return &MicroServer{
+    return &MicroService{
         mux: mux,
         lis: lis,
     }
 }
 // Serve implements Server.Serve
-func (s *MicroServer) Serve(net.Listener) error {
+func (s *MicroService) Serve(net.Listener) error {
     grpclog.Info("mux is starting %s", s.lis.Addr())
+
+    //options := []grpc.ServerOption{
+    //    grpc.MaxRecvMsgSize(s.MaxReceiveSize),
+    //    grpc.MaxSendMsgSize(s.MaxSendSize),
+    //}
 
     err := s.mux.Serve()
 
@@ -37,7 +54,7 @@ func (s *MicroServer) Serve(net.Listener) error {
 }
 
 // Shutdown implements Server.Shutdown
-func (s *MicroServer) Shutdown() {
+func (s *MicroService) Shutdown() {
     err := s.lis.Close()
     if err != nil {
         grpclog.Errorf("failed to close cmux's listener: %v", err)

@@ -2,9 +2,11 @@ package main
 
 import (
     cloudevents "github.com/cloudevents/sdk-go/v2"
+
     "github.com/rs/zerolog/log"
     "google.golang.org/grpc"
 
+    "github.com/xmlking/grpc-starter-kit/micro/middleware/rpclog"
     profilev1 "github.com/xmlking/grpc-starter-kit/mkit/service/account/profile/v1"
     userv1 "github.com/xmlking/grpc-starter-kit/mkit/service/account/user/v1"
     greeterv1 "github.com/xmlking/grpc-starter-kit/mkit/service/greeter/v1"
@@ -14,6 +16,9 @@ import (
 
     "github.com/xmlking/grpc-starter-kit/service/account/registry"
     "github.com/xmlking/grpc-starter-kit/service/account/repository"
+
+    grpc_middleware "github.com/grpc-ecosystem/go-grpc-middleware"
+    grpc_validator "github.com/grpc-ecosystem/go-grpc-middleware/validator"
 
     "github.com/xmlking/grpc-starter-kit/shared/config"
     "github.com/xmlking/grpc-starter-kit/shared/constants"
@@ -44,7 +49,13 @@ func main() {
     profileHandler := ctn.Resolve("profile-handler").(profilev1.ProfileServiceServer)
 
     // create a gRPC server object
-    grpcServer := grpc.NewServer()
+    grpcServer := grpc.NewServer(
+        grpc.UnaryInterceptor(grpc_middleware.ChainUnaryServer(
+            grpc_validator.UnaryServerInterceptor(),
+            // keep it last in the interceptor chain
+            rpclog.UnaryServerInterceptor(),
+        )),
+    )
 
     // Register Handlers
     userv1.RegisterUserServiceServer(grpcServer, userHandler)

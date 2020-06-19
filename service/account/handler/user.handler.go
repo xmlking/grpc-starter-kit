@@ -2,22 +2,23 @@ package handler
 
 import (
     "context"
+    "fmt"
     "time"
 
     cloudevents "github.com/cloudevents/sdk-go/v2"
     "github.com/jinzhu/gorm"
-    "github.com/micro/go-micro/v2/auth"
-    "github.com/micro/go-micro/v2/errors"
     "github.com/rs/zerolog/log"
     uuid "github.com/satori/go.uuid"
     "github.com/thoas/go-funk"
+    "google.golang.org/grpc/codes"
+    "google.golang.org/grpc/status"
 
+    "github.com/xmlking/grpc-starter-kit/micro/auth"
     account_entities "github.com/xmlking/grpc-starter-kit/mkit/service/account/entities/v1"
     "github.com/xmlking/grpc-starter-kit/mkit/service/account/user/v1"
     "github.com/xmlking/grpc-starter-kit/mkit/service/emailer/v1"
     "github.com/xmlking/grpc-starter-kit/mkit/service/greeter/v1"
     "github.com/xmlking/grpc-starter-kit/service/account/repository"
-    myErrors "github.com/xmlking/grpc-starter-kit/shared/errors"
 )
 
 // UserHandler struct
@@ -60,7 +61,7 @@ func (h *userHandler) List(ctx context.Context, req *userv1.ListRequest) (rsp *u
 
     total, users, err := h.userRepository.List(req.Limit.GetValue(), req.Page.GetValue(), req.Sort.GetValue(), &model)
     if err != nil {
-        return nil, errors.NotFound("mkit.service.account.user.list", "Error %v", err.Error())
+        return nil, status.Errorf(codes.NotFound, fmt.Sprintf("Error %v", err.Error()))
     }
     rsp = &userv1.ListResponse{Total : total}
 
@@ -84,14 +85,14 @@ func (h *userHandler) Get(ctx context.Context, req *userv1.GetRequest) (rsp *use
 
     id := req.Id.GetValue()
     if id == "" {
-        return nil, myErrors.ValidationError("mkit.service.account.user.get", "validation error: Missing Id")
+        return nil, status.Errorf(codes.InvalidArgument, "validation error: Missing Id")
     }
     user, err := h.userRepository.Get(id)
     if err != nil {
         if err == gorm.ErrRecordNotFound {
             return &userv1.GetResponse{Result: nil}, nil
         }
-        return nil, myErrors.AppError(myErrors.DBE, err)
+        return nil, status.Errorf(codes.Internal, fmt.Sprintf("database error: %v", err))
     }
 
     tempUser, _ := user.ToPB(ctx)
@@ -109,7 +110,7 @@ func (h *userHandler) Create(ctx context.Context, req *userv1.CreateRequest) (rs
     model.Email = req.Email.GetValue()
 
     if err := h.userRepository.Create(&model); err != nil {
-        return nil, myErrors.AppError(myErrors.DBE, err)
+        return nil, status.Errorf(codes.Internal, fmt.Sprintf("database error: %v", err))
     }
 
     // send email (TODO: async `go h.Event.Publish(...)`)
@@ -125,7 +126,7 @@ func (h *userHandler) Create(ctx context.Context, req *userv1.CreateRequest) (rs
     // if res, err := h.greeterSrvClient.Hello(ctx, &greeterPB.Request{Name: req.GetFirstName().GetValue()}); err != nil {
     if res, err := h.greeterSrvClient.Hello(ctx, &greeterv1.HelloRequest{Name: req.GetFirstName().GetValue()}); err != nil {
         log.Error().Err(err).Msg("Received greeterService.Hello request error")
-        return nil, myErrors.AppError(myErrors.PSE, err)
+        return nil, status.Errorf(codes.Internal, fmt.Sprintf("broker publish error: %v", err))
     } else {
         log.Info().Msgf("Got greeterService responce %s", res.Msg)
     }
@@ -139,13 +140,13 @@ func (h *userHandler) Update(ctx context.Context, req *userv1.UpdateRequest) (rs
     // Identify the user
     acc, ok := auth.AccountFromContext(ctx)
     if !ok {
-        return nil, errors.Unauthorized("mkit.service.account.user.update", "A valid auth token is required")
+        return nil, status.Errorf(codes.Unauthenticated,  "A valid auth token is required")
     }
     log.Info().Msgf("Caller Account: %v", acc)
 
     id := req.Id.GetValue()
     if id == "" {
-        return nil, myErrors.ValidationError("mkit.service.account.user.update", "validation error: Missing Id")
+        return nil, status.Errorf(codes.InvalidArgument, "validation error: Missing Id")
     }
 
     model := account_entities.UserORM{}
@@ -156,7 +157,7 @@ func (h *userHandler) Update(ctx context.Context, req *userv1.UpdateRequest) (rs
     model.Email = req.Email.GetValue()
 
     if err := h.userRepository.Update(id, &model); err != nil {
-        return nil, myErrors.AppError(myErrors.DBE, err)
+        return nil, status.Errorf(codes.Internal, fmt.Sprintf("database error: %v", err))
     }
 
     newUser, _ := model.ToPB(ctx)
@@ -168,14 +169,14 @@ func (h *userHandler) Delete(ctx context.Context, req *userv1.DeleteRequest) (rs
 
     id := req.Id.GetValue()
     if id == "" {
-        return nil, myErrors.ValidationError("mkit.service.account.user.update", "validation error: Missing Id")
+        return nil, status.Errorf(codes.InvalidArgument, "validation error: Missing Id")
     }
 
     model := account_entities.UserORM{}
     model.Id = uuid.FromStringOrNil(id)
 
     if err := h.userRepository.Delete(&model); err != nil {
-        return nil, myErrors.AppError(myErrors.DBE, err)
+        return nil,  status.Errorf(codes.Internal, fmt.Sprintf("database error: %v", err))
     }
 
     deletedUser, _ := model.ToPB(ctx)

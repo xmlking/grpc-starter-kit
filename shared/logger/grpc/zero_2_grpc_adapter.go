@@ -8,10 +8,11 @@ import (
 
 type Logger struct {
     log zerolog.Logger
+    verbosity int
 }
 
-func New(log zerolog.Logger) Logger {
-    return Logger{log: log}
+func New(log zerolog.Logger, verbosity int) Logger {
+    return Logger{log: log, verbosity: verbosity}
 }
 
 func (l Logger) Fatal(args ...interface{}) {
@@ -75,5 +76,5 @@ func (l Logger) Println(args ...interface{}) {
 }
 
 func (l Logger) V(level int) bool {
-    return true
+    return level <= l.verbosity
 }

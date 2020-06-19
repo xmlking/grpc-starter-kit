@@ -3,12 +3,15 @@ package main
 import (
     "net/http"
 
+    grpc_middleware "github.com/grpc-ecosystem/go-grpc-middleware"
+    grpc_validator "github.com/grpc-ecosystem/go-grpc-middleware/validator"
     "github.com/rs/zerolog/log"
     "github.com/soheilhy/cmux"
     "google.golang.org/grpc"
     "google.golang.org/grpc/health"
     "google.golang.org/grpc/health/grpc_health_v1"
 
+    "github.com/xmlking/grpc-starter-kit/micro/middleware/rpclog"
     "github.com/xmlking/grpc-starter-kit/mkit/service/greeter/v1"
     "github.com/xmlking/grpc-starter-kit/service/greeter/handler"
     "github.com/xmlking/grpc-starter-kit/shared/config"
@@ -70,7 +73,13 @@ func main2() {
     // create a server instance
     s := handler.NewGreeterHandler()
     // create a gRPC server object
-    grpcServer := grpc.NewServer()
+    grpcServer := grpc.NewServer(
+        grpc.UnaryInterceptor(grpc_middleware.ChainUnaryServer(
+            grpc_validator.UnaryServerInterceptor(),
+            // keep it last in the interceptor chain
+            rpclog.UnaryServerInterceptor(),
+        )),
+    )
     // attach the Ping service to the server
     greeterv1.RegisterGreeterServiceServer(grpcServer, s)
 
