@@ -41,7 +41,11 @@ message WriteRequest {
 // Transaction Event
 message TransactionEvent {
   // request
-  google.protobuf.Struct req = 1;
+  google.protobuf.Value req = 1;
   // response
-  google.protobuf.Struct rsp = 2;
+  google.protobuf.Value rsp = 2;
 }
+
+// google.protobuf.Value used on typescript
+// https://github.com/CatsMiaow/node-grpc-typescript/tree/master
+// https://github.com/CatsMiaow/node-grpc-typescript/blob/master/src/client.ts#L65
