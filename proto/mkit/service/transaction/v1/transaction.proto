@@ -2,11 +2,11 @@ syntax = "proto3";
 
 package mkit.service.transaction.v1;
 
-//option go_package = "github.com/xmlking/grpc-starter-kit/mkit/service/transaction/v1;transactionv1";
-option go_package = "transactionv1";
+option go_package = "github.com/xmlking/grpc-starter-kit/mkit/service/transaction/v1;transactionv1";
 option java_multiple_files = true;
 option java_package = "mkit.service.recorder.v1";
 
+import "google/protobuf/any.proto";
 import "google/protobuf/empty.proto";
 import "validate/validate.proto";
 
@@ -30,10 +30,18 @@ message WriteRequest {
   TransactionEvent event = 2;
 }
 
+//// Transaction Event
+//message TransactionEvent {
+//  // request
+//  bytes req = 1;
+//  // response
+//  bytes rsp = 2;
+//}
+
 // Transaction Event
 message TransactionEvent {
   // request
-  bytes req = 1;
-  // responce
-  bytes rsp = 2;
+  google.protobuf.Any req = 1;
+  // response
+  google.protobuf.Any rsp = 2;
 }

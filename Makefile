@@ -110,6 +110,7 @@ proto_format: proto_lint
 
 proto_gen:
 	@${GOPATH}/bin/prototool generate proto;
+	@rsync -a github.com/xmlking/grpc-starter-kit/mkit/service/account/ mkit/service/account && rm -Rf github.com
 
 proto: proto_lint proto_breaking proto_format proto_clean proto_gen
 

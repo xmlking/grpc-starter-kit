@@ -2,8 +2,7 @@ syntax = "proto3";
 
 package mkit.service.greeter.v1;
 
-//option go_package = "github.com/xmlking/grpc-starter-kit/mkit/service/greeter/v1;greeterv1";
-option go_package = "greeterv1";
+option go_package = "github.com/xmlking/grpc-starter-kit/mkit/service/greeter/v1;greeterv1";
 option java_multiple_files = true;
 option java_package = "mkit.service.greeter.v1";
 

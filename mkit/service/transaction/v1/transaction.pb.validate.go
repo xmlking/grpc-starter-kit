@@ -247,9 +247,25 @@ func (m *TransactionEvent) Validate() error {
 		return nil
 	}
 
-	// no validation rules for Req
+	if v, ok := interface{}(m.GetReq()).(interface{ Validate() error }); ok {
+		if err := v.Validate(); err != nil {
+			return TransactionEventValidationError{
+				field:  "Req",
+				reason: "embedded message failed validation",
+				cause:  err,
+			}
+		}
+	}
 
-	// no validation rules for Rsp
+	if v, ok := interface{}(m.GetRsp()).(interface{ Validate() error }); ok {
+		if err := v.Validate(); err != nil {
+			return TransactionEventValidationError{
+				field:  "Rsp",
+				reason: "embedded message failed validation",
+				cause:  err,
+			}
+		}
+	}
 
 	return nil
 }
