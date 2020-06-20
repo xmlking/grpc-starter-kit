@@ -1,19 +1,19 @@
 package logger_test
 
 import (
-    "testing"
+	"testing"
 
-    "github.com/rs/zerolog/log"
+	"github.com/rs/zerolog/log"
 )
 
 func BenchmarkInfoLog(b *testing.B) {
-    b.Run("zerolog", func(b *testing.B) {
-        b.ReportAllocs()
-        b.ResetTimer()
-        b.RunParallel(func(pb *testing.PB) {
-            for pb.Next() {
-                log.Info().Msg("Benchmarking: InfoZ")
-            }
-        })
-    })
+	b.Run("zerolog", func(b *testing.B) {
+		b.ReportAllocs()
+		b.ResetTimer()
+		b.RunParallel(func(pb *testing.PB) {
+			for pb.Next() {
+				log.Info().Msg("Benchmarking: InfoZ")
+			}
+		})
+	})
 }

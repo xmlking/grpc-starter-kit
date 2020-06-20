@@ -1,35 +1,34 @@
 package main
 
 import (
-    "context"
-    "log"
+	"context"
+	"log"
 
-    cloudevents "github.com/cloudevents/sdk-go/v2"
+	cloudevents "github.com/cloudevents/sdk-go/v2"
 
-    "github.com/xmlking/grpc-starter-kit/service/cedemo/subscriber"
+	"github.com/xmlking/grpc-starter-kit/service/cedemo/subscriber"
 )
-
 
 func main() {
 
-    ceClient, err := cloudevents.NewDefaultClient()
-    if err != nil {
-        log.Fatal(err.Error())
-    }
+	ceClient, err := cloudevents.NewDefaultClient()
+	if err != nil {
+		log.Fatal(err.Error())
+	}
 
-    r := subscriber.Receiver{Client: ceClient, Target: "http://localhost:8081"}
+	r := subscriber.Receiver{Client: ceClient, Target: "http://localhost:8081"}
 
-    // Depending on whether targeting data has been supplied,
-    // we will either reply with our response or send it on to
-    // an event sink.
-    var receiver interface{} // the SDK reflects on the signature.
-    if r.Target == "" {
-        receiver = r.ReceiveAndReply
-    } else {
-        receiver = r.ReceiveAndSend
-    }
+	// Depending on whether targeting data has been supplied,
+	// we will either reply with our response or send it on to
+	// an event sink.
+	var receiver interface{} // the SDK reflects on the signature.
+	if r.Target == "" {
+		receiver = r.ReceiveAndReply
+	} else {
+		receiver = r.ReceiveAndSend
+	}
 
-    if err := ceClient.StartReceiver(context.Background(), receiver); err != nil {
-        log.Fatal(err)
-    }
+	if err := ceClient.StartReceiver(context.Background(), receiver); err != nil {
+		log.Fatal(err)
+	}
 }

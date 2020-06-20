@@ -6,7 +6,7 @@ import (
 	"strconv"
 	"testing"
 
-    "github.com/xmlking/grpc-starter-kit/shared/config"
+	"github.com/xmlking/grpc-starter-kit/shared/config"
 )
 
 func TestSendEmail_Send(t *testing.T) {

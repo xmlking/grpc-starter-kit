@@ -1,75 +1,75 @@
 package gormlog_test
 
 import (
-    "os"
-    "time"
+	"os"
+	"time"
 
-    "github.com/rs/zerolog"
-    "github.com/rs/zerolog/log"
+	"github.com/rs/zerolog"
+	"github.com/rs/zerolog/log"
 
-    "github.com/xmlking/grpc-starter-kit/shared/logger"
-    "github.com/xmlking/grpc-starter-kit/shared/logger/gormlog"
+	"github.com/xmlking/grpc-starter-kit/shared/logger"
+	"github.com/xmlking/grpc-starter-kit/shared/logger/gormlog"
 )
 
 func ExampleLogger() {
-   logger.Init(
-        logger.WithOutput(os.Stdout),
-        logger.WithFormat(logger.JSON),
-        logger.WithTimeFormat("ddd"),
-        logger.WithLevel(zerolog.DebugLevel),
-    )
+	logger.Init(
+		logger.WithOutput(os.Stdout),
+		logger.WithFormat(logger.JSON),
+		logger.WithTimeFormat("ddd"),
+		logger.WithLevel(zerolog.DebugLevel),
+	)
 
-    l := gormlog.NewGormLogger(log.Logger, gormlog.WithLevel(zerolog.DebugLevel))
+	l := gormlog.NewGormLogger(log.Logger, gormlog.WithLevel(zerolog.DebugLevel))
 
-    l.Print(
-        "sql",
-        "/foo/bar.go",
-        time.Second*2,
-        "SELECT * FROM foo WHERE id = ?",
-        []interface{}{123},
-        int64(2),
-    )
+	l.Print(
+		"sql",
+		"/foo/bar.go",
+		time.Second*2,
+		"SELECT * FROM foo WHERE id = ?",
+		[]interface{}{123},
+		int64(2),
+	)
 
-    // Output:
-    //{"level":"info","LogLevel":"debug","LogFormat":"json","time":"ddd","message":"Logger set to Zerolog with:"}
-    //{"level":"debug","duration":2000,"query":"SELECT * FROM foo WHERE id = 123","rows_affected":2,"source":"/foo/bar.go","time":"ddd","message":"gorm query"}
+	// Output:
+	//{"level":"info","LogLevel":"debug","LogFormat":"json","time":"ddd","message":"Logger set to Zerolog with:"}
+	//{"level":"debug","duration":2000,"query":"SELECT * FROM foo WHERE id = 123","rows_affected":2,"source":"/foo/bar.go","time":"ddd","message":"gorm query"}
 
 }
 
 func ExampleWithRecordToFields() {
-    logger.Init(
-        logger.WithOutput(os.Stdout),
-        logger.WithFormat(logger.JSON),
-        logger.WithTimeFormat("ddd"),
-        logger.WithLevel(zerolog.DebugLevel),
-    )
+	logger.Init(
+		logger.WithOutput(os.Stdout),
+		logger.WithFormat(logger.JSON),
+		logger.WithTimeFormat("ddd"),
+		logger.WithLevel(zerolog.DebugLevel),
+	)
 
-    l := gormlog.NewGormLogger(
-        log.Logger,
-        gormlog.WithLevel(zerolog.DebugLevel),
+	l := gormlog.NewGormLogger(
+		log.Logger,
+		gormlog.WithLevel(zerolog.DebugLevel),
 
-        gormlog.WithRecordToFields(func(r gormlog.Record) map[string]interface{} {
-            return map[string]interface{}{
-                "caller":        r.Source,
-                "duration_ms":   float32(r.Duration.Nanoseconds()/1000) / 1000,
-                "query":         r.SQL,
-                "rows_affected": r.RowsAffected,
-            }
-        }),
-    )
+		gormlog.WithRecordToFields(func(r gormlog.Record) map[string]interface{} {
+			return map[string]interface{}{
+				"caller":        r.Source,
+				"duration_ms":   float32(r.Duration.Nanoseconds()/1000) / 1000,
+				"query":         r.SQL,
+				"rows_affected": r.RowsAffected,
+			}
+		}),
+	)
 
-    l.Print(
-        "sql",
-        "/foo/bar.go",
-        time.Millisecond*200,
-        "SELECT * FROM foo WHERE id = ?",
-        []interface{}{123},
-        int64(2),
-    )
+	l.Print(
+		"sql",
+		"/foo/bar.go",
+		time.Millisecond*200,
+		"SELECT * FROM foo WHERE id = ?",
+		[]interface{}{123},
+		int64(2),
+	)
 
-    // Output:
-    //{"level":"info","LogLevel":"debug","LogFormat":"json","time":"ddd","message":"Logger set to Zerolog with:"}
-    //{"level":"debug","caller":"/foo/bar.go","duration_ms":200,"query":"SELECT * FROM foo WHERE id = 123","rows_affected":2,"time":"ddd","message":"gorm query"}
+	// Output:
+	//{"level":"info","LogLevel":"debug","LogFormat":"json","time":"ddd","message":"Logger set to Zerolog with:"}
+	//{"level":"debug","caller":"/foo/bar.go","duration_ms":200,"query":"SELECT * FROM foo WHERE id = 123","rows_affected":2,"time":"ddd","message":"gorm query"}
 }
 
 /**

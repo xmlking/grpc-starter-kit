@@ -1,11 +1,11 @@
 package config_test
 
 import (
-    "fmt"
-    "testing"
-    "time"
+	"fmt"
+	"testing"
+	"time"
 
-    "github.com/xmlking/grpc-starter-kit/shared/config"
+	"github.com/xmlking/grpc-starter-kit/shared/config"
 )
 
 // CONFIGOR_DEBUG_MODE=true go test -v ./shared/config/... -count=1
@@ -50,20 +50,20 @@ func ExampleGetConfig_check_defaults() {
 func TestParseTargetString(t *testing.T) {
 	for _, test := range []struct {
 		targetStr string
-		want   config.Target
+		want      config.Target
 	}{
 		{targetStr: "", want: config.Target{Scheme: "", Host: "", Port: "", Path: ""}},
 		{targetStr: "dns:///google.com:8080", want: config.Target{Scheme: "dns", Host: "google.com", Port: "8080", Path: ""}},
 		{targetStr: "dns:///google.com", want: config.Target{Scheme: "dns", Host: "google.com", Port: "", Path: ""}},
 		{targetStr: "dns:///google.com/?a=b", want: config.Target{Scheme: "dns", Host: "google.com", Port: "", Path: "/"}},
-        {targetStr: "https://www.server.com:9999", want: config.Target{Scheme: "https", Host: "www.server.com", Port: "9999", Path: ""}},
+		{targetStr: "https://www.server.com:9999", want: config.Target{Scheme: "https", Host: "www.server.com", Port: "9999", Path: ""}},
 		{targetStr: "/unix/socket/address", want: config.Target{Scheme: "", Host: "", Port: "", Path: "/unix/socket/address"}},
 		{targetStr: "unix:///tmp/mysrv.sock", want: config.Target{Scheme: "unix", Host: "", Port: "", Path: "/tmp/mysrv.sock"}},
 	} {
 		got, err := config.ParseTarget(test.targetStr)
 		if err != nil {
-            t.Error(err)
-        }
+			t.Error(err)
+		}
 		if got != test.want {
 			t.Errorf("ParseTarget(%q) = %+v, want %+v", test.targetStr, got, test.want)
 		}

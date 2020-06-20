@@ -24,6 +24,35 @@ services:
     endpoint: dns:///greeter.test:8081
 #    endpoint: unix:///tmp/greeter.sock
     version: v0.1.0
+    service_config: |
+      {
+        "loadBalancingPolicy": "round_robin",
+        "methodConfig": [
+        {
+          "name": [
+          {
+            "service": "mkit.service.greeter.v1.GreeterService",
+            "method": "Hello"
+          }
+          ],
+          "waitForReady": false,
+          "retryPolicy": {
+            "maxAttempts": 3,
+            "initialBackoff": "2.1s",
+            "maxBackoff": "2.2s",
+            "backoffMultiplier": 3,
+            "retryableStatusCodes": [
+              "UNAVAILABLE",
+              "RESOURCE_EXHAUSTED"
+            ]
+          }
+        }
+        ],
+        "retryThrottling": {
+          "maxTokens": 10,
+          "tokenRatio": 0.1
+        }
+      }
   emailer:
     endpoint: http://emailer.test:8082
     version: v0.1.0
@@ -48,8 +77,8 @@ features:
     enabled: false
   validator:
     enabled: true
-  reqlogs:
+  rpclog:
     enabled: true
-  translogs:
+  translog:
     topic: mkit.service.recorder
     enabled: true

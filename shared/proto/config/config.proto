@@ -20,7 +20,8 @@ service ConfigService {
 message Service {
     string endpoint = 1 [(gogoproto.moretags) = "yaml:\"endpoint\" required:\"true\""];
     string version = 2 [(gogoproto.moretags) = "yaml:\"version\" default:\"v0.1.0\""];
-    uint32 deadline = 3 [(gogoproto.moretags) = "yaml:\",omitempty\" default:\"10\""];
+    string service_config = 3 [(gogoproto.moretags) = "yaml:\"service_config,omitempty\""];
+    uint32 deadline = 4 [(gogoproto.moretags) = "yaml:\",omitempty\" default:\"10\""];
 }
 
 message EmailConfiguration {
@@ -75,10 +76,10 @@ message Features {
     message Validator {
         bool enabled = 1 [(gogoproto.moretags) = "yaml:\",omitempty\" default:\"false\""];
     }
-    message Reqlogs {
+    message Rpclog {
         bool enabled = 1 [(gogoproto.moretags) = "yaml:\",omitempty\" default:\"false\""];
     }
-    message Translogs {
+    message Translog {
         bool enabled = 1 [(gogoproto.moretags) = "yaml:\",omitempty\" default:\"false\""];
         string topic = 2;
     }
@@ -86,8 +87,8 @@ message Features {
     Tracing tracing = 2;
     TLS tls = 3;
     Validator validator = 4;
-    Reqlogs reqlogs = 5;
-    Translogs translogs = 6;
+    Rpclog rpclog = 5;
+    Translog translog = 6;
 }
 
 message Services {

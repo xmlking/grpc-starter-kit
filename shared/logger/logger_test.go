@@ -1,16 +1,16 @@
 package logger_test
 
 import (
-    "fmt"
-    "os"
-    "testing"
-    "time"
+	"fmt"
+	"os"
+	"testing"
+	"time"
 
-    "github.com/pkg/errors"
-    "github.com/rs/zerolog"
-    "github.com/rs/zerolog/log"
-    // bootstrap logger
-    "github.com/xmlking/grpc-starter-kit/shared/logger"
+	"github.com/pkg/errors"
+	"github.com/rs/zerolog"
+	"github.com/rs/zerolog/log"
+	// bootstrap logger
+	"github.com/xmlking/grpc-starter-kit/shared/logger"
 )
 
 func TestLogger(t *testing.T) {
@@ -19,8 +19,8 @@ func TestLogger(t *testing.T) {
 }
 
 func TestWithGcp(t *testing.T) {
-    // logger.Init(logger.WithFormat())
-    logger.Init(logger.WithTimeFormat("ddd"))
+	// logger.Init(logger.WithFormat())
+	logger.Init(logger.WithTimeFormat("ddd"))
 	log.Info().Msgf("testing: %s", "WithGcp")
 	// reset `LevelFieldName` to make other tests pass.
 	// logger.Init(logger.WithFields())
@@ -50,105 +50,105 @@ func TestWithGcp(t *testing.T) {
 //}
 
 func TestSetLevel(t *testing.T) {
-    logger.Init(logger.WithLevel(zerolog.DebugLevel))
-    log.Debug().Msgf("test show debug: %s", "debug msg")
+	logger.Init(logger.WithLevel(zerolog.DebugLevel))
+	log.Debug().Msgf("test show debug: %s", "debug msg")
 
-    logger.Init(logger.WithLevel(zerolog.InfoLevel))
-    log.Debug().Msgf("test non-show  debug: %s", "debug msg")
+	logger.Init(logger.WithLevel(zerolog.InfoLevel))
+	log.Debug().Msgf("test non-show  debug: %s", "debug msg")
 }
 
 func TestReportCaller(t *testing.T) {
-    logger.Init(logger.ReportCaller())
+	logger.Init(logger.ReportCaller())
 
-    log.Info().Msgf("testing: %s", "ReportCaller")
+	log.Info().Msgf("testing: %s", "ReportCaller")
 }
 
 func TestReportCallerWithDevelopmentMode(t *testing.T) {
-    logger.Init(logger.ReportCaller(), logger.WithFormat("pretty"))
+	logger.Init(logger.ReportCaller(), logger.WithFormat("pretty"))
 
-    log.Info().Msgf("testing: %s", "ReportCallerWithDevelopmentMode")
+	log.Info().Msgf("testing: %s", "ReportCallerWithDevelopmentMode")
 }
 
 func TestWithOutput(t *testing.T) {
-    logger.Init(logger.WithOutput(os.Stdout))
+	logger.Init(logger.WithOutput(os.Stdout))
 
-    log.Info().Msgf("testing: %s", "WithOutput")
+	log.Info().Msgf("testing: %s", "WithOutput")
 }
 
 func TestWithGCPMode(t *testing.T) {
-    logger.Init(logger.ReportCaller(), logger.WithFormat("gcp"))
+	logger.Init(logger.ReportCaller(), logger.WithFormat("gcp"))
 
-    log.Info().Msgf("testing: %s", "TestWithGCPMode Infof")
-    log.Info().Fields(map[string]interface{}{
-        "sumo":  "demo",
-        "human": true,
-        "age":   99,
-    }).Msgf("testing: TestWithGCPMode Infow")
+	log.Info().Msgf("testing: %s", "TestWithGCPMode Infof")
+	log.Info().Fields(map[string]interface{}{
+		"sumo":  "demo",
+		"human": true,
+		"age":   99,
+	}).Msgf("testing: TestWithGCPMode Infow")
 
-    logger.Init(logger.ReportCaller())
-    log.Error().Err(fmt.Errorf("Error %v: %w", "nested", errors.New("root error message"))).Msg("TestWithGCPModeAndWithError")
-    logger.Init(logger.WithTimeFormat(time.RFC3339Nano))
+	logger.Init(logger.ReportCaller())
+	log.Error().Err(fmt.Errorf("Error %v: %w", "nested", errors.New("root error message"))).Msg("TestWithGCPModeAndWithError")
+	logger.Init(logger.WithTimeFormat(time.RFC3339Nano))
 
-    log.Info().Msgf("testing: %s", "TestWithGCPMode")
-    // reset `LevelFieldName` to make other tests pass.
-    t.Cleanup(func() {
-        logger.Init(logger.WithFormat("json"))
-    })
+	log.Info().Msgf("testing: %s", "TestWithGCPMode")
+	// reset `LevelFieldName` to make other tests pass.
+	t.Cleanup(func() {
+		logger.Init(logger.WithFormat("json"))
+	})
 }
 
 func TestWithDevelopmentMode(t *testing.T) {
-    logger.Init(logger.WithFormat("pretty"))
+	logger.Init(logger.WithFormat("pretty"))
 
-    log.Info().Msgf("testing: %s", "DevelopmentMode")
+	log.Info().Msgf("testing: %s", "DevelopmentMode")
 }
 
 func TestSubLoggerWithMoreFields(t *testing.T) {
-    logger.Init(logger.WithFields(map[string]interface{}{
-        "component": "AccountHandler",
-    }))
+	logger.Init(logger.WithFields(map[string]interface{}{
+		"component": "AccountHandler",
+	}))
 
-    log.Debug().Fields(map[string]interface{}{
-        "name":  "demo",
-        "human": true,
-        "age":   77,
-    }).Msg("testing: Infow with extra fields")
-    log.Info().Msgf("testing: %s", "Infof with default fields")
-    // Output:
-    //{"level":"info","component":"AccountHandler","age":77,"human":true,"name":"demo","time":"2020-02-23T12:01:10-08:00","message":"testing: Infow with extra fields"}
-    //{"level":"info","component":"AccountHandler","time":"2020-02-23T12:01:10-08:00","message":"testing: Infof with default fields"}
+	log.Debug().Fields(map[string]interface{}{
+		"name":  "demo",
+		"human": true,
+		"age":   77,
+	}).Msg("testing: Infow with extra fields")
+	log.Info().Msgf("testing: %s", "Infof with default fields")
+	// Output:
+	//{"level":"info","component":"AccountHandler","age":77,"human":true,"name":"demo","time":"2020-02-23T12:01:10-08:00","message":"testing: Infow with extra fields"}
+	//{"level":"info","component":"AccountHandler","time":"2020-02-23T12:01:10-08:00","message":"testing: Infof with default fields"}
 }
 
 func TestWithError(t *testing.T) {
-    log.Error().Msgf("testing: %s", "TestWithError")
-    log.Error().Err(fmt.Errorf("Error %v: %w", "nested", errors.New("root error message"))).Msg("TestWithError")
+	log.Error().Msgf("testing: %s", "TestWithError")
+	log.Error().Err(fmt.Errorf("Error %v: %w", "nested", errors.New("root error message"))).Msg("TestWithError")
 }
 
 func TestWithErrorAndDefaultFields(t *testing.T) {
-    logger.Init(
-        logger.WithFields(map[string]interface{}{
-            "name":  "sumo",
-            "age":   99,
-            "alive": true,
-        }))
-    log.Error().Msg("TestWithErrorAndDefaultFields")
-    log.Error().Msgf("testing: %s", "TestWithErrorAndDefaultFields")
-    err := errors.Wrap(errors.New("error message"), "from TestWithErrorAndDefaultFields")
-    log.Error().Err(err).Msgf("testing: %s", "WithErrorAndDefaultFields")
+	logger.Init(
+		logger.WithFields(map[string]interface{}{
+			"name":  "sumo",
+			"age":   99,
+			"alive": true,
+		}))
+	log.Error().Msg("TestWithErrorAndDefaultFields")
+	log.Error().Msgf("testing: %s", "TestWithErrorAndDefaultFields")
+	err := errors.Wrap(errors.New("error message"), "from TestWithErrorAndDefaultFields")
+	log.Error().Err(err).Msgf("testing: %s", "WithErrorAndDefaultFields")
 }
 
 func TestLogStack(t *testing.T) {
-    logger.Init(logger.WithFormat("pretty"))
-    err := errors.Wrap(errors.New("error message"), "from TestLogStack")
-    log.Error().Err(err).Msgf("testing: %s", "LogStack")
+	logger.Init(logger.WithFormat("pretty"))
+	err := errors.Wrap(errors.New("error message"), "from TestLogStack")
+	log.Error().Err(err).Msgf("testing: %s", "LogStack")
 }
 
 func TestWithHooks(t *testing.T) {
-    simpleHook := zerolog.HookFunc(func(e *zerolog.Event, level zerolog.Level, msg string) {
-        e.Bool("has_level", level != zerolog.NoLevel)
-        e.Str("test", "logged")
-    })
+	simpleHook := zerolog.HookFunc(func(e *zerolog.Event, level zerolog.Level, msg string) {
+		e.Bool("has_level", level != zerolog.NoLevel)
+		e.Str("test", "logged")
+	})
 
-    log.Logger.Hook(simpleHook)
+	log.Logger.Hook(simpleHook)
 
-    log.Info().Msgf("testing: %s", "WithHooks")
+	log.Info().Msgf("testing: %s", "WithHooks")
 }
