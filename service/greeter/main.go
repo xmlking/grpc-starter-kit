@@ -36,7 +36,12 @@ func main() {
 
 
     // Create your protocol servers.
-    grpcS := grpc.NewServer()
+    grpcS := grpc.NewServer(
+        grpc.UnaryInterceptor(grpc_middleware.ChainUnaryServer(
+            grpc_validator.UnaryServerInterceptor(),
+            // keep it last in the interceptor chain
+            rpclog.UnaryServerInterceptor(),
+        )),)
     greeterv1.RegisterGreeterServiceServer(grpcS, handler.NewGreeterHandler())
 
     // Register http Handlers
@@ -80,8 +85,15 @@ func main2() {
             rpclog.UnaryServerInterceptor(),
         )),
     )
-    // attach the Ping service to the server
+    // attach the Greeter service to the server
     greeterv1.RegisterGreeterServiceServer(grpcServer, s)
+
+    // Add HealthChecks
+    hsrv := health.NewServer()
+    for name, _ := range grpcServer.GetServiceInfo() {
+        hsrv.SetServingStatus(name, grpc_health_v1.HealthCheckResponse_SERVING)
+    }
+    grpc_health_v1.RegisterHealthServer(grpcServer, hsrv)
 
     // start the server
     println(config.GetBuildInfo())

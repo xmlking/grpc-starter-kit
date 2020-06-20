@@ -26,12 +26,12 @@ func main() {
     }
     emailSubscriber := ctn.Resolve("emailer-subscriber").(*subscriber.EmailSubscriber)
 
-    client := eventing.NewSinkClient(cfg.Services.Emailer.Endpoint)
+    ceClient := eventing.NewSinkClient(cfg.Services.Emailer.Endpoint)
 
     // Start server!
     println(config.GetBuildInfo())
     log.Info().Msgf("Server (%s) started at: %s", serviceName, cfg.Services.Emailer.Endpoint)
-    if err := client.StartReceiver(context.Background(), emailSubscriber.HandleSend); err != nil {
+    if err := ceClient.StartReceiver(context.Background(), emailSubscriber.HandleSend); err != nil {
        log.Fatal().Err(err).Send();
     }
 }

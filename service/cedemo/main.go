@@ -12,12 +12,12 @@ import (
 
 func main() {
 
-    client, err := cloudevents.NewDefaultClient()
+    ceClient, err := cloudevents.NewDefaultClient()
     if err != nil {
         log.Fatal(err.Error())
     }
 
-    r := subscriber.Receiver{Client: client, Target: "http://localhost:8081"}
+    r := subscriber.Receiver{Client: ceClient, Target: "http://localhost:8081"}
 
     // Depending on whether targeting data has been supplied,
     // we will either reply with our response or send it on to
@@ -29,7 +29,7 @@ func main() {
         receiver = r.ReceiveAndSend
     }
 
-    if err := client.StartReceiver(context.Background(), receiver); err != nil {
+    if err := ceClient.StartReceiver(context.Background(), receiver); err != nil {
         log.Fatal(err)
     }
 }

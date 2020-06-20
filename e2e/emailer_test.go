@@ -31,7 +31,7 @@ func TestEmailSubscriber_Handle_Send_E2E(t *testing.T) {
     event := cloudevents.NewEvent()
     event.SetSource("github.com/xmlking/grpc-starter-kit/service/emailer")
     event.SetType("account.welcome.email")
-    event.SetData(cloudevents.ApplicationJSON, &emailerv1.Message{Subject: "Sumo", To: "sumo@demo.com"})
+    _ = event.SetData(cloudevents.ApplicationJSON, &emailerv1.Message{Subject: "Sumo", To: "sumo@demo.com"})
 
     // Set a target.
     // ctx := cecontext.WithTopic(context.Background(), topic) // for GCP PubSub
@@ -61,7 +61,7 @@ func TestEmailSubscriber_Handle_Request_E2E(t *testing.T) {
     event := cloudevents.NewEvent()
     event.SetSource("github.com/xmlking/grpc-starter-kit/service/emailer")
     event.SetType("account.welcome.email")
-    event.SetData(cloudevents.ApplicationJSON, &emailerv1.Message{Subject: "Sumo", To: "sumo@demo.com"})
+    _ = event.SetData(cloudevents.ApplicationJSON, &emailerv1.Message{Subject: "Sumo", To: "sumo@demo.com"})
 
     // Set a target.
     // ctx := cecontext.WithTopic(context.Background(), topic) // for GCP PubSub

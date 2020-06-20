@@ -49,6 +49,7 @@ type MicroService struct {
 
 
     Server *grpc.Server
+    // ceClient
 }
 type Interface interface {
     Serve(l net.Listener) error

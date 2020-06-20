@@ -1,6 +1,7 @@
 package registry
 
 import (
+    grpc_middleware "github.com/grpc-ecosystem/go-grpc-middleware"
     "github.com/jinzhu/gorm"
     "github.com/sarulabs/di/v2"
     "google.golang.org/grpc"
@@ -8,6 +9,7 @@ import (
 
     "github.com/rs/zerolog/log"
 
+    "github.com/xmlking/grpc-starter-kit/micro/middleware/rpclog"
     account_entities "github.com/xmlking/grpc-starter-kit/mkit/service/account/entities/v1"
     greeterv1 "github.com/xmlking/grpc-starter-kit/mkit/service/greeter/v1"
     "github.com/xmlking/grpc-starter-kit/service/account/handler"
@@ -59,7 +61,11 @@ func NewContainer(cfg configPB.Configuration) (*Container, error) {
             Name:  "greeter-connection",
             Scope: di.App,
             Build: func(ctn di.Container) (greeterConn interface{}, err error) {
-                greeterConn, err = grpc.Dial(cfg.Services.Greeter.Endpoint, grpc.WithInsecure(), grpc.WithBalancerName(roundrobin.Name))
+                greeterConn, err = grpc.Dial(cfg.Services.Greeter.Endpoint, grpc.WithInsecure(), grpc.WithBalancerName(roundrobin.Name),
+                    grpc.WithUnaryInterceptor(grpc_middleware.ChainUnaryClient(
+                        rpclog.UnaryClientInterceptor(),
+                    )),
+                )
                 if err != nil {
                     log.Fatal().Msgf("did not connect: %s", err)
                 }
