@@ -10,10 +10,14 @@ import (
 	"strings"
 	"sync"
 
+	grpc_middleware "github.com/grpc-ecosystem/go-grpc-middleware"
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog/log"
 	"github.com/xmlking/configor"
+	"google.golang.org/grpc"
+	"google.golang.org/grpc/credentials"
 
+	"github.com/xmlking/grpc-starter-kit/micro/middleware/rpclog"
 	configPB "github.com/xmlking/grpc-starter-kit/shared/proto/config"
 	uTLS "github.com/xmlking/grpc-starter-kit/shared/util/tls"
 )
@@ -97,6 +101,45 @@ func IsSecure() bool {
 	configLock.RLock()
 	defer configLock.RUnlock()
 	return cfg.Features.Tls.Enabled
+}
+
+func GetCeClient() {
+}
+
+func GetClientConn(service configPB.Service) (clientConn *grpc.ClientConn, err error) {
+	configLock.RLock()
+	defer configLock.RUnlock()
+
+	var dialOptions []grpc.DialOption
+	var ucInterceptors []grpc.UnaryClientInterceptor
+
+	tlsConf := cfg.Features.Tls
+	if tlsConf.Enabled {
+		if creds, err := uTLS.GetTLSConfig(tlsConf.CertFile, tlsConf.KeyFile, tlsConf.CaFile, tlsConf.Servername); err != nil {
+			return nil, err
+		} else {
+			dialOptions = append(dialOptions, grpc.WithTransportCredentials(credentials.NewTLS(creds)))
+		}
+	} else {
+		dialOptions = append(dialOptions, grpc.WithInsecure())
+	}
+
+	if service.ServiceConfig != "" {
+		dialOptions = append(dialOptions, grpc.WithDefaultServiceConfig(service.ServiceConfig))
+	}
+
+	if cfg.Features.Rpclog.Enabled {
+		ucInterceptors = append(ucInterceptors, rpclog.UnaryClientInterceptor())
+	}
+
+	if len(ucInterceptors) > 0 {
+		dialOptions = append(dialOptions, grpc.WithUnaryInterceptor(grpc_middleware.ChainUnaryClient(ucInterceptors...)))
+	}
+	clientConn, err = grpc.Dial(service.Endpoint, dialOptions...)
+	if err != nil {
+		log.Fatal().Msgf("Failed connect to: %s, error: %v", service.Endpoint, err)
+	}
+	return
 }
 
 func GetListener(endpoint string) (lis net.Listener, err error) {

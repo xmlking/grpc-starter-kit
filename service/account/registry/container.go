@@ -1,22 +1,19 @@
 package registry
 
 import (
-	grpc_middleware "github.com/grpc-ecosystem/go-grpc-middleware"
 	"github.com/jinzhu/gorm"
 	"github.com/rs/zerolog/log"
 	"github.com/sarulabs/di/v2"
 	"google.golang.org/grpc"
-	"google.golang.org/grpc/credentials"
 
-	"github.com/xmlking/grpc-starter-kit/micro/middleware/rpclog"
 	account_entities "github.com/xmlking/grpc-starter-kit/mkit/service/account/entities/v1"
 	greeterv1 "github.com/xmlking/grpc-starter-kit/mkit/service/greeter/v1"
 	"github.com/xmlking/grpc-starter-kit/service/account/handler"
 	"github.com/xmlking/grpc-starter-kit/service/account/repository"
+	"github.com/xmlking/grpc-starter-kit/shared/config"
 	"github.com/xmlking/grpc-starter-kit/shared/database"
 	"github.com/xmlking/grpc-starter-kit/shared/eventing"
 	configPB "github.com/xmlking/grpc-starter-kit/shared/proto/config"
-	uTLS "github.com/xmlking/grpc-starter-kit/shared/util/tls"
 )
 
 // Container - provide di Container
@@ -61,32 +58,7 @@ func NewContainer(cfg configPB.Configuration) (*Container, error) {
 			Name:  "greeter-connection",
 			Scope: di.App,
 			Build: func(ctn di.Container) (greeterConn interface{}, err error) {
-				var dialOptions []grpc.DialOption
-				var ucInterceptors []grpc.UnaryClientInterceptor
-				tlsConf := cfg.Features.Tls
-				if tlsConf.Enabled {
-					if creds, err := uTLS.GetTLSConfig(tlsConf.CertFile, tlsConf.KeyFile, tlsConf.CaFile, tlsConf.Servername); err != nil {
-						return nil, err
-					} else {
-						dialOptions = append(dialOptions, grpc.WithTransportCredentials(credentials.NewTLS(creds)))
-					}
-				} else {
-					dialOptions = append(dialOptions, grpc.WithInsecure())
-				}
-				if cfg.Services.Greeter.ServiceConfig != "" {
-					dialOptions = append(dialOptions, grpc.WithDefaultServiceConfig(cfg.Services.Greeter.ServiceConfig))
-				}
-				if cfg.Features.Rpclog.Enabled {
-					ucInterceptors = append(ucInterceptors, rpclog.UnaryClientInterceptor())
-				}
-				if len(ucInterceptors) > 0 {
-					dialOptions = append(dialOptions, grpc.WithUnaryInterceptor(grpc_middleware.ChainUnaryClient(ucInterceptors...)))
-				}
-				greeterConn, err = grpc.Dial(cfg.Services.Greeter.Endpoint, dialOptions...)
-				if err != nil {
-					log.Fatal().Msgf("Failed connect to greeterConn: %s", err)
-				}
-				return
+				return config.GetClientConn(*cfg.Services.Greeter)
 			},
 			Close: func(obj interface{}) error {
 				return obj.(*grpc.ClientConn).Close()
