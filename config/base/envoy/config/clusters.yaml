@@ -1,7 +1,7 @@
 version_info: '0'
 resources:
   - '@type': 'type.googleapis.com/envoy.api.v2.Cluster'
-    name: echo_service # account_service
+    name: echo_service
     connect_timeout: { seconds: 5 }
     type: STRICT_DNS
     # Comment out the following line to test on v6 networks
@@ -9,8 +9,14 @@ resources:
     http2_protocol_options: {}
     lb_policy: ROUND_ROBIN
     hosts:
-      # - socket_address: { address:  account.default.svc.cluster.local, port_value: 5000 } # for k8s
+      # - socket_address: { address:  echo.default.svc.cluster.local, port_value: 5000 } # for k8s
       - socket_address: { address: host.docker.internal, port_value: 5000 } # for docker-4-mac
+    health_checks:
+      timeout: 1s
+      interval: 10s
+      unhealthy_threshold: 2
+      healthy_threshold: 2
+      grpc_health_check: {}
     transport_socket:
       name: envoy.transport_sockets.tls
       typed_config:
@@ -21,8 +27,8 @@ resources:
             trusted_ca: { filename: '/etc/certs/upstream-ca-cert.pem' }
             match_subject_alt_names: { exact: 'localhost' }
 
-  - '@type': type.googleapis.com/envoy.api.v2.Cluster
-    name: echo_service1
+  - '@type': 'type.googleapis.com/envoy.api.v2.Cluster'
+    name: account_service
     connect_timeout: { seconds: 5 }
     type: STRICT_DNS
     # Comment out the following line to test on v6 networks
@@ -30,14 +36,26 @@ resources:
     http2_protocol_options: {}
     lb_policy: ROUND_ROBIN
     hosts:
-      # - socket_address: { address:  echo.default.svc.cluster.local, port_value: 5000 } # for k8s
-      - socket_address: { address: host.docker.internal, port_value: 5000 } # for docker-4-mac
+      # - socket_address: { address: account.default.svc.cluster.local, port_value: 8080 } # for k8s
+      - socket_address: { address: host.docker.internal, port_value: 8080 } # for docker-4-mac
+    health_checks:
+      timeout: 1s
+      interval: 10s
+      unhealthy_threshold: 2
+      healthy_threshold: 2
+      grpc_health_check: {}
 
-  - '@type': type.googleapis.com/envoy.api.v2.Cluster
-    name: echo_service2
+  - '@type': 'type.googleapis.com/envoy.api.v2.Cluster'
+    name: greeter_service
     connect_timeout: { seconds: 5 }
     type: EDS
     eds_cluster_config:
       eds_config: { path: '/etc/envoy/endpoints.yaml' }
     lb_policy: ROUND_ROBIN
     http2_protocol_options: {}
+    health_checks:
+      timeout: 1s
+      interval: 10s
+      unhealthy_threshold: 2
+      healthy_threshold: 2
+      grpc_health_check: {}

@@ -19,8 +19,6 @@ spec:
           envFrom:
             - configMapRef:
                 name: env-vars
-#            - configMapRef:
-#                name: env-vars-common
           volumeMounts:
             - name: config
               mountPath: /etc/envoy
@@ -29,16 +27,26 @@ spec:
               readOnly: true
           readinessProbe:
             httpGet:
-              path: /server_info
-              port: 9901
+              scheme: HTTPS
+              path: /healthz
+              httpHeaders:
+                - name: x-envoy-livenessprobe
+                  value: healthz
+              port: 9443
+            initialDelaySeconds: 3
           livenessProbe:
             httpGet:
-              path: /server_info
-              port: 9901
+              scheme: HTTPS
+              path: /healthz
+              httpHeaders:
+                - name: x-envoy-livenessprobe
+                  value: healthz
+              port: 9443
+            initialDelaySeconds: 10
           ports:
             - name: admin
               containerPort: 9901
-            - name: http
+            - name: http # just for debugging, to be removed
               containerPort: 9090
             - name: https
               containerPort: 9443

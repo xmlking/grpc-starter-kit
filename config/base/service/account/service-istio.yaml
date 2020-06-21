@@ -1,0 +1,15 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: service-istio
+spec:
+  type: ClusterIP
+  #  For Istio service mesh, you must remove the line clusterIP: None
+  # https://cloud.google.com/solutions/exposing-grpc-services-on-gke-using-envoy-proxy
+  publishNotReadyAddresses: true  # We want the servers to become available even if they're not ready
+  ports:
+    - name: grpc-web
+      port: 8080
+      protocol: TCP
+      appProtocol: grpc-web
+      targetPort: grpc-port

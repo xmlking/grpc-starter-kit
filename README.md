@@ -36,6 +36,7 @@ Microservices starter kit for **Golang**, aims to be developer friendly.
 - [x] BuildInfo with [govvv](https://github.com/ahmetb/govvv)
 - [x] Linting with [GolangCI](https://github.com/golangci/golangci-lint) linters aggregator
 - [x] Linting Protos with [Buf](https://buf.build/docs/introduction)
+- [x] Linting rest with [super-linter](https://github.com/github/super-linter/blob/master/docs/disabling-linters.md)
 - [x] CICD Pipelines with [GitHub Actions](https://github.com/features/actions)
 - [x] Kubernetes _Matrix Deployment_ with [Kustomize](https://kustomize.io/)
 - [ ] Add k8s [healthchecks](https://github.com/heptiolabs/healthcheck) with [cmux](https://medium.com/@drgarcia1986/listen-grpc-and-http-requests-on-the-same-port-263c40cb45ff)

@@ -100,7 +100,7 @@ make pkger TARGET=greeter
 make pkger-greeter
 make pkger
 # other pkger commands
-pkger list -include /config/config.yaml -include /config/config.prod.yaml -include /config/certs
+pkger list -include /config/config.yaml -include /config/config.production.yaml -include /config/certs
 pkger info github.com/xmlking/grpc-starter-kit
 ```
 

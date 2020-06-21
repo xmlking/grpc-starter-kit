@@ -2,13 +2,16 @@ version: "3.7"
 
 services:
   envoy:
-    image: envoyproxy/envoy:latest
-    command: /usr/local/bin/envoy -c etc/envoy/envoy.yaml
+    image: docker.io/envoyproxy/envoy-alpine:v1.14.2
+    command: /usr/local/bin/envoy -c etc/envoy/envoy-docker.yaml -l debug --service-cluster front --service-node front
     volumes:
-      - "./config/base/envoy/envoy.yaml:/etc/envoy/envoy.yaml"
+      - './config/certs:/etc/certs:ro'
+      - './config/base/envoy/config:/etc/envoy:ro'
     expose:
-      - "9090"
-      - "9901"
+      - '9090'
+      - '9443'
+      - '9901'
     ports:
-      - "9090:9090"
-      - "9901:9901"
+      - '9090:9090'
+      - '9444:9443'
+      - '9901:9901'

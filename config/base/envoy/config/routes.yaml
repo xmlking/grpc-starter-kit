@@ -6,13 +6,14 @@ resources:
       - name: local_service
         domains: ['*'] # "example.com" in prod
         routes:
-          - match: { prefix: '/yeti.account.v1.AccountService' }
+          - match: { prefix: '/mkit.service.account.user.v1.UserService' }
             route: { cluster: account_service, max_grpc_timeout: 15.0s }
-          - match: { prefix: '/yeti.echo.v1.EchoService' }
-            route: { cluster: echo_service, max_grpc_timeout: 15.0s }
+          - match: { prefix: '/mkit.service.greeter.v1.GreeterService' }
+            route: { cluster: greeter_service, max_grpc_timeout: 15.0s }
         cors:
           allow_origin_string_match:
             - safe_regex: { google_re2: {}, regex: '\*' }
           allow_methods: GET, PUT, DELETE, POST, OPTIONS
-          allow_headers: keep-alive,user-agent,cache-control,content-type,content-transfer-encoding,x-accept-content-transfer-encoding,x-accept-response-streaming,x-user-agent,x-grpc-web,grpc-timeout
+          allow_headers: keep-alive,user-agent,cache-control,content-type,content-transfer-encoding,x-accept-content-transfer-encoding,x-accept-response-streaming,x-user-agent,x-grpc-web,grpc-timeout,token,custom-header-1
           max_age: '1728000'
+          expose_headers: custom-header-1,grpc-status,grpc-message

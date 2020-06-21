@@ -55,6 +55,8 @@ func main() {
 		hsrv.SetServingStatus(name, grpc_health_v1.HealthCheckResponse_SERVING)
 	}
 	grpc_health_v1.RegisterHealthServer(grpcS, hsrv)
+    // TODO: User our own custom health implementation, instead of using built-in health server
+    // https://github.com/GoogleCloudPlatform/grpc-gke-nlb-tutorial/blob/master/echo-grpc/health/health.go
 
 	// Use the muxed listeners for your servers.
 	go grpcS.Serve(grpcL)
@@ -95,6 +97,8 @@ func main2() {
 		hsrv.SetServingStatus(name, grpc_health_v1.HealthCheckResponse_SERVING)
 	}
 	grpc_health_v1.RegisterHealthServer(grpcServer, hsrv)
+    // TODO: User our own custom health implementation, instead of using built-in health server
+    // https://github.com/GoogleCloudPlatform/grpc-gke-nlb-tutorial/blob/master/echo-grpc/health/health.go
 
 	// start the server
     reflection.Register(grpcServer)

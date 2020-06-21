@@ -1,0 +1,102 @@
+static_resources:
+  listeners:
+    - name: http
+      address:
+        socket_address: { address: 0.0.0.0, port_value: 9443 }
+      filter_chains:
+        - transport_socket:
+            name: envoy.transport_sockets.tls
+            typed_config:
+              "@type": type.googleapis.com/envoy.api.v2.auth.DownstreamTlsContext
+              common_tls_context:
+                tls_certificates:
+                  - certificate_chain: { filename: '/etc/certs/proxy-cert.pem' }
+                    private_key: { filename: '/etc/certs/proxy-key.pem' }
+                validation_context:
+                  trusted_ca: { filename: '/etc/certs/ca-cert.pem' }
+          filters:
+            - name: envoy.filters.network.http_connection_manager
+              typed_config:
+                '@type': type.googleapis.com/envoy.config.filter.network.http_connection_manager.v2.HttpConnectionManager
+                access_log:
+                  - name: envoy.file_access_log
+                    config:
+                      path: "/dev/stdout"
+                codec_type: AUTO
+                stat_prefix: ingress_http
+                route_config:
+                  name: local_route
+                  virtual_hosts:
+                    - name: https
+                      domains:
+                        - "*"
+                      routes:
+                        - match:
+                            prefix: "/mkit.service.account.user.v1.UserService/"
+                          route:
+                            cluster: account_service
+                        - match:
+                            prefix: "/mkit.service.greeter.v1.GreeterService/"
+                          route:
+                            cluster: greeter_service
+                http_filters:
+                  - name: envoy.filters.http.health_check
+                    typed_config:
+                      "@type": type.googleapis.com/envoy.config.filter.http.health_check.v2.HealthCheck
+                      pass_through_mode: false
+                      headers:
+                        - name: ":path"
+                          exact_match: "/healthz"
+                        - name: "x-envoy-livenessprobe"
+                          exact_match: "healthz"
+                  - name: envoy.filters.http.router
+                    config: {}
+  clusters:
+    - name: account_service
+      connect_timeout: 0.5s
+      type: STRICT_DNS
+      dns_lookup_family: V4_ONLY
+      lb_policy: ROUND_ROBIN
+      http2_protocol_options: {}
+      load_assignment:
+        cluster_name: account_service
+        endpoints:
+          - lb_endpoints:
+              - endpoint:
+                  address:
+                    # socket_address: { address: account.default.svc.cluster.local, port_value: 8080 }
+                    socket_address: { address: host.docker.internal, port_value: 8080 }
+      health_checks:
+        timeout: 1s
+        interval: 10s
+        unhealthy_threshold: 2
+        healthy_threshold: 2
+        grpc_health_check: {}
+    - name: greeter_service
+      connect_timeout: 0.5s
+      type: STRICT_DNS
+      dns_lookup_family: V4_ONLY
+      lb_policy: ROUND_ROBIN
+      http2_protocol_options: {}
+      load_assignment:
+        cluster_name: greeter_service
+        endpoints:
+          - lb_endpoints:
+              - endpoint:
+                  address:
+                    # socket_address: { address: greeter.default.svc.cluster.local, port_value: 8081 }
+                    socket_address: { address: host.docker.internal, port_value: 8081 }
+      health_checks:
+        timeout: 1s
+        interval: 5s
+        unhealthy_threshold: 2
+        healthy_threshold: 2
+        grpc_health_check: {}
+
+admin:
+  access_log_path: /dev/stdout
+  address:
+    socket_address: { address: 0.0.0.0, port_value: 9901 }
+#    socket_address:
+#      address: 0.0.0.0
+#      port_value: 9901

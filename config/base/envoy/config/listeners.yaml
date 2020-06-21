@@ -18,6 +18,15 @@ resources:
                 - name: envoy.filters.http.grpc_web
                 - name: envoy.filters.http.cors
                 - name: envoy.filters.http.router
+                - name: envoy.filters.http.health_check
+                  typed_config:
+                    "@type": type.googleapis.com/envoy.config.filter.http.health_check.v2.HealthCheck
+                    pass_through_mode: false
+                    headers:
+                      - name: ":path"
+                        exact_match: "/healthz"
+                      - name: "x-envoy-livenessprobe"
+                        exact_match: "healthz"
                 # - name: envoy.filters.http.ratelimit
                 #   # config: {}
                 # - name: envoy.filters.http.jwt_authn
@@ -35,8 +44,8 @@ resources:
             common_tls_context:
               alpn_protocols: ['h2', 'http/1.1']
               tls_certificates:
-                - certificate_chain: { filename: '/etc/certs/server-cert.pem' }
-                  private_key: { filename: '/etc/certs/server-key.pem' }
+                - certificate_chain: { filename: '/etc/certs/proxy-cert.pem' }
+                  private_key: { filename: '/etc/certs/proxy-key.pem' }
               validation_context:
                 trusted_ca: { filename: '/etc/certs/ca-cert.pem' }
         filters:
@@ -44,7 +53,7 @@ resources:
             typed_config:
               '@type': type.googleapis.com/envoy.config.filter.network.http_connection_manager.v2.HttpConnectionManager
               codec_type: AUTO
-              stat_prefix: ingress_http
+              stat_prefix: ingress_https
               rds:
                 route_config_name: route_config_0
                 config_source: { path: '/etc/envoy/routes.yaml' }
@@ -52,6 +61,15 @@ resources:
                 - name: envoy.filters.http.grpc_web
                 - name: envoy.filters.http.cors
                 - name: envoy.filters.http.router
+                - name: envoy.filters.http.health_check
+                  typed_config:
+                    "@type": type.googleapis.com/envoy.config.filter.http.health_check.v2.HealthCheck
+                    pass_through_mode: false
+                    headers:
+                      - name: ":path"
+                        exact_match: "/healthz"
+                      - name: "x-envoy-livenessprobe"
+                        exact_match: "healthz"
                 # - name: envoy.filters.http.ratelimit
                 #   # config: {}
                 # - name: envoy.filters.http.jwt_authn

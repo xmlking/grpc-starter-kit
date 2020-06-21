@@ -2,6 +2,8 @@ package main
 
 import (
 	cloudevents "github.com/cloudevents/sdk-go/v2"
+    "google.golang.org/grpc/health"
+    "google.golang.org/grpc/health/grpc_health_v1"
     "google.golang.org/grpc/reflection"
 
     "github.com/rs/zerolog/log"
@@ -62,6 +64,13 @@ func main() {
 	// Register Handlers
 	userv1.RegisterUserServiceServer(grpcServer, userHandler)
 	profilev1.RegisterProfileServiceServer(grpcServer, profileHandler)
+
+    // Add HealthChecks
+    hsrv := health.NewServer()
+    for name := range grpcServer.GetServiceInfo() {
+        hsrv.SetServingStatus(name, grpc_health_v1.HealthCheckResponse_SERVING)
+    }
+    grpc_health_v1.RegisterHealthServer(grpcServer, hsrv)
 
     // Start server!
     reflection.Register(grpcServer)

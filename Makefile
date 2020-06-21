@@ -157,12 +157,12 @@ endif
 			for _target in $${type}/*/; do \
 				temp=$${_target%%/}; target=$${temp#*/}; \
 				echo "\tPackaging config for $${target}-$${type}"; \
-				${GOPATH}/bin/pkger -o $${type}/$${target} -include /config/config.yaml -include /config/config.prod.yaml -include /config/certs; \
+				${GOPATH}/bin/pkger -o $${type}/$${target} -include /config/config.yaml -include /config/config.production.yaml -include /config/certs; \
 			done \
 		done \
 	else \
 		echo "Packaging config for ${TARGET}-${TYPE}..."; \
-		${GOPATH}/bin/pkger -o ${TYPE}/${TARGET} -include /config/config.yaml -include /config/config.prod.yaml -include /config/certs ; \
+		${GOPATH}/bin/pkger -o ${TYPE}/${TARGET} -include /config/config.yaml -include /config/config.production.yaml -include /config/certs ; \
 	fi
 
 build build-%: pkger-%
