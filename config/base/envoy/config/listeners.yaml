@@ -60,7 +60,6 @@ resources:
               http_filters:
                 - name: envoy.filters.http.grpc_web
                 - name: envoy.filters.http.cors
-                - name: envoy.filters.http.router
                 - name: envoy.filters.http.health_check
                   typed_config:
                     "@type": type.googleapis.com/envoy.config.filter.http.health_check.v2.HealthCheck
@@ -70,7 +69,8 @@ resources:
                         exact_match: "/healthz"
                       - name: "x-envoy-livenessprobe"
                         exact_match: "healthz"
-                # - name: envoy.filters.http.ratelimit
-                #   # config: {}
-                # - name: envoy.filters.http.jwt_authn
-                #   # config: {}
+#               - name: envoy.filters.http.ratelimit
+#                 # config: {}
+#               - name: envoy.filters.http.jwt_authn
+#                 # config: {}
+               - name: envoy.filters.http.router # has to be last

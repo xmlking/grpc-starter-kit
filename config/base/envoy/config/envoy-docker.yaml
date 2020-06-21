@@ -21,15 +21,20 @@ static_resources:
                       domains:
                         - "*"
                       routes:
-                        - match:
-                            prefix: "/mkit.service.account.user.v1.UserService"
-                          route:
-                            cluster: account_service
-                        - match:
-                            prefix: "/mkit.service.greeter.v1.GreeterService"
-                          route:
-                            cluster: greeter_service
+                        - match: { prefix: '/mkit.service.account.user.v1.UserService' }
+                          route: { cluster: account_service, max_grpc_timeout: 15.0s }
+                        - match: { prefix: '/mkit.service.greeter.v1.GreeterService' }
+                          route: { cluster: greeter_service, max_grpc_timeout: 15.0s }
+                      cors:
+                        allow_origin_string_match:
+                          - safe_regex: { google_re2: {}, regex: '\*' }
+                        allow_methods: GET, PUT, DELETE, POST, OPTIONS
+                        allow_headers: keep-alive,user-agent,cache-control,content-type,content-transfer-encoding,x-accept-content-transfer-encoding,x-accept-response-streaming,x-user-agent,x-grpc-web,grpc-timeout,token,custom-header-1
+                        max_age: '1728000'
+                        expose_headers: custom-header-1,grpc-status,grpc-message
                 http_filters:
+                  - name: envoy.filters.http.grpc_web
+                  - name: envoy.filters.http.cors
                   - name: envoy.filters.http.health_check
                     typed_config:
                       "@type": type.googleapis.com/envoy.config.filter.http.health_check.v2.HealthCheck
@@ -40,7 +45,6 @@ static_resources:
                         - name: "x-envoy-livenessprobe"
                           exact_match: "healthz"
                   - name: envoy.filters.http.router
-                    config: {}
 
     - name: https
       address:
@@ -50,6 +54,7 @@ static_resources:
             name: envoy.transport_sockets.tls
             typed_config:
               "@type": type.googleapis.com/envoy.api.v2.auth.DownstreamTlsContext
+              # require_client_certificate: true # uncomment if you want client to provide cert
               common_tls_context:
                 tls_certificates:
                   - certificate_chain: { filename: '/etc/certs/proxy-cert.pem' }
@@ -73,15 +78,20 @@ static_resources:
                       domains:
                         - "*"
                       routes:
-                        - match:
-                            prefix: "/mkit.service.account.user.v1.UserService"
-                          route:
-                            cluster: account_service
-                        - match:
-                            prefix: "/mkit.service.greeter.v1.GreeterService"
-                          route:
-                            cluster: greeter_service
+                        - match: { prefix: '/mkit.service.account.user.v1.UserService' }
+                          route: { cluster: account_service, max_grpc_timeout: 15.0s }
+                        - match: { prefix: '/mkit.service.greeter.v1.GreeterService' }
+                          route: { cluster: greeter_service, max_grpc_timeout: 15.0s }
+                      cors:
+                        allow_origin_string_match:
+                          - safe_regex: { google_re2: {}, regex: '\*' }
+                        allow_methods: GET, PUT, DELETE, POST, OPTIONS
+                        allow_headers: keep-alive,user-agent,cache-control,content-type,content-transfer-encoding,x-accept-content-transfer-encoding,x-accept-response-streaming,x-user-agent,x-grpc-web,grpc-timeout,token,custom-header-1
+                        max_age: '1728000'
+                        expose_headers: custom-header-1,grpc-status,grpc-message
                 http_filters:
+                  - name: envoy.filters.http.grpc_web
+                  - name: envoy.filters.http.cors
                   - name: envoy.filters.http.health_check
                     typed_config:
                       "@type": type.googleapis.com/envoy.config.filter.http.health_check.v2.HealthCheck
@@ -91,8 +101,7 @@ static_resources:
                           exact_match: "/healthz"
                         - name: "x-envoy-livenessprobe"
                           exact_match: "healthz"
-                  - name: envoy.filters.http.router
-                    config: {}
+                  - name: envoy.filters.http.router  # has to be last
 
   clusters:
     - name: account_service
