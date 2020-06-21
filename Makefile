@@ -13,7 +13,7 @@ DOCKER_REGISTRY 					:= docker.pkg.github.com
 DOCKER_CONTEXT_PATH 			:= $(GITHUB_REPO_OWNER)/$(GITHUB_REPO_NAME)
 # DOCKER_REGISTRY 					:= docker.io
 # DOCKER_CONTEXT_PATH 			:= xmlking
-GO_MICRO_VERSION 					:= latest
+BASE_VERSION					:= latest
 
 VERSION					:= $(shell git describe --tags || echo "HEAD")
 GOPATH					:= $(shell go env GOPATH)
@@ -245,7 +245,7 @@ docker docker-%:
 				docker build --rm \
 				--build-arg BUILDKIT_INLINE_CACHE=1 \
 				--build-arg VERSION=$(VERSION) \
-				--build-arg GO_MICRO_VERSION=$(GO_MICRO_VERSION) \
+				--build-arg BASE_VERSION=$(BASE_VERSION) \
 				--build-arg TYPE=$${type} \
 				--build-arg TARGET=$${target} \
 				--build-arg DOCKER_REGISTRY=${DOCKER_REGISTRY} \
@@ -260,7 +260,7 @@ docker docker-%:
 		docker build --rm \
 		--build-arg BUILDKIT_INLINE_CACHE=1 \
 		--build-arg VERSION=$(VERSION) \
-		--build-arg GO_MICRO_VERSION=$(GO_MICRO_VERSION) \
+		--build-arg BASE_VERSION=$(BASE_VERSION) \
 		--build-arg TYPE=${TYPE} \
 		--build-arg TARGET=${TARGET} \
 		--build-arg DOCKER_REGISTRY=${DOCKER_REGISTRY} \
@@ -286,8 +286,15 @@ docker_push:
 		docker push $$image; \
 	done;
 
+docker_base:
+	docker build --build-arg BUILD_DATE=$(shell date +%FT%T%Z) -f Dockerfile.base -t ${DOCKER_REGISTRY}/${DOCKER_CONTEXT_PATH}/base:$(VERSION) .
+	docker tag ${DOCKER_REGISTRY}/${DOCKER_CONTEXT_PATH}/base:$(VERSION) ${DOCKER_REGISTRY}/${DOCKER_CONTEXT_PATH}/base:latest
+#	docker push ${DOCKER_REGISTRY}/${DOCKER_CONTEXT_PATH}/base:$(VERSION)
+#	docker push ${DOCKER_REGISTRY}/${DOCKER_CONTEXT_PATH}/base:latest
+
+
 kustomize: OVERLAY 	:= local
-kustomize: NS 			:= default
+kustomize: NS 		:= default
 kustomize:
 	# @kustomize build --load_restrictor none config/envs/${OVERLAY}/ | sed -e "s|\$$(NS)|${NS}|g" 		-e "s|\$$(IMAGE_VERSION)|${VERSION}|g" | kubectl apply -f -
 	@kustomize build --load_restrictor none config/envs/${OVERLAY}/ | sed -e "s|\$$(NS)|${NS}|g" 		-e "s|\$$(IMAGE_VERSION)|${VERSION}|g" > build/kubernetes.yaml

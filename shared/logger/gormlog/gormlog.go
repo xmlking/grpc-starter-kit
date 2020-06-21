@@ -1,4 +1,4 @@
-// Package gormlog provides gorm logger implementation using Go-Micro's meta logger.
+// Package gormlog provides gorm logger implementation using zerolog logger.
 //
 // Example usage:
 //  orm, _ := gorm.Open("postgres", dsn)

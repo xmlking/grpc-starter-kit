@@ -78,8 +78,5 @@ func (s *MicroService) Serve(net.Listener) error {
 
 // Shutdown implements Server.Shutdown
 func (s *MicroService) Shutdown() {
-	err := s.lis.Close()
-	if err != nil {
-		grpclog.Errorf("failed to close cmux's listener: %v", err)
-	}
+	s.Server.GracefulStop()
 }

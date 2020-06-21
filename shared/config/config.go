@@ -18,7 +18,7 @@ import (
 	"google.golang.org/grpc/credentials"
 
 	"github.com/xmlking/grpc-starter-kit/micro/middleware/rpclog"
-	configPB "github.com/xmlking/grpc-starter-kit/shared/proto/config"
+    configPB "github.com/xmlking/grpc-starter-kit/shared/proto/config"
 	uTLS "github.com/xmlking/grpc-starter-kit/shared/util/tls"
 )
 
@@ -106,7 +106,7 @@ func IsSecure() bool {
 func GetCeClient() {
 }
 
-func GetClientConn(service configPB.Service) (clientConn *grpc.ClientConn, err error) {
+func GetClientConn(service *configPB.Service /*from_service*/) (clientConn *grpc.ClientConn, err error) {
 	configLock.RLock()
 	defer configLock.RUnlock()
 
@@ -131,13 +131,14 @@ func GetClientConn(service configPB.Service) (clientConn *grpc.ClientConn, err e
 	if cfg.Features.Rpclog.Enabled {
 		ucInterceptors = append(ucInterceptors, rpclog.UnaryClientInterceptor())
 	}
+	// TODO append from_service Interceptor passed above, carry over existing tags
 
 	if len(ucInterceptors) > 0 {
 		dialOptions = append(dialOptions, grpc.WithUnaryInterceptor(grpc_middleware.ChainUnaryClient(ucInterceptors...)))
 	}
 	clientConn, err = grpc.Dial(service.Endpoint, dialOptions...)
 	if err != nil {
-		log.Fatal().Msgf("Failed connect to: %s, error: %v", service.Endpoint, err)
+		log.Fatal().Msgf("Failed connect to: %s, error: %s", service.Endpoint, err)
 	}
 	return
 }
@@ -164,10 +165,10 @@ func GetListener(endpoint string) (lis net.Listener, err error) {
 			if tlsConfig, err := uTLS.GetTLSConfig(tlsConf.CertFile, tlsConf.KeyFile, tlsConf.CaFile, tlsConf.Servername); err != nil {
 				return nil, err
 			} else {
-				return tls.Listen("tcp", fmt.Sprintf("0:%s", target.Port), tlsConfig)
+				return tls.Listen("tcp", fmt.Sprintf(":%s", target.Port), tlsConfig)
 			}
 		} else {
-			return net.Listen("tcp", fmt.Sprintf("0:%s", target.Port))
+			return net.Listen("tcp", fmt.Sprintf(":%s", target.Port))
 		}
 	default:
 		return nil, errors.New(fmt.Sprintf("unknown scheme: %s in endpoint: %s", target.Scheme, endpoint))

@@ -1,11 +1,13 @@
 package config_test
 
 import (
-	"fmt"
-	"testing"
-	"time"
+    "fmt"
+    "os"
+    "testing"
+    "time"
 
-	"github.com/xmlking/grpc-starter-kit/shared/config"
+    "github.com/xmlking/grpc-starter-kit/shared/config"
+    configPB "github.com/xmlking/grpc-starter-kit/shared/proto/config"
 )
 
 // CONFIGOR_DEBUG_MODE=true go test -v ./shared/config/... -count=1
@@ -68,4 +70,18 @@ func TestParseTargetString(t *testing.T) {
 			t.Errorf("ParseTarget(%q) = %+v, want %+v", test.targetStr, got, test.want)
 		}
 	}
+}
+
+func TestOverwriteConfigurationWithEnvironmentWithDefaultPrefix(t *testing.T) {
+    os.Setenv("CONFIGOR_SERVICES_ACCOUNT_ENDPOINT", "dns:///localhost:8088")
+    defer os.Setenv("CONFIGOR_SERVICES_ACCOUNT_ENDPOINT", "")
+
+    var cfg        configPB.Configuration
+    config.Configor.Load(&cfg,  "/config/config.yaml");
+
+    t.Logf("Environment: %s", config.Configor.GetEnvironment())
+    t.Log(cfg.Services.Account)
+    if cfg.Services.Account.Endpoint != "dns:///localhost:8088" {
+        t.Errorf("Account Endpoint is %s, want %s", cfg.Services.Account.Endpoint, "dns:///localhost:8088")
+    }
 }

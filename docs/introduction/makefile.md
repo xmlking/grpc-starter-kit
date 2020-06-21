@@ -135,23 +135,30 @@ make docker-account-service VERSION=v0.1.1
 make docker TARGET=account VERSION=v0.1.1
 make docker TARGET=account TYPE=service VERSION=v0.1.1
 make docker TARGET=account DOCKER_REGISTRY=us.gcr.io DOCKER_CONTEXT_PATH=<MY_PROJECT_ID>/grpc-starter-kit
-make docker TARGET=account DOCKER_REGISTRY=us.gcr.io DOCKER_CONTEXT_PATH=<MY_PROJECT_ID>/grpc-starter-kit GO_MICRO_VERSION=v1.17.1
+make docker TARGET=account DOCKER_REGISTRY=us.gcr.io DOCKER_CONTEXT_PATH=<MY_PROJECT_ID>/grpc-starter-kit BASE_VERSION=v0.1.0
 # short hand for TARGET and TYPE args
 make docker-emailer-service
 
 # build all docker images for docker-compose
 make docker
 make docker DOCKER_REGISTRY=us.gcr.io
-make docker VERSION=v0.3.2 GO_MICRO_VERSION=v2.3.0
+make docker VERSION=v0.3.2 BASE_VERSION=v0.1.0
 make docker DOCKER_REGISTRY=docker.pkg.github.com DOCKER_CONTEXT_PATH=xmlking/grpc-starter-kit
 make docker DOCKER_REGISTRY=docker.pkg.github.com DOCKER_CONTEXT_PATH=xmlking/grpc-starter-kit VERSION=v0.2.9
-make docker DOCKER_REGISTRY=docker.pkg.github.com DOCKER_CONTEXT_PATH=xmlking/grpc-starter-kit VERSION=v0.2.9 GO_MICRO_VERSION=v1.17.1
+make docker DOCKER_REGISTRY=docker.pkg.github.com DOCKER_CONTEXT_PATH=xmlking/grpc-starter-kit VERSION=v0.2.9 BASE_VERSION=v0.1.0
 
 # publish all microservices images
 make docker_push
 
 # remove all previous microservices images and any dangling images
 make docker_clean
+```
+
+This will build and publish base image: `docker.pkg.github.com/xmlking/grpc-starter-kit/base`
+
+```
+make docker_base VERSION=v0.1.0
+make docker_base 
 ```
 
 ### kustomize

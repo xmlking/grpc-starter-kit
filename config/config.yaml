@@ -18,10 +18,10 @@ email:
 
 services:
   account:
-    endpoint: dns:///account.test:8080
+    endpoint: dns:///localhost:8080
     version: v0.1.0
   greeter:
-    endpoint: dns:///greeter.test:8081
+    endpoint: dns:///localhost:8081
 #    endpoint: unix:///tmp/greeter.sock
     version: v0.1.0
     service_config: |
@@ -54,10 +54,10 @@ services:
         }
       }
   emailer:
-    endpoint: http://emailer.test:8082
+    endpoint: http://localhost:8082
     version: v0.1.0
   recorder:
-    endpoint: dns:///recorder.test:8083
+    endpoint: dns:///localhost:8083
     version: v0.1.0
 
 features:

@@ -11,7 +11,7 @@ resources:
   - service
   - secrets
   - envoy
-  - postgres
+  - github.com/xmlking/kustomize/config/postgres?ref=0.1.36
 
 configurations:
   - kconfig.yaml

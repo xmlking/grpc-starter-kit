@@ -14,6 +14,9 @@ export CONFIGOR_ENV=prod
 export CONFIGOR_ENV_PREFIX=APP
 export APP_FEATURES_TLS_ENABLED=true
 
-# for example 
-MICRO_SERVER_ADDRESS=0.0.0.0:9999 CONFIGOR_ENV_PREFIX=APP APP_FEATURES_TLS_ENABLED=true ./build/greeter-service
+# for example
+CONFIGOR_SERVICES_GREETER_ENDPOINT=dns:///localhost:8088 ./build/greeter-service
+CONFIGOR_ENV_PREFIX=APP APP_SERVICES_GREETER_ENDPOINT=dns:///localhost:8088 ./build/greeter-service
+CONFIGOR_ENV_PREFIX=APP APP_FEATURES_TLS_ENABLED=true ./build/greeter-service
+CONFIGOR_ENV=prod ./build/greeter-service
 ```

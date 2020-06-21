@@ -3,10 +3,11 @@ package rpclog
 import (
 	"context"
 
-	"github.com/rs/zerolog/log"
+    "github.com/grpc-ecosystem/go-grpc-middleware/util/metautils"
+    "github.com/rs/zerolog/log"
 	"google.golang.org/grpc"
 
-	"github.com/xmlking/grpc-starter-kit/shared/metadata"
+    "github.com/xmlking/grpc-starter-kit/shared/constants"
 )
 
 // UnaryServerInterceptor is an example server-side request logger middleware
@@ -16,15 +17,12 @@ func UnaryServerInterceptor() grpc.UnaryServerInterceptor {
 
 		resp, err := handler(ctx, req)
 
-		traceId, _ := metadata.GetTraceID(ctx)
-		tenantId, _ := metadata.GetTenantID(ctx)
-		fromService, _ := metadata.GetFromService(ctx)
 		log.Debug().
 			Str("module", "debug").
 			Str("method", info.FullMethod).
-			Str("trace_id", traceId).
-			Str("tenant_id", tenantId).
-			Str("from_service", fromService).
+			Str("trace_id",  metautils.ExtractIncoming(ctx).Get(constants.TraceIDKey)).
+			Str("tenant_id", metautils.ExtractIncoming(ctx).Get(constants.TenantIdKey)).
+			Str("from_service", metautils.ExtractIncoming(ctx).Get(constants.FromServiceKey)).
 			Interface("req", req).
 			Interface("resp", resp).
 			Interface("err", err).
@@ -41,15 +39,12 @@ func UnaryClientInterceptor() grpc.UnaryClientInterceptor {
 
 		err := invoker(ctx, method, req, reply, cc, opts...)
 
-		traceId, _ := metadata.GetTraceID(ctx)
-		tenantId, _ := metadata.GetTenantID(ctx)
-		fromService, _ := metadata.GetFromService(ctx)
 		log.Debug().
 			Str("module", "debug").
 			Str("method", method).
-			Str("trace_id", traceId).
-			Str("tenant_id", tenantId).
-			Str("from_service", fromService).
+            Str("trace_id",  metautils.ExtractOutgoing(ctx).Get(constants.TraceIDKey)).
+            Str("tenant_id", metautils.ExtractOutgoing(ctx).Get(constants.TenantIdKey)).
+            Str("from_service", metautils.ExtractOutgoing(ctx).Get(constants.FromServiceKey)).
 			Interface("req", req).
 			Interface("reply", reply).
 			Msg("Client-Side Call")

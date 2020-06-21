@@ -1,20 +1,20 @@
 package main
 
 import (
-	"context"
-	"flag"
+    "context"
+    "flag"
+    "fmt"
 
-	grpc_middleware "github.com/grpc-ecosystem/go-grpc-middleware"
-	"google.golang.org/grpc/metadata"
+    "google.golang.org/grpc/metadata"
 
-	"github.com/golang/protobuf/ptypes/wrappers"
-	"github.com/rs/zerolog/log"
-	"google.golang.org/grpc"
+    "github.com/golang/protobuf/ptypes/wrappers"
+    "github.com/rs/zerolog/log"
 
-	"github.com/xmlking/grpc-starter-kit/micro/middleware/rpclog"
-	userv1 "github.com/xmlking/grpc-starter-kit/mkit/service/account/user/v1"
-	"github.com/xmlking/grpc-starter-kit/shared/config"
-	_ "github.com/xmlking/grpc-starter-kit/shared/logger"
+    userv1 "github.com/xmlking/grpc-starter-kit/mkit/service/account/user/v1"
+    "github.com/xmlking/grpc-starter-kit/shared/config"
+    "github.com/xmlking/grpc-starter-kit/shared/constants"
+    _ "github.com/xmlking/grpc-starter-kit/shared/logger"
+    "github.com/xmlking/grpc-starter-kit/shared/util"
 )
 
 var (
@@ -22,12 +22,12 @@ var (
 )
 
 func main() {
-	log.Debug().Msgf("IsProduction? %v", config.IsProduction())
+	log.Debug().Msgf("IsProduction? %t", config.IsProduction())
 	//log.Debug().Interface("Dialect", cfg.Database.Dialect).Send()
 	//log.Debug().Msg(cfg.Database.Host)
 	//log.Debug().Uint32("Port", cfg.Database.Port).Send()
 	//log.Debug().Uint64("FlushInterval", cfg.Features.Tracing.FlushInterval).Send()
-	//log.Debug().Msgf("cfg is %v", cfg)
+	//log.Debug().Msgf("cfg is %+v", cfg)
 
 	username := flag.String("username", "sumo", "username of user to be create")
 	email := flag.String("email", "sumo@demo.com", "email of user to be create")
@@ -36,13 +36,7 @@ func main() {
 
 	log.Debug().Str("username", *username).Str("email", *email).Uint64("limit", *limit).Msg("Flags Using:")
 
-	conn, err := grpc.Dial(
-		cfg.Services.Account.Endpoint, grpc.WithInsecure(),
-		grpc.WithDefaultServiceConfig(`{"loadBalancingPolicy":"round_robin"}`),
-		grpc.WithUnaryInterceptor(grpc_middleware.ChainUnaryClient(
-			rpclog.UnaryClientInterceptor(),
-		)),
-	)
+	conn, err :=  config.GetClientConn(cfg.Services.Account)
 	if err != nil {
 		log.Fatal().Msgf("did not connect: %s", err)
 	}
@@ -53,13 +47,13 @@ func main() {
 	//md := metadata.Pairs("k1", "v1", "k1", "v2", "k2", "v3")
 	//ctx := metadata.NewOutgoingContext(context.Background(), md)
 	// create a new context with some metadata - (Optional) Just for demonstration
-	ctx := metadata.AppendToOutgoingContext(context.Background(), "X-User-Id", "john", "X-From-Id", "script")
-
+	ctx := metadata.AppendToOutgoingContext(context.Background(), constants.TraceIDKey, "12345", constants.FromServiceKey, "e2e-account-test-client")
+    suffix := util.RandomStringLower(5)
 	if rsp, err := userClient.Create(ctx, &userv1.CreateRequest{
-		Username:  &wrappers.StringValue{Value: "sumo"},
-		FirstName: &wrappers.StringValue{Value: "sumo"},
-		LastName:  &wrappers.StringValue{Value: "demo"},
-		Email:     &wrappers.StringValue{Value: "sumo@demo.com"},
+		Username:  &wrappers.StringValue{Value: "u_" + suffix},
+		FirstName: &wrappers.StringValue{Value: "f_" + suffix},
+		LastName:  &wrappers.StringValue{Value: "l_" + suffix},
+		Email:     &wrappers.StringValue{Value: fmt.Sprintf("e_%s@demo.com", suffix)},
 	}); err != nil {
 		log.Error().Err(err).Send()
 	} else {
@@ -70,7 +64,8 @@ func main() {
 }
 
 func getUserList(us userv1.UserServiceClient, limit uint32) {
-	if rsp, err := us.List(context.Background(), &userv1.ListRequest{Limit: &wrappers.UInt32Value{Value: limit}}); err != nil {
+    ctx := metadata.AppendToOutgoingContext(context.Background(), constants.TraceIDKey, "12345", constants.FromServiceKey, "e2e-account-test-client")
+	if rsp, err := us.List(ctx, &userv1.ListRequest{Limit: &wrappers.UInt32Value{Value: limit}}); err != nil {
 		log.Fatal().Err(err).Msg("Unable to List Users")
 	} else {
 		log.Info().Interface("listRsp", rsp).Send()

@@ -1,8 +1,8 @@
 # Accept the Go Micro version for the image to be set as a build argument.
-ARG GO_MICRO_VERSION=latest
+ARG BASE_VERSION=latest
 
 # First stage: build the executable.
-FROM micro/go-micro:${GO_MICRO_VERSION} AS builder
+FROM docker.pkg.github.com/xmlking/grpc-starter-kit/base:${BASE_VERSION} AS builder
 
 # Set the environment variables for the go command:
 # * CGO_ENABLED=0 to build a statically-linked executable
@@ -32,7 +32,7 @@ ARG TARGET=account
 RUN pkger -o $TYPE/$TARGET -include /config/config.yaml -include /config/config.prod.yaml -include /config/certs
 RUN go build -a \
     -ldflags="-w -s -linkmode external -extldflags '-static' $(govvv -flags -version ${VERSION} -pkg $(go list ./shared/config) )" \
-    -o /app ./$TYPE/$TARGET/main.go ./$TYPE/$TARGET/plugin.go
+    -o /app ./$TYPE/$TARGET/main.go
 
 # Final stage: the running container.
 FROM scratch AS final
@@ -40,7 +40,10 @@ FROM scratch AS final
 # copy 1 MiB busybox executable
 COPY --from=busybox:1.31.1 /bin/busybox /bin/busybox
 
-# copy dumb-ini from micro
+# copy grpc-health-probe to use with readiness and liveness probes
+COPY --from=builder /bin/grpc_health_probe /bin/grpc_health_probe
+
+# copy dumb-ini from base
 COPY --from=builder /usr/bin/dumb-init /usr/bin/dumb-init
 
 # Import the user and group files from the first stage.
@@ -82,7 +85,7 @@ LABEL org.label-schema.build-date=$BUILD_DATE \
     org.label-schema.vendor=$VENDOR \
     org.label-schema.version=$VERSION \
     org.label-schema.docker.schema-version="1.0" \
-    org.label-schema.docker.cmd="docker run -it -e MICRO_SERVER_ADDRESS=0.0.0.0:8080 -p 8080:8080  ${DOCKER_REGISTRY:+${DOCKER_REGISTRY}/}${DOCKER_CONTEXT_PATH}/${TARGET}-${TYPE}:${VERSION}"
+    org.label-schema.docker.cmd="docker run -it -e CONFIGOR_ENV=prod -p 8080:8080  ${DOCKER_REGISTRY:+${DOCKER_REGISTRY}/}${DOCKER_CONTEXT_PATH}/${TARGET}-${TYPE}:${VERSION}"
 
 # Run the compiled binary.
 ENTRYPOINT ["/usr/bin/dumb-init", "/app"]

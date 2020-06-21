@@ -53,7 +53,7 @@ func TestSendEmail_Send(t *testing.T) {
 				auth:    tt.fields.auth,
 				// ADD Mock SendMail func
 				send: func(addr string, a smtp.Auth, from string, to []string, msg []byte) error {
-					t.Logf("from: %s, to: %s, msg: %s, address: %s, auth: %v", from, to, string(msg), addr, a)
+					t.Logf("from: %s, to: %s, msg: %s, address: %s, auth: %+v", from, to, string(msg), addr, a)
 					if from == "xyz@gmail.com" {
 						return fmt.Errorf("we don't like %s", from)
 					}

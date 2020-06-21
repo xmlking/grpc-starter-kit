@@ -6,7 +6,7 @@
 
 ```bash
 # build
-GO_MICRO_VERSION=v1.17.1
+BASE_VERSION=v0.1.0
 TYPE=service
 TARGET=account
 VERSION=0.0.5-SNAPSHOT

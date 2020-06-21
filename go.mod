@@ -3,6 +3,8 @@ module github.com/xmlking/grpc-starter-kit
 go 1.14
 
 require (
+	github.com/DATA-DOG/go-sqlmock v1.4.1 // indirect
+	// github.com/cloudevents/sdk-go/protocol/pubsub/v2 v2.0.1-0.20200608152019-2ab697c8fc0b
 	github.com/cloudevents/sdk-go/v2 v2.0.0
 	github.com/envoyproxy/protoc-gen-validate v0.3.0
 	github.com/gogo/protobuf v1.3.1

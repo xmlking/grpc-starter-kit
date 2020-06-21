@@ -57,8 +57,8 @@ func NewContainer(cfg configPB.Configuration) (*Container, error) {
 		{
 			Name:  "greeter-connection",
 			Scope: di.App,
-			Build: func(ctn di.Container) (greeterConn interface{}, err error) {
-				return config.GetClientConn(*cfg.Services.Greeter)
+			Build: func(ctn di.Container) (interface{}, error) {
+				return config.GetClientConn(cfg.Services.Greeter)
 			},
 			Close: func(obj interface{}) error {
 				return obj.(*grpc.ClientConn).Close()

@@ -165,13 +165,12 @@ kubectl delete -f build/kubernetes.yaml
 
 ### External Docs
 
-1. [Go-Micro Getting Started](https://itnext.io/micro-in-action-getting-started-a79916ae3cac)
-2. [examples](https://github.com/micro/examples) - example usage code for micro
-3. [microhq](https://github.com/microhq) - a place for prebuilt microservices
-4. [explorer](https://micro.mu/explore/) - which aggregates micro based open source projects
-5. [micro-plugins](https://github.com/micro/go-plugins) extensible micro plugins
-6. [step-by-step-guide-micro](https://github.com/micro-in-cn/tutorials/tree/master/microservice-in-micro)
-7. [micro-in-cn](https://github.com/micro-in-cn/tutorials/tree/master/examples)
-8. [Platform Web](https://github.com/micro-in-cn/platform-web)
-9. [grpc template](https://github.com/vtolstov/micro-template-grpc)
-10. [Simple API backed by PostgresQL, Golang and gRPC](https://medium.com/@vptech/complexity-is-the-bane-of-every-software-engineer-e2878d0ad45a)
+1. [examples](https://github.com/micro/examples) - example usage code for micro
+1. [microhq](https://github.com/microhq) - a place for prebuilt microservices
+1. [explorer](https://micro.mu/explore/) - which aggregates micro based open source projects
+1. [micro-plugins](https://github.com/micro/go-plugins) extensible micro plugins
+1. [step-by-step-guide-micro](https://github.com/micro-in-cn/tutorials/tree/master/microservice-in-micro)
+1. [micro-in-cn](https://github.com/micro-in-cn/tutorials/tree/master/examples)
+1. [Platform Web](https://github.com/micro-in-cn/platform-web)
+1. [grpc template](https://github.com/vtolstov/micro-template-grpc)
+1. [Simple API backed by PostgresQL, Golang and gRPC](https://medium.com/@vptech/complexity-is-the-bane-of-every-software-engineer-e2878d0ad45a)

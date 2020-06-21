@@ -42,7 +42,7 @@ func TestEmailSubscriber_Handle_Send_E2E(t *testing.T) {
 
 	// Send that Event.
 	if result := client.Send(ctxWithRetries, event); !cloudevents.IsACK(result) {
-		log.Fatal().Msgf("failed to send, %v", result)
+		log.Fatal().Msgf("failed to send, %+v", result)
 	}
 
 	t.Logf("Successfully published to: %s", topic)
@@ -71,7 +71,7 @@ func TestEmailSubscriber_Handle_Request_E2E(t *testing.T) {
 
 	// Request that Event.
 	if resp, res := client.Request(ctxWithRetries, event); !cloudevents.IsACK(res) {
-		log.Fatal().Msgf("failed to send, %v", res)
+		log.Fatal().Msgf("failed to send, %+v", res)
 	} else if resp != nil {
 		log.Debug().Msg(resp.String())
 		log.Debug().Msgf("Got Event Response Context: %+v\n", resp.Context)

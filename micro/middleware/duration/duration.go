@@ -1,14 +1,14 @@
 package duration
 
 import (
-	"context"
-	"time"
+    "context"
+    "time"
 
-	"github.com/rs/zerolog/log"
-	"google.golang.org/grpc"
+    "github.com/rs/zerolog/log"
+    "google.golang.org/grpc"
 )
 
-// UnaryServerInterceptor logs the time taken by the service.
+// UnaryServerInterceptor logs the time taken on server-side
 func UnaryServerInterceptor() grpc.UnaryServerInterceptor {
 
 	return func(ctx context.Context, req interface{}, info *grpc.UnaryServerInfo, handler grpc.UnaryHandler) (interface{}, error) {
@@ -25,9 +25,34 @@ func UnaryServerInterceptor() grpc.UnaryServerInterceptor {
 			Str("start", started.Format(time.RFC3339Nano)).
 			Str("finish", finished.Format(time.RFC3339Nano)).
 			Str("duration", finished.Sub(started).String()).
-			Str("duration", finished.Sub(started).String()).
-			Msg("")
+            Str("duration", time.Since(started).String()). // TODO REMOVE
+			Msg("Server-Side Duration")
 
 		return resp, err
 	}
+}
+
+
+// UnaryClientInterceptor logs the time taken on client-side
+func UnaryClientInterceptor() grpc.UnaryClientInterceptor {
+
+    return func(ctx context.Context, method string, req, reply interface{}, cc *grpc.ClientConn, invoker grpc.UnaryInvoker, opts ...grpc.CallOption) error {
+
+        started := time.Now().UTC()
+
+        err := invoker(ctx, method, req, reply, cc, opts...)
+
+        finished := time.Now().UTC()
+
+        log.Debug().
+            Str("module", "duration").
+            Str("method", method).
+            Str("start", started.Format(time.RFC3339Nano)).
+            Str("finish", finished.Format(time.RFC3339Nano)).
+            Str("duration", finished.Sub(started).String()).
+            Str("duration", time.Since(started).String()).
+            Msg("Client-Side Duration")
+
+        return err
+    }
 }

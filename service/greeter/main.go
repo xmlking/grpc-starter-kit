@@ -10,8 +10,9 @@ import (
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/health"
 	"google.golang.org/grpc/health/grpc_health_v1"
+    "google.golang.org/grpc/reflection"
 
-	"github.com/xmlking/grpc-starter-kit/micro/middleware/rpclog"
+    "github.com/xmlking/grpc-starter-kit/micro/middleware/rpclog"
 	"github.com/xmlking/grpc-starter-kit/mkit/service/greeter/v1"
 	"github.com/xmlking/grpc-starter-kit/service/greeter/handler"
 	"github.com/xmlking/grpc-starter-kit/shared/config"
@@ -60,8 +61,9 @@ func main() {
 	go httpS.Serve(httpL)
 
 	// Start server!
+    reflection.Register(grpcS)
 	println(config.GetBuildInfo())
-	log.Info().Msgf("Server (%s) started at: %s", serviceName, lis.Addr())
+	log.Info().Msgf("Server (%s) started at: %s, secure: %t", serviceName, lis.Addr(), cfg.Features.Tls.Enabled)
 	mux.Serve()
 }
 
@@ -95,6 +97,7 @@ func main2() {
 	grpc_health_v1.RegisterHealthServer(grpcServer, hsrv)
 
 	// start the server
+    reflection.Register(grpcServer)
 	println(config.GetBuildInfo())
 	log.Info().Msgf("Server (%s) started at: %s", serviceName, lis.Addr())
 	if err := grpcServer.Serve(lis); err != nil {

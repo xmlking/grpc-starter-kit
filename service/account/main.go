@@ -2,8 +2,9 @@ package main
 
 import (
 	cloudevents "github.com/cloudevents/sdk-go/v2"
+    "google.golang.org/grpc/reflection"
 
-	"github.com/rs/zerolog/log"
+    "github.com/rs/zerolog/log"
 	"google.golang.org/grpc"
 
 	"github.com/xmlking/grpc-starter-kit/micro/middleware/rpclog"
@@ -51,9 +52,10 @@ func main() {
 	// create a gRPC server object
 	grpcServer := grpc.NewServer(
 		grpc.UnaryInterceptor(grpc_middleware.ChainUnaryServer(
+            // Execution is done in left-to-right order
+            // keep around type Interceptors first,
+            rpclog.UnaryServerInterceptor(),
 			grpc_validator.UnaryServerInterceptor(),
-			// keep it last in the interceptor chain
-			rpclog.UnaryServerInterceptor(),
 		)),
 	)
 
@@ -61,9 +63,10 @@ func main() {
 	userv1.RegisterUserServiceServer(grpcServer, userHandler)
 	profilev1.RegisterProfileServiceServer(grpcServer, profileHandler)
 
-	// start the server
-	println(config.GetBuildInfo())
-	log.Info().Msgf("Server (%s) started at: %s", serviceName, lis.Addr())
+    // Start server!
+    reflection.Register(grpcServer)
+    println(config.GetBuildInfo())
+    log.Info().Msgf("Server (%s) started at: %s, secure: %t", serviceName, lis.Addr(), cfg.Features.Tls.Enabled)
 	if err := grpcServer.Serve(lis); err != nil {
 		log.Fatal().Err(err).Send()
 	}

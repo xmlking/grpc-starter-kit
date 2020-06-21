@@ -2,15 +2,15 @@
 package e2e
 
 import (
-	"context"
-	"testing"
+    "context"
+    "testing"
 
-	"github.com/rs/zerolog/log"
-	"google.golang.org/grpc"
+    "github.com/rs/zerolog/log"
+    "google.golang.org/grpc/metadata"
 
-	"github.com/xmlking/grpc-starter-kit/mkit/service/greeter/v1"
-	"github.com/xmlking/grpc-starter-kit/shared/config"
-	"github.com/xmlking/grpc-starter-kit/shared/constants"
+    "github.com/xmlking/grpc-starter-kit/mkit/service/greeter/v1"
+    "github.com/xmlking/grpc-starter-kit/shared/config"
+    "github.com/xmlking/grpc-starter-kit/shared/constants"
 )
 
 func TestGreeter_Hello_E2E(t *testing.T) {
@@ -21,17 +21,14 @@ func TestGreeter_Hello_E2E(t *testing.T) {
 	serviceName := constants.GREETER_SERVICE
 	cfg := config.GetConfig()
 
-	conn, err := grpc.Dial(cfg.Services.Greeter.Endpoint, grpc.WithInsecure(),
-		grpc.WithDefaultServiceConfig(`{"loadBalancingPolicy":"round_robin"}`))
-	if err != nil {
-		log.Fatal().Msgf("did not connect: %s", err)
-	}
+	conn, err := config.GetClientConn(cfg.Services.Greeter)
 	defer conn.Close()
-	println(conn.Target())
-	c := greeterv1.NewGreeterServiceClient(conn)
-	response, err := c.Hello(context.Background(), &greeterv1.HelloRequest{Name: "foo"})
+
+    greeterClient := greeterv1.NewGreeterServiceClient(conn)
+    ctx := metadata.AppendToOutgoingContext(context.Background(), constants.TraceIDKey, "23456", constants.FromServiceKey, "e2e-greeter-test-client")
+	response, err := greeterClient.Hello(ctx, &greeterv1.HelloRequest{Name: "foo"})
 	if err != nil {
-		t.Fatalf("Error when calling service: (%s), method: (Hello): %v", serviceName, err)
+		t.Fatalf("Error when calling service: (%s), method: (Hello): %s", serviceName, err)
 	}
 	log.Printf("Response from server: %s", response.Msg)
 }
