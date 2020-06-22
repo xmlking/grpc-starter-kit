@@ -11,9 +11,13 @@ RUN mkdir /user && \
 
 ENV GO111MODULE=on
 
+# Get dependancies - will also be cached if we won't change mod/sum
 WORKDIR /
 COPY ./go.mod ./go.sum ./
-RUN go mod download && rm go.mod go.sum
+RUN go env -w GO111MODULE=on && unset GOPROXY && go env -w GOPROXY="https://proxy.golang.org,direct" && go mod download && \
+    go get github.com/ahmetb/govvv && \
+    go get github.com/markbates/pkger/cmd/pkger && \
+    rm go.mod go.sum
 
 # Metadata params
 ARG BUILD_DATE

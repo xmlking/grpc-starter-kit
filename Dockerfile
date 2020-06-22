@@ -17,9 +17,7 @@ WORKDIR /src
 # and will therefore be cached for speeding up the next build
 COPY ./go.mod ./go.sum ./
 # Get dependancies - will also be cached if we won't change mod/sum
-RUN go env -w GO111MODULE=on && unset GOPROXY && go env -w GOPROXY="https://proxy.golang.org,direct" && go mod download && \
-    go get github.com/ahmetb/govvv && \
-    go get github.com/markbates/pkger/cmd/pkger
+RUN go env -w GO111MODULE=on && unset GOPROXY && go env -w GOPROXY="https://proxy.golang.org,direct" && go mod download
 
 # COPY the source code as the last step
 COPY ./ ./
@@ -85,7 +83,7 @@ LABEL org.label-schema.build-date=$BUILD_DATE \
     org.label-schema.vendor=$VENDOR \
     org.label-schema.version=$VERSION \
     org.label-schema.docker.schema-version="1.0" \
-    org.label-schema.docker.cmd="docker run -it -e CONFIGOR_ENV=prod -p 8080:8080  ${DOCKER_REGISTRY:+${DOCKER_REGISTRY}/}${DOCKER_CONTEXT_PATH}/${TARGET}-${TYPE}:${VERSION}"
+    org.label-schema.docker.cmd="docker run -it -e CONFIGOR_ENV=production -p 8080:8080  ${DOCKER_REGISTRY:+${DOCKER_REGISTRY}/}${DOCKER_CONTEXT_PATH}/${TARGET}-${TYPE}:${VERSION}"
 
 # Run the compiled binary.
 ENTRYPOINT ["/usr/bin/dumb-init", "/app"]
