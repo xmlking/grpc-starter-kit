@@ -15,3 +15,34 @@ services:
       - '9090:9090'
       - '9444:9443'
       - '9901:9901'
+
+  envoy_secure_backend:
+    image: docker.io/envoyproxy/envoy-alpine:v1.14.2
+    command: /usr/local/bin/envoy -c etc/envoy/envoy-docker-secure-backend.yaml -l debug --service-cluster front --service-node front
+    volumes:
+      - './config/certs:/etc/certs:ro'
+      - './config/base/envoy/config:/etc/envoy:ro'
+    expose:
+      - '9090'
+      - '9443'
+      - '9901'
+    ports:
+      - '9090:9090'
+      - '9444:9443'
+      - '9901:9901'
+
+  envoy_secure_backend_cleint_cert:
+    image: docker.io/envoyproxy/envoy-alpine:v1.14.2
+    command: /usr/local/bin/envoy -c etc/envoy/envoy-docker-secure-backend-client-cert.yaml -l debug --service-cluster front --service-node front
+    volumes:
+      - './config/certs:/etc/certs:ro'
+      - './config/base/envoy/config:/etc/envoy:ro'
+    expose:
+      - '9090'
+      - '9443'
+      - '9901'
+    ports:
+      - '9090:9090'
+      - '9444:9443'
+      - '9901:9901'
+

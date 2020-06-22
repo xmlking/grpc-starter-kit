@@ -21,6 +21,46 @@ import (
 )
 
 func main() {
+    serviceName := constants.GREETER_SERVICE
+    cfg := config.GetConfig()
+
+    lis, err := config.GetListener(cfg.Services.Greeter.Endpoint)
+    if err != nil {
+        log.Fatal().Msgf("failed to create listener: %v", err)
+    }
+
+    // create a server instance
+    s := handler.NewGreeterHandler()
+    // create a gRPC server object
+    grpcServer := grpc.NewServer(
+        grpc.UnaryInterceptor(grpc_middleware.ChainUnaryServer(
+            grpc_validator.UnaryServerInterceptor(),
+            // keep it last in the interceptor chain
+            rpclog.UnaryServerInterceptor(),
+        )),
+    )
+    // attach the Greeter service to the server
+    greeterv1.RegisterGreeterServiceServer(grpcServer, s)
+
+    // Add HealthChecks
+    hsrv := health.NewServer()
+    for name := range grpcServer.GetServiceInfo() {
+        hsrv.SetServingStatus(name, grpc_health_v1.HealthCheckResponse_SERVING)
+    }
+    grpc_health_v1.RegisterHealthServer(grpcServer, hsrv)
+    // TODO: User our own custom health implementation, instead of using built-in health server
+    // https://github.com/GoogleCloudPlatform/grpc-gke-nlb-tutorial/blob/master/echo-grpc/health/health.go
+
+    // start the server
+    reflection.Register(grpcServer)
+    println(config.GetBuildInfo())
+    log.Info().Msgf("Server (%s) started at: %s, secure: %t", serviceName, lis.Addr(), cfg.Features.Tls.Enabled)
+    if err := grpcServer.Serve(lis); err != nil {
+        log.Fatal().Err(err).Send()
+    }
+}
+
+func main_cmux() {
 	serviceName := constants.GREETER_SERVICE
 	cfg := config.GetConfig()
 
@@ -67,44 +107,4 @@ func main() {
 	println(config.GetBuildInfo())
 	log.Info().Msgf("Server (%s) started at: %s, secure: %t", serviceName, lis.Addr(), cfg.Features.Tls.Enabled)
 	mux.Serve()
-}
-
-func main2() {
-	serviceName := constants.GREETER_SERVICE
-	cfg := config.GetConfig()
-
-	lis, err := config.GetListener(cfg.Services.Greeter.Endpoint)
-	if err != nil {
-		log.Fatal().Msgf("failed to create listener: %v", err)
-	}
-
-	// create a server instance
-	s := handler.NewGreeterHandler()
-	// create a gRPC server object
-	grpcServer := grpc.NewServer(
-		grpc.UnaryInterceptor(grpc_middleware.ChainUnaryServer(
-			grpc_validator.UnaryServerInterceptor(),
-			// keep it last in the interceptor chain
-			rpclog.UnaryServerInterceptor(),
-		)),
-	)
-	// attach the Greeter service to the server
-	greeterv1.RegisterGreeterServiceServer(grpcServer, s)
-
-	// Add HealthChecks
-	hsrv := health.NewServer()
-	for name := range grpcServer.GetServiceInfo() {
-		hsrv.SetServingStatus(name, grpc_health_v1.HealthCheckResponse_SERVING)
-	}
-	grpc_health_v1.RegisterHealthServer(grpcServer, hsrv)
-    // TODO: User our own custom health implementation, instead of using built-in health server
-    // https://github.com/GoogleCloudPlatform/grpc-gke-nlb-tutorial/blob/master/echo-grpc/health/health.go
-
-	// start the server
-    reflection.Register(grpcServer)
-	println(config.GetBuildInfo())
-	log.Info().Msgf("Server (%s) started at: %s", serviceName, lis.Addr())
-	if err := grpcServer.Serve(lis); err != nil {
-		log.Fatal().Err(err).Send()
-	}
 }
