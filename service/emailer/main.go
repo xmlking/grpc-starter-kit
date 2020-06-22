@@ -30,7 +30,7 @@ func main() {
 
 	// Start server!
 	println(config.GetBuildInfo())
-    log.Info().Msgf("Server (%s) started at: %s, secure: %t", serviceName, cfg.Services.Emailer.Endpoint, cfg.Features.Tls.Enabled)
+	log.Info().Msgf("Server (%s) started at: %s, secure: %t", serviceName, cfg.Services.Emailer.Endpoint, cfg.Features.Tls.Enabled)
 	if err := ceClient.StartReceiver(context.Background(), emailSubscriber.HandleSend); err != nil {
 		log.Fatal().Err(err).Send()
 	}

@@ -1,20 +1,20 @@
 package main
 
 import (
-    "context"
-    "flag"
-    "fmt"
+	"context"
+	"flag"
+	"fmt"
 
-    "google.golang.org/grpc/metadata"
+	"google.golang.org/grpc/metadata"
 
-    "github.com/golang/protobuf/ptypes/wrappers"
-    "github.com/rs/zerolog/log"
+	"github.com/golang/protobuf/ptypes/wrappers"
+	"github.com/rs/zerolog/log"
 
-    userv1 "github.com/xmlking/grpc-starter-kit/mkit/service/account/user/v1"
-    "github.com/xmlking/grpc-starter-kit/shared/config"
-    "github.com/xmlking/grpc-starter-kit/shared/constants"
-    _ "github.com/xmlking/grpc-starter-kit/shared/logger"
-    "github.com/xmlking/grpc-starter-kit/shared/util"
+	userv1 "github.com/xmlking/grpc-starter-kit/mkit/service/account/user/v1"
+	"github.com/xmlking/grpc-starter-kit/shared/config"
+	"github.com/xmlking/grpc-starter-kit/shared/constants"
+	_ "github.com/xmlking/grpc-starter-kit/shared/logger"
+	"github.com/xmlking/grpc-starter-kit/shared/util"
 )
 
 var (
@@ -36,7 +36,7 @@ func main() {
 
 	log.Debug().Str("username", *username).Str("email", *email).Uint64("limit", *limit).Msg("Flags Using:")
 
-	conn, err :=  config.GetClientConn(cfg.Services.Account)
+	conn, err := config.GetClientConn(cfg.Services.Account)
 	if err != nil {
 		log.Fatal().Msgf("did not connect: %s", err)
 	}
@@ -48,7 +48,7 @@ func main() {
 	//ctx := metadata.NewOutgoingContext(context.Background(), md)
 	// create a new context with some metadata - (Optional) Just for demonstration
 	ctx := metadata.AppendToOutgoingContext(context.Background(), constants.TraceIDKey, "12345", constants.FromServiceKey, "e2e-account-test-client")
-    suffix := util.RandomStringLower(5)
+	suffix := util.RandomStringLower(5)
 	if rsp, err := userClient.Create(ctx, &userv1.CreateRequest{
 		Username:  &wrappers.StringValue{Value: "u_" + suffix},
 		FirstName: &wrappers.StringValue{Value: "f_" + suffix},
@@ -64,7 +64,7 @@ func main() {
 }
 
 func getUserList(us userv1.UserServiceClient, limit uint32) {
-    ctx := metadata.AppendToOutgoingContext(context.Background(), constants.TraceIDKey, "12345", constants.FromServiceKey, "e2e-account-test-client")
+	ctx := metadata.AppendToOutgoingContext(context.Background(), constants.TraceIDKey, "12345", constants.FromServiceKey, "e2e-account-test-client")
 	if rsp, err := us.List(ctx, &userv1.ListRequest{Limit: &wrappers.UInt32Value{Value: limit}}); err != nil {
 		log.Fatal().Err(err).Msg("Unable to List Users")
 	} else {

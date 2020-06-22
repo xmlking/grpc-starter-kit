@@ -1,26 +1,26 @@
 package handler
 
 import (
-    "context"
-    "fmt"
-    "time"
+	"context"
+	"fmt"
+	"time"
 
-    cloudevents "github.com/cloudevents/sdk-go/v2"
-    "github.com/jinzhu/gorm"
-    "github.com/rs/zerolog/log"
-    uuid "github.com/satori/go.uuid"
-    "github.com/thoas/go-funk"
-    "google.golang.org/grpc/codes"
-    "google.golang.org/grpc/metadata"
-    "google.golang.org/grpc/status"
+	cloudevents "github.com/cloudevents/sdk-go/v2"
+	"github.com/jinzhu/gorm"
+	"github.com/rs/zerolog/log"
+	uuid "github.com/satori/go.uuid"
+	"github.com/thoas/go-funk"
+	"google.golang.org/grpc/codes"
+	"google.golang.org/grpc/metadata"
+	"google.golang.org/grpc/status"
 
-    "github.com/xmlking/grpc-starter-kit/micro/auth"
-    account_entities "github.com/xmlking/grpc-starter-kit/mkit/service/account/entities/v1"
-    "github.com/xmlking/grpc-starter-kit/mkit/service/account/user/v1"
-    "github.com/xmlking/grpc-starter-kit/mkit/service/emailer/v1"
-    "github.com/xmlking/grpc-starter-kit/mkit/service/greeter/v1"
-    "github.com/xmlking/grpc-starter-kit/service/account/repository"
-    "github.com/xmlking/grpc-starter-kit/shared/constants"
+	"github.com/xmlking/grpc-starter-kit/micro/auth"
+	account_entities "github.com/xmlking/grpc-starter-kit/mkit/service/account/entities/v1"
+	"github.com/xmlking/grpc-starter-kit/mkit/service/account/user/v1"
+	"github.com/xmlking/grpc-starter-kit/mkit/service/emailer/v1"
+	"github.com/xmlking/grpc-starter-kit/mkit/service/greeter/v1"
+	"github.com/xmlking/grpc-starter-kit/service/account/repository"
+	"github.com/xmlking/grpc-starter-kit/shared/constants"
 )
 
 // UserHandler struct
@@ -125,8 +125,8 @@ func (h *userHandler) Create(ctx context.Context, req *userv1.CreateRequest) (rs
 	}
 
 	// call greeter
-    if res, err := h.greeterSrvClient.Hello(metadata.AppendToOutgoingContext(ctx, constants.FromServiceKey, "mkit-account-service"), &greeterv1.HelloRequest{Name: req.GetFirstName().GetValue()}); err != nil {
-	// if res, err := h.greeterSrvClient.Hello(metautils.ExtractIncoming(ctx).ToOutgoing(ctx), &greeterv1.HelloRequest{Name: req.GetFirstName().GetValue()}); err != nil {
+	if res, err := h.greeterSrvClient.Hello(metadata.AppendToOutgoingContext(ctx, constants.FromServiceKey, "mkit-account-service"), &greeterv1.HelloRequest{Name: req.GetFirstName().GetValue()}); err != nil {
+		// if res, err := h.greeterSrvClient.Hello(metautils.ExtractIncoming(ctx).ToOutgoing(ctx), &greeterv1.HelloRequest{Name: req.GetFirstName().GetValue()}); err != nil {
 		log.Error().Err(err).Msg("Received greeterService.Hello request error")
 		return nil, status.Errorf(codes.Internal, fmt.Sprintf("broker publish error: %v", err))
 	} else {
