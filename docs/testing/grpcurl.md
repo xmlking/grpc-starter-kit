@@ -82,6 +82,18 @@ grpcurl -cacert=config/certs/ca-cert.pem \
  -H 'Accept: */*' \
  -H 'Connection: keep-alive' \
  --data-binary $'\x00\x00\x00\x00\x05\n\x03abc' --compressed
+
+# ???
+
+curl 'http://localhost:9090/mkit.service.greeter.v1.GreeterService/Hello' \
+-H 'Accept: application/grpc-web-text' \
+-H 'X-User-Agent: grpc-web-javascript/0.1' \
+-H 'X-Grpc-Web: 1' \
+-H 'Content-Type: application/grpc-web-text' \
+-H 'Origin: http://localhost:4200' \
+-H 'Sec-Fetch-Site: same-site' \
+-H 'Sec-Fetch-Mode: cors' \
+--data-binary 'AAAAAAYKBHN1bW8=' --compressed
 ```
 
 ### Envoy Health checks

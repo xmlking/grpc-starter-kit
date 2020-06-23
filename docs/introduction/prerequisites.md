@@ -40,6 +40,17 @@ brew tap bufbuild/buf
 brew install buf
 ```
 
+#### For grpc-web development (optional)  
+
+```bash
+GRPC_WEB_VERSION=1.2.0
+wget -O ~/Downloads/protoc-gen-grpc-web https://github.com/grpc/grpc-web/releases/download/${GRPC_WEB_VERSION}/protoc-gen-grpc-web-${GRPC_WEB_VERSION}-darwin-x86_64
+chmod +x ~/Downloads/protoc-gen-grpc-web
+mv  ~/Downloads/protoc-gen-grpc-web /usr/local/bin/protoc-gen-grpc-web
+
+yarn global add grpc-tools
+```
+
 ### third-party golang tools
 
 ```bash

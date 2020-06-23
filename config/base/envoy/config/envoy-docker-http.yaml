@@ -5,22 +5,11 @@ admin:
 
 static_resources:
   listeners:
-    - name: https
+    - name: http
       address:
-        socket_address: { address: 0.0.0.0, port_value: 9443 }
+        socket_address: { address: 0.0.0.0, port_value: 9090 }
       filter_chains:
-        - transport_socket:
-            name: envoy.transport_sockets.tls
-            typed_config:
-              "@type": type.googleapis.com/envoy.api.v2.auth.DownstreamTlsContext
-              require_client_certificate: true # uncomment if you want client to provide cert
-              common_tls_context:
-                tls_certificates:
-                  - certificate_chain: { filename: '/etc/certs/proxy-cert.pem' }
-                    private_key: { filename: '/etc/certs/proxy-key.pem' }
-                validation_context:
-                  trusted_ca: { filename: '/etc/certs/ca-cert.pem' }
-          filters:
+        - filters:
             - name: envoy.filters.network.http_connection_manager
               typed_config:
                 '@type': type.googleapis.com/envoy.config.filter.network.http_connection_manager.v2.HttpConnectionManager
@@ -77,15 +66,6 @@ static_resources:
         unhealthy_threshold: 2
         healthy_threshold: 2
         grpc_health_check: {}
-      transport_socket:
-        name: envoy.transport_sockets.tls
-        typed_config:
-          '@type': type.googleapis.com/envoy.api.v2.auth.UpstreamTlsContext
-          common_tls_context:
-            alpn_protocols: ['h2', 'http/1.1']
-            validation_context:
-              trusted_ca: { filename: '/etc/certs/upstream-ca-cert.pem' }
-              match_subject_alt_names: { exact: 'localhost' }
     - name: greeter_service
       connect_timeout: 0.5s
       type: strict_dns # for large logical_dns
@@ -105,13 +85,3 @@ static_resources:
         unhealthy_threshold: 2
         healthy_threshold: 2
         grpc_health_check: {}
-      transport_socket:
-        name: envoy.transport_sockets.tls
-        typed_config:
-          '@type': type.googleapis.com/envoy.api.v2.auth.UpstreamTlsContext
-          common_tls_context:
-            alpn_protocols: ['h2', 'http/1.1']
-            validation_context:
-              trusted_ca: { filename: '/etc/certs/upstream-ca-cert.pem' }
-              match_subject_alt_names: { exact: 'localhost' }
-

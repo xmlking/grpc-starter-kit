@@ -2,7 +2,8 @@
 
 1. rpclog
 2. duration
-3. validator
+3. [validator](github.com/grpc-ecosystem/go-grpc-middleware/validator)
+4. [grpc-opentracing](https://github.com/grpc-ecosystem/grpc-opentracing)
 
 ## Get
 
