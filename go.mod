@@ -19,10 +19,10 @@ require (
 	github.com/sarulabs/di/v2 v2.4.0
 	github.com/satori/go.uuid v1.2.0
 	github.com/soheilhy/cmux v0.1.4
-	github.com/stretchr/testify v1.5.1
-	github.com/thoas/go-funk v0.6.0
-	github.com/xmlking/configor v0.1.0
+	github.com/stretchr/testify v1.6.1
+	github.com/thoas/go-funk v0.7.0
+	github.com/xmlking/configor v0.2.0
 	google.golang.org/genproto v0.0.0-20200619004808-3e7fca5c55db
 	google.golang.org/grpc v1.29.1
-	google.golang.org/protobuf v1.24.0
+	google.golang.org/protobuf v1.25.0
 )

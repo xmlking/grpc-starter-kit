@@ -13,7 +13,7 @@ import (
 	"google.golang.org/grpc/grpclog"
 
 	"github.com/xmlking/grpc-starter-kit/shared/logger/gcp"
-	zeroToGrpcAdopter "github.com/xmlking/grpc-starter-kit/shared/logger/grpc"
+	grpcAdopter "github.com/xmlking/grpc-starter-kit/shared/logger/grpc"
 )
 
 var (
@@ -138,7 +138,7 @@ func (l *defaultLogger) Init(opts ...Option) error {
 
 	// Also set it as grpclog's Default logger
 	gLogger := logr.With().Str("module", "grpc").Logger()
-	grpclog.SetLoggerV2(zeroToGrpcAdopter.New(gLogger, getEnvAsInt("GRPC_GO_LOG_VERBOSITY_LEVEL", 9)))
+	grpclog.SetLoggerV2(grpcAdopter.New(&gLogger))
 
 	logr.Info().
 		Str("LogLevel", logr.GetLevel().String()).

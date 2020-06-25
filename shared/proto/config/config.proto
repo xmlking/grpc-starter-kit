@@ -19,7 +19,7 @@ service ConfigService {
 
 message Service {
     string endpoint = 1 [(gogoproto.moretags) = "yaml:\"endpoint\" required:\"true\""];
-    string version = 2 [(gogoproto.moretags) = "yaml:\"version\" default:\"v0.1.0\""];
+    string version = 2 [(gogoproto.moretags) = "yaml:\",omitempty\" default:\"v0.1.0\""];
     string service_config = 3 [(gogoproto.moretags) = "yaml:\"service_config,omitempty\""];
     uint32 deadline = 4 [(gogoproto.moretags) = "yaml:\",omitempty\" default:\"10\""];
 }
