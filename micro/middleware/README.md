@@ -32,7 +32,7 @@ server := grpc.NewServer(
         // Execution is done in left-to-right order
         grpc_validator.UnaryServerInterceptor(),
         // keep it last in the interceptor chain
-        rpclog.UnaryServerInterceptor(),
+        rpclog.UnaryServerInterceptor(rpclog.WithExcludeMethods("/grpc.health.v1.Health/Check", "/api.MyService/*")),
     )),
     grpc.StreamInterceptor(grpc_middleware.ChainStreamServer(
         // keep it last in the interceptor chain

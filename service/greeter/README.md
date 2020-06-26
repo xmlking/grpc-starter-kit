@@ -35,7 +35,7 @@ make docker TARGET=greeter TYPE=service VERSION=v0.1.1
 1. start greeter service
    `make run-greeter`
 2. start envoy via docker-compose
-    `docker-compose up envoy` or `docker-compose up envoy_secure_backend` when **tls** is enabled in [config.yaml](/config/config.yaml)
+    `docker-compose up envoy` or `docker-compose up envoy_http` or `docker-compose up envoy_secure_backend` when **tls** is enabled in [config.yaml](/config/config.yaml)
 
 > envoy via docker-compose will be exposing '9901', '9090', '9444' ports
 
@@ -45,7 +45,7 @@ make docker TARGET=greeter TYPE=service VERSION=v0.1.1
 grpcurl -plaintext -proto proto/mkit/service/greeter/v1/greeter.proto list
 grpcurl -plaintext -proto proto/mkit/service/greeter/v1/greeter.proto describe
 grpcurl -plaintext -proto proto/mkit/service/greeter/v1/greeter.proto -d '{"name": "sumo"}' localhost:8081  mkit.service.greeter.v1.GreeterService/Hello
-# OR 
+# OR
 grpcurl -plaintext \
 -protoset <(buf image build -o -) \
 -d '{"name": "sumo"}' 0.0.0.0:8081 mkit.service.greeter.v1.GreeterService/Hello
@@ -58,6 +58,7 @@ grpcurl -insecure \
 #### test API via envoy
 ```bash
 ### plaintext ###
+# with `docker-compose up envoy_http`
 grpcurl -plaintext  \
 -protoset <(buf image build -o -) \
 -d '{"name": "sumo"}' 0.0.0.0:9090 mkit.service.greeter.v1.GreeterService/Hello

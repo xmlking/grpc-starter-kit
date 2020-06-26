@@ -11,9 +11,17 @@ import (
 )
 
 // UnaryServerInterceptor is an example server-side request logger middleware
-func UnaryServerInterceptor() grpc.UnaryServerInterceptor {
+func UnaryServerInterceptor(opts ...Option) grpc.UnaryServerInterceptor {
+	options := defaultOptions()
+	for _, o := range opts {
+		o(&options)
+	}
 
 	return func(ctx context.Context, req interface{}, info *grpc.UnaryServerInfo, handler grpc.UnaryHandler) (interface{}, error) {
+		// exclude methods
+		if options.matchMethod(info.FullMethod) {
+			return handler(ctx, req)
+		}
 
 		resp, err := handler(ctx, req)
 
@@ -26,16 +34,24 @@ func UnaryServerInterceptor() grpc.UnaryServerInterceptor {
 			Interface("req", req).
 			Interface("resp", resp).
 			Interface("err", err).
-			Msg("Server-Side Handler")
+			Msg("Server-Side rpclog")
 
 		return resp, err
 	}
 }
 
 // UnaryClientInterceptor is an example client-side request logger middleware
-func UnaryClientInterceptor() grpc.UnaryClientInterceptor {
+func UnaryClientInterceptor(opts ...Option) grpc.UnaryClientInterceptor {
+	options := Options{}
+	for _, o := range opts {
+		o(&options)
+	}
 
 	return func(ctx context.Context, method string, req, reply interface{}, cc *grpc.ClientConn, invoker grpc.UnaryInvoker, opts ...grpc.CallOption) error {
+		// exclude methods
+		if options.matchMethod(method) {
+			return invoker(ctx, method, req, reply, cc, opts...)
+		}
 
 		err := invoker(ctx, method, req, reply, cc, opts...)
 
@@ -46,8 +62,9 @@ func UnaryClientInterceptor() grpc.UnaryClientInterceptor {
 			Str("tenant_id", metautils.ExtractOutgoing(ctx).Get(constants.TenantIdKey)).
 			Str("from_service", metautils.ExtractOutgoing(ctx).Get(constants.FromServiceKey)).
 			Interface("req", req).
-			Interface("reply", reply).
-			Msg("Client-Side Call")
+			Interface("resp", reply).
+			Interface("err", err).
+			Msg("Client-Side rpclog")
 
 		return err
 	}
