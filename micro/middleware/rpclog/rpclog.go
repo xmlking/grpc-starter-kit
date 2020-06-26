@@ -6,8 +6,6 @@ import (
 	"github.com/grpc-ecosystem/go-grpc-middleware/util/metautils"
 	"github.com/rs/zerolog/log"
 	"google.golang.org/grpc"
-
-	"github.com/xmlking/grpc-starter-kit/shared/constants"
 )
 
 // UnaryServerInterceptor is an example server-side request logger middleware
@@ -23,18 +21,19 @@ func UnaryServerInterceptor(opts ...Option) grpc.UnaryServerInterceptor {
 			return handler(ctx, req)
 		}
 
+		incomingMd := metautils.ExtractIncoming(ctx)
 		resp, err := handler(ctx, req)
+		outgoingMd := metautils.ExtractOutgoing(ctx)
 
 		log.Debug().
-			Str("module", "debug").
+			Str("module", "rpclog").
 			Str("method", info.FullMethod).
-			Str("trace_id", metautils.ExtractIncoming(ctx).Get(constants.TraceIDKey)).
-			Str("tenant_id", metautils.ExtractIncoming(ctx).Get(constants.TenantIdKey)).
-			Str("from_service", metautils.ExtractIncoming(ctx).Get(constants.FromServiceKey)).
+			Interface("incoming_md:", incomingMd).
 			Interface("req", req).
+			Interface("outgoing_md:", outgoingMd).
 			Interface("resp", resp).
 			Interface("err", err).
-			Msg("Server-Side rpclog")
+			Msg("Server-Side")
 
 		return resp, err
 	}
@@ -53,18 +52,19 @@ func UnaryClientInterceptor(opts ...Option) grpc.UnaryClientInterceptor {
 			return invoker(ctx, method, req, reply, cc, opts...)
 		}
 
+		incomingMd := metautils.ExtractIncoming(ctx)
 		err := invoker(ctx, method, req, reply, cc, opts...)
+		outgoingMd := metautils.ExtractOutgoing(ctx)
 
 		log.Debug().
-			Str("module", "debug").
+			Str("module", "rpclog").
 			Str("method", method).
-			Str("trace_id", metautils.ExtractOutgoing(ctx).Get(constants.TraceIDKey)).
-			Str("tenant_id", metautils.ExtractOutgoing(ctx).Get(constants.TenantIdKey)).
-			Str("from_service", metautils.ExtractOutgoing(ctx).Get(constants.FromServiceKey)).
+			Interface("incoming_md:", incomingMd).
 			Interface("req", req).
+			Interface("outgoing_md:", outgoingMd).
 			Interface("resp", reply).
 			Interface("err", err).
-			Msg("Client-Side rpclog")
+			Msg("Client-Side")
 
 		return err
 	}

@@ -1,6 +1,6 @@
 # RpcLogger
 
-A set of Log wrappers for `Client`, `Server`  for `grpc` and `broker` for debugging.
+A set of interceptors for `Client` and `Server` for debug **logging** request/response/errors.
 
 ## Usage
 

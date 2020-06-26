@@ -12,8 +12,8 @@ import (
 	"github.com/stretchr/testify/require"
 	"github.com/stretchr/testify/suite"
 	"google.golang.org/grpc"
-	"google.golang.org/grpc/metadata"
 
+	appendTags "github.com/xmlking/grpc-starter-kit/micro/middleware/tags/append"
 	"github.com/xmlking/grpc-starter-kit/mkit/service/account/profile/v1"
 	"github.com/xmlking/grpc-starter-kit/mkit/service/account/user/v1"
 	"github.com/xmlking/grpc-starter-kit/shared/config"
@@ -40,7 +40,10 @@ func (suite *AccountTestSuite) SetupSuite() {
 	suite.suffix = util.RandomStringLower(5)
 
 	var err error
-	suite.conn, err = config.GetClientConn(cfg.Services.Account)
+	var ucInterceptors = []grpc.UnaryClientInterceptor{
+		appendTags.UnaryClientInterceptor(appendTags.WithTraceID(), appendTags.WithPairs(constants.FromServiceKey, constants.ACCOUNT_CLIENT)),
+	}
+	suite.conn, err = config.GetClientConn(cfg.Services.Account, ucInterceptors)
 
 	if err != nil {
 		log.Fatal().Msgf("did not connect: %s", err)
@@ -61,12 +64,7 @@ func (suite *AccountTestSuite) SetupTest() {
 	t := suite.T()
 	t.Log("in SetupTest - creating user")
 
-	// Sending metadata - client side
-	//md := metadata.Pairs("k1", "v1", "k1", "v2", "k2", "v3")
-	//ctx := metadata.NewOutgoingContext(context.Background(), md)
-	// create a new context with some metadata - (Optional) Just for demonstration
-	ctx := metadata.AppendToOutgoingContext(context.Background(), constants.TraceIDKey, util.RandomString(8), constants.FromServiceKey, "e2e-account-test-client")
-	_, err := suite.userClient.Create(ctx, &userv1.CreateRequest{
+	_, err := suite.userClient.Create(context.Background(), &userv1.CreateRequest{
 		Username:  &wrappers.StringValue{Value: fmt.Sprintf("u_%s", suite.suffix)},
 		FirstName: &wrappers.StringValue{Value: fmt.Sprintf("f_%s", suite.suffix)},
 		LastName:  &wrappers.StringValue{Value: fmt.Sprintf("l_%s", suite.suffix)},
@@ -88,8 +86,7 @@ func (suite *AccountTestSuite) TestUserHandler_Exist_E2E() {
 	t := suite.T()
 	t.Log("in TestUserHandler_Exist_E2E, checking if user Exist")
 
-	ctx := metadata.AppendToOutgoingContext(context.Background(), constants.TraceIDKey, util.RandomString(8), constants.FromServiceKey, "e2e-account-test-client")
-	rsp, err := suite.userClient.Exist(ctx, &userv1.ExistRequest{
+	rsp, err := suite.userClient.Exist(context.Background(), &userv1.ExistRequest{
 		Username: &wrappers.StringValue{Value: fmt.Sprintf("u_%s", suite.suffix)},
 	})
 	require.Nil(t, err)

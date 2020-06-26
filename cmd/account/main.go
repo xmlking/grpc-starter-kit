@@ -5,11 +5,11 @@ import (
 	"flag"
 	"fmt"
 
-	"google.golang.org/grpc/metadata"
-
 	"github.com/golang/protobuf/ptypes/wrappers"
 	"github.com/rs/zerolog/log"
+	"google.golang.org/grpc"
 
+	appendTags "github.com/xmlking/grpc-starter-kit/micro/middleware/tags/append"
 	userv1 "github.com/xmlking/grpc-starter-kit/mkit/service/account/user/v1"
 	"github.com/xmlking/grpc-starter-kit/shared/config"
 	"github.com/xmlking/grpc-starter-kit/shared/constants"
@@ -36,20 +36,18 @@ func main() {
 
 	log.Debug().Str("username", *username).Str("email", *email).Uint64("limit", *limit).Msg("Flags Using:")
 
-	conn, err := config.GetClientConn(cfg.Services.Account)
+	var ucInterceptors = []grpc.UnaryClientInterceptor{
+		appendTags.UnaryClientInterceptor(appendTags.WithTraceID(), appendTags.WithPairs(constants.FromServiceKey, constants.ACCOUNT_CLIENT)),
+	}
+	conn, err := config.GetClientConn(cfg.Services.Account, ucInterceptors)
 	if err != nil {
 		log.Fatal().Msgf("did not connect: %s", err)
 	}
 
 	userClient := userv1.NewUserServiceClient(conn)
 
-	// Sending metadata - client side
-	//md := metadata.Pairs("k1", "v1", "k1", "v2", "k2", "v3")
-	//ctx := metadata.NewOutgoingContext(context.Background(), md)
-	// create a new context with some metadata - (Optional) Just for demonstration
-	ctx := metadata.AppendToOutgoingContext(context.Background(), constants.TraceIDKey, "12345", constants.FromServiceKey, "e2e-account-test-client")
 	suffix := util.RandomStringLower(5)
-	if rsp, err := userClient.Create(ctx, &userv1.CreateRequest{
+	if rsp, err := userClient.Create(context.Background(), &userv1.CreateRequest{
 		Username:  &wrappers.StringValue{Value: "u_" + suffix},
 		FirstName: &wrappers.StringValue{Value: "f_" + suffix},
 		LastName:  &wrappers.StringValue{Value: "l_" + suffix},
@@ -64,8 +62,7 @@ func main() {
 }
 
 func getUserList(us userv1.UserServiceClient, limit uint32) {
-	ctx := metadata.AppendToOutgoingContext(context.Background(), constants.TraceIDKey, "12345", constants.FromServiceKey, "e2e-account-test-client")
-	if rsp, err := us.List(ctx, &userv1.ListRequest{Limit: &wrappers.UInt32Value{Value: limit}}); err != nil {
+	if rsp, err := us.List(context.Background(), &userv1.ListRequest{Limit: &wrappers.UInt32Value{Value: limit}}); err != nil {
 		log.Fatal().Err(err).Msg("Unable to List Users")
 	} else {
 		log.Info().Interface("listRsp", rsp).Send()

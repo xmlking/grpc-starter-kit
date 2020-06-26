@@ -31,7 +31,7 @@ func UnaryServerInterceptor() grpc.UnaryServerInterceptor {
 			Str("finish", finished.Format(time.RFC3339Nano)).
 			Str("duration", finished.Sub(started).String()). // time.Since(started).String()) ?
 			Str("deadline", deadline).
-			Msg("Server-Side Duration")
+			Msg("Server-Side")
 
 		return resp, err
 	}
@@ -60,7 +60,7 @@ func UnaryClientInterceptor() grpc.UnaryClientInterceptor {
 			Str("finish", finished.Format(time.RFC3339Nano)).
 			Str("duration", finished.Sub(started).String()). // time.Since(started).String()) ?
 			Str("deadline", deadline).
-			Msg("Client-Side Duration")
+			Msg("Client-Side")
 
 		return err
 	}

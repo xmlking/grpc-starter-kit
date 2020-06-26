@@ -10,6 +10,8 @@ import (
 	"google.golang.org/grpc"
 
 	"github.com/xmlking/grpc-starter-kit/micro/middleware/rpclog"
+	appendTags "github.com/xmlking/grpc-starter-kit/micro/middleware/tags/append"
+
 	profilev1 "github.com/xmlking/grpc-starter-kit/mkit/service/account/profile/v1"
 	userv1 "github.com/xmlking/grpc-starter-kit/mkit/service/account/user/v1"
 	greeterv1 "github.com/xmlking/grpc-starter-kit/mkit/service/greeter/v1"
@@ -22,6 +24,8 @@ import (
 
 	grpc_middleware "github.com/grpc-ecosystem/go-grpc-middleware"
 	grpc_validator "github.com/grpc-ecosystem/go-grpc-middleware/validator"
+
+	forwardTags "github.com/xmlking/grpc-starter-kit/micro/middleware/tags/forward"
 
 	"github.com/xmlking/grpc-starter-kit/shared/config"
 	"github.com/xmlking/grpc-starter-kit/shared/constants"
@@ -58,6 +62,8 @@ func main() {
 			// keep around type Interceptors first,
 			rpclog.UnaryServerInterceptor(),
 			grpc_validator.UnaryServerInterceptor(),
+			appendTags.UnaryServerInterceptor(appendTags.WithPairs(constants.FromServiceKey, constants.ACCOUNT_SERVICE)),
+			forwardTags.UnaryServerInterceptor(forwardTags.WithForwardTags(constants.TraceIDKey, constants.TenantIdKey)),
 		)),
 	)
 

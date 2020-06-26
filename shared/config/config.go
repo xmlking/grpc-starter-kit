@@ -106,12 +106,12 @@ func IsSecure() bool {
 func GetCeClient() {
 }
 
-func GetClientConn(service *configPB.Service /*from_service*/) (clientConn *grpc.ClientConn, err error) {
+func GetClientConn(service *configPB.Service, ucInterceptors []grpc.UnaryClientInterceptor) (clientConn *grpc.ClientConn, err error) {
 	configLock.RLock()
 	defer configLock.RUnlock()
 
 	var dialOptions []grpc.DialOption
-	var ucInterceptors []grpc.UnaryClientInterceptor
+	//var ucInterceptors []grpc.UnaryClientInterceptor
 
 	tlsConf := cfg.Features.Tls
 	if tlsConf.Enabled {
@@ -131,7 +131,6 @@ func GetClientConn(service *configPB.Service /*from_service*/) (clientConn *grpc
 	if cfg.Features.Rpclog.Enabled {
 		ucInterceptors = append(ucInterceptors, rpclog.UnaryClientInterceptor())
 	}
-	// TODO append from_service Interceptor passed above, carry over existing tags
 
 	if len(ucInterceptors) > 0 {
 		dialOptions = append(dialOptions, grpc.WithUnaryInterceptor(grpc_middleware.ChainUnaryClient(ucInterceptors...)))
