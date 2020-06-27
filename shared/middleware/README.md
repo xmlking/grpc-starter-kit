@@ -24,7 +24,7 @@ Add interceptors in following order
 import (
     grpc_middleware "github.com/grpc-ecosystem/go-grpc-middleware"
     grpc_validator "github.com/grpc-ecosystem/go-grpc-middleware/validator"
-    "github.com/xmlking/grpc-starter-kit/micro/middleware/rpclog"
+    "github.com/xmlking/grpc-starter-kit/shared/middleware/rpclog"
 )
 
 server := grpc.NewServer(

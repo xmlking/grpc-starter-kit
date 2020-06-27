@@ -1,4 +1,4 @@
-package micro
+package core
 
 import (
 	"context"

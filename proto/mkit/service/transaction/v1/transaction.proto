@@ -6,9 +6,11 @@ option go_package = "github.com/xmlking/grpc-starter-kit/mkit/service/transactio
 option java_multiple_files = true;
 option java_package = "mkit.service.recorder.v1";
 
+import "google/protobuf/any.proto";
 import "google/protobuf/empty.proto";
 import "google/protobuf/struct.proto";
 import "validate/validate.proto";
+// import "third_party/proto/validate/validate.proto";
 
 service TransactionService {
   rpc Read(ReadRequest) returns (ReadResponse);
@@ -31,15 +33,13 @@ message WriteRequest {
 }
 
 // Transaction Event
-//message TransactionEvent {
-//  // request
-//  bytes req = 1;
-//  // response
-//  bytes rsp = 2;
-//}
+message TransactionEvent {
+  google.protobuf.Any req = 1;
+  google.protobuf.Any rsp = 2;
+}
 
 // Transaction Event
-message TransactionEvent {
+message TransactionEvent2 {
   // request
   google.protobuf.Value req = 1;
   // response

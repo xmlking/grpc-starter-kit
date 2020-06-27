@@ -1,4 +1,4 @@
-package micro
+package core
 
 var (
 	DefaultClient Interface

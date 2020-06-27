@@ -5,9 +5,7 @@ import (
 
 	"github.com/rs/zerolog/log"
 
-	"github.com/xmlking/grpc-starter-kit/service/emailer/service"
-	"github.com/xmlking/grpc-starter-kit/service/emailer/subscriber"
-	"github.com/xmlking/grpc-starter-kit/shared/email"
+	"github.com/xmlking/grpc-starter-kit/service/recorder/subscriber"
 	configPB "github.com/xmlking/grpc-starter-kit/shared/proto/config/v1"
 )
 
@@ -33,26 +31,10 @@ func NewContainer(cfg configPB.Configuration) (*Container, error) {
 			},
 		},
 		{
-			Name:  "send-email",
+			Name:  "transaction-subscriber",
 			Scope: di.App,
 			Build: func(ctn di.Container) (interface{}, error) {
-				return email.NewSendEmail(cfg.Email), nil
-			},
-		},
-		{
-			Name:  "email-service",
-			Scope: di.App,
-			Build: func(ctn di.Container) (interface{}, error) {
-				emailer := ctn.Get("send-email").(service.EmailSender)
-				return service.NewEmailService(emailer), nil
-			},
-		},
-		{
-			Name:  "emailer-subscriber",
-			Scope: di.App,
-			Build: func(ctn di.Container) (interface{}, error) {
-				emailService := ctn.Get("email-service").(service.EmailService)
-				return subscriber.NewEmailSubscriber(emailService), nil
+				return subscriber.NewTransactionSubscriber(), nil
 			},
 		},
 	}...); err != nil {

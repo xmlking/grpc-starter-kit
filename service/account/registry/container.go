@@ -13,7 +13,7 @@ import (
 	"github.com/xmlking/grpc-starter-kit/shared/config"
 	"github.com/xmlking/grpc-starter-kit/shared/database"
 	"github.com/xmlking/grpc-starter-kit/shared/eventing"
-	configPB "github.com/xmlking/grpc-starter-kit/shared/proto/config"
+	configPB "github.com/xmlking/grpc-starter-kit/shared/proto/config/v1"
 )
 
 // Container - provide di Container
@@ -46,6 +46,13 @@ func NewContainer(cfg configPB.Configuration) (*Container, error) {
 			Name:  "profile-repository",
 			Scope: di.App,
 			Build: buildProfileRepository,
+		},
+		{
+			Name:  "translog-publisher",
+			Scope: di.App,
+			Build: func(ctn di.Container) (interface{}, error) {
+				return eventing.NewSourceClient(cfg.Services.Recorder.Endpoint), nil
+			},
 		},
 		{
 			Name:  "email-publisher",

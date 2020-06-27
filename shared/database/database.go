@@ -8,7 +8,7 @@ import (
 	"github.com/rs/zerolog/log"
 
 	"github.com/xmlking/grpc-starter-kit/shared/logger/gormlog"
-	configPB "github.com/xmlking/grpc-starter-kit/shared/proto/config"
+	configPB "github.com/xmlking/grpc-starter-kit/shared/proto/config/v1"
 )
 
 // GetDatabaseConnection return (gorm.DB or error)

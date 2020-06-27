@@ -17,8 +17,8 @@ import (
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials"
 
-	"github.com/xmlking/grpc-starter-kit/micro/middleware/rpclog"
-	configPB "github.com/xmlking/grpc-starter-kit/shared/proto/config"
+	"github.com/xmlking/grpc-starter-kit/shared/middleware/rpclog"
+	configPB "github.com/xmlking/grpc-starter-kit/shared/proto/config/v1"
 	uTLS "github.com/xmlking/grpc-starter-kit/shared/util/tls"
 )
 

@@ -9,8 +9,9 @@ import (
 	"github.com/rs/zerolog/log"
 	"google.golang.org/grpc"
 
-	"github.com/xmlking/grpc-starter-kit/micro/middleware/rpclog"
-	appendTags "github.com/xmlking/grpc-starter-kit/micro/middleware/tags/append"
+	"github.com/xmlking/grpc-starter-kit/shared/middleware/rpclog"
+	appendTags "github.com/xmlking/grpc-starter-kit/shared/middleware/tags/append"
+	"github.com/xmlking/grpc-starter-kit/shared/middleware/translog"
 
 	profilev1 "github.com/xmlking/grpc-starter-kit/mkit/service/account/profile/v1"
 	userv1 "github.com/xmlking/grpc-starter-kit/mkit/service/account/user/v1"
@@ -25,7 +26,7 @@ import (
 	grpc_middleware "github.com/grpc-ecosystem/go-grpc-middleware"
 	grpc_validator "github.com/grpc-ecosystem/go-grpc-middleware/validator"
 
-	forwardTags "github.com/xmlking/grpc-starter-kit/micro/middleware/tags/forward"
+	forwardTags "github.com/xmlking/grpc-starter-kit/shared/middleware/tags/forward"
 
 	"github.com/xmlking/grpc-starter-kit/shared/config"
 	"github.com/xmlking/grpc-starter-kit/shared/constants"
@@ -48,11 +49,12 @@ func main() {
 		log.Fatal().Msgf("failed to build container: %v", err)
 	}
 
-	publisher := ctn.Resolve("email-publisher").(cloudevents.Client)
+	translogPublisher := ctn.Resolve("translog-publisher").(cloudevents.Client)
+	emailPublisher := ctn.Resolve("email-publisher").(cloudevents.Client)
 	greeterSrvClient := ctn.Resolve("greeter-client").(greeterv1.GreeterServiceClient)
 
 	// Handlers
-	userHandler := handler.NewUserHandler(ctn.Resolve("user-repository").(repository.UserRepository), publisher, greeterSrvClient)
+	userHandler := handler.NewUserHandler(ctn.Resolve("user-repository").(repository.UserRepository), emailPublisher, greeterSrvClient)
 	profileHandler := ctn.Resolve("profile-handler").(profilev1.ProfileServiceServer)
 
 	// create a gRPC server object
@@ -64,6 +66,7 @@ func main() {
 			grpc_validator.UnaryServerInterceptor(),
 			appendTags.UnaryServerInterceptor(appendTags.WithPairs(constants.FromServiceKey, constants.ACCOUNT_SERVICE)),
 			forwardTags.UnaryServerInterceptor(forwardTags.WithForwardTags(constants.TraceIDKey, constants.TenantIdKey)),
+			translog.UnaryServerInterceptor(translogPublisher, serviceName),
 		)),
 	)
 

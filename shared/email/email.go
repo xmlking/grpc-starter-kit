@@ -9,7 +9,7 @@ import (
 
 	"github.com/rs/zerolog/log"
 
-	configPB "github.com/xmlking/grpc-starter-kit/shared/proto/config"
+	configPB "github.com/xmlking/grpc-starter-kit/shared/proto/config/v1"
 )
 
 var emailTmpl *template.Template

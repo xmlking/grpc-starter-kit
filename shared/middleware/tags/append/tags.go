@@ -19,12 +19,10 @@ func UnaryServerInterceptor(opts ...Option) grpc.UnaryServerInterceptor {
 
 	return func(ctx context.Context, req interface{}, info *grpc.UnaryServerInfo, handler grpc.UnaryHandler) (interface{}, error) {
 		md := options.getMetadata()
-		println(len(md))
 		var pairs []string
 		for k, vv := range md {
 			pairs = append(pairs, k, vv[0])
 		}
-		println(len(pairs))
 
 		if options.traceIdEnabled {
 			pairs = append(pairs, constants.TraceIDKey, uuid.New().String())

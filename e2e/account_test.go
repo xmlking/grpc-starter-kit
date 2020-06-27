@@ -13,11 +13,11 @@ import (
 	"github.com/stretchr/testify/suite"
 	"google.golang.org/grpc"
 
-	appendTags "github.com/xmlking/grpc-starter-kit/micro/middleware/tags/append"
 	"github.com/xmlking/grpc-starter-kit/mkit/service/account/profile/v1"
 	"github.com/xmlking/grpc-starter-kit/mkit/service/account/user/v1"
 	"github.com/xmlking/grpc-starter-kit/shared/config"
 	"github.com/xmlking/grpc-starter-kit/shared/constants"
+	appendTags "github.com/xmlking/grpc-starter-kit/shared/middleware/tags/append"
 	"github.com/xmlking/grpc-starter-kit/shared/util"
 )
 

@@ -13,12 +13,12 @@ import (
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 
-	"github.com/xmlking/grpc-starter-kit/micro/auth"
 	account_entities "github.com/xmlking/grpc-starter-kit/mkit/service/account/entities/v1"
 	"github.com/xmlking/grpc-starter-kit/mkit/service/account/user/v1"
 	"github.com/xmlking/grpc-starter-kit/mkit/service/emailer/v1"
 	"github.com/xmlking/grpc-starter-kit/mkit/service/greeter/v1"
 	"github.com/xmlking/grpc-starter-kit/service/account/repository"
+	"github.com/xmlking/grpc-starter-kit/shared/auth"
 )
 
 // UserHandler struct
@@ -117,8 +117,8 @@ func (h *userHandler) Create(ctx context.Context, req *userv1.CreateRequest) (rs
 	// ctx := cecontext.WithTopic(context.Background(), topic) // for GCP PubSub
 	ctxWithRetries := cloudevents.ContextWithRetriesLinearBackoff(ctx, 10*time.Millisecond, 3)
 
-	if err := h.Event.Send(ctxWithRetries, createEmailEvent(model.Email)); err != nil {
-		log.Error().Err(err).Msg("Received Event.Publish request error. Ignoring")
+	if result := h.Event.Send(ctxWithRetries, createEmailEvent(model.Email)); cloudevents.IsNACK(result) { //cloudevents.IsUndelivered(result)
+		log.Error().Err(result).Msg("Got Send EmailEvent error. Ignoring")
 		// return nil, myErrors.AppError(myErrors.PSE, err)
 	}
 

@@ -7,7 +7,7 @@ import (
 	_ "github.com/jinzhu/gorm/dialects/sqlite"
 
 	_ "github.com/xmlking/grpc-starter-kit/shared/logger"
-	configPB "github.com/xmlking/grpc-starter-kit/shared/proto/config"
+	configPB "github.com/xmlking/grpc-starter-kit/shared/proto/config/v1"
 )
 
 func TestDatabase(t *testing.T) {

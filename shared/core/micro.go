@@ -1,4 +1,4 @@
-package micro
+package core
 
 // https://github.com/stevepartridge/service
 
@@ -80,3 +80,11 @@ func (s *MicroService) Serve(net.Listener) error {
 func (s *MicroService) Shutdown() {
 	s.Server.GracefulStop()
 }
+
+//go func() { grpcServer.Serve(lis) }()
+//ch := make(chan os.Signal, 1)
+//signal.Notify(ch, os.Interrupt)
+//<-ch
+//// ctn.Clean()
+//lis.Close()
+//grpcServer.Stop()

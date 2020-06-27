@@ -6,7 +6,7 @@ services:
   emailer:
     endpoint: http://emailer:8080
   recorder:
-    endpoint: dns:///recorder:8080
+    endpoint: http://recorder:8080
 
 features:
   tls:

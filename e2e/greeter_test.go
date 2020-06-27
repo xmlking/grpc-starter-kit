@@ -8,10 +8,10 @@ import (
 	"github.com/rs/zerolog/log"
 	"google.golang.org/grpc"
 
-	appendTags "github.com/xmlking/grpc-starter-kit/micro/middleware/tags/append"
 	"github.com/xmlking/grpc-starter-kit/mkit/service/greeter/v1"
 	"github.com/xmlking/grpc-starter-kit/shared/config"
 	"github.com/xmlking/grpc-starter-kit/shared/constants"
+	appendTags "github.com/xmlking/grpc-starter-kit/shared/middleware/tags/append"
 )
 
 func TestGreeter_Hello_E2E(t *testing.T) {

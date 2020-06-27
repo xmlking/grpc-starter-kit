@@ -7,7 +7,7 @@ import (
 	"time"
 
 	"github.com/xmlking/grpc-starter-kit/shared/config"
-	configPB "github.com/xmlking/grpc-starter-kit/shared/proto/config"
+	configPB "github.com/xmlking/grpc-starter-kit/shared/proto/config/v1"
 )
 
 // CONFIGOR_DEBUG_MODE=true go test -v ./shared/config/... -count=1

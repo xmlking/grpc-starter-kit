@@ -57,7 +57,7 @@ services:
     endpoint: http://localhost:8082
     version: v0.1.0
   recorder:
-    endpoint: dns:///localhost:8083
+    endpoint: http://localhost:8083
     version: v0.1.0
 
 features:

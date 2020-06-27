@@ -9,11 +9,11 @@ import (
 	"github.com/rs/zerolog/log"
 	"google.golang.org/grpc"
 
-	appendTags "github.com/xmlking/grpc-starter-kit/micro/middleware/tags/append"
 	userv1 "github.com/xmlking/grpc-starter-kit/mkit/service/account/user/v1"
 	"github.com/xmlking/grpc-starter-kit/shared/config"
 	"github.com/xmlking/grpc-starter-kit/shared/constants"
 	_ "github.com/xmlking/grpc-starter-kit/shared/logger"
+	appendTags "github.com/xmlking/grpc-starter-kit/shared/middleware/tags/append"
 	"github.com/xmlking/grpc-starter-kit/shared/util"
 )
 
