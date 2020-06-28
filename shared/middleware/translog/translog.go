@@ -41,8 +41,11 @@ func publish(ctx context.Context, publisher cloudevents.Client, source string, r
 		goto End
 	}
 
-	if result := publisher.Send(ctx, event); cloudevents.IsNACK(result) { //cloudevents.IsUndelivered(result)
-		log.Error().Err(result).Msg("Publisher: Failed publishing translation")
+	if result := publisher.Send(ctx, event); cloudevents.IsUndelivered(result) {
+		log.Error().Err(result).Str("component", "translog").Msg("Publish: Failed to send")
+		err = result
+	} else if cloudevents.IsNACK(result) {
+		log.Error().Err(result).Str("component", "translog").Msg("Publish: event not accepted")
 		err = result
 	}
 

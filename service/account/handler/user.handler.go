@@ -128,8 +128,11 @@ func (h *userHandler) Create(ctx context.Context, req *userv1.CreateRequest) (rs
 		event.SetID(traceId)
 	}
 
-	if result := h.Event.Send(ctxWithRetries, event); cloudevents.IsNACK(result) { //cloudevents.IsUndelivered(result)
-		log.Error().Err(result).Msg("Got Send EmailEvent error. Ignoring")
+	if result := h.Event.Send(ctxWithRetries, event); cloudevents.IsUndelivered(result) {
+		log.Error().Err(result).Msg("EmailEvent: Failed to send. Ignoring")
+		// return nil, myErrors.AppError(myErrors.PSE, err)
+	} else if cloudevents.IsNACK(result) {
+		log.Error().Err(result).Msg("EmailEvent: Event not accepted. Ignoring")
 		// return nil, myErrors.AppError(myErrors.PSE, err)
 	}
 
