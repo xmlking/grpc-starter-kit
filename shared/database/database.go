@@ -18,7 +18,7 @@ func GetDatabaseConnection(dbConf configPB.DatabaseConfiguration) (db *gorm.DB, 
 	switch dbConf.Dialect {
 	case configPB.DatabaseDialect_SQLite3:
 		db, err = connection(dbConf)
-	case configPB.DatabaseDialect_Postgre:
+	case configPB.DatabaseDialect_Postgres:
 		timezoneCommand = "SET timezone = 'UTC'"
 		db, err = connection(dbConf)
 	case configPB.DatabaseDialect_MySQL:

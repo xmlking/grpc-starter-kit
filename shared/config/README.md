@@ -10,7 +10,8 @@ Customize **Configor** at runtime with Environment Variables
 ### Environment Variables
 
 ```bash
-export CONFIGOR_FILE_PATH=/config/config.yaml
+export CONFIGOR_FILES=/config/config.yaml
+# (or) export CONFIGOR_FILES=/config/config.yaml,/config/config.pg.yaml
 export CONFIGOR_DEBUG_MODE=true
 export CONFIGOR_VERBOSE_MODE=true
 export CONFIGOR_SILENT_MODE=true

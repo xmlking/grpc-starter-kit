@@ -69,12 +69,12 @@ go mod download
 
 #### Database
 
-By default this project use embedded `sqlite3` database. if you want to use **postgreSQL**,
+By default, this project use embedded `sqlite3` database. if you want to use **postgreSQL**,
 
 - start **postgres** via `docker-compose` command provided below
-- uncommend `postgres` import statement and comment `sqlite` in `plugin.go`
-- start micro server with `--configFile=config.dev.postgres.yaml` flag <br/>
-  i.e., `go run srv/account/main.go srv/account/plugin.go --configFile=config.dev.postgres.yaml`
+- uncomment `postgres` import statement and comment `sqlite` in `main.go`
+- start micro server with `export export CONFIGOR_FILES=/config/config.yaml,/config/config.pg.yaml` flag <br/>
+  i.e., `CONFIGOR_FILES=/config/config.yaml,/config/config.pg.yaml go run service/account/main.go`
 
 ```bash
 # to start postgres in foreground
@@ -95,7 +95,7 @@ make run-account
 # or
 make run-account ARGS="--server_address=localhost:55011 --broker_address=localhost:55021"
 # or
-go run srv/account/main.go srv/account/plugin.go \
+go run srv/account/main.go \
 --configDir deploy/bases/account-srv/config \
 --server_address=localhost:55011 --broker_address=localhost:55021
 
@@ -175,3 +175,7 @@ kubectl delete -f build/kubernetes.yaml
 1. [Platform Web](https://github.com/micro-in-cn/platform-web)
 1. [grpc template](https://github.com/vtolstov/micro-template-grpc)
 1. [Simple API backed by PostgresQL, Golang and gRPC](https://medium.com/@vptech/complexity-is-the-bane-of-every-software-engineer-e2878d0ad45a)
+
+## 🔗 Credits
+- [atlas-app-toolkit](https://github.com/infobloxopen/atlas-app-toolkit)
+- [dapr](https://github.com/dapr/dapr)

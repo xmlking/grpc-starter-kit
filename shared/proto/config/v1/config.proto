@@ -34,13 +34,13 @@ message EmailConfiguration {
 
 enum DatabaseDialect {
     Unspecified = 0;
-    Postgre = 1;
+    Postgres = 1;
     MySQL = 2;
     SQLite3 = 3;
 }
 
 message DatabaseConfiguration {
-    DatabaseDialect dialect = 1 [(gogoproto.moretags) = "yaml:\",omitempty\" valid:\"in(Postgre|MySQL|SQLite3)\" default:\"2\""];
+    DatabaseDialect dialect = 1 [(gogoproto.moretags) = "yaml:\",omitempty\" valid:\"in(Postgres|MySQL|SQLite3)\" default:\"2\""];
     string host = 2 [(gogoproto.moretags) = "yaml:\",omitempty\" valid:\"host\""];
     uint32 port = 3 [(gogoproto.moretags) = "yaml:\",omitempty\" default:\"5432\" valid:\"port\""];
     string username = 4 [(gogoproto.moretags) = "valid:\"alphanum,required\""];

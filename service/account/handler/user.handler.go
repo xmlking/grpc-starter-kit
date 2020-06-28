@@ -6,6 +6,7 @@ import (
 	"time"
 
 	cloudevents "github.com/cloudevents/sdk-go/v2"
+	"github.com/grpc-ecosystem/go-grpc-middleware/util/metautils"
 	"github.com/jinzhu/gorm"
 	"github.com/rs/zerolog/log"
 	uuid "github.com/satori/go.uuid"
@@ -19,6 +20,7 @@ import (
 	"github.com/xmlking/grpc-starter-kit/mkit/service/greeter/v1"
 	"github.com/xmlking/grpc-starter-kit/service/account/repository"
 	"github.com/xmlking/grpc-starter-kit/shared/auth"
+	"github.com/xmlking/grpc-starter-kit/shared/constants"
 )
 
 // UserHandler struct
@@ -117,7 +119,16 @@ func (h *userHandler) Create(ctx context.Context, req *userv1.CreateRequest) (rs
 	// ctx := cecontext.WithTopic(context.Background(), topic) // for GCP PubSub
 	ctxWithRetries := cloudevents.ContextWithRetriesLinearBackoff(ctx, 10*time.Millisecond, 3)
 
-	if result := h.Event.Send(ctxWithRetries, createEmailEvent(model.Email)); cloudevents.IsNACK(result) { //cloudevents.IsUndelivered(result)
+	// Create an EmailEvent.
+	event := cloudevents.NewEvent()
+	event.SetSource("github.com/xmlking/grpc-starter-kit/service/emailer")
+	event.SetType("account.welcome.email")
+	_ = event.SetData(cloudevents.ApplicationJSON, &emailerv1.Message{Subject: "Sumo", To: model.Email})
+	if traceId := metautils.ExtractIncoming(ctx).Get(constants.TraceIDKey); traceId != "" {
+		event.SetID(traceId)
+	}
+
+	if result := h.Event.Send(ctxWithRetries, event); cloudevents.IsNACK(result) { //cloudevents.IsUndelivered(result)
 		log.Error().Err(result).Msg("Got Send EmailEvent error. Ignoring")
 		// return nil, myErrors.AppError(myErrors.PSE, err)
 	}
@@ -180,13 +191,4 @@ func (h *userHandler) Delete(ctx context.Context, req *userv1.DeleteRequest) (rs
 
 	deletedUser, _ := model.ToPB(ctx)
 	return &userv1.DeleteResponse{Result: &deletedUser}, nil
-}
-
-func createEmailEvent(toEmail string) cloudevents.Event {
-	// Create an Event.
-	event := cloudevents.NewEvent()
-	event.SetSource("github.com/xmlking/grpc-starter-kit/service/emailer")
-	event.SetType("account.welcome.email")
-	event.SetData(cloudevents.ApplicationJSON, &emailerv1.Message{Subject: "Sumo", To: toEmail})
-	return event
 }

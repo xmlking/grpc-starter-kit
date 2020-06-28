@@ -1,6 +1,7 @@
 package core
 
 // https://github.com/stevepartridge/service
+// https://github.com/infobloxopen/atlas-app-toolkit/blob/master/server/server.go
 
 import (
 	"net"

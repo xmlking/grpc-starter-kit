@@ -1,5 +1,5 @@
 database:
-  dialect: 1 # unspecified = 0, postgres = 1, mysq2 = 2, sqlite3 =3
+  dialect: 1 # unspecified = 0, postgres = 1, mysql = 2, sqlite3 =3
   host: postgres
   port: 5432
   username: postgres

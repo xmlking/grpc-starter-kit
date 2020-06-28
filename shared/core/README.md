@@ -55,3 +55,6 @@ func main() {
 	log.Fatal(svr.ListenAndServe())
 }
 ```
+
+## 🔗 Credits
+https://github.com/infobloxopen/atlas-app-toolkit/tree/master/server

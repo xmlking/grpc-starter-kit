@@ -55,16 +55,16 @@ git summary : %s
 `
 
 func init() {
-	configPath, exists := os.LookupEnv("CONFIGOR_FILE_PATH")
+	configFiles, exists := os.LookupEnv("CONFIGOR_FILES")
 	if !exists {
-		configPath = "/config/config.yaml"
+		configFiles = "/config/config.yaml"
 	}
 
 	Configor = configor.New(&configor.Config{UsePkger: true, ErrorOnUnmatchedKeys: true})
-	log.Info().Msgf("loading configuration from file: %s", configPath)
-	if err := Configor.Load(&cfg, configPath); err != nil {
+	log.Info().Msgf("loading config files: %s", configFiles)
+	if err := Configor.Load(&cfg, strings.Split(configFiles, ",")...); err != nil {
 		if strings.Contains(err.Error(), "no such file") {
-			log.Panic().Err(err).Msgf("missing config file at %s", configPath)
+			log.Panic().Err(err).Msgf("missing config file at %s", configFiles)
 		} else {
 			log.Fatal().Err(err).Send()
 		}

@@ -13,7 +13,10 @@ go get github.com/xmlking/grpc-starter-kit/micro
 
 ## Usage
 
-Execution is done in left-to-right order.
+Interceptors will be executed **from left to right**: e.g., logging, monitoring and auth.
+```go
+grpc.UnaryInterceptor(grpc_middleware.ChainUnaryServer(loggingUnary, monitoringUnary, authUnary),)
+```
 
 Add interceptors in following order
 1. Around interceptors - from outer to inner — e.g., duration,  retry  

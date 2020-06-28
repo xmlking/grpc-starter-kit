@@ -1,6 +1,6 @@
 // GORM database package from micro-strter-kit
 
-// add one of the following drivers to plugin.go
+// add one of the following drivers to main.go
 // add 	_ "github.com/jinzhu/gorm/dialects/mysql"
 // add 	_ "github.com/jinzhu/gorm/dialects/postgres"
 // add 	_ "github.com/jinzhu/gorm/dialects/sqlite"

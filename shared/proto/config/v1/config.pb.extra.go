@@ -8,7 +8,7 @@ func (d *DatabaseConfiguration) URL() (url string, err error) {
 	switch d.Dialect {
 	case DatabaseDialect_SQLite3:
 		return d.Database, nil
-	case DatabaseDialect_Postgre:
+	case DatabaseDialect_Postgres:
 		return fmt.Sprintf(
 			"host=%s port=%v user=%s dbname=%s sslmode=disable password=%s",
 			d.Host, d.Port, d.Username, d.Database, d.Password,
