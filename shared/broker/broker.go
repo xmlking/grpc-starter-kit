@@ -2,7 +2,6 @@ package broker
 
 // Broker is an interface used for asynchronous messaging.
 type Broker interface {
-    Init(...Option) error
     Options() Options
     Connect() error
     Disconnect() error
@@ -36,13 +35,8 @@ type Subscriber interface {
     Unsubscribe() error
 }
 
-var (
-    DefaultBroker Broker = NewBroker()
-)
+var DefaultBroker Broker
 
-func Init(opts ...Option) error {
-    return DefaultBroker.Init(opts...)
-}
 
 func Connect() error {
     return DefaultBroker.Connect()

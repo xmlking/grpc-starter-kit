@@ -2,6 +2,7 @@ package main
 
 import (
     "github.com/rs/zerolog/log"
+
     "github.com/xmlking/grpc-starter-kit/shared/broker"
     "github.com/xmlking/grpc-starter-kit/shared/config"
 )
@@ -11,13 +12,11 @@ var (
 )
 
 func main() {
-    // os.Setenv("PUBSUB_EMULATOR_HOST", "http://localhost:8085")
-    // os.Setenv("GOOGLE_APPLICATION_CREDENTIALS", "~/my-json.json")
-
-    broker.DefaultBroker = broker.NewBroker(broker.ProjectID("my-project-id"));
+    broker.DefaultBroker = broker.NewBroker();
 
     myHandler := func(e broker.Event) error {
         log.Info().Interface("event", e).Send()
+        e.Ack()
         return  nil
     }
 
