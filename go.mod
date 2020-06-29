@@ -5,6 +5,7 @@ go 1.14
 // replace github.com/xmlking/configor => /Users/schintha/Developer/Work/go/configor
 
 require (
+    cloud.google.com/go/pubsub v1.4.0
 	github.com/DATA-DOG/go-sqlmock v1.4.1 // indirect
 	// github.com/cloudevents/sdk-go/protocol/pubsub/v2 v2.1.0
 	github.com/cloudevents/sdk-go/v2 v2.1.0
@@ -12,6 +13,7 @@ require (
 	github.com/gogo/protobuf v1.3.1
 	github.com/golang/protobuf v1.4.2
 	github.com/google/uuid v1.1.1
+	github.com/googleapis/gax-go v1.0.3 // indirect
 	github.com/grpc-ecosystem/go-grpc-middleware v1.2.0
 	github.com/infobloxopen/atlas-app-toolkit v0.22.0
 	github.com/infobloxopen/protoc-gen-gorm v0.20.0
@@ -25,6 +27,7 @@ require (
 	github.com/stretchr/testify v1.6.1
 	github.com/thoas/go-funk v0.7.0
 	github.com/xmlking/configor v0.2.1
+	google.golang.org/api v0.28.0
 	google.golang.org/genproto v0.0.0-20200619004808-3e7fca5c55db
 	google.golang.org/grpc v1.30.0
 	google.golang.org/protobuf v1.25.0
