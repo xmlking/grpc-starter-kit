@@ -6,8 +6,6 @@ go 1.14
 
 require (
     cloud.google.com/go/pubsub v1.4.0
-	github.com/DATA-DOG/go-sqlmock v1.4.1 // indirect
-	// github.com/cloudevents/sdk-go/protocol/pubsub/v2 v2.1.0
 	github.com/cloudevents/sdk-go/v2 v2.1.0
 	github.com/envoyproxy/protoc-gen-validate v0.4.0
 	github.com/gogo/protobuf v1.3.1
@@ -28,7 +26,7 @@ require (
 	github.com/thoas/go-funk v0.7.0
 	github.com/xmlking/configor v0.2.1
 	google.golang.org/api v0.28.0
-	google.golang.org/genproto v0.0.0-20200619004808-3e7fca5c55db
+	google.golang.org/genproto v0.0.0-20200626011028-ee7919e894b5
 	google.golang.org/grpc v1.30.0
 	google.golang.org/protobuf v1.25.0
 )
