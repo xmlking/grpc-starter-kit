@@ -1,13 +1,16 @@
 package main
 
 import (
+	"context"
 	"os"
 	"os/signal"
 
+	"cloud.google.com/go/pubsub"
 	"github.com/rs/zerolog/log"
 
 	"github.com/xmlking/grpc-starter-kit/shared/broker"
 	"github.com/xmlking/grpc-starter-kit/shared/config"
+	_ "github.com/xmlking/grpc-starter-kit/shared/logger"
 )
 
 var (
@@ -17,39 +20,29 @@ var (
 func main() {
 	broker.DefaultBroker = broker.NewBroker()
 
-	myHandler := func(e broker.Event) error {
-		msg := e.Message()
-		log.Info().Interface("event.Message.Body", msg.Body).Send()
-		log.Info().Interface("event.Message.Header", msg.Header).Send()
+	myHandler := func(ctx context.Context, msg *pubsub.Message) error {
+		//md, _ := metadata.FromContext(ctx)
+		//log.Info().Interface("md", md).Send()
+		log.Info().Interface("event.Message.ID", msg.ID).Send()
+		log.Info().Interface("event.Message.Attributes", msg.Attributes).Send()
+		log.Info().Interface("event.Message.Data", msg.Data).Send()
+
 		log.Info().Interface("event.Message", msg).Send()
-		log.Info().Interface("event.Topic", e.Topic()).Send()
-		_ = e.Ack()
+		msg.Ack() // or msg.Nack() // or return error for autoAck
 		return nil
 	}
 
-	var subs []broker.Subscriber
-
-	// like adding micro.NewSubscribe(...)
-	sub, err := broker.Subscribe("ingestion-in-dev", myHandler, broker.Queue("ingestion-in-dev"))
+	err := broker.Subscribe("ingestion-in-dev", myHandler, broker.Queue("ingestion-in-dev"))
 	if err != nil {
-		log.Error().Err(err).Msg("Subscribe to `ingestion-in-dev` Topic failed")
+		log.Error().Err(err).Msg("Failed subscribing to Topic: ingestion-in-dev")
 	}
-	subs = append(subs, sub)
 
 	ch := make(chan os.Signal, 1)
 	signal.Notify(ch, os.Interrupt)
 	<-ch
 	log.Info().Msg("Got to Go...")
-	//_ = sub.Unsubscribe()
-	//_ = broker.Disconnect()
-
 	// close all subs and then connection.
-	for _, sub := range subs {
-		log.Info().Msgf("Unsubscribing from topic: %s", sub.Topic())
-		sub.Unsubscribe()
-	}
-
-	if err := broker.Disconnect(); err != nil {
+	if err := broker.Shutdown(); err != nil {
 		log.Fatal().Err(err).Msg("Unexpected disconnect error")
 	}
 }

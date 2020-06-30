@@ -1,59 +1,59 @@
 package broker
 
+import (
+	"context"
+
+	"cloud.google.com/go/pubsub"
+)
+
 // Broker is an interface used for asynchronous messaging.
 type Broker interface {
-    Options() Options
-    Connect() error
-    Disconnect() error
-    Publish(topic string, m *Message, opts ...PublishOption) error
-    Subscribe(topic string, h Handler, opts ...SubscribeOption) (Subscriber, error)
-    String() string
+	Options() Options
+	Shutdown() error
+	Publish(topic string, m *pubsub.Message, opts ...PublishOption) error
+	Subscribe(topic string, h Handler, opts ...SubscribeOption) error
+	String() string
 }
 
 // Handler is used to process messages via a subscription of a topic.
 // The handler is passed a publication interface which contains the
 // message and optional Ack method to acknowledge receipt of the message.
-type Handler func(Event) error
+type Handler func(context.Context, *pubsub.Message) error
 
 type Message struct {
-    Header map[string]string
-    Body   []byte
+	Header map[string]string
+	Body   []byte
 }
 
 // Event is given to a subscription handler for processing
 type Event interface {
-    Topic() string
-    Message() *Message
-    Ack() error
-    Error() error
+	Topic() string
+	Message() *Message
+	Ack() error
+	Error() error
 }
 
 // Subscriber is a convenience return type for the Subscribe method
 type Subscriber interface {
-    Options() SubscribeOptions
-    Topic() string
-    Unsubscribe() error
+	Options() SubscribeOptions
+	Topic() string
+	Unsubscribe() error
 }
 
 var DefaultBroker Broker
 
-
-func Connect() error {
-    return DefaultBroker.Connect()
+func Shutdown() error {
+	return DefaultBroker.Shutdown()
 }
 
-func Disconnect() error {
-    return DefaultBroker.Disconnect()
+func Publish(topic string, msg *pubsub.Message, opts ...PublishOption) error {
+	return DefaultBroker.Publish(topic, msg, opts...)
 }
 
-func Publish(topic string, msg *Message, opts ...PublishOption) error {
-    return DefaultBroker.Publish(topic, msg, opts...)
-}
-
-func Subscribe(topic string, handler Handler, opts ...SubscribeOption) (Subscriber, error) {
-    return DefaultBroker.Subscribe(topic, handler, opts...)
+func Subscribe(topic string, handler Handler, opts ...SubscribeOption) error {
+	return DefaultBroker.Subscribe(topic, handler, opts...)
 }
 
 func String() string {
-    return DefaultBroker.String()
+	return DefaultBroker.String()
 }

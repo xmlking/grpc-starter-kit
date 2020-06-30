@@ -16,9 +16,8 @@ import (
 type pubsubBroker struct {
 	client  *pubsub.Client
 	options Options
+	subs    []*subscriber
 }
-
-type Handler2 func(context.Context, *pubsub.Message) error
 
 // A pubsub subscriber that manages handling of messages
 type subscriber struct {
@@ -26,14 +25,6 @@ type subscriber struct {
 	topic   string
 	exit    chan bool
 	sub     *pubsub.Subscription
-}
-
-// A single publication received by a handler, implements Event
-type publication struct {
-	pm    *pubsub.Message
-	m     *Message
-	topic string
-	err   error
 }
 
 func (s *subscriber) run(hdlr Handler) {
@@ -55,28 +46,16 @@ func (s *subscriber) run(hdlr Handler) {
 			return
 		default:
 			if err := s.sub.Receive(ctx, func(ctx context.Context, pm *pubsub.Message) {
-				// create broker message
-				m := &Message{
-					Header: pm.Attributes,
-					Body:   pm.Data,
-				}
-
-				// create publication
-				p := &publication{
-					pm:    pm,
-					m:     m,
-					topic: s.topic,
-				}
-
 				// If the error is nil lets check if we should auto ack
-				p.err = hdlr(p)
-				if p.err == nil {
+				err := hdlr(ctx, pm)
+				if err == nil {
 					// auto ack?
 					if s.options.AutoAck {
-						p.Ack()
+						pm.Ack()
 					}
 				}
 			}); err != nil {
+				log.Error().Err(err).Msg("Receive Error")
 				time.Sleep(time.Second)
 				continue
 			}
@@ -105,34 +84,20 @@ func (s *subscriber) Unsubscribe() error {
 	}
 }
 
-func (p *publication) Ack() error {
-	p.pm.Ack()
-	return nil
-}
-
-func (p *publication) Error() error {
-	return p.err
-}
-
-func (p *publication) Topic() string {
-	return p.topic
-}
-
-func (p *publication) Message() *Message {
-	return p.m
-}
-
 func (b *pubsubBroker) Connect() error {
 	return nil
 }
 
-func (b *pubsubBroker) Disconnect() error {
+// Shutdown shuts down all subscribers gracefully and then close the connection
+func (b *pubsubBroker) Shutdown() (err error) {
+	// close all subs and then connection.
+	for _, sub := range b.subs {
+		log.Info().Msgf("Unsubscribing from topic: %s", sub.Topic())
+		if err = sub.Unsubscribe(); err != nil {
+			return
+		}
+	}
 	return b.client.Close()
-}
-
-// Init not currently implemented
-func (b *pubsubBroker) Init(opts ...Option) error {
-	return nil
 }
 
 func (b *pubsubBroker) Options() Options {
@@ -140,23 +105,17 @@ func (b *pubsubBroker) Options() Options {
 }
 
 // Publish checks if the topic exists and then publishes via google pubsub
-func (b *pubsubBroker) Publish(topic string, msg *Message, opts ...PublishOption) (err error) {
+func (b *pubsubBroker) Publish(topic string, msg *pubsub.Message, opts ...PublishOption) (err error) {
 	t := b.client.Topic(topic)
 	ctx := context.Background()
 
-	m := &pubsub.Message{
-		ID:         uuid.New().String(),
-		Data:       msg.Body,
-		Attributes: msg.Header,
-	}
-
-	pr := t.Publish(ctx, m)
+	pr := t.Publish(ctx, msg)
 	if _, err = pr.Get(ctx); err != nil {
 		// create Topic if not exists
 		if status.Code(err) == codes.NotFound {
 			log.Info().Msgf("Topic not exists. creating Topic: %s", topic)
 			if t, err = b.client.CreateTopic(ctx, topic); err == nil {
-				_, err = t.Publish(ctx, m).Get(ctx)
+				_, err = t.Publish(ctx, msg).Get(ctx)
 			}
 		}
 	}
@@ -164,7 +123,7 @@ func (b *pubsubBroker) Publish(topic string, msg *Message, opts ...PublishOption
 }
 
 // Subscribe registers a subscription to the given topic against the google pubsub api
-func (b *pubsubBroker) Subscribe(topic string, h Handler, opts ...SubscribeOption) (Subscriber, error) {
+func (b *pubsubBroker) Subscribe(topic string, h Handler, opts ...SubscribeOption) error {
 	options := SubscribeOptions{
 		AutoAck: true,
 		Queue:   "q-" + uuid.New().String(),
@@ -181,7 +140,7 @@ func (b *pubsubBroker) Subscribe(topic string, h Handler, opts ...SubscribeOptio
 	if createSubscription, ok := b.options.Context.Value(createSubscription{}).(bool); !ok || createSubscription {
 		exists, err := sub.Exists(ctx)
 		if err != nil {
-			return nil, err
+			return err
 		}
 
 		if !exists {
@@ -191,7 +150,7 @@ func (b *pubsubBroker) Subscribe(topic string, h Handler, opts ...SubscribeOptio
 				AckDeadline: time.Duration(0),
 			})
 			if err != nil {
-				return nil, err
+				return err
 			}
 			sub = subb
 		}
@@ -204,9 +163,12 @@ func (b *pubsubBroker) Subscribe(topic string, h Handler, opts ...SubscribeOptio
 		sub:     sub,
 	}
 
+	// keep track of subs
+	b.subs = append(b.subs, subscriber)
+
 	go subscriber.run(h)
 
-	return subscriber, nil
+	return nil
 }
 
 func (b *pubsubBroker) String() string {
