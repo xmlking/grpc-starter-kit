@@ -1,25 +1,21 @@
 package config
 
 import (
-	"crypto/tls"
-	"fmt"
-	"net"
-	"net/url"
-	"os"
-	"runtime"
-	"strings"
-	"sync"
+    "fmt"
+    "os"
+    "runtime"
+    "strings"
+    "sync"
 
-	grpc_middleware "github.com/grpc-ecosystem/go-grpc-middleware"
-	"github.com/pkg/errors"
-	"github.com/rs/zerolog/log"
-	"github.com/xmlking/configor"
-	"google.golang.org/grpc"
-	"google.golang.org/grpc/credentials"
+    grpc_middleware "github.com/grpc-ecosystem/go-grpc-middleware"
+    "github.com/rs/zerolog/log"
+    "github.com/xmlking/configor"
+    "google.golang.org/grpc"
+    "google.golang.org/grpc/credentials"
 
-	"github.com/xmlking/grpc-starter-kit/shared/middleware/rpclog"
-	configPB "github.com/xmlking/grpc-starter-kit/shared/proto/config/v1"
-	uTLS "github.com/xmlking/grpc-starter-kit/shared/util/tls"
+    "github.com/xmlking/grpc-starter-kit/shared/middleware/rpclog"
+    configPB "github.com/xmlking/grpc-starter-kit/shared/proto/config/v1"
+    "github.com/xmlking/grpc-starter-kit/toolkit/util/tls"
 )
 
 var (
@@ -86,12 +82,12 @@ func GetConfig() configPB.Configuration { // FIXME: return a deep copy?
 	return cfg
 }
 
-func CreateServerCerts() (tlsConfig *tls.Config, err error) {
-	configLock.RLock()
-	defer configLock.RUnlock()
-	tlsConf := cfg.Features.Tls
-	return uTLS.GetTLSConfig(tlsConf.CertFile, tlsConf.KeyFile, tlsConf.CaFile, tlsConf.Servername)
-}
+//func CreateServerCerts() (tlsConfig *tls.Config, err error) {
+//	configLock.RLock()
+//	defer configLock.RUnlock()
+//	tlsConf := cfg.Features.Tls
+//	return uTLS.GetTLSConfig(tlsConf.CertFile, tlsConf.KeyFile, tlsConf.CaFile, tlsConf.ServerName)
+//}
 
 func IsProduction() bool {
 	return Configor.GetEnvironment() == "production"
@@ -115,7 +111,7 @@ func GetClientConn(service *configPB.Service, ucInterceptors []grpc.UnaryClientI
 
 	tlsConf := cfg.Features.Tls
 	if tlsConf.Enabled {
-		if creds, err := uTLS.GetTLSConfig(tlsConf.CertFile, tlsConf.KeyFile, tlsConf.CaFile, tlsConf.Servername); err != nil {
+		if creds, err := tls.NewTLSConfig(tlsConf.CertFile, tlsConf.KeyFile, tlsConf.CaFile, tlsConf.ServerName); err != nil {
 			return nil, err
 		} else {
 			dialOptions = append(dialOptions, grpc.WithTransportCredentials(credentials.NewTLS(creds)))
@@ -142,66 +138,3 @@ func GetClientConn(service *configPB.Service, ucInterceptors []grpc.UnaryClientI
 	return
 }
 
-func GetListener(endpoint string) (lis net.Listener, err error) {
-	configLock.RLock()
-	defer configLock.RUnlock()
-	var target Target
-	target, err = ParseTarget(endpoint)
-	if err != nil {
-		return
-	}
-
-	switch target.Scheme {
-	case "unix":
-		return net.Listen("unix", target.Path)
-	case "tcp", "dns", "http", "https", "kubernetes":
-		if target.Port == "" {
-			target.Port = "0"
-		}
-
-		tlsConf := cfg.Features.Tls
-		if tlsConf.Enabled {
-			if tlsConfig, err := uTLS.GetTLSConfig(tlsConf.CertFile, tlsConf.KeyFile, tlsConf.CaFile, tlsConf.Servername); err != nil {
-				return nil, err
-			} else {
-				return tls.Listen("tcp", fmt.Sprintf(":%s", target.Port), tlsConfig)
-			}
-		} else {
-			return net.Listen("tcp", fmt.Sprintf(":%s", target.Port))
-		}
-	default:
-		return nil, errors.New(fmt.Sprintf("unknown scheme: %s in endpoint: %s", target.Scheme, endpoint))
-	}
-}
-
-type Target struct {
-	Scheme string
-	Host   string
-	Port   string
-	Path   string
-}
-
-// ParseTarget splits target into a Target struct containing scheme, host, port and path.
-// If target is not a valid scheme://host:port/path, it returns error.
-func ParseTarget(target string) (ret Target, err error) {
-	if strings.HasPrefix(target, "unix://") {
-		spl := strings.SplitN(target, "://", 2)
-		ret.Scheme = spl[0]
-		ret.Path = spl[1]
-		return
-	}
-	target = strings.Replace(target, ":///", "://", 1)
-	var u *url.URL
-	if u, err = url.Parse(target); err == nil {
-		ret.Scheme = u.Scheme
-		ret.Path = u.Path
-		if u.Host != "" {
-			var portError error
-			if ret.Host, ret.Port, portError = net.SplitHostPort(u.Host); portError != nil {
-				log.Debug().Err(portError)
-				ret.Host = u.Host
-			}
-		}
-	}
-	return
-}

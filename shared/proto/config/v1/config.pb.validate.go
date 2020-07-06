@@ -786,7 +786,7 @@ func (m *Features_TLS) Validate() error {
 
 	// no validation rules for CaFile
 
-	// no validation rules for Servername
+	// no validation rules for ServerName
 
 	return nil
 }

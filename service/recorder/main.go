@@ -1,16 +1,15 @@
 package main
 
 import (
-	"context"
+    "github.com/rs/zerolog/log"
 
-	"github.com/rs/zerolog/log"
-
-	"github.com/xmlking/grpc-starter-kit/service/recorder/registry"
-	"github.com/xmlking/grpc-starter-kit/service/recorder/subscriber"
-	"github.com/xmlking/grpc-starter-kit/shared/config"
-	"github.com/xmlking/grpc-starter-kit/shared/constants"
-	"github.com/xmlking/grpc-starter-kit/shared/eventing"
-	_ "github.com/xmlking/grpc-starter-kit/shared/logger"
+    "github.com/xmlking/grpc-starter-kit/service/recorder/registry"
+    "github.com/xmlking/grpc-starter-kit/service/recorder/subscriber"
+    "github.com/xmlking/grpc-starter-kit/shared/config"
+    "github.com/xmlking/grpc-starter-kit/shared/constants"
+    _ "github.com/xmlking/grpc-starter-kit/shared/logger"
+    "github.com/xmlking/grpc-starter-kit/toolkit/broker"
+    "github.com/xmlking/grpc-starter-kit/toolkit/service"
 )
 
 func main() {
@@ -25,12 +24,19 @@ func main() {
 	}
 	transactionSubscriber := ctn.Resolve("transaction-subscriber").(*subscriber.TransactionSubscriber)
 
-	ceClient := eventing.NewSinkClient(cfg.Services.Recorder.Endpoint)
+    srv := service.NewService(
+        service.Name(serviceName),
+        service.Version(cfg.Services.Recorder.Version),
+        service.WithBrokerOptions(
+            broker.Name("mkit.broker.recorder"),
+            broker.WithEndpoint(cfg.Services.Recorder.Endpoint),
+        ),
+        // service.WithBrokerOptions(...),
+    )
+    srv.AddSubscriber(transactionSubscriber.HandleSend)
 
-	// Start server!
-	println(config.GetBuildInfo())
-	log.Info().Msgf("Server (%s) started at: %s, secure: %t", serviceName, cfg.Services.Recorder.Endpoint, cfg.Features.Tls.Enabled)
-	if err := ceClient.StartReceiver(context.Background(), transactionSubscriber.HandleSend); err != nil {
-		log.Fatal().Err(err).Send()
-	}
+    // Start server!
+    if err := srv.Start(); err != nil {
+        log.Fatal().Err(err).Send()
+    }
 }

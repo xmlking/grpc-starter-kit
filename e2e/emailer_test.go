@@ -31,6 +31,8 @@ func TestEmailSubscriber_Handle_Send_E2E(t *testing.T) {
 	event := cloudevents.NewEvent()
 	event.SetSource("github.com/xmlking/grpc-starter-kit/service/emailer")
 	event.SetType("account.welcome.email")
+    // Setting the extension as a string as the CloudEvents sdk does not support non-string extensions.
+    event.SetExtension("EventSentTime", cloudevents.Timestamp{Time: time.Now()})
 	_ = event.SetData(cloudevents.ApplicationJSON, &emailerv1.Message{Subject: "Sumo", To: "sumo@demo.com"})
 
 	// Set a target.

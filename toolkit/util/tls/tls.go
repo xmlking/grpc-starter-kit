@@ -1,17 +1,27 @@
-package core
+package tls
 
 import (
 	"crypto/tls"
 	"crypto/x509"
 	"fmt"
-	"io/ioutil"
+
+    "github.com/xmlking/grpc-starter-kit/toolkit/util/ioutil"
 )
 
 // NewTLSConfig returns a TLS config that includes a certificate
 // Use for Server TLS config or when using a client certificate
 // If caPath is empty, system CAs will be used
-func NewTLSConfig(certPath, keyPath, caPath string) (*tls.Config, error) {
-	cert, err := tls.LoadX509KeyPair(certPath, keyPath)
+func NewTLSConfig(certPath, keyPath, caPath, serverName string) (tlsConfig *tls.Config, err error) {
+    var certPEMBlock, keyPEMBlock []byte
+    certPEMBlock, err = ioutil.ReadFile(certPath)
+    if err != nil {
+        return
+    }
+    keyPEMBlock, err = ioutil.ReadFile(keyPath)
+    if err != nil {
+        return
+    }
+    cert, err := tls.X509KeyPair(certPEMBlock, keyPEMBlock)
 	if err != nil {
 		return nil, err
 	}
@@ -22,6 +32,7 @@ func NewTLSConfig(certPath, keyPath, caPath string) (*tls.Config, error) {
 	}
 
 	return &tls.Config{
+        ServerName: serverName,
 		Certificates: []tls.Certificate{cert},
 		RootCAs:      roots,
 		NextProtos:   []string{"h2"},

@@ -1,21 +1,8 @@
-# core
+# toolkit
 
 ## TODO
-
-WithCeClient()
-WithListner()
+ 
 WithConfig( interface{})
-WithName()
-WithVersion()
-
-# public 
-service = micro.NewService(With...()...)
-
-micro.RegisterSubscriber
-handler.Register(service,  )
-micro.GetClient()
-micro.GetCeClient()
-micro.GetServer()
 
 ```go
 package main
@@ -25,7 +12,7 @@ import (
 	"log"
 	"net/http"
 
-	cloudevents "github.com/cloudevents/sdk-go"
+	cloudevents "github.com/cloudevents/sdk-go/v2"
 	moron "github.com/spencer-p/moroncloudevents"
 )
 
@@ -40,6 +27,8 @@ func receive(ctx context.Context, event cloudevents.Event, r *cloudevents.EventR
 }
 
 func main() {
+    ctx := signals.NewContext()
+
 	svr, err := moron.NewServer(&moron.ServerConfig{
 		Port:                  "8080",
 		CloudEventReceivePath: "/apis/receive",
@@ -58,3 +47,4 @@ func main() {
 
 ## 🔗 Credits
 https://github.com/infobloxopen/atlas-app-toolkit/tree/master/server
+https://github.com/spencer-p/moroncloudevents/tree/master
