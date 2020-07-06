@@ -22,7 +22,7 @@ require (
 	github.com/stretchr/testify v1.6.1
 	github.com/thoas/go-funk v0.7.0
 	github.com/xmlking/configor v0.2.1
-	github.com/xmlking/toolkit v0.0.0-20200706143904-8a3effe162e7
+	github.com/xmlking/toolkit v0.1.0
 	google.golang.org/genproto v0.0.0-20200624020401-64a14ca9d1ad
 	google.golang.org/grpc v1.30.0
 	google.golang.org/grpc/examples v0.0.0-20200630190442-3de8449f8555 // indirect
