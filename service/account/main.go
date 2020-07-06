@@ -1,35 +1,36 @@
 package main
 
 import (
-	cloudevents "github.com/cloudevents/sdk-go/v2"
-	"github.com/rs/zerolog/log"
-	"google.golang.org/grpc"
-	"google.golang.org/grpc/credentials"
+    cloudevents "github.com/cloudevents/sdk-go/v2"
+    "github.com/rs/zerolog/log"
+    "google.golang.org/grpc"
+    "google.golang.org/grpc/credentials"
 
-	"github.com/xmlking/grpc-starter-kit/toolkit/middleware/rpclog"
-	"github.com/xmlking/grpc-starter-kit/toolkit/middleware/translog"
-	"github.com/xmlking/grpc-starter-kit/toolkit/service"
-	"github.com/xmlking/grpc-starter-kit/toolkit/util/tls"
+    "github.com/xmlking/toolkit/middleware/rpclog"
+    "github.com/xmlking/toolkit/service"
+    "github.com/xmlking/toolkit/util/tls"
 
-	profilev1 "github.com/xmlking/grpc-starter-kit/mkit/service/account/profile/v1"
-	userv1 "github.com/xmlking/grpc-starter-kit/mkit/service/account/user/v1"
-	greeterv1 "github.com/xmlking/grpc-starter-kit/mkit/service/greeter/v1"
-	"github.com/xmlking/grpc-starter-kit/service/account/handler"
+    "github.com/xmlking/grpc-starter-kit/shared/middleware/translog"
 
-	_ "github.com/jinzhu/gorm/dialects/sqlite"
+    profilev1 "github.com/xmlking/grpc-starter-kit/mkit/service/account/profile/v1"
+    userv1 "github.com/xmlking/grpc-starter-kit/mkit/service/account/user/v1"
+    greeterv1 "github.com/xmlking/grpc-starter-kit/mkit/service/greeter/v1"
+    "github.com/xmlking/grpc-starter-kit/service/account/handler"
 
-	"github.com/xmlking/grpc-starter-kit/service/account/registry"
-	"github.com/xmlking/grpc-starter-kit/service/account/repository"
+    _ "github.com/jinzhu/gorm/dialects/sqlite"
 
-	grpc_middleware "github.com/grpc-ecosystem/go-grpc-middleware"
-	grpc_validator "github.com/grpc-ecosystem/go-grpc-middleware/validator"
+    "github.com/xmlking/grpc-starter-kit/service/account/registry"
+    "github.com/xmlking/grpc-starter-kit/service/account/repository"
 
-	appendTags "github.com/xmlking/grpc-starter-kit/toolkit/middleware/tags/append"
-	forwardTags "github.com/xmlking/grpc-starter-kit/toolkit/middleware/tags/forward"
+    grpc_middleware "github.com/grpc-ecosystem/go-grpc-middleware"
+    grpc_validator "github.com/grpc-ecosystem/go-grpc-middleware/validator"
 
-	"github.com/xmlking/grpc-starter-kit/shared/config"
-	"github.com/xmlking/grpc-starter-kit/shared/constants"
-	_ "github.com/xmlking/grpc-starter-kit/shared/logger"
+    appendTags "github.com/xmlking/toolkit/middleware/tags/append"
+    forwardTags "github.com/xmlking/toolkit/middleware/tags/forward"
+
+    "github.com/xmlking/grpc-starter-kit/shared/config"
+    "github.com/xmlking/grpc-starter-kit/shared/constants"
+    _ "github.com/xmlking/grpc-starter-kit/shared/logger"
 )
 
 func main() {
@@ -114,6 +115,7 @@ func main() {
 	profilev1.RegisterProfileServiceServer(grpcServer, profileHandler)
 
 	// start the server
+	log.Info().Msg(config.GetBuildInfo())
 	if err := srv.Start(); err != nil {
 		log.Fatal().Err(err).Send()
 	}

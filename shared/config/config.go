@@ -1,21 +1,22 @@
 package config
 
 import (
-	"fmt"
-	"os"
-	"runtime"
-	"strings"
-	"sync"
+    "fmt"
+    "os"
+    "runtime"
+    "strings"
+    "sync"
 
-	grpc_middleware "github.com/grpc-ecosystem/go-grpc-middleware"
-	"github.com/rs/zerolog/log"
-	"github.com/xmlking/configor"
-	"google.golang.org/grpc"
-	"google.golang.org/grpc/credentials"
+    grpc_middleware "github.com/grpc-ecosystem/go-grpc-middleware"
+    "github.com/rs/zerolog/log"
+    "github.com/xmlking/configor"
+    "google.golang.org/grpc"
+    "google.golang.org/grpc/credentials"
 
-	configPB "github.com/xmlking/grpc-starter-kit/shared/proto/config/v1"
-	"github.com/xmlking/grpc-starter-kit/toolkit/middleware/rpclog"
-	"github.com/xmlking/grpc-starter-kit/toolkit/util/tls"
+    "github.com/xmlking/toolkit/middleware/rpclog"
+    "github.com/xmlking/toolkit/util/tls"
+
+    configPB "github.com/xmlking/grpc-starter-kit/shared/proto/config/v1"
 )
 
 var (

@@ -2,20 +2,20 @@
 package e2e
 
 import (
-	"context"
-	"testing"
-	"time"
+    "context"
+    "testing"
+    "time"
 
-	cloudevents "github.com/cloudevents/sdk-go/v2"
-	// cecontext "github.com/cloudevents/sdk-go/v2/context"
+    cloudevents "github.com/cloudevents/sdk-go/v2"
+    // cecontext "github.com/cloudevents/sdk-go/v2/context"
 
-	"github.com/rs/zerolog/log"
+    "github.com/rs/zerolog/log"
 
-	"github.com/xmlking/grpc-starter-kit/mkit/service/emailer/v1"
-	"github.com/xmlking/grpc-starter-kit/shared/config"
-	_ "github.com/xmlking/grpc-starter-kit/shared/constants"
-	"github.com/xmlking/grpc-starter-kit/shared/eventing"
-	_ "github.com/xmlking/grpc-starter-kit/shared/logger"
+    "github.com/xmlking/toolkit/eventing"
+
+    "github.com/xmlking/grpc-starter-kit/mkit/service/emailer/v1"
+    "github.com/xmlking/grpc-starter-kit/shared/config"
+    _ "github.com/xmlking/grpc-starter-kit/shared/logger"
 )
 
 func TestEmailSubscriber_Handle_Send_E2E(t *testing.T) {

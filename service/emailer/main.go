@@ -1,16 +1,17 @@
 package main
 
 import (
-	"github.com/rs/zerolog/log"
+    "github.com/rs/zerolog/log"
 
-	"github.com/xmlking/grpc-starter-kit/service/emailer/registry"
-	"github.com/xmlking/grpc-starter-kit/service/emailer/subscriber"
-	"github.com/xmlking/grpc-starter-kit/shared/config"
-	"github.com/xmlking/grpc-starter-kit/shared/constants"
-	_ "github.com/xmlking/grpc-starter-kit/shared/constants"
-	_ "github.com/xmlking/grpc-starter-kit/shared/logger"
-	"github.com/xmlking/grpc-starter-kit/toolkit/broker"
-	"github.com/xmlking/grpc-starter-kit/toolkit/service"
+    "github.com/xmlking/toolkit/broker"
+    "github.com/xmlking/toolkit/service"
+
+    "github.com/xmlking/grpc-starter-kit/service/emailer/registry"
+    "github.com/xmlking/grpc-starter-kit/service/emailer/subscriber"
+    "github.com/xmlking/grpc-starter-kit/shared/config"
+    "github.com/xmlking/grpc-starter-kit/shared/constants"
+    _ "github.com/xmlking/grpc-starter-kit/shared/constants"
+    _ "github.com/xmlking/grpc-starter-kit/shared/logger"
 )
 
 func main() {
@@ -37,6 +38,7 @@ func main() {
 	srv.AddSubscriber(emailSubscriber.HandleSend)
 
 	// Start server!
+	log.Info().Msg(config.GetBuildInfo())
 	if err := srv.Start(); err != nil {
 		log.Fatal().Err(err).Send()
 	}

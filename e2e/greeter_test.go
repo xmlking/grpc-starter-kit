@@ -2,16 +2,17 @@
 package e2e
 
 import (
-	"context"
-	"testing"
+    "context"
+    "testing"
 
-	"github.com/rs/zerolog/log"
-	"google.golang.org/grpc"
+    "github.com/rs/zerolog/log"
+    "google.golang.org/grpc"
 
-	"github.com/xmlking/grpc-starter-kit/mkit/service/greeter/v1"
-	"github.com/xmlking/grpc-starter-kit/shared/config"
-	"github.com/xmlking/grpc-starter-kit/shared/constants"
-	appendTags "github.com/xmlking/grpc-starter-kit/toolkit/middleware/tags/append"
+    appendTags "github.com/xmlking/toolkit/middleware/tags/append"
+
+    "github.com/xmlking/grpc-starter-kit/mkit/service/greeter/v1"
+    "github.com/xmlking/grpc-starter-kit/shared/config"
+    "github.com/xmlking/grpc-starter-kit/shared/constants"
 )
 
 func TestGreeter_Hello_E2E(t *testing.T) {

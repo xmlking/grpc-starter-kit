@@ -1,27 +1,28 @@
 package main
 
 import (
-	"net/http"
+    "net/http"
 
-	grpc_middleware "github.com/grpc-ecosystem/go-grpc-middleware"
-	grpc_validator "github.com/grpc-ecosystem/go-grpc-middleware/validator"
-	"github.com/rs/zerolog/log"
-	"github.com/soheilhy/cmux"
-	"google.golang.org/grpc"
-	"google.golang.org/grpc/credentials"
-	"google.golang.org/grpc/health"
-	"google.golang.org/grpc/health/grpc_health_v1"
-	"google.golang.org/grpc/reflection"
+    grpc_middleware "github.com/grpc-ecosystem/go-grpc-middleware"
+    grpc_validator "github.com/grpc-ecosystem/go-grpc-middleware/validator"
+    "github.com/rs/zerolog/log"
+    "github.com/soheilhy/cmux"
+    "google.golang.org/grpc"
+    "google.golang.org/grpc/credentials"
+    "google.golang.org/grpc/health"
+    "google.golang.org/grpc/health/grpc_health_v1"
+    "google.golang.org/grpc/reflection"
 
-	"github.com/xmlking/grpc-starter-kit/mkit/service/greeter/v1"
-	"github.com/xmlking/grpc-starter-kit/service/greeter/handler"
-	"github.com/xmlking/grpc-starter-kit/shared/config"
-	"github.com/xmlking/grpc-starter-kit/shared/constants"
-	_ "github.com/xmlking/grpc-starter-kit/shared/logger"
-	"github.com/xmlking/grpc-starter-kit/toolkit/middleware/rpclog"
-	"github.com/xmlking/grpc-starter-kit/toolkit/service"
-	"github.com/xmlking/grpc-starter-kit/toolkit/util/endpoint"
-	"github.com/xmlking/grpc-starter-kit/toolkit/util/tls"
+    "github.com/xmlking/toolkit/middleware/rpclog"
+    "github.com/xmlking/toolkit/service"
+    "github.com/xmlking/toolkit/util/endpoint"
+    "github.com/xmlking/toolkit/util/tls"
+
+    "github.com/xmlking/grpc-starter-kit/mkit/service/greeter/v1"
+    "github.com/xmlking/grpc-starter-kit/service/greeter/handler"
+    "github.com/xmlking/grpc-starter-kit/shared/config"
+    "github.com/xmlking/grpc-starter-kit/shared/constants"
+    _ "github.com/xmlking/grpc-starter-kit/shared/logger"
 )
 
 func main() {
@@ -66,6 +67,7 @@ func main() {
 	greeterv1.RegisterGreeterServiceServer(grpcServer, greeterHandler)
 
 	// start the server
+	log.Info().Msg(config.GetBuildInfo())
 	if err := srv.Start(); err != nil {
 		log.Fatal().Err(err).Send()
 	}

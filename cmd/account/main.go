@@ -1,20 +1,21 @@
 package main
 
 import (
-	"context"
-	"flag"
-	"fmt"
+    "context"
+    "flag"
+    "fmt"
 
-	"github.com/golang/protobuf/ptypes/wrappers"
-	"github.com/rs/zerolog/log"
-	"google.golang.org/grpc"
+    "github.com/golang/protobuf/ptypes/wrappers"
+    "github.com/rs/zerolog/log"
+    "google.golang.org/grpc"
 
-	userv1 "github.com/xmlking/grpc-starter-kit/mkit/service/account/user/v1"
-	"github.com/xmlking/grpc-starter-kit/shared/config"
-	"github.com/xmlking/grpc-starter-kit/shared/constants"
-	_ "github.com/xmlking/grpc-starter-kit/shared/logger"
-	"github.com/xmlking/grpc-starter-kit/shared/util"
-	appendTags "github.com/xmlking/grpc-starter-kit/toolkit/middleware/tags/append"
+    appendTags "github.com/xmlking/toolkit/middleware/tags/append"
+
+    userv1 "github.com/xmlking/grpc-starter-kit/mkit/service/account/user/v1"
+    "github.com/xmlking/grpc-starter-kit/shared/config"
+    "github.com/xmlking/grpc-starter-kit/shared/constants"
+    _ "github.com/xmlking/grpc-starter-kit/shared/logger"
+    "github.com/xmlking/grpc-starter-kit/shared/util"
 )
 
 var (
