@@ -17,8 +17,8 @@ import (
 	"github.com/xmlking/grpc-starter-kit/mkit/service/account/user/v1"
 	"github.com/xmlking/grpc-starter-kit/shared/config"
 	"github.com/xmlking/grpc-starter-kit/shared/constants"
-	appendTags "github.com/xmlking/grpc-starter-kit/shared/middleware/tags/append"
 	"github.com/xmlking/grpc-starter-kit/shared/util"
+	appendTags "github.com/xmlking/grpc-starter-kit/toolkit/middleware/tags/append"
 )
 
 // Define the suite, and absorb the built-in basic suite

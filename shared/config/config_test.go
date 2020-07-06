@@ -32,7 +32,7 @@ func TestDefaultValues(t *testing.T) {
 
 func ExampleGetConfig() {
 	fmt.Println(config.GetConfig().Email)
-	// fmt.Println(config.GetConfig().Services["account"].Deadline)
+	// fmt.Println(config.GetConfig().Services.Account.Authority)
 
 	// Output:
 	// username:"yourGmailUsername" password:"yourGmailAppPassword" email_server:"smtp.gmail.com" port:587 from:"from-test@gmail.com"
@@ -41,12 +41,12 @@ func ExampleGetConfig() {
 func ExampleGetConfig_check_defaults() {
 	fmt.Println(config.GetConfig().Services.Account.Endpoint)
 	fmt.Println(config.GetConfig().Services.Account.Version)
-	fmt.Println(config.GetConfig().Services.Account.Deadline)
+	fmt.Println(config.GetConfig().Services.Account.Authority)
 
 	// Output:
 	// dns:///account.test:8080
 	// v0.1.0
-	// 8888
+	// aaa.bbb.ccc
 }
 
 func TestOverwriteConfigurationWithEnvironmentWithDefaultPrefix(t *testing.T) {

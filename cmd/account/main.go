@@ -13,8 +13,8 @@ import (
 	"github.com/xmlking/grpc-starter-kit/shared/config"
 	"github.com/xmlking/grpc-starter-kit/shared/constants"
 	_ "github.com/xmlking/grpc-starter-kit/shared/logger"
-	appendTags "github.com/xmlking/grpc-starter-kit/shared/middleware/tags/append"
 	"github.com/xmlking/grpc-starter-kit/shared/util"
+	appendTags "github.com/xmlking/grpc-starter-kit/toolkit/middleware/tags/append"
 )
 
 var (

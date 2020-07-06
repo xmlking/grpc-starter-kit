@@ -1,11 +1,11 @@
 package signals
 
 import (
-    "context"
-    "errors"
-    "os"
-    "os/signal"
-    "time"
+	"context"
+	"errors"
+	"os"
+	"os/signal"
+	"time"
 )
 
 // Copied from https://github.com/knative/pkg/tree/master/signals
@@ -16,54 +16,54 @@ var onlyOneSignalHandler = make(chan struct{})
 // which is closed on one of these signals. If a second signal is caught, the program
 // is terminated with exit code 1.
 func SetupSignalHandler() (stopCh <-chan struct{}) {
-    close(onlyOneSignalHandler) // panics when called twice
+	close(onlyOneSignalHandler) // panics when called twice
 
-    stop := make(chan struct{})
-    c := make(chan os.Signal, 2)
-    signal.Notify(c, shutdownSignals...)
-    go func() {
-        <-c
-        close(stop)
-        <-c
-        os.Exit(1) // second signal. Exit directly.
-    }()
+	stop := make(chan struct{})
+	c := make(chan os.Signal, 2)
+	signal.Notify(c, shutdownSignals...)
+	go func() {
+		<-c
+		close(stop)
+		<-c
+		os.Exit(1) // second signal. Exit directly.
+	}()
 
-    return stop
+	return stop
 }
 
 // NewContext creates a new context with SetupSignalHandler()
 // as our Done() channel.
 func NewContext() context.Context {
-    return &signalContext{stopCh: SetupSignalHandler()}
+	return &signalContext{stopCh: SetupSignalHandler()}
 }
 
 type signalContext struct {
-    stopCh <-chan struct{}
+	stopCh <-chan struct{}
 }
 
 // Deadline implements context.Context
 func (scc *signalContext) Deadline() (deadline time.Time, ok bool) {
-    return
+	return
 }
 
 // Done implements context.Context
 func (scc *signalContext) Done() <-chan struct{} {
-    return scc.stopCh
+	return scc.stopCh
 }
 
 // Err implements context.Context
 func (scc *signalContext) Err() error {
-    select {
-    case _, ok := <-scc.Done():
-        if !ok {
-            return errors.New("received a termination signal")
-        }
-    default:
-    }
-    return nil
+	select {
+	case _, ok := <-scc.Done():
+		if !ok {
+			return errors.New("received a termination signal")
+		}
+	default:
+	}
+	return nil
 }
 
 // Value implements context.Context
 func (scc *signalContext) Value(key interface{}) interface{} {
-    return nil
+	return nil
 }

@@ -19,8 +19,8 @@ import (
 	"github.com/xmlking/grpc-starter-kit/mkit/service/emailer/v1"
 	"github.com/xmlking/grpc-starter-kit/mkit/service/greeter/v1"
 	"github.com/xmlking/grpc-starter-kit/service/account/repository"
-	"github.com/xmlking/grpc-starter-kit/shared/auth"
 	"github.com/xmlking/grpc-starter-kit/shared/constants"
+	"github.com/xmlking/grpc-starter-kit/toolkit/auth"
 )
 
 // UserHandler struct

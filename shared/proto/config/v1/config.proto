@@ -21,7 +21,7 @@ message Service {
     string endpoint = 1 [(gogoproto.moretags) = "yaml:\"endpoint\" required:\"true\""];
     string version = 2 [(gogoproto.moretags) = "yaml:\",omitempty\" default:\"v0.1.0\""];
     string service_config = 3 [(gogoproto.moretags) = "yaml:\"service_config,omitempty\""];
-    uint32 deadline = 4 [(gogoproto.moretags) = "yaml:\",omitempty\" default:\"10\""];
+    string authority = 4 [(gogoproto.moretags) = "yaml:\",omitempty\""];
 }
 
 message EmailConfiguration {

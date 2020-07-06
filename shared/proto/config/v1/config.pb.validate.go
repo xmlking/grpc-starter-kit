@@ -49,7 +49,7 @@ func (m *Service) Validate() error {
 
 	// no validation rules for ServiceConfig
 
-	// no validation rules for Deadline
+	// no validation rules for Authority
 
 	return nil
 }

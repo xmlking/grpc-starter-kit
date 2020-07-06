@@ -11,7 +11,7 @@ import (
 	"github.com/xmlking/grpc-starter-kit/mkit/service/greeter/v1"
 	"github.com/xmlking/grpc-starter-kit/shared/config"
 	"github.com/xmlking/grpc-starter-kit/shared/constants"
-	appendTags "github.com/xmlking/grpc-starter-kit/shared/middleware/tags/append"
+	appendTags "github.com/xmlking/grpc-starter-kit/toolkit/middleware/tags/append"
 )
 
 func TestGreeter_Hello_E2E(t *testing.T) {

@@ -1,21 +1,21 @@
 package config
 
 import (
-    "fmt"
-    "os"
-    "runtime"
-    "strings"
-    "sync"
+	"fmt"
+	"os"
+	"runtime"
+	"strings"
+	"sync"
 
-    grpc_middleware "github.com/grpc-ecosystem/go-grpc-middleware"
-    "github.com/rs/zerolog/log"
-    "github.com/xmlking/configor"
-    "google.golang.org/grpc"
-    "google.golang.org/grpc/credentials"
+	grpc_middleware "github.com/grpc-ecosystem/go-grpc-middleware"
+	"github.com/rs/zerolog/log"
+	"github.com/xmlking/configor"
+	"google.golang.org/grpc"
+	"google.golang.org/grpc/credentials"
 
-    "github.com/xmlking/grpc-starter-kit/shared/middleware/rpclog"
-    configPB "github.com/xmlking/grpc-starter-kit/shared/proto/config/v1"
-    "github.com/xmlking/grpc-starter-kit/toolkit/util/tls"
+	configPB "github.com/xmlking/grpc-starter-kit/shared/proto/config/v1"
+	"github.com/xmlking/grpc-starter-kit/toolkit/middleware/rpclog"
+	"github.com/xmlking/grpc-starter-kit/toolkit/util/tls"
 )
 
 var (
@@ -82,13 +82,6 @@ func GetConfig() configPB.Configuration { // FIXME: return a deep copy?
 	return cfg
 }
 
-//func CreateServerCerts() (tlsConfig *tls.Config, err error) {
-//	configLock.RLock()
-//	defer configLock.RUnlock()
-//	tlsConf := cfg.Features.Tls
-//	return uTLS.GetTLSConfig(tlsConf.CertFile, tlsConf.KeyFile, tlsConf.CaFile, tlsConf.ServerName)
-//}
-
 func IsProduction() bool {
 	return Configor.GetEnvironment() == "production"
 }
@@ -97,9 +90,6 @@ func IsSecure() bool {
 	configLock.RLock()
 	defer configLock.RUnlock()
 	return cfg.Features.Tls.Enabled
-}
-
-func GetCeClient() {
 }
 
 func GetClientConn(service *configPB.Service, ucInterceptors []grpc.UnaryClientInterceptor) (clientConn *grpc.ClientConn, err error) {
@@ -137,4 +127,3 @@ func GetClientConn(service *configPB.Service, ucInterceptors []grpc.UnaryClientI
 	}
 	return
 }
-

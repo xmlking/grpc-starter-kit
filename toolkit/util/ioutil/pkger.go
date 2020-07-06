@@ -1,21 +1,21 @@
 package ioutil
 
 import (
-    "io/ioutil"
+	"io/ioutil"
 
-    "github.com/markbates/pkger"
+	"github.com/markbates/pkger"
 )
 
 func ReadFile(filename string) ([]byte, error) {
-    f, err := pkger.Open(filename)
-    if err != nil {
-        return nil, err
-    }
+	f, err := pkger.Open(filename)
+	if err != nil {
+		return nil, err
+	}
 
-    b, err := ioutil.ReadAll(f)
-    if err != nil {
-        return nil, err
-    }
+	b, err := ioutil.ReadAll(f)
+	if err != nil {
+		return nil, err
+	}
 
-    return b, nil
+	return b, nil
 }
