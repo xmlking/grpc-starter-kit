@@ -1,36 +1,36 @@
 package main
 
 import (
-    cloudevents "github.com/cloudevents/sdk-go/v2"
-    "github.com/rs/zerolog/log"
-    "google.golang.org/grpc"
-    "google.golang.org/grpc/credentials"
+	cloudevents "github.com/cloudevents/sdk-go/v2"
+	"github.com/rs/zerolog/log"
+	"google.golang.org/grpc"
+	"google.golang.org/grpc/credentials"
 
-    "github.com/xmlking/toolkit/middleware/rpclog"
-    "github.com/xmlking/toolkit/service"
-    "github.com/xmlking/toolkit/util/tls"
+	"github.com/xmlking/toolkit/middleware/rpclog"
+	"github.com/xmlking/toolkit/service"
+	"github.com/xmlking/toolkit/util/tls"
 
-    "github.com/xmlking/grpc-starter-kit/shared/middleware/translog"
+	"github.com/xmlking/grpc-starter-kit/shared/middleware/translog"
 
-    profilev1 "github.com/xmlking/grpc-starter-kit/mkit/service/account/profile/v1"
-    userv1 "github.com/xmlking/grpc-starter-kit/mkit/service/account/user/v1"
-    greeterv1 "github.com/xmlking/grpc-starter-kit/mkit/service/greeter/v1"
-    "github.com/xmlking/grpc-starter-kit/service/account/handler"
+	profilev1 "github.com/xmlking/grpc-starter-kit/mkit/service/account/profile/v1"
+	userv1 "github.com/xmlking/grpc-starter-kit/mkit/service/account/user/v1"
+	greeterv1 "github.com/xmlking/grpc-starter-kit/mkit/service/greeter/v1"
+	"github.com/xmlking/grpc-starter-kit/service/account/handler"
 
-    _ "github.com/jinzhu/gorm/dialects/sqlite"
+	_ "github.com/jinzhu/gorm/dialects/sqlite"
 
-    "github.com/xmlking/grpc-starter-kit/service/account/registry"
-    "github.com/xmlking/grpc-starter-kit/service/account/repository"
+	"github.com/xmlking/grpc-starter-kit/service/account/registry"
+	"github.com/xmlking/grpc-starter-kit/service/account/repository"
 
-    grpc_middleware "github.com/grpc-ecosystem/go-grpc-middleware"
-    grpc_validator "github.com/grpc-ecosystem/go-grpc-middleware/validator"
+	grpc_middleware "github.com/grpc-ecosystem/go-grpc-middleware"
+	grpc_validator "github.com/grpc-ecosystem/go-grpc-middleware/validator"
 
-    appendTags "github.com/xmlking/toolkit/middleware/tags/append"
-    forwardTags "github.com/xmlking/toolkit/middleware/tags/forward"
+	appendTags "github.com/xmlking/toolkit/middleware/tags/append"
+	forwardTags "github.com/xmlking/toolkit/middleware/tags/forward"
 
-    "github.com/xmlking/grpc-starter-kit/shared/config"
-    "github.com/xmlking/grpc-starter-kit/shared/constants"
-    _ "github.com/xmlking/grpc-starter-kit/shared/logger"
+	"github.com/xmlking/grpc-starter-kit/shared/config"
+	"github.com/xmlking/grpc-starter-kit/shared/constants"
+	_ "github.com/xmlking/grpc-starter-kit/shared/logger"
 )
 
 func main() {

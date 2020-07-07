@@ -2,24 +2,25 @@
 package e2e
 
 import (
-    "context"
-    "fmt"
-    "testing"
+	"context"
+	"fmt"
+	"testing"
 
-    "github.com/golang/protobuf/ptypes/wrappers"
-    "github.com/rs/zerolog/log"
-    "github.com/stretchr/testify/assert"
-    "github.com/stretchr/testify/require"
-    "github.com/stretchr/testify/suite"
-    "google.golang.org/grpc"
+	"github.com/golang/protobuf/ptypes/wrappers"
+	"github.com/rs/zerolog/log"
+	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/require"
+	"github.com/stretchr/testify/suite"
+	"google.golang.org/grpc"
 
-    appendTags "github.com/xmlking/toolkit/middleware/tags/append"
+	appendTags "github.com/xmlking/toolkit/middleware/tags/append"
 
-    "github.com/xmlking/grpc-starter-kit/mkit/service/account/profile/v1"
-    "github.com/xmlking/grpc-starter-kit/mkit/service/account/user/v1"
-    "github.com/xmlking/grpc-starter-kit/shared/config"
-    "github.com/xmlking/grpc-starter-kit/shared/constants"
-    "github.com/xmlking/grpc-starter-kit/shared/util"
+	"github.com/xmlking/toolkit/util"
+
+	"github.com/xmlking/grpc-starter-kit/mkit/service/account/profile/v1"
+	"github.com/xmlking/grpc-starter-kit/mkit/service/account/user/v1"
+	"github.com/xmlking/grpc-starter-kit/shared/config"
+	"github.com/xmlking/grpc-starter-kit/shared/constants"
 )
 
 // Define the suite, and absorb the built-in basic suite
@@ -45,9 +46,8 @@ func (suite *AccountTestSuite) SetupSuite() {
 		appendTags.UnaryClientInterceptor(appendTags.WithTraceID(), appendTags.WithPairs(constants.FromServiceKey, constants.ACCOUNT_CLIENT)),
 	}
 	suite.conn, err = config.GetClientConn(cfg.Services.Account, ucInterceptors)
-
 	if err != nil {
-		log.Fatal().Msgf("did not connect: %s", err)
+		log.Fatal().Err(err).Msgf("Failed connect to: %s", cfg.Services.Account.Endpoint)
 	}
 
 	suite.userClient = userv1.NewUserServiceClient(suite.conn)

@@ -1,22 +1,22 @@
 package config
 
 import (
-    "fmt"
-    "os"
-    "runtime"
-    "strings"
-    "sync"
+	"fmt"
+	"os"
+	"runtime"
+	"strings"
+	"sync"
 
-    grpc_middleware "github.com/grpc-ecosystem/go-grpc-middleware"
-    "github.com/rs/zerolog/log"
-    "github.com/xmlking/configor"
-    "google.golang.org/grpc"
-    "google.golang.org/grpc/credentials"
+	grpc_middleware "github.com/grpc-ecosystem/go-grpc-middleware"
+	"github.com/rs/zerolog/log"
+	"github.com/xmlking/configor"
+	"google.golang.org/grpc"
+	"google.golang.org/grpc/credentials"
 
-    "github.com/xmlking/toolkit/middleware/rpclog"
-    "github.com/xmlking/toolkit/util/tls"
+	"github.com/xmlking/toolkit/middleware/rpclog"
+	"github.com/xmlking/toolkit/util/tls"
 
-    configPB "github.com/xmlking/grpc-starter-kit/shared/proto/config/v1"
+	configPB "github.com/xmlking/grpc-starter-kit/shared/proto/config/v1"
 )
 
 var (
@@ -111,6 +111,10 @@ func GetClientConn(service *configPB.Service, ucInterceptors []grpc.UnaryClientI
 		dialOptions = append(dialOptions, grpc.WithInsecure())
 	}
 
+	if service.Authority != "" {
+		dialOptions = append(dialOptions, grpc.WithAuthority(service.Authority))
+	}
+
 	if service.ServiceConfig != "" {
 		dialOptions = append(dialOptions, grpc.WithDefaultServiceConfig(service.ServiceConfig))
 	}
@@ -123,8 +127,5 @@ func GetClientConn(service *configPB.Service, ucInterceptors []grpc.UnaryClientI
 		dialOptions = append(dialOptions, grpc.WithUnaryInterceptor(grpc_middleware.ChainUnaryClient(ucInterceptors...)))
 	}
 	clientConn, err = grpc.Dial(service.Endpoint, dialOptions...)
-	if err != nil {
-		log.Fatal().Msgf("Failed connect to: %s, error: %s", service.Endpoint, err)
-	}
 	return
 }

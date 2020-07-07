@@ -114,7 +114,7 @@ github.com/stretchr/testify v1.6.1/go.mod h1:6Fq8oRcR53rry900zMqJjRRixrwX3KX962/
 github.com/thoas/go-funk v0.7.0/go.mod h1:+IWnUfUmFO1+WVYQWQtIJHeRRdaIyyYglZN7xzUPe4Q=
 github.com/valyala/bytebufferpool v1.0.0/go.mod h1:6bBcMArwyJ5K/AmCkWv1jt77kVWyCJ6HpOuEn7z0Csc=
 github.com/xmlking/configor v0.2.1/go.mod h1:vnVzu9+hFM96fukqXsGtavqGxiXU7j6SssJkJ8RW69A=
-github.com/xmlking/toolkit v0.1.0/go.mod h1:2mOEDr52QqSnd5WLHDCz88mhuO6afkB6664LTDETFeQ=
+github.com/xmlking/toolkit v0.1.1-0.20200707051129-9e2f8ccc8b1b/go.mod h1:2mOEDr52QqSnd5WLHDCz88mhuO6afkB6664LTDETFeQ=
 github.com/yuin/goldmark v1.1.27/go.mod h1:3hX8gzYuyVAZsxl0MRgGTJEmQBFcNTphYh9decYSb74=
 go.opencensus.io v0.22.0/go.mod h1:+kGneAE2xo2IficOXnaByMWTGM9T73dGwxeWcUqIpI8=
 go.opencensus.io v0.22.3/go.mod h1:yxeiOL68Rb0Xd1ddK5vPZ/oVn4vY4Ynel7k9FzqtOIw=
