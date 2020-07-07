@@ -102,7 +102,7 @@ func GetClientConn(service *configPB.Service, ucInterceptors []grpc.UnaryClientI
 
 	tlsConf := cfg.Features.Tls
 	if tlsConf.Enabled {
-		if creds, err := tls.NewTLSConfig(tlsConf.CertFile, tlsConf.KeyFile, tlsConf.CaFile, tlsConf.ServerName); err != nil {
+		if creds, err := tls.NewTLSConfig(tlsConf.CertFile, tlsConf.KeyFile, tlsConf.CaFile, tlsConf.ServerName, tlsConf.Password); err != nil {
 			return nil, err
 		} else {
 			dialOptions = append(dialOptions, grpc.WithTransportCredentials(credentials.NewTLS(creds)))

@@ -71,7 +71,8 @@ message Features {
         string cert_file = 2 [(gogoproto.moretags) = "yaml:\"cert_file\" valid:\"type(string),required\""];
         string key_file = 3 [(gogoproto.moretags) = "yaml:\"key_file\" valid:\"type(string),required\""];
         string ca_file = 4 [(gogoproto.moretags) = "yaml:\"ca_file\" valid:\"type(string),required\""];
-        string server_name = 5 [(gogoproto.moretags) = "yaml:\"server_name,omitempty\" default:\"'*'\""];
+        string password = 5 [(gogoproto.moretags) = "yaml:\"password,omitempty\""];
+        string server_name = 6 [(gogoproto.moretags) = "yaml:\"server_name,omitempty\" default:\"'*'\""];
     }
     message Validator {
         bool enabled = 1 [(gogoproto.moretags) = "yaml:\",omitempty\" default:\"false\""];

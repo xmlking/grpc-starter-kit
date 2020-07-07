@@ -4,7 +4,7 @@ go 1.14
 
 // replace github.com/xmlking/configor => /Users/schintha/Developer/Work/go/configor
 // replace github.com/xmlking/toolkit => /Users/schintha/Developer/Work/go/toolkit
-replace github.com/xmlking/toolkit => github.com/xmlking/toolkit v0.1.1-0.20200707051129-9e2f8ccc8b1b
+replace github.com/xmlking/toolkit => github.com/xmlking/toolkit v0.1.1-0.20200707072417-5cd9bbd8b5a8
 
 require (
 	github.com/DATA-DOG/go-sqlmock v1.4.1 // indirect
