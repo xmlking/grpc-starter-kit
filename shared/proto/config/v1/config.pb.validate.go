@@ -47,6 +47,8 @@ func (m *Service) Validate() error {
 
 	// no validation rules for Version
 
+	// no validation rules for Metadata
+
 	// no validation rules for ServiceConfig
 
 	// no validation rules for Authority

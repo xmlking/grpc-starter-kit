@@ -38,7 +38,7 @@ func main() {
 	}
 
 	if cfg.Features.Tls.Enabled {
-		tlsConf, err := tls.NewTLSConfig(cfg.Features.Tls.CertFile, cfg.Features.Tls.KeyFile, cfg.Features.Tls.CaFile, cfg.Features.Tls.ServerName)
+		tlsConf, err := tls.NewTLSConfig(cfg.Features.Tls.CertFile, cfg.Features.Tls.KeyFile, cfg.Features.Tls.CaFile, cfg.Features.Tls.ServerName, cfg.Features.Tls.Password)
 		if err != nil {
 			log.Fatal().Err(err).Msg("failed to create cert")
 		}

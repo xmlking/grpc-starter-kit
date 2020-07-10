@@ -20,6 +20,8 @@ services:
   account:
     endpoint: dns:///localhost:8080
     version: v0.1.0
+    metadata:
+      tenant_id: sumanth
   greeter:
     endpoint: dns:///localhost:8081
 #    endpoint: unix:///tmp/greeter.sock

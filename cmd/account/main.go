@@ -38,8 +38,12 @@ func main() {
 
 	log.Debug().Str("username", *username).Str("email", *email).Uint64("limit", *limit).Msg("Flags Using:")
 
+	pairs := []string{constants.FromServiceKey, constants.ACCOUNT_CLIENT}
+	for key, val := range cfg.Services.Account.Metadata {
+        pairs = append(pairs, key, val)
+    }
 	var ucInterceptors = []grpc.UnaryClientInterceptor{
-		appendTags.UnaryClientInterceptor(appendTags.WithTraceID(), appendTags.WithPairs(constants.FromServiceKey, constants.ACCOUNT_CLIENT)),
+		appendTags.UnaryClientInterceptor(appendTags.WithTraceID(), appendTags.WithPairs(pairs...)),
 	}
 	conn, err := config.GetClientConn(cfg.Services.Account, ucInterceptors)
 	if err != nil {

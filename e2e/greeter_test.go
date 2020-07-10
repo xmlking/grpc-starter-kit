@@ -23,8 +23,13 @@ func TestGreeter_Hello_E2E(t *testing.T) {
 	serviceName := constants.GREETER_SERVICE
 	cfg := config.GetConfig()
 
+    pairs := []string{constants.FromServiceKey, "e2e-greeter-test-client"}
+    for key, val := range cfg.Services.Greeter.Metadata {
+        pairs = append(pairs, key, val)
+    }
+
 	var ucInterceptors = []grpc.UnaryClientInterceptor{
-		appendTags.UnaryClientInterceptor(appendTags.WithTraceID(), appendTags.WithPairs(constants.FromServiceKey, "e2e-greeter-test-client")),
+		appendTags.UnaryClientInterceptor(appendTags.WithTraceID(), appendTags.WithPairs(pairs...)),
 	}
 	conn, err := config.GetClientConn(cfg.Services.Greeter, ucInterceptors)
 	if err != nil {

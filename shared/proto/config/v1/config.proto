@@ -20,8 +20,9 @@ service ConfigService {
 message Service {
     string endpoint = 1 [(gogoproto.moretags) = "yaml:\"endpoint\" required:\"true\""];
     string version = 2 [(gogoproto.moretags) = "yaml:\",omitempty\" default:\"v0.1.0\""];
-    string service_config = 3 [(gogoproto.moretags) = "yaml:\"service_config,omitempty\""];
-    string authority = 4 [(gogoproto.moretags) = "yaml:\",omitempty\""];
+    map<string, string> metadata = 3 [(gogoproto.moretags) = "yaml:\"metadata,omitempty\""];
+    string service_config = 4 [(gogoproto.moretags) = "yaml:\"service_config,omitempty\""];
+    string authority = 5 [(gogoproto.moretags) = "yaml:\",omitempty\""];
 }
 
 message EmailConfiguration {
@@ -93,10 +94,10 @@ message Features {
 }
 
 message Services {
-    Service account = 1;
-    Service greeter = 2;
-    Service emailer = 3;
-    Service recorder = 4;
+    Service account = 1 [(gogoproto.moretags) = "yaml:\"account,omitempty\""];
+    Service greeter = 2 [(gogoproto.moretags) = "yaml:\"greeter,omitempty\""];
+    Service emailer = 3 [(gogoproto.moretags) = "yaml:\"emailer,omitempty\""];
+    Service recorder = 4 [(gogoproto.moretags) = "yaml:\"recorder,omitempty\""];
 }
 
 message Configuration {
