@@ -1,6 +1,7 @@
 package registry
 
 import (
+	cloudevents "github.com/cloudevents/sdk-go/v2"
 	"github.com/jinzhu/gorm"
 	"github.com/rs/zerolog/log"
 	"github.com/sarulabs/di/v2"
@@ -143,5 +144,7 @@ func buildProfileRepository(ctn di.Container) (interface{}, error) {
 
 func buildUserHandler(ctn di.Container) (interface{}, error) {
 	repo := ctn.Get("user-repository").(repository.UserRepository)
-	return handler.NewUserHandler(repo, nil, nil), nil // FIXME inject Publisher, and greeter service
+	emailPublisher := ctn.Get("email-publisher").(cloudevents.Client)
+	greeterSrvClient := ctn.Get("greeter-client").(greeterv1.GreeterServiceClient)
+	return handler.NewUserHandler(repo, emailPublisher, greeterSrvClient), nil
 }

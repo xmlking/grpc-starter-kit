@@ -12,18 +12,15 @@ import (
 
 	"github.com/xmlking/grpc-starter-kit/shared/middleware/translog"
 
-	profilev1 "github.com/xmlking/grpc-starter-kit/mkit/service/account/profile/v1"
-	userv1 "github.com/xmlking/grpc-starter-kit/mkit/service/account/user/v1"
-	greeterv1 "github.com/xmlking/grpc-starter-kit/mkit/service/greeter/v1"
-	"github.com/xmlking/grpc-starter-kit/service/account/handler"
-
 	_ "github.com/jinzhu/gorm/dialects/sqlite"
 
-	"github.com/xmlking/grpc-starter-kit/service/account/registry"
-	"github.com/xmlking/grpc-starter-kit/service/account/repository"
+	profilev1 "github.com/xmlking/grpc-starter-kit/mkit/service/account/profile/v1"
+	userv1 "github.com/xmlking/grpc-starter-kit/mkit/service/account/user/v1"
 
 	grpc_middleware "github.com/grpc-ecosystem/go-grpc-middleware"
 	grpc_validator "github.com/grpc-ecosystem/go-grpc-middleware/validator"
+
+	"github.com/xmlking/grpc-starter-kit/service/account/registry"
 
 	appendTags "github.com/xmlking/toolkit/middleware/tags/append"
 	forwardTags "github.com/xmlking/toolkit/middleware/tags/forward"
@@ -45,11 +42,9 @@ func main() {
 	}
 
 	translogPublisher := ctn.Resolve("translog-publisher").(cloudevents.Client)
-	emailPublisher := ctn.Resolve("email-publisher").(cloudevents.Client)
-	greeterSrvClient := ctn.Resolve("greeter-client").(greeterv1.GreeterServiceClient)
 
 	// Handlers
-	userHandler := handler.NewUserHandler(ctn.Resolve("user-repository").(repository.UserRepository), emailPublisher, greeterSrvClient)
+	userHandler := ctn.Resolve("user-handler").(userv1.UserServiceServer)
 	profileHandler := ctn.Resolve("profile-handler").(profilev1.ProfileServiceServer)
 
 	// ServerOption

@@ -1,3 +1,6 @@
+// Singleton creational design pattern restricts the instantiation of a type to a single object.
+// Singleton pattern represents a global state and most of the time reduces testability.
+// http://tmrts.com/go-patterns/creational/singleton.html
 package email
 
 import (
@@ -6,13 +9,18 @@ import (
 	"net/smtp"
 	"strconv"
 	"strings"
+	"sync"
 
 	"github.com/rs/zerolog/log"
 
 	configPB "github.com/xmlking/grpc-starter-kit/shared/proto/config/v1"
 )
 
-var emailTmpl *template.Template
+var (
+	once      sync.Once
+	emailTmpl *template.Template
+	instance  *SendEmail
+)
 
 func init() {
 	tmpl := `From: {{.From}}<br />
@@ -60,10 +68,13 @@ func (sender *SendEmail) Send(subject, body string, to []string) error {
 
 // NewSendEmail is constructor
 func NewSendEmail(emailConf *configPB.EmailConfiguration) *SendEmail {
-	return &SendEmail{
-		from:    emailConf.From,
-		address: emailConf.EmailServer + ":" + strconv.FormatUint(uint64(emailConf.Port), 10),
-		auth:    smtp.PlainAuth("", emailConf.Username, emailConf.Password, emailConf.EmailServer),
-		send:    smtp.SendMail,
-	}
+	once.Do(func() {
+		instance = &SendEmail{
+			from:    emailConf.From,
+			address: emailConf.EmailServer + ":" + strconv.FormatUint(uint64(emailConf.Port), 10),
+			auth:    smtp.PlainAuth("", emailConf.Username, emailConf.Password, emailConf.EmailServer),
+			send:    smtp.SendMail,
+		}
+	})
+	return instance
 }

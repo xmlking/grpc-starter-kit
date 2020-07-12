@@ -40,8 +40,8 @@ func main() {
 
 	pairs := []string{constants.FromServiceKey, constants.ACCOUNT_CLIENT}
 	for key, val := range cfg.Services.Account.Metadata {
-        pairs = append(pairs, key, val)
-    }
+		pairs = append(pairs, key, val)
+	}
 	var ucInterceptors = []grpc.UnaryClientInterceptor{
 		appendTags.UnaryClientInterceptor(appendTags.WithTraceID(), appendTags.WithPairs(pairs...)),
 	}

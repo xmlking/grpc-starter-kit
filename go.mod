@@ -7,7 +7,7 @@ go 1.14
 replace github.com/xmlking/toolkit => github.com/xmlking/toolkit v0.1.1-0.20200710152301-9029e438457f
 
 require (
-	github.com/DATA-DOG/go-sqlmock v1.4.1 // indirect
+	github.com/DATA-DOG/go-sqlmock v1.4.1
 	github.com/cloudevents/sdk-go/v2 v2.1.0
 	github.com/envoyproxy/protoc-gen-validate v0.4.0
 	github.com/gogo/protobuf v1.3.1

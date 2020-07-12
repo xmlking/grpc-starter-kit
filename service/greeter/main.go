@@ -73,6 +73,7 @@ func main() {
 	}
 }
 
+// cmux example
 func main_cmux() {
 	serviceName := constants.GREETER_SERVICE
 	cfg := config.GetConfig()

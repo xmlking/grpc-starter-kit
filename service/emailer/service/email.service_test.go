@@ -31,13 +31,14 @@ func TestEmailService_Welcome(t *testing.T) {
 }
 
 func TestEmailService_Welcome_Integration(t *testing.T) {
+	if testing.Short() {
+		t.Skip("skipping long integration test")
+	}
+
 	var (
 		cfg = config.GetConfig()
 	)
 
-	if testing.Short() {
-		t.Skip("skipping long integration test")
-	}
 	emailer := email.NewSendEmail(cfg.Email)
 	emailService := NewEmailService(emailer)
 

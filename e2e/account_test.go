@@ -41,10 +41,10 @@ func (suite *AccountTestSuite) SetupSuite() {
 
 	suite.suffix = util.RandomStringLower(5)
 
-    pairs := []string{constants.FromServiceKey, constants.ACCOUNT_CLIENT}
-    for key, val := range cfg.Services.Account.Metadata {
-        pairs = append(pairs, key, val)
-    }
+	pairs := []string{constants.FromServiceKey, constants.ACCOUNT_CLIENT}
+	for key, val := range cfg.Services.Account.Metadata {
+		pairs = append(pairs, key, val)
+	}
 
 	var err error
 	var ucInterceptors = []grpc.UnaryClientInterceptor{

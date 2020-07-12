@@ -55,6 +55,10 @@ BUILD_FLAGS = $(shell govvv -flags -version $(VERSION) -pkg $(VERSION_PACKAGE))
 
 all: build
 
+################################################################################
+# Target: tools
+################################################################################
+
 tools:
 	@echo "==> Installing dev tools"
 	# go install github.com/ahmetb/govvv
@@ -81,6 +85,10 @@ clean:
 update_deps:
 	go mod verify
 	go mod tidy
+
+################################################################################
+# Target: proto                                                                #
+################################################################################
 
 proto_clean:
 	@echo "Deleting generated Go files....";
@@ -122,6 +130,10 @@ proto_shared:
 		echo ✓ compiled: $$f; \
 	done
 
+################################################################################
+# Target: lints                                                                #
+################################################################################
+
 gomod_lint:
 	@goup -v -m ./...
 
@@ -146,6 +158,10 @@ format format-%:
 		gofmt -l -w ./${TYPE}/${TARGET}/ ; \
 		echo "Formating protos in ${TARGET}/${TYPE}..."; \
 	fi
+
+################################################################################
+# Target: build                                                                #
+################################################################################
 
 pkger pkger-%:
 ifndef HAS_PKGER
@@ -183,6 +199,10 @@ endif
 		go build -o  build/${TARGET}-${TYPE} -a -trimpath -ldflags "-w -s ${BUILD_FLAGS}" ./${TYPE}/${TARGET}; \
 	fi
 
+################################################################################
+# Target: tests                                                                #
+################################################################################
+
 TEST_TARGETS := test-default test-bench test-unit test-inte test-e2e test-race test-cover
 .PHONY: $(TEST_TARGETS) check test tests
 test-bench:   	ARGS=-run=__absolutelynothing__ -bench=. ## Run benchmarks
@@ -202,12 +222,20 @@ check test tests:
 		go test -timeout $(TIMEOUT) -v $(ARGS) ./${TYPE}/${TARGET}/... ; \
 	fi
 
+################################################################################
+# Target: run                                                                  #
+################################################################################
+
 run run-%:
 	@if [ -z $(TARGET) ]; then \
 		echo "no  TARGET. example usage: make test TARGET=account"; \
 	else \
 		go run  ./${TYPE}/${TARGET} ${ARGS}; \
 	fi
+
+################################################################################
+# Target: release                                                              #
+################################################################################
 
 release/draft: check_dirty
 	@echo Publishing Draft: $(VERSION)
@@ -232,6 +260,10 @@ deploy/prod:
 		-H "Authorization: token $(GITHUB_TOKEN)" \
     -XPOST $(GITHUB_DEPLOY_API_URL) \
     -d '{"ref": "develop", "environment": "production", "payload": { "what": "production deployment to GKE"}}'
+
+################################################################################
+# Target: docker                                                               #
+################################################################################
 
 # TODO: DOCKER_BUILDKIT=1 docker build --rm
 docker docker-%:
@@ -292,6 +324,9 @@ docker_base:
 #	docker push ${DOCKER_REGISTRY}/${DOCKER_CONTEXT_PATH}/base:$(VERSION)
 #	docker push ${DOCKER_REGISTRY}/${DOCKER_CONTEXT_PATH}/base:latest
 
+################################################################################
+# Target: deploy                                                               #
+################################################################################
 
 kustomize: OVERLAY 	:= local
 kustomize: NS 		:= default
