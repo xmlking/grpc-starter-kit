@@ -5,6 +5,7 @@ import (
 	"strings"
 
 	"github.com/jinzhu/gorm"
+	"github.com/pkg/errors"
 	"github.com/rs/zerolog/log"
 
 	"github.com/xmlking/grpc-starter-kit/shared/logger/gormlog"
@@ -49,7 +50,7 @@ func GetDatabaseConnection(dbConf configPB.DatabaseConfiguration) (db *gorm.DB, 
 
 	if dbConf.Utc {
 		if _, err = db.DB().Exec(timezoneCommand); err != nil {
-			return nil, fmt.Errorf("error setting UTC timezone: %w", err)
+			return nil, errors.Wrapf(err, "error setting UTC timezone: %s", timezoneCommand)
 		}
 	}
 

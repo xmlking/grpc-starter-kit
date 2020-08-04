@@ -3,6 +3,7 @@ package main
 import (
 	cloudevents "github.com/cloudevents/sdk-go/v2"
 	"github.com/rs/zerolog/log"
+	"github.com/sercand/kuberesolver"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials"
 
@@ -33,6 +34,12 @@ import (
 func main() {
 	serviceName := constants.ACCOUNT_SERVICE
 	cfg := config.GetConfig()
+
+	// Register kuberesolver to grpc.
+	// This line should be before calling registry.NewContainer(cfg)
+	if config.IsProduction() {
+		kuberesolver.RegisterInCluster()
+	}
 
 	// Initialize DI Container
 	ctn, err := registry.NewContainer(cfg)

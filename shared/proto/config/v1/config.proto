@@ -6,15 +6,15 @@ option go_package = "github.com/xmlking/grpc-starter-kit/shared/proto/config/v1/
 option java_multiple_files = true;
 option java_package = "mkit.shared.config.v1";
 
-import "google/protobuf/empty.proto";
-import "google/protobuf/duration.proto";
-import "third_party/proto/validate/validate.proto";
 import "third_party/proto/gogoproto/gogo.proto";
+import "google/protobuf/duration.proto";
+import "google/protobuf/empty.proto";
+import "third_party/proto/validate/validate.proto";
 
 // Config Service
 service ConfigService {
-    rpc Get (google.protobuf.Empty) returns (Configuration);
-    rpc Set (Configuration) returns (google.protobuf.Empty);
+  rpc Get(google.protobuf.Empty) returns (Configuration);
+  rpc Set(Configuration) returns (google.protobuf.Empty);
 }
 
 message Service {
@@ -53,7 +53,10 @@ message DatabaseConfiguration {
     bool singularize = 10 [(gogoproto.moretags) = "yaml:\",omitempty\" default:\"false\""];
     uint32 max_open_conns = 11 [(gogoproto.moretags) = "yaml:\"max_open_conns,omitempty\" default:\"1\""];
     uint32 max_idle_conns = 12 [(gogoproto.moretags) = "yaml:\"max_idle_conns,omitempty\" default:\"1\""];
-    google.protobuf.Duration conn_max_lifetime = 13 [(gogoproto.stdduration) = true, (gogoproto.moretags) = "yaml:\"conn_max_lifetime,omitempty\" default:\"1h\""];
+    google.protobuf.Duration conn_max_lifetime = 13 [
+      (gogoproto.moretags) = "yaml:\"conn_max_lifetime,omitempty\" default:\"1h\"",
+      (gogoproto.stdduration) = true
+    ];
 }
 
 message Features {
@@ -65,7 +68,8 @@ message Features {
     message Tracing {
         bool enabled = 1 [(gogoproto.moretags) = "yaml:\",omitempty\" default:\"false\""];
         string address = 2;
-        uint64 flush_interval = 3 [(gogoproto.moretags) = "yaml:\"flush_interval,omitempty\" default:\"10000000\""];
+        double sampling = 3 [(gogoproto.moretags) = "yaml:\"sampling,omitempty\" default:\"0.5\""];
+        uint64 flush_interval = 4 [(gogoproto.moretags) = "yaml:\"flush_interval,omitempty\" default:\"10000000\""];
     }
     message TLS {
         bool enabled = 1 [(gogoproto.moretags) = "yaml:\",omitempty\" default:\"false\""];
@@ -94,10 +98,11 @@ message Features {
 }
 
 message Services {
-    Service account = 1 [(gogoproto.moretags) = "yaml:\"account,omitempty\""];
-    Service greeter = 2 [(gogoproto.moretags) = "yaml:\"greeter,omitempty\""];
-    Service emailer = 3 [(gogoproto.moretags) = "yaml:\"emailer,omitempty\""];
-    Service recorder = 4 [(gogoproto.moretags) = "yaml:\"recorder,omitempty\""];
+    Service account     = 1 [(gogoproto.moretags) = "yaml:\"account,omitempty\""];
+    Service greeter     = 2 [(gogoproto.moretags) = "yaml:\"greeter,omitempty\""];
+    Service emailer     = 3 [(gogoproto.moretags) = "yaml:\"emailer,omitempty\""];
+    Service recorder    = 4 [(gogoproto.moretags) = "yaml:\"recorder,omitempty\""];
+    Service play        = 5 [(gogoproto.moretags) = "yaml:\"play,omitempty\""];
 }
 
 message Configuration {

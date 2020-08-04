@@ -2,11 +2,14 @@ services:
   account:
     endpoint: dns:///account:8080
   greeter:
-    endpoint: dns:///greeter:8080
+    endpoint: kubernetes:///greeter:8080
   emailer:
     endpoint: http://emailer:8080
   recorder:
     endpoint: http://recorder:8080
+  play:
+    # endpoint: dns://recorder:8080
+    endpoint: kubernetes:///greeter:8080
 
 features:
   tls:

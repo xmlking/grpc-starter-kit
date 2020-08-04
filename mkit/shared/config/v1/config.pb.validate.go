@@ -47,7 +47,11 @@ func (m *Service) Validate() error {
 
 	// no validation rules for Version
 
-	// no validation rules for Deadline
+	// no validation rules for Metadata
+
+	// no validation rules for ServiceConfig
+
+	// no validation rules for Authority
 
 	return nil
 }
@@ -331,20 +335,20 @@ func (m *Features) Validate() error {
 		}
 	}
 
-	if v, ok := interface{}(m.GetReqlogs()).(interface{ Validate() error }); ok {
+	if v, ok := interface{}(m.GetRpclog()).(interface{ Validate() error }); ok {
 		if err := v.Validate(); err != nil {
 			return FeaturesValidationError{
-				field:  "Reqlogs",
+				field:  "Rpclog",
 				reason: "embedded message failed validation",
 				cause:  err,
 			}
 		}
 	}
 
-	if v, ok := interface{}(m.GetTranslogs()).(interface{ Validate() error }); ok {
+	if v, ok := interface{}(m.GetTranslog()).(interface{ Validate() error }); ok {
 		if err := v.Validate(); err != nil {
 			return FeaturesValidationError{
-				field:  "Translogs",
+				field:  "Translog",
 				reason: "embedded message failed validation",
 				cause:  err,
 			}
@@ -449,6 +453,16 @@ func (m *Services) Validate() error {
 		if err := v.Validate(); err != nil {
 			return ServicesValidationError{
 				field:  "Recorder",
+				reason: "embedded message failed validation",
+				cause:  err,
+			}
+		}
+	}
+
+	if v, ok := interface{}(m.GetPlay()).(interface{ Validate() error }); ok {
+		if err := v.Validate(); err != nil {
+			return ServicesValidationError{
+				field:  "Play",
 				reason: "embedded message failed validation",
 				cause:  err,
 			}
@@ -654,6 +668,8 @@ func (m *Features_Tracing) Validate() error {
 
 	// no validation rules for Address
 
+	// no validation rules for Sampling
+
 	// no validation rules for FlushInterval
 
 	return nil
@@ -729,7 +745,9 @@ func (m *Features_TLS) Validate() error {
 
 	// no validation rules for CaFile
 
-	// no validation rules for Servername
+	// no validation rules for Password
+
+	// no validation rules for ServerName
 
 	return nil
 }
@@ -857,10 +875,10 @@ var _ interface {
 	ErrorName() string
 } = Features_ValidatorValidationError{}
 
-// Validate checks the field values on Features_Reqlogs with the rules defined
+// Validate checks the field values on Features_Rpclog with the rules defined
 // in the proto definition for this message. If any rules are violated, an
 // error is returned.
-func (m *Features_Reqlogs) Validate() error {
+func (m *Features_Rpclog) Validate() error {
 	if m == nil {
 		return nil
 	}
@@ -870,9 +888,9 @@ func (m *Features_Reqlogs) Validate() error {
 	return nil
 }
 
-// Features_ReqlogsValidationError is the validation error returned by
-// Features_Reqlogs.Validate if the designated constraints aren't met.
-type Features_ReqlogsValidationError struct {
+// Features_RpclogValidationError is the validation error returned by
+// Features_Rpclog.Validate if the designated constraints aren't met.
+type Features_RpclogValidationError struct {
 	field  string
 	reason string
 	cause  error
@@ -880,22 +898,22 @@ type Features_ReqlogsValidationError struct {
 }
 
 // Field function returns field value.
-func (e Features_ReqlogsValidationError) Field() string { return e.field }
+func (e Features_RpclogValidationError) Field() string { return e.field }
 
 // Reason function returns reason value.
-func (e Features_ReqlogsValidationError) Reason() string { return e.reason }
+func (e Features_RpclogValidationError) Reason() string { return e.reason }
 
 // Cause function returns cause value.
-func (e Features_ReqlogsValidationError) Cause() error { return e.cause }
+func (e Features_RpclogValidationError) Cause() error { return e.cause }
 
 // Key function returns key value.
-func (e Features_ReqlogsValidationError) Key() bool { return e.key }
+func (e Features_RpclogValidationError) Key() bool { return e.key }
 
 // ErrorName returns error name.
-func (e Features_ReqlogsValidationError) ErrorName() string { return "Features_ReqlogsValidationError" }
+func (e Features_RpclogValidationError) ErrorName() string { return "Features_RpclogValidationError" }
 
 // Error satisfies the builtin error interface
-func (e Features_ReqlogsValidationError) Error() string {
+func (e Features_RpclogValidationError) Error() string {
 	cause := ""
 	if e.cause != nil {
 		cause = fmt.Sprintf(" | caused by: %v", e.cause)
@@ -907,14 +925,14 @@ func (e Features_ReqlogsValidationError) Error() string {
 	}
 
 	return fmt.Sprintf(
-		"invalid %sFeatures_Reqlogs.%s: %s%s",
+		"invalid %sFeatures_Rpclog.%s: %s%s",
 		key,
 		e.field,
 		e.reason,
 		cause)
 }
 
-var _ error = Features_ReqlogsValidationError{}
+var _ error = Features_RpclogValidationError{}
 
 var _ interface {
 	Field() string
@@ -922,12 +940,12 @@ var _ interface {
 	Key() bool
 	Cause() error
 	ErrorName() string
-} = Features_ReqlogsValidationError{}
+} = Features_RpclogValidationError{}
 
-// Validate checks the field values on Features_Translogs with the rules
-// defined in the proto definition for this message. If any rules are
-// violated, an error is returned.
-func (m *Features_Translogs) Validate() error {
+// Validate checks the field values on Features_Translog with the rules defined
+// in the proto definition for this message. If any rules are violated, an
+// error is returned.
+func (m *Features_Translog) Validate() error {
 	if m == nil {
 		return nil
 	}
@@ -939,9 +957,9 @@ func (m *Features_Translogs) Validate() error {
 	return nil
 }
 
-// Features_TranslogsValidationError is the validation error returned by
-// Features_Translogs.Validate if the designated constraints aren't met.
-type Features_TranslogsValidationError struct {
+// Features_TranslogValidationError is the validation error returned by
+// Features_Translog.Validate if the designated constraints aren't met.
+type Features_TranslogValidationError struct {
 	field  string
 	reason string
 	cause  error
@@ -949,24 +967,24 @@ type Features_TranslogsValidationError struct {
 }
 
 // Field function returns field value.
-func (e Features_TranslogsValidationError) Field() string { return e.field }
+func (e Features_TranslogValidationError) Field() string { return e.field }
 
 // Reason function returns reason value.
-func (e Features_TranslogsValidationError) Reason() string { return e.reason }
+func (e Features_TranslogValidationError) Reason() string { return e.reason }
 
 // Cause function returns cause value.
-func (e Features_TranslogsValidationError) Cause() error { return e.cause }
+func (e Features_TranslogValidationError) Cause() error { return e.cause }
 
 // Key function returns key value.
-func (e Features_TranslogsValidationError) Key() bool { return e.key }
+func (e Features_TranslogValidationError) Key() bool { return e.key }
 
 // ErrorName returns error name.
-func (e Features_TranslogsValidationError) ErrorName() string {
-	return "Features_TranslogsValidationError"
+func (e Features_TranslogValidationError) ErrorName() string {
+	return "Features_TranslogValidationError"
 }
 
 // Error satisfies the builtin error interface
-func (e Features_TranslogsValidationError) Error() string {
+func (e Features_TranslogValidationError) Error() string {
 	cause := ""
 	if e.cause != nil {
 		cause = fmt.Sprintf(" | caused by: %v", e.cause)
@@ -978,14 +996,14 @@ func (e Features_TranslogsValidationError) Error() string {
 	}
 
 	return fmt.Sprintf(
-		"invalid %sFeatures_Translogs.%s: %s%s",
+		"invalid %sFeatures_Translog.%s: %s%s",
 		key,
 		e.field,
 		e.reason,
 		cause)
 }
 
-var _ error = Features_TranslogsValidationError{}
+var _ error = Features_TranslogValidationError{}
 
 var _ interface {
 	Field() string
@@ -993,4 +1011,4 @@ var _ interface {
 	Key() bool
 	Cause() error
 	ErrorName() string
-} = Features_TranslogsValidationError{}
+} = Features_TranslogValidationError{}

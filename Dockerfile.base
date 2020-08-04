@@ -10,11 +10,12 @@ RUN mkdir /user && \
     chmod +x /bin/grpc_health_probe
 
 ENV GO111MODULE=on
+ENV GOPROXY="https://proxy.golang.org,direct"
 
 # Get dependancies - will also be cached if we won't change mod/sum
 WORKDIR /
 COPY ./go.mod ./go.sum ./
-RUN go env -w GO111MODULE=on && unset GOPROXY && go env -w GOPROXY="https://proxy.golang.org,direct" && go mod download && \
+RUN go mod download && \
     go get github.com/ahmetb/govvv && \
     go get github.com/markbates/pkger/cmd/pkger && \
     rm go.mod go.sum

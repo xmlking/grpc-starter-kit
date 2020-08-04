@@ -514,6 +514,21 @@ func (m *Services) Validate() error {
 		}
 	}
 
+	{
+		tmp := m.GetPlay()
+
+		if v, ok := interface{}(tmp).(interface{ Validate() error }); ok {
+
+			if err := v.Validate(); err != nil {
+				return ServicesValidationError{
+					field:  "Play",
+					reason: "embedded message failed validation",
+					cause:  err,
+				}
+			}
+		}
+	}
+
 	return nil
 }
 
@@ -712,6 +727,8 @@ func (m *Features_Tracing) Validate() error {
 	// no validation rules for Enabled
 
 	// no validation rules for Address
+
+	// no validation rules for Sampling
 
 	// no validation rules for FlushInterval
 

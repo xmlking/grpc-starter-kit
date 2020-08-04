@@ -6,4 +6,5 @@ const (
 	GREETER_SERVICE  = "mkit.service.greeter"
 	EMAILER_SERVICE  = "mkit.service.emailer"
 	RECORDER_SERVICE = "mkit.service.recorder"
+	PLAY_SERVICE     = "mkit.service.play"
 )

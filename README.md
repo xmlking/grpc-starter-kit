@@ -26,9 +26,11 @@ Microservices starter kit for **Golang**, aims to be developer friendly.
 ### What you get
 
 - [x] Monorepo - Sharing Code Between Microservices
-- [x] gRPC microservices with REST Gateway
+- [x] gRPC microservices 
+- [x] Versatile ingress gateway based on Envoy with Config Manager [esp-v2](https://github.com/GoogleCloudPlatform/esp-v2)
+- [ ] Proxy-less Service Discovery and xDS based gRPC Load Balancer with [Traffic Director](https://cloud.google.com/blog/products/networking/traffic-director-supports-proxyless-grpc)
 - [x] Input Validation with [protoc-gen-validate (PGV)](https://github.com/envoyproxy/protoc-gen-validate)
-- [x] Config - Pluggable Sources, Mergeable Config, Safe Recovery
+- [x] Config - Pluggable Sources, Mergeable Config, Environment Overlays 
 - [x] Customizable Logging
 - [x] CRUD Example using [GORM](https://gorm.io/), [benchmarks](https://github.com/kihamo/orm-benchmark), [XORM](https://xorm.io/) next?
 - [x] GORM code gen via [protoc-gen-gorm](https://github.com/infobloxopen/protoc-gen-gorm) or use [protoc-go-inject-tag](https://github.com/favadi/protoc-go-inject-tag)?

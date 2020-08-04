@@ -19,8 +19,10 @@ service ConfigService {
 
 message Service {
   string endpoint = 1 [(gogoproto.moretags) = "yaml:\"endpoint\" required:\"true\""];
-  string version = 2 [(gogoproto.moretags) = "yaml:\"version\" default:\"v0.1.0\""];
-  uint32 deadline = 3 [(gogoproto.moretags) = "yaml:\",omitempty\" default:\"10\""];
+  string version = 2 [(gogoproto.moretags) = "yaml:\",omitempty\" default:\"v0.1.0\""];
+  map<string, string> metadata = 3 [(gogoproto.moretags) = "yaml:\"metadata,omitempty\""];
+  string service_config = 4 [(gogoproto.moretags) = "yaml:\"service_config,omitempty\""];
+  string authority = 5 [(gogoproto.moretags) = "yaml:\",omitempty\""];
 }
 
 message EmailConfiguration {
@@ -39,7 +41,7 @@ enum DatabaseDialect {
 }
 
 message DatabaseConfiguration {
-  DatabaseDialect dialect = 1 [(gogoproto.moretags) = "yaml:\",omitempty\" valid:\"in(Postgre|MySQL|SQLite3)\" default:\"2\""];
+  DatabaseDialect dialect = 1 [(gogoproto.moretags) = "yaml:\",omitempty\" valid:\"in(Postgres|MySQL|SQLite3)\" default:\"2\""];
   string host = 2 [(gogoproto.moretags) = "yaml:\",omitempty\" valid:\"host\""];
   uint32 port = 3 [(gogoproto.moretags) = "yaml:\",omitempty\" default:\"5432\" valid:\"port\""];
   string username = 4 [(gogoproto.moretags) = "valid:\"alphanum,required\""];
@@ -66,22 +68,24 @@ message Features {
   message Tracing {
     bool enabled = 1 [(gogoproto.moretags) = "yaml:\",omitempty\" default:\"false\""];
     string address = 2;
-    uint64 flush_interval = 3 [(gogoproto.moretags) = "yaml:\"flush_interval,omitempty\" default:\"10000000\""];
+    double sampling = 3 [(gogoproto.moretags) = "yaml:\"sampling,omitempty\" default:\"0.5\""];
+    uint64 flush_interval = 4 [(gogoproto.moretags) = "yaml:\"flush_interval,omitempty\" default:\"10000000\""];
   }
   message TLS {
     bool enabled = 1 [(gogoproto.moretags) = "yaml:\",omitempty\" default:\"false\""];
     string cert_file = 2 [(gogoproto.moretags) = "yaml:\"cert_file\" valid:\"type(string),required\""];
     string key_file = 3 [(gogoproto.moretags) = "yaml:\"key_file\" valid:\"type(string),required\""];
     string ca_file = 4 [(gogoproto.moretags) = "yaml:\"ca_file\" valid:\"type(string),required\""];
-    string servername = 5 [(gogoproto.moretags) = "yaml:\",omitempty\" default:\"'*'\""];
+    string password = 5 [(gogoproto.moretags) = "yaml:\"password,omitempty\""];
+    string server_name = 6 [(gogoproto.moretags) = "yaml:\"server_name,omitempty\" default:\"'*'\""];
   }
   message Validator {
     bool enabled = 1 [(gogoproto.moretags) = "yaml:\",omitempty\" default:\"false\""];
   }
-  message Reqlogs {
+  message Rpclog {
     bool enabled = 1 [(gogoproto.moretags) = "yaml:\",omitempty\" default:\"false\""];
   }
-  message Translogs {
+  message Translog {
     bool enabled = 1 [(gogoproto.moretags) = "yaml:\",omitempty\" default:\"false\""];
     string topic = 2;
   }
@@ -89,15 +93,16 @@ message Features {
   Tracing tracing = 2;
   TLS tls = 3;
   Validator validator = 4;
-  Reqlogs reqlogs = 5;
-  Translogs translogs = 6;
+  Rpclog rpclog = 5;
+  Translog translog = 6;
 }
 
 message Services {
-  Service account = 1;
-  Service greeter = 2;
-  Service emailer = 3;
-  Service recorder = 4;
+  Service account = 1 [(gogoproto.moretags) = "yaml:\"account,omitempty\""];
+  Service greeter = 2 [(gogoproto.moretags) = "yaml:\"greeter,omitempty\""];
+  Service emailer = 3 [(gogoproto.moretags) = "yaml:\"emailer,omitempty\""];
+  Service recorder = 4 [(gogoproto.moretags) = "yaml:\"recorder,omitempty\""];
+  Service play = 5 [(gogoproto.moretags) = "yaml:\"play,omitempty\""];
 }
 
 message Configuration {

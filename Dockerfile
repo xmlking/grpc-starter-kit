@@ -8,7 +8,7 @@ FROM docker.pkg.github.com/xmlking/grpc-starter-kit/base:${BASE_VERSION} AS buil
 # * CGO_ENABLED=0 to build a statically-linked executable
 # * GOFLAGS=-mod=vendor to force `go build` to look into the `/vendor` folder.
 #ENV CGO_ENABLED=0 GOFLAGS=-mod=vendor
-ENV CGO_ENABLED=1
+ENV CGO_ENABLED=1 GOOS=linux
 
 # Set the working directory outside $GOPATH to enable the support for modules.
 WORKDIR /src
@@ -28,6 +28,7 @@ ARG TYPE=service
 ARG TARGET=account
 
 RUN pkger -o $TYPE/$TARGET -include /config/config.yaml -include /config/config.production.yaml -include /config/certs
+# RUN go build -a -installsuffix cgo \
 RUN go build -a \
     -ldflags="-w -s -linkmode external -extldflags '-static' $(govvv -flags -version ${VERSION} -pkg $(go list ./shared/config) )" \
     -o /app ./$TYPE/$TARGET/main.go
