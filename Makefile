@@ -82,9 +82,25 @@ clean:
 		rm -f $$f; \
 	done
 
+################################################################################
+# Target: go-mod                                                               #
+################################################################################
+
 update_deps:
-	go mod verify
-	go mod tidy
+	@for d in `find * -name 'go.mod'`; do \
+		pushd `dirname $$d` >/dev/null; \
+		go mod verify; \
+		go mod tidy; \
+		popd >/dev/null; \
+	done
+
+download_deps:
+	@for d in `find * -name 'go.mod'`; do \
+		pushd `dirname $$d` >/dev/null; \
+		rm -f go.sum; \
+		go mod download; \
+		popd >/dev/null; \
+	done
 
 ################################################################################
 # Target: proto                                                                #
@@ -236,6 +252,15 @@ run run-%:
 ################################################################################
 # Target: release                                                              #
 ################################################################################
+
+release: download_deps
+	@if [ -z $(TAG) ]; then \
+		echo "no  TAG. Usage: make release TAG=v0.1.1"; \
+	else \
+		for m in `find * -name 'go.mod' -mindepth 1 -exec dirname {} \;`; do \
+			hub release create -m "$$m/${TAG} release" $$m/${TAG}; \
+		done \
+	fi
 
 release/draft: check_dirty
 	@echo Publishing Draft: $(VERSION)
