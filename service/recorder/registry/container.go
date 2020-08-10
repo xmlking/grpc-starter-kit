@@ -6,7 +6,7 @@ import (
 	"github.com/rs/zerolog/log"
 
 	"github.com/xmlking/grpc-starter-kit/service/recorder/subscriber"
-	configPB "github.com/xmlking/grpc-starter-kit/shared/proto/config/v1"
+	"github.com/xmlking/grpc-starter-kit/shared/config"
 )
 
 // Container - provide di Container
@@ -15,7 +15,7 @@ type Container struct {
 }
 
 // NewContainer - create new Container
-func NewContainer(cfg configPB.Configuration) (*Container, error) {
+func NewContainer(cfg config.Configuration) (*Container, error) {
 	builder, err := di.NewBuilder()
 	if err != nil {
 		log.Fatal().Err(err).Msg("")

@@ -34,6 +34,7 @@ Microservices starter kit for **Golang**, aims to be developer friendly.
 - [x] Customizable Logging
 - [x] CRUD Example using [GORM](https://gorm.io/), [benchmarks](https://github.com/kihamo/orm-benchmark), [XORM](https://xorm.io/) next?
 - [x] GORM code gen via [protoc-gen-gorm](https://github.com/infobloxopen/protoc-gen-gorm) or use [protoc-go-inject-tag](https://github.com/favadi/protoc-go-inject-tag)?
+- [ ] Graph-Based ORM [ent](https://entgo.io/)
 - [x] Dependency injection [Container](https://github.com/sarulabs/di), Try [wire](https://itnext.io/mastering-wire-f1226717bbac) next?
 - [x] multi-stage-multi-target Dockerfile
 - [x] One Step _build/publish/deploy_ with [ko](https://github.com/google/ko)
@@ -48,7 +49,6 @@ Microservices starter kit for **Golang**, aims to be developer friendly.
 - [ ] Observability
 - [ ] Service Mesh with [Istio](https://istio.io/)
 - [ ] GraphQL Gateway with [gqlgen](https://gqlgen.com/), [rejoiner](https://github.com/google/rejoiner),[gqlgen](https://github.com/Shpota/skmz)
-- [ ] Graph-Based ORM [ent](https://entgo.io/)
 - [ ] Switch to [Bazel Build](https://bazel.build/)
 
 ## Getting Started

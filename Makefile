@@ -138,14 +138,6 @@ proto_gen:
 
 proto: proto_lint proto_breaking proto_format proto_clean proto_gen
 
-proto_shared:
-	@for f in ./shared/proto/**/**/*.proto; do \
-		protoc --proto_path=.:${GOPATH}/src \
-		--gofast_out=plugins=grpc,paths=source_relative:. \
-		--validate_out=lang=gogo,paths=source_relative:. $$f; \
-		echo ✓ compiled: $$f; \
-	done
-
 ################################################################################
 # Target: lints                                                                #
 ################################################################################

@@ -1,5 +1,5 @@
 database:
-  dialect: 3 # unspecified = 0, postgres = 1, mysq2 = 2, sqlite3 =3
+  dialect: sqlite3
   host: 0.0.0.0
   port: 9999
   username: sumo

@@ -15,13 +15,11 @@ import (
 
 	"github.com/xmlking/toolkit/middleware/rpclog"
 	"github.com/xmlking/toolkit/util/tls"
-
-	configPB "github.com/xmlking/grpc-starter-kit/shared/proto/config/v1"
 )
 
 var (
 	Configor   *configor.Configor
-	cfg        configPB.Configuration
+	cfg        Configuration
 	configLock = new(sync.RWMutex)
 
 	// Version is populated by govvv in compile-time.
@@ -77,7 +75,7 @@ func GetBuildInfo() string {
 		GitCommit, GitBranch, GitState, GitSummary)
 }
 
-func GetConfig() configPB.Configuration { // FIXME: return a deep copy?
+func GetConfig() Configuration { // FIXME: return a deep copy?
 	configLock.RLock()
 	defer configLock.RUnlock()
 	return cfg
@@ -93,7 +91,7 @@ func IsSecure() bool {
 	return cfg.Features.Tls.Enabled
 }
 
-func GetClientConn(service *configPB.Service, ucInterceptors []grpc.UnaryClientInterceptor) (clientConn *grpc.ClientConn, err error) {
+func GetClientConn(service *Service, ucInterceptors []grpc.UnaryClientInterceptor) (clientConn *grpc.ClientConn, err error) {
 	configLock.RLock()
 	defer configLock.RUnlock()
 

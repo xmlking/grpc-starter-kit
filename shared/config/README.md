@@ -60,14 +60,13 @@ You can also use `Configor` to load any yaml files into your Struct.
 ```go
 import (
 	"github.com/xmlking/grpc-starter-kit/shared/config"
-	configPB "github.com/xmlking/grpc-starter-kit/shared/proto/config"
 )
 
 func TestOverwriteConfigurationWithEnvironmentWithDefaultPrefix(t *testing.T) {
 	os.Setenv("CONFIGOR_SERVICES_ACCOUNT_ENDPOINT", "dns:///localhost:8088")
 	defer os.Setenv("CONFIGOR_SERVICES_ACCOUNT_ENDPOINT", "")
 
-	var cfg configPB.Configuration
+	var cfg config.Configuration
 	config.Configor.Load(&cfg, "/config/config.yaml")
 
 	t.Logf("Environment: %s", config.Configor.GetEnvironment())

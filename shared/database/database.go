@@ -8,21 +8,23 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog/log"
 
+	"github.com/facebookincubator/ent/dialect"
+
+	"github.com/xmlking/grpc-starter-kit/shared/config"
 	"github.com/xmlking/grpc-starter-kit/shared/logger/gormlog"
-	configPB "github.com/xmlking/grpc-starter-kit/shared/proto/config/v1"
 )
 
 // GetDatabaseConnection return (gorm.DB or error)
-func GetDatabaseConnection(dbConf configPB.DatabaseConfiguration) (db *gorm.DB, err error) {
+func GetDatabaseConnection(dbConf config.DatabaseConfiguration) (db *gorm.DB, err error) {
 	var timezoneCommand string
 
 	switch dbConf.Dialect {
-	case configPB.DatabaseDialect_SQLite3:
+	case dialect.SQLite:
 		db, err = connection(dbConf)
-	case configPB.DatabaseDialect_Postgres:
+	case dialect.Postgres:
 		timezoneCommand = "SET timezone = 'UTC'"
 		db, err = connection(dbConf)
-	case configPB.DatabaseDialect_MySQL:
+	case dialect.MySQL:
 		timezoneCommand = "SET time_zone = '+00:00'"
 		db, err = connection(dbConf)
 	default:
@@ -57,11 +59,11 @@ func GetDatabaseConnection(dbConf configPB.DatabaseConfiguration) (db *gorm.DB, 
 	return
 }
 
-func connection(dbConf configPB.DatabaseConfiguration) (db *gorm.DB, err error) {
+func connection(dbConf config.DatabaseConfiguration) (db *gorm.DB, err error) {
 	url, err := dbConf.URL()
 	if err != nil {
 		return nil, err
 	}
-	db, err = gorm.Open(strings.ToLower(string(dbConf.Dialect.String())), url)
+	db, err = gorm.Open(strings.ToLower(dbConf.Dialect), url)
 	return
 }

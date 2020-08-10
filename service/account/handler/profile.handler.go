@@ -10,7 +10,6 @@ import (
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 
-	// ptypes1 "github.com/gogo/protobuf/types"
 	ptypes1 "github.com/golang/protobuf/ptypes"
 	"github.com/rs/zerolog"
 	uuid "github.com/satori/go.uuid"

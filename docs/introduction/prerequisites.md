@@ -76,11 +76,6 @@ go install github.com/markbates/pkger/cmd/pkger
 # GO111MODULE=on go get github.com/golang/protobuf/{proto,protoc-gen-go}
 go install github.com/golang/protobuf/protoc-gen-go
 
-GO111MODULE=on go get github.com/gogo/protobuf/protoc-gen-gofast
-GO111MODULE=on go get github.com/gogo/protobuf/protoc-gen-gogofast
-GO111MODULE=on go get github.com/gogo/protobuf/protoc-gen-gogofaster
-GO111MODULE=on go get github.com/gogo/protobuf/protoc-gen-gogoslick
-
 # GO111MODULE=off go get -u github.com/envoyproxy/protoc-gen-validate
 # GO111MODULE=off go get -u github.com/infobloxopen/protoc-gen-gorm
 # goup checks if there are any updates for imports in your module.

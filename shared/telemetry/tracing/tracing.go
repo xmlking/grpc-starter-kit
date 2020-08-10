@@ -16,7 +16,6 @@ import (
 	sdktrace "go.opentelemetry.io/otel/sdk/trace"
 
 	"github.com/xmlking/grpc-starter-kit/shared/config"
-	"github.com/xmlking/grpc-starter-kit/shared/proto/config/v1"
 )
 
 var (
@@ -27,7 +26,7 @@ var (
 // expected GOOGLE_CLOUD_PROJECT & GOOGLE_APPLICATION_CREDENTIALS Environment Variable set
 
 // // before ending program, wait for all enqueued spans to be exported
-func InitTracing(cfg *configv1.Features_Tracing) func() {
+func InitTracing(cfg *config.Features_Tracing) func() {
 	once.Do(func() {
 		log.Debug().Interface("TracingConfig", cfg).Msg("Initializing Tracing")
 		if config.IsProduction() {
@@ -67,7 +66,7 @@ func InitTracing(cfg *configv1.Features_Tracing) func() {
 	return closeFunc
 }
 
-//func InitTracing_old(cfg *configv1.Features_Tracing) {
+//func InitTracing_old(cfg *config.Features_Tracing) {
 //    once.Do(func() {
 //        log.Debug().Interface("TracingConfig", cfg).Msg("Initializing Tracing")
 //        var exporter trace.SpanSyncer

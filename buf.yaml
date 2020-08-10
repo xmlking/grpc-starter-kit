@@ -10,7 +10,6 @@ lint:
   ignore:
     - protoc-gen-gorm
     - validate
-    - gogoproto
   ignore_only:
     RPC_RESPONSE_STANDARD_NAME:
       - mkit/service/transaction/v1/transaction.proto

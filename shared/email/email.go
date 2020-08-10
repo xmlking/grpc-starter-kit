@@ -13,7 +13,7 @@ import (
 
 	"github.com/rs/zerolog/log"
 
-	configPB "github.com/xmlking/grpc-starter-kit/shared/proto/config/v1"
+	"github.com/xmlking/grpc-starter-kit/shared/config"
 )
 
 var (
@@ -67,7 +67,7 @@ func (sender *SendEmail) Send(subject, body string, to []string) error {
 }
 
 // NewSendEmail is constructor
-func NewSendEmail(emailConf *configPB.EmailConfiguration) *SendEmail {
+func NewSendEmail(emailConf *config.EmailConfiguration) *SendEmail {
 	once.Do(func() {
 		instance = &SendEmail{
 			from:    emailConf.From,

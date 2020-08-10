@@ -15,7 +15,6 @@ import (
 	gmetrics "github.com/GoogleCloudPlatform/opentelemetry-operations-go/exporter/metric"
 
 	"github.com/xmlking/grpc-starter-kit/shared/config"
-	"github.com/xmlking/grpc-starter-kit/shared/proto/config/v1"
 )
 
 // https://github.com/cds-snc/covid-alert-server/blob/master/pkg/telemetry/telemetry.go
@@ -33,7 +32,7 @@ var (
 )
 
 // expected GOOGLE_CLOUD_PROJECT & GOOGLE_APPLICATION_CREDENTIALS Environment Variable set
-func InitMetrics(cfg *configv1.Features_Metrics) *push.Controller {
+func InitMetrics(cfg *config.Features_Metrics) *push.Controller {
 	once.Do(func() {
 		log.Debug().Interface("MetricConfig", cfg).Msg("Initializing Metrics")
 		var err error

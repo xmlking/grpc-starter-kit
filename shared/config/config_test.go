@@ -7,7 +7,6 @@ import (
 	"time"
 
 	"github.com/xmlking/grpc-starter-kit/shared/config"
-	configPB "github.com/xmlking/grpc-starter-kit/shared/proto/config/v1"
 )
 
 // CONFIGOR_DEBUG_MODE=true go test -v ./shared/config/... -count=1
@@ -53,7 +52,7 @@ func TestOverwriteConfigurationWithEnvironmentWithDefaultPrefix(t *testing.T) {
 	os.Setenv("CONFIGOR_SERVICES_ACCOUNT_ENDPOINT", "dns:///localhost:8088")
 	defer os.Setenv("CONFIGOR_SERVICES_ACCOUNT_ENDPOINT", "")
 
-	var cfg configPB.Configuration
+	var cfg config.Configuration
 	config.Configor.Load(&cfg, "/config/config.yaml")
 
 	t.Logf("Environment: %s", config.Configor.GetEnvironment())
