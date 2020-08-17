@@ -1,5 +1,6 @@
 database:
   conn_max_lifetime: 2h
+  database: "file:account?mode=memory&cache=shared&_fk=1"
 email:
   from: from-test@gmail.com
 

@@ -28,11 +28,10 @@ func (Profile) Fields() []ent.Field {
 	return []ent.Field{
 		field.UUID("id", uuid.UUID{}).
 			Unique().
+			Default(uuid.New).
 			Immutable(),
 		field.Int("age").
 			Positive(),
-		field.String("username").
-			Unique(),
 		field.String("tz"), // *time.Location?
 		field.JSON("avatar", &url.URL{}).
 			Optional(),

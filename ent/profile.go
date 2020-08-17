@@ -25,11 +25,9 @@ type Profile struct {
 	// UpdateTime holds the value of the "update_time" field.
 	UpdateTime time.Time `json:"update_time,omitempty"`
 	// DeleteTime holds the value of the "delete_time" field.
-	DeleteTime time.Time `json:"delete_time,omitempty"`
+	DeleteTime *time.Time `json:"delete_time,omitempty"`
 	// Age holds the value of the "age" field.
 	Age int `json:"age,omitempty"`
-	// Username holds the value of the "username" field.
-	Username string `json:"username,omitempty"`
 	// Tz holds the value of the "tz" field.
 	Tz string `json:"tz,omitempty"`
 	// Avatar holds the value of the "avatar" field.
@@ -77,7 +75,6 @@ func (*Profile) scanValues() []interface{} {
 		&sql.NullTime{},   // update_time
 		&sql.NullTime{},   // delete_time
 		&sql.NullInt64{},  // age
-		&sql.NullString{}, // username
 		&sql.NullString{}, // tz
 		&[]byte{},         // avatar
 		&sql.NullTime{},   // birthday
@@ -118,7 +115,8 @@ func (pr *Profile) assignValues(values ...interface{}) error {
 	if value, ok := values[2].(*sql.NullTime); !ok {
 		return fmt.Errorf("unexpected type %T for field delete_time", values[2])
 	} else if value.Valid {
-		pr.DeleteTime = value.Time
+		pr.DeleteTime = new(time.Time)
+		*pr.DeleteTime = value.Time
 	}
 	if value, ok := values[3].(*sql.NullInt64); !ok {
 		return fmt.Errorf("unexpected type %T for field age", values[3])
@@ -126,39 +124,34 @@ func (pr *Profile) assignValues(values ...interface{}) error {
 		pr.Age = int(value.Int64)
 	}
 	if value, ok := values[4].(*sql.NullString); !ok {
-		return fmt.Errorf("unexpected type %T for field username", values[4])
-	} else if value.Valid {
-		pr.Username = value.String
-	}
-	if value, ok := values[5].(*sql.NullString); !ok {
-		return fmt.Errorf("unexpected type %T for field tz", values[5])
+		return fmt.Errorf("unexpected type %T for field tz", values[4])
 	} else if value.Valid {
 		pr.Tz = value.String
 	}
 
-	if value, ok := values[6].(*[]byte); !ok {
-		return fmt.Errorf("unexpected type %T for field avatar", values[6])
+	if value, ok := values[5].(*[]byte); !ok {
+		return fmt.Errorf("unexpected type %T for field avatar", values[5])
 	} else if value != nil && len(*value) > 0 {
 		if err := json.Unmarshal(*value, &pr.Avatar); err != nil {
 			return fmt.Errorf("unmarshal field avatar: %v", err)
 		}
 	}
-	if value, ok := values[7].(*sql.NullTime); !ok {
-		return fmt.Errorf("unexpected type %T for field birthday", values[7])
+	if value, ok := values[6].(*sql.NullTime); !ok {
+		return fmt.Errorf("unexpected type %T for field birthday", values[6])
 	} else if value.Valid {
 		pr.Birthday = value.Time
 	}
-	if value, ok := values[8].(*sql.NullString); !ok {
-		return fmt.Errorf("unexpected type %T for field gender", values[8])
+	if value, ok := values[7].(*sql.NullString); !ok {
+		return fmt.Errorf("unexpected type %T for field gender", values[7])
 	} else if value.Valid {
 		pr.Gender = profile.Gender(value.String)
 	}
-	if value, ok := values[9].(*sql.NullString); !ok {
-		return fmt.Errorf("unexpected type %T for field preferred_theme", values[9])
+	if value, ok := values[8].(*sql.NullString); !ok {
+		return fmt.Errorf("unexpected type %T for field preferred_theme", values[8])
 	} else if value.Valid {
 		pr.PreferredTheme = value.String
 	}
-	values = values[10:]
+	values = values[9:]
 	if len(values) == len(profile.ForeignKeys) {
 		if value, ok := values[0].(*uuid.UUID); !ok {
 			return fmt.Errorf("unexpected type %T for field user_profile", values[0])
@@ -201,12 +194,12 @@ func (pr *Profile) String() string {
 	builder.WriteString(pr.CreateTime.Format(time.ANSIC))
 	builder.WriteString(", update_time=")
 	builder.WriteString(pr.UpdateTime.Format(time.ANSIC))
-	builder.WriteString(", delete_time=")
-	builder.WriteString(pr.DeleteTime.Format(time.ANSIC))
+	if v := pr.DeleteTime; v != nil {
+		builder.WriteString(", delete_time=")
+		builder.WriteString(v.Format(time.ANSIC))
+	}
 	builder.WriteString(", age=")
 	builder.WriteString(fmt.Sprintf("%v", pr.Age))
-	builder.WriteString(", username=")
-	builder.WriteString(pr.Username)
 	builder.WriteString(", tz=")
 	builder.WriteString(pr.Tz)
 	builder.WriteString(", avatar=")

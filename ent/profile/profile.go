@@ -5,6 +5,8 @@ package profile
 import (
 	"fmt"
 	"time"
+
+	"github.com/google/uuid"
 )
 
 const (
@@ -20,8 +22,6 @@ const (
 	FieldDeleteTime = "delete_time"
 	// FieldAge holds the string denoting the age field in the database.
 	FieldAge = "age"
-	// FieldUsername holds the string denoting the username field in the database.
-	FieldUsername = "username"
 	// FieldTz holds the string denoting the tz field in the database.
 	FieldTz = "tz"
 	// FieldAvatar holds the string denoting the avatar field in the database.
@@ -54,7 +54,6 @@ var Columns = []string{
 	FieldUpdateTime,
 	FieldDeleteTime,
 	FieldAge,
-	FieldUsername,
 	FieldTz,
 	FieldAvatar,
 	FieldBirthday,
@@ -74,10 +73,10 @@ var (
 	DefaultUpdateTime func() time.Time
 	// UpdateDefaultUpdateTime holds the default value on update for the update_time field.
 	UpdateDefaultUpdateTime func() time.Time
-	// DefaultDeleteTime holds the default value on creation for the delete_time field.
-	DefaultDeleteTime func() time.Time
 	// AgeValidator is a validator for the "age" field. It is called by the builders before save.
 	AgeValidator func(int) error
+	// DefaultID holds the default value on creation for the id field.
+	DefaultID func() uuid.UUID
 )
 
 // Gender defines the type for the gender enum field.

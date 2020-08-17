@@ -30,6 +30,7 @@ func (User) Fields() []ent.Field {
 	return []ent.Field{
 		field.UUID("id", uuid.UUID{}).
 			Unique().
+			Default(uuid.New).
 			Immutable(),
 		field.String("username").
 			Unique().

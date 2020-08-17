@@ -5,6 +5,7 @@ package ent
 import (
 	"time"
 
+	"github.com/google/uuid"
 	"github.com/xmlking/grpc-starter-kit/ent/profile"
 	"github.com/xmlking/grpc-starter-kit/ent/schema"
 	"github.com/xmlking/grpc-starter-kit/ent/user"
@@ -16,7 +17,6 @@ import (
 func init() {
 	profileMixin := schema.Profile{}.Mixin()
 	profileMixinFields0 := profileMixin[0].Fields()
-	profileMixinFields1 := profileMixin[1].Fields()
 	profileFields := schema.Profile{}.Fields()
 	_ = profileFields
 	// profileDescCreateTime is the schema descriptor for create_time field.
@@ -29,17 +29,16 @@ func init() {
 	profile.DefaultUpdateTime = profileDescUpdateTime.Default.(func() time.Time)
 	// profile.UpdateDefaultUpdateTime holds the default value on update for the update_time field.
 	profile.UpdateDefaultUpdateTime = profileDescUpdateTime.UpdateDefault.(func() time.Time)
-	// profileDescDeleteTime is the schema descriptor for delete_time field.
-	profileDescDeleteTime := profileMixinFields1[0].Descriptor()
-	// profile.DefaultDeleteTime holds the default value on creation for the delete_time field.
-	profile.DefaultDeleteTime = profileDescDeleteTime.Default.(func() time.Time)
 	// profileDescAge is the schema descriptor for age field.
 	profileDescAge := profileFields[1].Descriptor()
 	// profile.AgeValidator is a validator for the "age" field. It is called by the builders before save.
 	profile.AgeValidator = profileDescAge.Validators[0].(func(int) error)
+	// profileDescID is the schema descriptor for id field.
+	profileDescID := profileFields[0].Descriptor()
+	// profile.DefaultID holds the default value on creation for the id field.
+	profile.DefaultID = profileDescID.Default.(func() uuid.UUID)
 	userMixin := schema.User{}.Mixin()
 	userMixinFields0 := userMixin[0].Fields()
-	userMixinFields1 := userMixin[1].Fields()
 	userFields := schema.User{}.Fields()
 	_ = userFields
 	// userDescCreateTime is the schema descriptor for create_time field.
@@ -52,10 +51,6 @@ func init() {
 	user.DefaultUpdateTime = userDescUpdateTime.Default.(func() time.Time)
 	// user.UpdateDefaultUpdateTime holds the default value on update for the update_time field.
 	user.UpdateDefaultUpdateTime = userDescUpdateTime.UpdateDefault.(func() time.Time)
-	// userDescDeleteTime is the schema descriptor for delete_time field.
-	userDescDeleteTime := userMixinFields1[0].Descriptor()
-	// user.DefaultDeleteTime holds the default value on creation for the delete_time field.
-	user.DefaultDeleteTime = userDescDeleteTime.Default.(func() time.Time)
 	// userDescUsername is the schema descriptor for username field.
 	userDescUsername := userFields[1].Descriptor()
 	// user.UsernameValidator is a validator for the "username" field. It is called by the builders before save.
@@ -106,4 +101,8 @@ func init() {
 	userDescTenant := userFields[5].Descriptor()
 	// user.DefaultTenant holds the default value on creation for the tenant field.
 	user.DefaultTenant = userDescTenant.Default.(string)
+	// userDescID is the schema descriptor for id field.
+	userDescID := userFields[0].Descriptor()
+	// user.DefaultID holds the default value on creation for the id field.
+	user.DefaultID = userDescID.Default.(func() uuid.UUID)
 }

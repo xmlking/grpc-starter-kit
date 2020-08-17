@@ -41,6 +41,14 @@ func (m *User) Validate() error {
 	return nil
 }
 
+func (m *User) _validateUuid(uuid string) error {
+	if matched := _entities_uuidPattern.MatchString(uuid); !matched {
+		return errors.New("invalid uuid format")
+	}
+
+	return nil
+}
+
 // UserValidationError is the validation error returned by User.Validate if the
 // designated constraints aren't met.
 type UserValidationError struct {
@@ -97,6 +105,14 @@ var _ interface {
 
 // Validate is disabled for Profile. This method will always return nil.
 func (m *Profile) Validate() error {
+	return nil
+}
+
+func (m *Profile) _validateUuid(uuid string) error {
+	if matched := _entities_uuidPattern.MatchString(uuid); !matched {
+		return errors.New("invalid uuid format")
+	}
+
 	return nil
 }
 

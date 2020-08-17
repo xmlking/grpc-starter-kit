@@ -32,6 +32,26 @@ func (pu *ProfileUpdate) Where(ps ...predicate.Profile) *ProfileUpdate {
 	return pu
 }
 
+// SetDeleteTime sets the delete_time field.
+func (pu *ProfileUpdate) SetDeleteTime(t time.Time) *ProfileUpdate {
+	pu.mutation.SetDeleteTime(t)
+	return pu
+}
+
+// SetNillableDeleteTime sets the delete_time field if the given value is not nil.
+func (pu *ProfileUpdate) SetNillableDeleteTime(t *time.Time) *ProfileUpdate {
+	if t != nil {
+		pu.SetDeleteTime(*t)
+	}
+	return pu
+}
+
+// ClearDeleteTime clears the value of delete_time.
+func (pu *ProfileUpdate) ClearDeleteTime() *ProfileUpdate {
+	pu.mutation.ClearDeleteTime()
+	return pu
+}
+
 // SetAge sets the age field.
 func (pu *ProfileUpdate) SetAge(i int) *ProfileUpdate {
 	pu.mutation.ResetAge()
@@ -42,12 +62,6 @@ func (pu *ProfileUpdate) SetAge(i int) *ProfileUpdate {
 // AddAge adds i to age.
 func (pu *ProfileUpdate) AddAge(i int) *ProfileUpdate {
 	pu.mutation.AddAge(i)
-	return pu
-}
-
-// SetUsername sets the username field.
-func (pu *ProfileUpdate) SetUsername(s string) *ProfileUpdate {
-	pu.mutation.SetUsername(s)
 	return pu
 }
 
@@ -245,6 +259,19 @@ func (pu *ProfileUpdate) sqlSave(ctx context.Context) (n int, err error) {
 			Column: profile.FieldUpdateTime,
 		})
 	}
+	if value, ok := pu.mutation.DeleteTime(); ok {
+		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
+			Type:   field.TypeTime,
+			Value:  value,
+			Column: profile.FieldDeleteTime,
+		})
+	}
+	if pu.mutation.DeleteTimeCleared() {
+		_spec.Fields.Clear = append(_spec.Fields.Clear, &sqlgraph.FieldSpec{
+			Type:   field.TypeTime,
+			Column: profile.FieldDeleteTime,
+		})
+	}
 	if value, ok := pu.mutation.Age(); ok {
 		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
 			Type:   field.TypeInt,
@@ -257,13 +284,6 @@ func (pu *ProfileUpdate) sqlSave(ctx context.Context) (n int, err error) {
 			Type:   field.TypeInt,
 			Value:  value,
 			Column: profile.FieldAge,
-		})
-	}
-	if value, ok := pu.mutation.Username(); ok {
-		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
-			Type:   field.TypeString,
-			Value:  value,
-			Column: profile.FieldUsername,
 		})
 	}
 	if value, ok := pu.mutation.Tz(); ok {
@@ -378,6 +398,26 @@ type ProfileUpdateOne struct {
 	mutation *ProfileMutation
 }
 
+// SetDeleteTime sets the delete_time field.
+func (puo *ProfileUpdateOne) SetDeleteTime(t time.Time) *ProfileUpdateOne {
+	puo.mutation.SetDeleteTime(t)
+	return puo
+}
+
+// SetNillableDeleteTime sets the delete_time field if the given value is not nil.
+func (puo *ProfileUpdateOne) SetNillableDeleteTime(t *time.Time) *ProfileUpdateOne {
+	if t != nil {
+		puo.SetDeleteTime(*t)
+	}
+	return puo
+}
+
+// ClearDeleteTime clears the value of delete_time.
+func (puo *ProfileUpdateOne) ClearDeleteTime() *ProfileUpdateOne {
+	puo.mutation.ClearDeleteTime()
+	return puo
+}
+
 // SetAge sets the age field.
 func (puo *ProfileUpdateOne) SetAge(i int) *ProfileUpdateOne {
 	puo.mutation.ResetAge()
@@ -388,12 +428,6 @@ func (puo *ProfileUpdateOne) SetAge(i int) *ProfileUpdateOne {
 // AddAge adds i to age.
 func (puo *ProfileUpdateOne) AddAge(i int) *ProfileUpdateOne {
 	puo.mutation.AddAge(i)
-	return puo
-}
-
-// SetUsername sets the username field.
-func (puo *ProfileUpdateOne) SetUsername(s string) *ProfileUpdateOne {
-	puo.mutation.SetUsername(s)
 	return puo
 }
 
@@ -589,6 +623,19 @@ func (puo *ProfileUpdateOne) sqlSave(ctx context.Context) (pr *Profile, err erro
 			Column: profile.FieldUpdateTime,
 		})
 	}
+	if value, ok := puo.mutation.DeleteTime(); ok {
+		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
+			Type:   field.TypeTime,
+			Value:  value,
+			Column: profile.FieldDeleteTime,
+		})
+	}
+	if puo.mutation.DeleteTimeCleared() {
+		_spec.Fields.Clear = append(_spec.Fields.Clear, &sqlgraph.FieldSpec{
+			Type:   field.TypeTime,
+			Column: profile.FieldDeleteTime,
+		})
+	}
 	if value, ok := puo.mutation.Age(); ok {
 		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
 			Type:   field.TypeInt,
@@ -601,13 +648,6 @@ func (puo *ProfileUpdateOne) sqlSave(ctx context.Context) (pr *Profile, err erro
 			Type:   field.TypeInt,
 			Value:  value,
 			Column: profile.FieldAge,
-		})
-	}
-	if value, ok := puo.mutation.Username(); ok {
-		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
-			Type:   field.TypeString,
-			Value:  value,
-			Column: profile.FieldUsername,
 		})
 	}
 	if value, ok := puo.mutation.Tz(); ok {

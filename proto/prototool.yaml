@@ -37,8 +37,3 @@ generate:
       flags: lang=go,paths=source_relative
       output: ../
       type: go
-    - name: gorm
-      flags: engine=postgres,enums=string,
-      output: ../
-      type: go
-

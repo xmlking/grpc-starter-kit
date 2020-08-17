@@ -8,7 +8,6 @@ lint:
     - DEFAULT
     - FILE_LOWER_SNAKE_CASE
   ignore:
-    - protoc-gen-gorm
     - validate
   ignore_only:
     RPC_RESPONSE_STANDARD_NAME:
@@ -25,5 +24,4 @@ breaking:
   use:
     - WIRE_JSON
   ignore:
-    - protoc-gen-gorm
     - validate

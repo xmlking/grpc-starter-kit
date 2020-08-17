@@ -1,58 +1,66 @@
 package repository_test
 
 import (
+	"context"
 	"database/sql"
 	"regexp"
 	"testing"
 
 	"github.com/DATA-DOG/go-sqlmock"
-	"github.com/jinzhu/gorm"
-	uuid "github.com/satori/go.uuid"
+	"github.com/facebookincubator/ent/dialect"
+	entsql "github.com/facebookincubator/ent/dialect/sql"
+	"github.com/rs/zerolog/log"
 	"github.com/stretchr/testify/require"
 	"github.com/stretchr/testify/suite"
 
-	account_entities "github.com/xmlking/grpc-starter-kit/mkit/service/account/entities/v1"
+	"github.com/xmlking/grpc-starter-kit/ent"
 	"github.com/xmlking/grpc-starter-kit/service/account/repository"
+	"github.com/xmlking/grpc-starter-kit/shared/config"
+	_ "github.com/xmlking/grpc-starter-kit/shared/logger"
 )
 
+// https://github.com/WaranchitPk/funny_todo_list/blob/master/api/v1/tasks/repository/task_repository_test.go
 type accountRepositorySuite struct {
 	suite.Suite
-	gdb               *gorm.DB
-	userRepository    repository.UserRepository
-	profileRepository repository.ProfileRepository
-	mock              sqlmock.Sqlmock
-	user              *account_entities.UserORM
+	dbClinet       *ent.Client
+	userRepository repository.UserRepository
+	mock           sqlmock.Sqlmock
+	user           *ent.User
 }
 
 // SetupSuite
 func (s *accountRepositorySuite) SetupSuite() {
-	s.T().Log("in SetupSuite")
+	dbConf := config.GetConfig().Database
+	s.T().Logf("in SetupSuite: %v", dbConf)
+
 	var (
 		db  *sql.DB
 		err error
 	)
 	db, s.mock, err = sqlmock.New()
 	require.NoError(s.T(), err)
+	drv := entsql.OpenDB(dialect.SQLite, db)
 
-	s.gdb, err = gorm.Open("SQLite3", db)
+	// s.dbClinet = enttest.NewClient(s.T(), enttest.WithOptions(ent.Driver(drv), ent.Debug(), ent.Log(log.Print)))
+	s.dbClinet = ent.NewClient(ent.Driver(drv), ent.Debug(), ent.Log(log.Print))
+
 	require.NoError(s.T(), err)
 
-	s.userRepository = repository.NewUserRepository(s.gdb)
+	s.userRepository = repository.NewUserRepository(s.dbClinet)
 
-	Username := "sumo"
-	s.user = &account_entities.UserORM{
-		Id:        uuid.NewV4(),
+	s.user = &ent.User{
 		FirstName: "sumo",
 		LastName:  "demo",
 		Email:     "sumo@demo.com",
-		Username:  &Username,
+		Username:  "sumo",
+		Tenant:    "ABC Corp",
 	}
 }
 
 // TearDownSuite
 func (s *accountRepositorySuite) TearDownSuite() {
 	s.T().Log("in TearDownSuite")
-	_ = s.gdb.Close()
+	_ = s.dbClinet.Close()
 }
 
 // before each test
@@ -80,12 +88,11 @@ func (s *accountRepositorySuite) TestUserRepository_List_Integration() {
 
 	s.mock.MatchExpectationsInOrder(false)
 
-	s.mock.ExpectQuery("SELECT count").WillReturnRows(countRows)
-	s.mock.ExpectQuery(regexp.QuoteMeta(`SELECT * FROM "users"`)).
-		WillReturnError(sql.ErrNoRows)
+	s.mock.ExpectQuery("SELECT COUNT").WillReturnRows(countRows)
+	s.mock.ExpectQuery(regexp.QuoteMeta("SELECT DISTINCT `users`.`id`")).WillReturnError(sql.ErrNoRows)
 
-	model := account_entities.UserORM{}
-	total, users, err := s.userRepository.List(0, 1, "", &model)
+	model := ent.User{}
+	total, users, err := s.userRepository.List(context.Background(), 0, 1, "", &model)
 	require.Error(s.T(), err, sql.ErrNoRows)
 	s.Empty(total, 0)
 	s.Empty(users, 0)
@@ -97,16 +104,15 @@ func (s *accountRepositorySuite) TestUserRepository_Create_Integration() {
 
 	s.mock.MatchExpectationsInOrder(true)
 
-	s.mock.ExpectQuery("SELECT count").WillReturnError(sql.ErrNoRows)
-	s.mock.ExpectQuery("SELECT count").WillReturnError(sql.ErrNoRows)
-	s.mock.ExpectQuery("SELECT count").WillReturnRows(countRows)
+	s.mock.ExpectQuery("SELECT COUNT").WillReturnRows(countRows)
 	s.mock.ExpectBegin()
-	s.mock.ExpectExec(`NSERT INTO "users"`).
-		WithArgs(sqlmock.AnyArg(), sqlmock.AnyArg(), s.user.Email, s.user.FirstName, sqlmock.AnyArg(), s.user.LastName, sqlmock.AnyArg(), s.user.Username).
+	s.mock.ExpectExec("INSERT INTO `users`").
+		WithArgs(sqlmock.AnyArg(), sqlmock.AnyArg(), s.user.Username, s.user.FirstName, s.user.LastName, s.user.Email, s.user.Tenant, sqlmock.AnyArg()).
 		WillReturnResult(sqlmock.NewResult(1, 1))
 	s.mock.ExpectCommit()
 
-	err := s.userRepository.Create(s.user)
+	usr, err := s.userRepository.Create(context.Background(), s.user)
+	s.T().Log(usr)
 	require.NoError(s.T(), err)
 
 }

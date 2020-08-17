@@ -13,9 +13,8 @@ var (
 		{Name: "id", Type: field.TypeUUID, Unique: true},
 		{Name: "create_time", Type: field.TypeTime},
 		{Name: "update_time", Type: field.TypeTime},
-		{Name: "delete_time", Type: field.TypeTime},
+		{Name: "delete_time", Type: field.TypeTime, Nullable: true},
 		{Name: "age", Type: field.TypeInt},
-		{Name: "username", Type: field.TypeString, Unique: true},
 		{Name: "tz", Type: field.TypeString},
 		{Name: "avatar", Type: field.TypeJSON, Nullable: true},
 		{Name: "birthday", Type: field.TypeTime, Nullable: true},
@@ -31,7 +30,7 @@ var (
 		ForeignKeys: []*schema.ForeignKey{
 			{
 				Symbol:  "profiles_users_profile",
-				Columns: []*schema.Column{ProfilesColumns[11]},
+				Columns: []*schema.Column{ProfilesColumns[10]},
 
 				RefColumns: []*schema.Column{UsersColumns[0]},
 				OnDelete:   schema.SetNull,
@@ -50,7 +49,7 @@ var (
 		{Name: "id", Type: field.TypeUUID, Unique: true},
 		{Name: "create_time", Type: field.TypeTime},
 		{Name: "update_time", Type: field.TypeTime},
-		{Name: "delete_time", Type: field.TypeTime},
+		{Name: "delete_time", Type: field.TypeTime, Nullable: true},
 		{Name: "username", Type: field.TypeString, Unique: true, Size: 25},
 		{Name: "first_name", Type: field.TypeString},
 		{Name: "last_name", Type: field.TypeString},

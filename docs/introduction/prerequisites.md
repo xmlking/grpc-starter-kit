@@ -77,7 +77,6 @@ go install github.com/markbates/pkger/cmd/pkger
 go install github.com/golang/protobuf/protoc-gen-go
 
 # GO111MODULE=off go get -u github.com/envoyproxy/protoc-gen-validate
-# GO111MODULE=off go get -u github.com/infobloxopen/protoc-gen-gorm
 # goup checks if there are any updates for imports in your module.
 # the main purpose is using it as a linter in continuous integration or in development process.
 # Usage: goup -v -m ./...
@@ -91,14 +90,5 @@ go get -d github.com/envoyproxy/protoc-gen-validate
 cd ~/go/src/github.com/envoyproxy/protoc-gen-validate
 git pull
 make build
-```
-
-> Installing `protoc-gen-gorm` can currently only be done from source:
-
-```bash
-go get -d github.com/infobloxopen/protoc-gen-gorm
-cd ~/go/src/github.com/infobloxopen/protoc-gen-gorm
-git pull
-make install
 ```
 

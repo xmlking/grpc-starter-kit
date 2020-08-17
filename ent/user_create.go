@@ -182,10 +182,6 @@ func (uc *UserCreate) preSave() error {
 		v := user.DefaultUpdateTime()
 		uc.mutation.SetUpdateTime(v)
 	}
-	if _, ok := uc.mutation.DeleteTime(); !ok {
-		v := user.DefaultDeleteTime()
-		uc.mutation.SetDeleteTime(v)
-	}
 	if _, ok := uc.mutation.Username(); !ok {
 		return &ValidationError{Name: "username", err: errors.New("ent: missing required field \"username\"")}
 	}
@@ -221,6 +217,10 @@ func (uc *UserCreate) preSave() error {
 	if _, ok := uc.mutation.Tenant(); !ok {
 		v := user.DefaultTenant
 		uc.mutation.SetTenant(v)
+	}
+	if _, ok := uc.mutation.ID(); !ok {
+		v := user.DefaultID()
+		uc.mutation.SetID(v)
 	}
 	return nil
 }
@@ -273,7 +273,7 @@ func (uc *UserCreate) createSpec() (*User, *sqlgraph.CreateSpec) {
 			Value:  value,
 			Column: user.FieldDeleteTime,
 		})
-		u.DeleteTime = value
+		u.DeleteTime = &value
 	}
 	if value, ok := uc.mutation.Username(); ok {
 		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{

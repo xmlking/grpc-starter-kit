@@ -71,12 +71,6 @@ func (pc *ProfileCreate) SetAge(i int) *ProfileCreate {
 	return pc
 }
 
-// SetUsername sets the username field.
-func (pc *ProfileCreate) SetUsername(s string) *ProfileCreate {
-	pc.mutation.SetUsername(s)
-	return pc
-}
-
 // SetTz sets the tz field.
 func (pc *ProfileCreate) SetTz(s string) *ProfileCreate {
 	pc.mutation.SetTz(s)
@@ -203,10 +197,6 @@ func (pc *ProfileCreate) preSave() error {
 		v := profile.DefaultUpdateTime()
 		pc.mutation.SetUpdateTime(v)
 	}
-	if _, ok := pc.mutation.DeleteTime(); !ok {
-		v := profile.DefaultDeleteTime()
-		pc.mutation.SetDeleteTime(v)
-	}
 	if _, ok := pc.mutation.Age(); !ok {
 		return &ValidationError{Name: "age", err: errors.New("ent: missing required field \"age\"")}
 	}
@@ -215,9 +205,6 @@ func (pc *ProfileCreate) preSave() error {
 			return &ValidationError{Name: "age", err: fmt.Errorf("ent: validator failed for field \"age\": %w", err)}
 		}
 	}
-	if _, ok := pc.mutation.Username(); !ok {
-		return &ValidationError{Name: "username", err: errors.New("ent: missing required field \"username\"")}
-	}
 	if _, ok := pc.mutation.Tz(); !ok {
 		return &ValidationError{Name: "tz", err: errors.New("ent: missing required field \"tz\"")}
 	}
@@ -225,6 +212,10 @@ func (pc *ProfileCreate) preSave() error {
 		if err := profile.GenderValidator(v); err != nil {
 			return &ValidationError{Name: "gender", err: fmt.Errorf("ent: validator failed for field \"gender\": %w", err)}
 		}
+	}
+	if _, ok := pc.mutation.ID(); !ok {
+		v := profile.DefaultID()
+		pc.mutation.SetID(v)
 	}
 	if _, ok := pc.mutation.UserID(); !ok {
 		return &ValidationError{Name: "user", err: errors.New("ent: missing required edge \"user\"")}
@@ -280,7 +271,7 @@ func (pc *ProfileCreate) createSpec() (*Profile, *sqlgraph.CreateSpec) {
 			Value:  value,
 			Column: profile.FieldDeleteTime,
 		})
-		pr.DeleteTime = value
+		pr.DeleteTime = &value
 	}
 	if value, ok := pc.mutation.Age(); ok {
 		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
@@ -289,14 +280,6 @@ func (pc *ProfileCreate) createSpec() (*Profile, *sqlgraph.CreateSpec) {
 			Column: profile.FieldAge,
 		})
 		pr.Age = value
-	}
-	if value, ok := pc.mutation.Username(); ok {
-		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
-			Type:   field.TypeString,
-			Value:  value,
-			Column: profile.FieldUsername,
-		})
-		pr.Username = value
 	}
 	if value, ok := pc.mutation.Tz(); ok {
 		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{

@@ -4,7 +4,7 @@ database:
   port: 9999
   username: sumo
   password: demo
-  database: "file::memory:?cache=shared"
+  database: "file:account?mode=memory&cache=shared&_fk=1"
   max_open_conns: 1
   max_idle_conns: 1
   conn_max_lifetime: 1h

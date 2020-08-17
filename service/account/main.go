@@ -13,7 +13,7 @@ import (
 
 	"github.com/xmlking/grpc-starter-kit/shared/middleware/translog"
 
-	_ "github.com/jinzhu/gorm/dialects/sqlite"
+	_ "github.com/mattn/go-sqlite3"
 
 	profilev1 "github.com/xmlking/grpc-starter-kit/mkit/service/account/profile/v1"
 	userv1 "github.com/xmlking/grpc-starter-kit/mkit/service/account/user/v1"

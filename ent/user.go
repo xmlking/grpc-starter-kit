@@ -23,7 +23,7 @@ type User struct {
 	// UpdateTime holds the value of the "update_time" field.
 	UpdateTime time.Time `json:"update_time,omitempty"`
 	// DeleteTime holds the value of the "delete_time" field.
-	DeleteTime time.Time `json:"delete_time,omitempty"`
+	DeleteTime *time.Time `json:"delete_time,omitempty"`
 	// Username holds the value of the "username" field.
 	Username string `json:"username,omitempty"`
 	// FirstName holds the value of the "first_name" field.
@@ -102,7 +102,8 @@ func (u *User) assignValues(values ...interface{}) error {
 	if value, ok := values[2].(*sql.NullTime); !ok {
 		return fmt.Errorf("unexpected type %T for field delete_time", values[2])
 	} else if value.Valid {
-		u.DeleteTime = value.Time
+		u.DeleteTime = new(time.Time)
+		*u.DeleteTime = value.Time
 	}
 	if value, ok := values[3].(*sql.NullString); !ok {
 		return fmt.Errorf("unexpected type %T for field username", values[3])
@@ -164,8 +165,10 @@ func (u *User) String() string {
 	builder.WriteString(u.CreateTime.Format(time.ANSIC))
 	builder.WriteString(", update_time=")
 	builder.WriteString(u.UpdateTime.Format(time.ANSIC))
-	builder.WriteString(", delete_time=")
-	builder.WriteString(u.DeleteTime.Format(time.ANSIC))
+	if v := u.DeleteTime; v != nil {
+		builder.WriteString(", delete_time=")
+		builder.WriteString(v.Format(time.ANSIC))
+	}
 	builder.WriteString(", username=")
 	builder.WriteString(u.Username)
 	builder.WriteString(", first_name=")

@@ -41,7 +41,6 @@ type ProfileMutation struct {
 	delete_time     *time.Time
 	age             *int
 	addage          *int
-	username        *string
 	tz              *string
 	avatar          **url.URL
 	birthday        *time.Time
@@ -231,7 +230,7 @@ func (m *ProfileMutation) DeleteTime() (r time.Time, exists bool) {
 // If the Profile object wasn't provided to the builder, the object is fetched
 // from the database.
 // An error is returned if the mutation operation is not UpdateOne, or database query fails.
-func (m *ProfileMutation) OldDeleteTime(ctx context.Context) (v time.Time, err error) {
+func (m *ProfileMutation) OldDeleteTime(ctx context.Context) (v *time.Time, err error) {
 	if !m.op.Is(OpUpdateOne) {
 		return v, fmt.Errorf("OldDeleteTime is allowed only on UpdateOne operations")
 	}
@@ -245,9 +244,22 @@ func (m *ProfileMutation) OldDeleteTime(ctx context.Context) (v time.Time, err e
 	return oldValue.DeleteTime, nil
 }
 
+// ClearDeleteTime clears the value of delete_time.
+func (m *ProfileMutation) ClearDeleteTime() {
+	m.delete_time = nil
+	m.clearedFields[profile.FieldDeleteTime] = struct{}{}
+}
+
+// DeleteTimeCleared returns if the field delete_time was cleared in this mutation.
+func (m *ProfileMutation) DeleteTimeCleared() bool {
+	_, ok := m.clearedFields[profile.FieldDeleteTime]
+	return ok
+}
+
 // ResetDeleteTime reset all changes of the "delete_time" field.
 func (m *ProfileMutation) ResetDeleteTime() {
 	m.delete_time = nil
+	delete(m.clearedFields, profile.FieldDeleteTime)
 }
 
 // SetAge sets the age field.
@@ -305,43 +317,6 @@ func (m *ProfileMutation) AddedAge() (r int, exists bool) {
 func (m *ProfileMutation) ResetAge() {
 	m.age = nil
 	m.addage = nil
-}
-
-// SetUsername sets the username field.
-func (m *ProfileMutation) SetUsername(s string) {
-	m.username = &s
-}
-
-// Username returns the username value in the mutation.
-func (m *ProfileMutation) Username() (r string, exists bool) {
-	v := m.username
-	if v == nil {
-		return
-	}
-	return *v, true
-}
-
-// OldUsername returns the old username value of the Profile.
-// If the Profile object wasn't provided to the builder, the object is fetched
-// from the database.
-// An error is returned if the mutation operation is not UpdateOne, or database query fails.
-func (m *ProfileMutation) OldUsername(ctx context.Context) (v string, err error) {
-	if !m.op.Is(OpUpdateOne) {
-		return v, fmt.Errorf("OldUsername is allowed only on UpdateOne operations")
-	}
-	if m.id == nil || m.oldValue == nil {
-		return v, fmt.Errorf("OldUsername requires an ID field in the mutation")
-	}
-	oldValue, err := m.oldValue(ctx)
-	if err != nil {
-		return v, fmt.Errorf("querying old value for OldUsername: %w", err)
-	}
-	return oldValue.Username, nil
-}
-
-// ResetUsername reset all changes of the "username" field.
-func (m *ProfileMutation) ResetUsername() {
-	m.username = nil
 }
 
 // SetTz sets the tz field.
@@ -634,7 +609,7 @@ func (m *ProfileMutation) Type() string {
 // this mutation. Note that, in order to get all numeric
 // fields that were in/decremented, call AddedFields().
 func (m *ProfileMutation) Fields() []string {
-	fields := make([]string, 0, 10)
+	fields := make([]string, 0, 9)
 	if m.create_time != nil {
 		fields = append(fields, profile.FieldCreateTime)
 	}
@@ -646,9 +621,6 @@ func (m *ProfileMutation) Fields() []string {
 	}
 	if m.age != nil {
 		fields = append(fields, profile.FieldAge)
-	}
-	if m.username != nil {
-		fields = append(fields, profile.FieldUsername)
 	}
 	if m.tz != nil {
 		fields = append(fields, profile.FieldTz)
@@ -681,8 +653,6 @@ func (m *ProfileMutation) Field(name string) (ent.Value, bool) {
 		return m.DeleteTime()
 	case profile.FieldAge:
 		return m.Age()
-	case profile.FieldUsername:
-		return m.Username()
 	case profile.FieldTz:
 		return m.Tz()
 	case profile.FieldAvatar:
@@ -710,8 +680,6 @@ func (m *ProfileMutation) OldField(ctx context.Context, name string) (ent.Value,
 		return m.OldDeleteTime(ctx)
 	case profile.FieldAge:
 		return m.OldAge(ctx)
-	case profile.FieldUsername:
-		return m.OldUsername(ctx)
 	case profile.FieldTz:
 		return m.OldTz(ctx)
 	case profile.FieldAvatar:
@@ -758,13 +726,6 @@ func (m *ProfileMutation) SetField(name string, value ent.Value) error {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
 		m.SetAge(v)
-		return nil
-	case profile.FieldUsername:
-		v, ok := value.(string)
-		if !ok {
-			return fmt.Errorf("unexpected type %T for field %s", value, name)
-		}
-		m.SetUsername(v)
 		return nil
 	case profile.FieldTz:
 		v, ok := value.(string)
@@ -846,6 +807,9 @@ func (m *ProfileMutation) AddField(name string, value ent.Value) error {
 // during this mutation.
 func (m *ProfileMutation) ClearedFields() []string {
 	var fields []string
+	if m.FieldCleared(profile.FieldDeleteTime) {
+		fields = append(fields, profile.FieldDeleteTime)
+	}
 	if m.FieldCleared(profile.FieldAvatar) {
 		fields = append(fields, profile.FieldAvatar)
 	}
@@ -872,6 +836,9 @@ func (m *ProfileMutation) FieldCleared(name string) bool {
 // error if the field is not defined in the schema.
 func (m *ProfileMutation) ClearField(name string) error {
 	switch name {
+	case profile.FieldDeleteTime:
+		m.ClearDeleteTime()
+		return nil
 	case profile.FieldAvatar:
 		m.ClearAvatar()
 		return nil
@@ -904,9 +871,6 @@ func (m *ProfileMutation) ResetField(name string) error {
 		return nil
 	case profile.FieldAge:
 		m.ResetAge()
-		return nil
-	case profile.FieldUsername:
-		m.ResetUsername()
 		return nil
 	case profile.FieldTz:
 		m.ResetTz()
@@ -1206,7 +1170,7 @@ func (m *UserMutation) DeleteTime() (r time.Time, exists bool) {
 // If the User object wasn't provided to the builder, the object is fetched
 // from the database.
 // An error is returned if the mutation operation is not UpdateOne, or database query fails.
-func (m *UserMutation) OldDeleteTime(ctx context.Context) (v time.Time, err error) {
+func (m *UserMutation) OldDeleteTime(ctx context.Context) (v *time.Time, err error) {
 	if !m.op.Is(OpUpdateOne) {
 		return v, fmt.Errorf("OldDeleteTime is allowed only on UpdateOne operations")
 	}
@@ -1220,9 +1184,22 @@ func (m *UserMutation) OldDeleteTime(ctx context.Context) (v time.Time, err erro
 	return oldValue.DeleteTime, nil
 }
 
+// ClearDeleteTime clears the value of delete_time.
+func (m *UserMutation) ClearDeleteTime() {
+	m.delete_time = nil
+	m.clearedFields[user.FieldDeleteTime] = struct{}{}
+}
+
+// DeleteTimeCleared returns if the field delete_time was cleared in this mutation.
+func (m *UserMutation) DeleteTimeCleared() bool {
+	_, ok := m.clearedFields[user.FieldDeleteTime]
+	return ok
+}
+
 // ResetDeleteTime reset all changes of the "delete_time" field.
 func (m *UserMutation) ResetDeleteTime() {
 	m.delete_time = nil
+	delete(m.clearedFields, user.FieldDeleteTime)
 }
 
 // SetUsername sets the username field.
@@ -1631,7 +1608,11 @@ func (m *UserMutation) AddField(name string, value ent.Value) error {
 // ClearedFields returns all nullable fields that were cleared
 // during this mutation.
 func (m *UserMutation) ClearedFields() []string {
-	return nil
+	var fields []string
+	if m.FieldCleared(user.FieldDeleteTime) {
+		fields = append(fields, user.FieldDeleteTime)
+	}
+	return fields
 }
 
 // FieldCleared returns a boolean indicates if this field was
@@ -1644,6 +1625,11 @@ func (m *UserMutation) FieldCleared(name string) bool {
 // ClearField clears the value for the given name. It returns an
 // error if the field is not defined in the schema.
 func (m *UserMutation) ClearField(name string) error {
+	switch name {
+	case user.FieldDeleteTime:
+		m.ClearDeleteTime()
+		return nil
+	}
 	return fmt.Errorf("unknown User nullable field %s", name)
 }
 

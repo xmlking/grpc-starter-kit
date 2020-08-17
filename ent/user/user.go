@@ -4,6 +4,8 @@ package user
 
 import (
 	"time"
+
+	"github.com/google/uuid"
 )
 
 const (
@@ -62,8 +64,6 @@ var (
 	DefaultUpdateTime func() time.Time
 	// UpdateDefaultUpdateTime holds the default value on update for the update_time field.
 	UpdateDefaultUpdateTime func() time.Time
-	// DefaultDeleteTime holds the default value on creation for the delete_time field.
-	DefaultDeleteTime func() time.Time
 	// UsernameValidator is a validator for the "username" field. It is called by the builders before save.
 	UsernameValidator func(string) error
 	// FirstNameValidator is a validator for the "first_name" field. It is called by the builders before save.
@@ -74,4 +74,6 @@ var (
 	EmailValidator func(string) error
 	// DefaultTenant holds the default value on creation for the tenant field.
 	DefaultTenant string
+	// DefaultID holds the default value on creation for the id field.
+	DefaultID func() uuid.UUID
 )

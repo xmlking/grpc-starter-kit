@@ -2,14 +2,13 @@ package registry
 
 import (
 	cloudevents "github.com/cloudevents/sdk-go/v2"
-	"github.com/jinzhu/gorm"
 	"github.com/rs/zerolog/log"
 	"github.com/sarulabs/di/v2"
 	"google.golang.org/grpc"
 
 	"github.com/xmlking/toolkit/eventing"
 
-	account_entities "github.com/xmlking/grpc-starter-kit/mkit/service/account/entities/v1"
+	"github.com/xmlking/grpc-starter-kit/ent"
 	greeterv1 "github.com/xmlking/grpc-starter-kit/mkit/service/greeter/v1"
 	"github.com/xmlking/grpc-starter-kit/service/account/handler"
 	"github.com/xmlking/grpc-starter-kit/service/account/repository"
@@ -99,10 +98,10 @@ func NewContainer(cfg config.Configuration) (*Container, error) {
 			Name:  "database",
 			Scope: di.App,
 			Build: func(ctn di.Container) (interface{}, error) {
-				return database.GetDatabaseConnection(*cfg.Database)
+				return database.InitDatabase(*cfg.Database)
 			},
 			Close: func(obj interface{}) error {
-				return obj.(*gorm.DB).Close()
+				return obj.(*ent.Client).Close()
 			},
 		},
 	}...); err != nil {
@@ -130,14 +129,12 @@ func (c *Container) Delete() error {
 }
 
 func buildUserRepository(ctn di.Container) (interface{}, error) {
-	db := ctn.Get("database").(*gorm.DB)
-	db.AutoMigrate(&account_entities.UserORM{})
+	db := ctn.Get("database").(*ent.Client)
 	return repository.NewUserRepository(db), nil
 }
 
 func buildProfileRepository(ctn di.Container) (interface{}, error) {
-	db := ctn.Get("database").(*gorm.DB)
-	db.AutoMigrate(&account_entities.ProfileORM{})
+	db := ctn.Get("database").(*ent.Client)
 	return repository.NewProfileRepository(db), nil
 }
 
