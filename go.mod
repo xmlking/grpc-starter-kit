@@ -7,7 +7,7 @@ go 1.15
 replace github.com/xmlking/toolkit => github.com/xmlking/toolkit v0.1.1-0.20200710152301-9029e438457f
 
 require (
-	github.com/DATA-DOG/go-sqlmock v1.4.1
+	github.com/DATA-DOG/go-sqlmock v1.5.0
 	github.com/GoogleCloudPlatform/opentelemetry-operations-go/exporter/metric v0.10.0
 	github.com/GoogleCloudPlatform/opentelemetry-operations-go/exporter/trace v0.10.0
 	github.com/cloudevents/sdk-go/v2 v2.2.0
@@ -25,7 +25,7 @@ require (
 	github.com/soheilhy/cmux v0.1.4
 	github.com/stretchr/testify v1.6.1
 	github.com/thoas/go-funk v0.7.0
-	github.com/xmlking/configor v0.2.1
+	github.com/xmlking/configor v0.2.2
 	github.com/xmlking/toolkit v0.1.0
 	go.opentelemetry.io/otel v0.10.0
 	go.opentelemetry.io/otel/exporters/stdout v0.10.0

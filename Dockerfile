@@ -9,6 +9,7 @@ FROM docker.pkg.github.com/xmlking/grpc-starter-kit/base:${BASE_VERSION} AS buil
 # * GOFLAGS=-mod=vendor to force `go build` to look into the `/vendor` folder.
 #ENV CGO_ENABLED=0 GOFLAGS=-mod=vendor
 ENV CGO_ENABLED=1 GOOS=linux
+ENV GOPROXY="https://proxy.golang.org,direct"
 
 # Set the working directory outside $GOPATH to enable the support for modules.
 WORKDIR /src
@@ -17,7 +18,7 @@ WORKDIR /src
 # and will therefore be cached for speeding up the next build
 COPY ./go.mod ./go.sum ./
 # Get dependancies - will also be cached if we won't change mod/sum
-RUN go env -w GO111MODULE=on && unset GOPROXY && go env -w GOPROXY="https://proxy.golang.org,direct" && go mod download
+RUN go mod download
 
 # COPY the source code as the last step
 COPY ./ ./
@@ -28,7 +29,6 @@ ARG TYPE=service
 ARG TARGET=account
 
 RUN pkger -o $TYPE/$TARGET -include /config/config.yaml -include /config/config.production.yaml -include /config/certs
-# RUN go build -a -installsuffix cgo \
 RUN go build -a \
     -ldflags="-w -s -linkmode external -extldflags '-static' $(govvv -flags -version ${VERSION} -pkg $(go list ./shared/config) )" \
     -o /app ./$TYPE/$TARGET/main.go
