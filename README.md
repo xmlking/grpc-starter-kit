@@ -20,7 +20,7 @@ Microservices starter kit for **Golang**, aims to be developer friendly.
 ## Overview
 
 <p align="center">
-  <img src="docs/images/deployment.png" width="60%">
+  <img src="docs/images/deployment.png" width="61%">
 </p>
 
 ### What you get
