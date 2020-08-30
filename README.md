@@ -21,17 +21,17 @@ Microservices starter kit for **Golang**, aims to be developer friendly.
 ## Overview
 
 <p align="center">
-  <img src="docs/images/deployment.png" width="60%">
+  <img src="docs/images/deployment.drawoi.svg" width="60%">
 </p>
 
 ### What you get
 
 - [x] Monorepo - Sharing Code Between Microservices
-- [x] gRPC microservices 
+- [x] gRPC microservices
 - [x] Versatile ingress gateway based on Envoy with Config Manager [esp-v2](https://github.com/GoogleCloudPlatform/esp-v2)
 - [ ] Proxy-less Service Discovery and xDS based gRPC Load Balancer with [Traffic Director](https://cloud.google.com/blog/products/networking/traffic-director-supports-proxyless-grpc)
 - [x] Input Validation with [protoc-gen-validate (PGV)](https://github.com/envoyproxy/protoc-gen-validate)
-- [x] Config - Pluggable Sources, Mergeable Config, Environment Overlays 
+- [x] Config - Pluggable Sources, Mergeable Config, Environment Overlays
 - [x] Customizable Logging
 - [x] Flexible [errors](https://github.com/cockroachdb/errors) lib: _PII-free, gRPC middleware, opt-in Sentry.io reporting_
 - [x] Graph-Based ORM [ent](https://entgo.io/)
