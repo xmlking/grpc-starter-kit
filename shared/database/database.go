@@ -5,9 +5,9 @@ import (
 	"database/sql"
 	"fmt"
 
+	"github.com/cockroachdb/errors"
 	"github.com/facebookincubator/ent/dialect"
 	entsql "github.com/facebookincubator/ent/dialect/sql"
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog/log"
 
 	"github.com/xmlking/grpc-starter-kit/ent"

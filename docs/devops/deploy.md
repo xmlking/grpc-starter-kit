@@ -1,5 +1,8 @@
 # Deploy
 
+## Setup
+
+follow this __GCP__ setup [guide](https://spring-gcp.saturnism.me/getting-started/gcloud-cli) to install `gcloud` CLI and `BigTable`, `PubSub` emulators
 
 ## Deploying to Cloud Run
 

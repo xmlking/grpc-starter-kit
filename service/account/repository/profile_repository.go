@@ -3,8 +3,8 @@ package repository
 import (
 	"context"
 
+	"github.com/cockroachdb/errors"
 	"github.com/google/uuid"
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog/log"
 
 	"github.com/xmlking/grpc-starter-kit/ent"

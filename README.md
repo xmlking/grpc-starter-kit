@@ -17,10 +17,11 @@ Microservices starter kit for **Golang**, aims to be developer friendly.
 [![Language grade: Go](https://img.shields.io/lgtm/grade/go/g/xmlking/grpc-starter-kit.svg?logo=lgtm&logoWidth=18)](https://lgtm.com/projects/g/xmlking/grpc-starter-kit/context:go)
 [![fuzzit](https://app.fuzzit.dev/badge?org_id=xmlkinggithub&branch=develop)](https://app.fuzzit.dev/orgs/xmlkinggithub/dashboard)
 
+
 ## Overview
 
 <p align="center">
-  <img src="docs/images/deployment.png" width="61%">
+  <img src="docs/images/deployment.png" width="60%">
 </p>
 
 ### What you get
@@ -32,9 +33,10 @@ Microservices starter kit for **Golang**, aims to be developer friendly.
 - [x] Input Validation with [protoc-gen-validate (PGV)](https://github.com/envoyproxy/protoc-gen-validate)
 - [x] Config - Pluggable Sources, Mergeable Config, Environment Overlays 
 - [x] Customizable Logging
+- [x] Flexible [errors](https://github.com/cockroachdb/errors) lib: _PII-free, gRPC middleware, opt-in Sentry.io reporting_
 - [x] Graph-Based ORM [ent](https://entgo.io/)
 - [x] Dependency injection [Container](https://github.com/sarulabs/di), Try [wire](https://itnext.io/mastering-wire-f1226717bbac) next?
-- [ ] Flow-Control, [adaptive system protection](https://github.com/alibaba/sentinel-golang/wiki)
+- [ ] Adaptive System Protection / Adaptive concurrency limits with [Alibaba's Sentinel](https://github.com/alibaba/sentinel-golang/wiki), [Netflix's concurrency-limits](https://medium.com/@NetflixTechBlog/performance-under-load-3e6fa9a60581)
 - [x] multi-stage-multi-target Dockerfile
 - [x] One Step _build/publish/deploy_ with [ko](https://github.com/google/ko)
 - [x] BuildInfo with [govvv](https://github.com/ahmetb/govvv)

@@ -5,7 +5,7 @@ import (
 	"fmt"
 
 	cloudevents "github.com/cloudevents/sdk-go/v2"
-	"github.com/pkg/errors"
+	"github.com/cockroachdb/errors"
 	"github.com/rs/zerolog/log"
 
 	transactionv1 "github.com/xmlking/grpc-starter-kit/mkit/service/transaction/v1"
