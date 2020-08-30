@@ -21,15 +21,6 @@ Microservices starter kit for **Golang**, aims to be developer friendly.
 ## Overview
 
 <p align="center">
-  <img src="docs/images/deployment.svg" width="60%">
-</p>
-<p align="center">
-  <img src="docs/images/deployment.png" width="60%">
-</p>
-<p align="center">
-  <img src="docs/images/deployment.drawio.png" width="60%">
-</p>
-<p align="center">
   <img src="docs/images/deployment.drawio.svg" width="60%">
 </p>
 
