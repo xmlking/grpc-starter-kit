@@ -5,6 +5,6 @@ package runtime
 // The schema-stitching logic is generated in github.com/xmlking/grpc-starter-kit/ent/runtime.go
 
 const (
-	Version = "v0.3.0"                                          // Version of ent codegen.
-	Sum     = "h1:Jht3vZio7eshMo7yaEZJ6LHk4oM8xUCxKNNDj/Kb4fE=" // Sum of ent codegen.
+	Version = "v0.4.2"                                          // Version of ent codegen.
+	Sum     = "h1:JzU5dYJH9XdjfIKgOiPPK3szkqLqcdPWgVder4Ogows=" // Sum of ent codegen.
 )

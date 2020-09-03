@@ -405,7 +405,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **deps:** update google.golang.org/genproto commit hash to c459b9c
 
 ### Cicd
-- using statefulset for consul, using docker.pkg.github.com for images
+- using statefulset for consul, using ghcr.io for images
 - prune release pipeline
 
 ### Deploy

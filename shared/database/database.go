@@ -6,8 +6,8 @@ import (
 	"fmt"
 
 	"github.com/cockroachdb/errors"
-	"github.com/facebookincubator/ent/dialect"
-	entsql "github.com/facebookincubator/ent/dialect/sql"
+	"github.com/facebook/ent/dialect"
+	entsql "github.com/facebook/ent/dialect/sql"
 	"github.com/rs/zerolog/log"
 
 	"github.com/xmlking/grpc-starter-kit/ent"

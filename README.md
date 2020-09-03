@@ -144,7 +144,7 @@ Refer [releasing](docs/concepts/releasing.md) docs
 ### Deploy
 
 ```bash
-make docker DOCKER_REGISTRY=docker.pkg.github.com DOCKER_CONTEXT_PATH=xmlking/grpc-starter-kit
+make docker DOCKER_REGISTRY=ghcr.io DOCKER_CONTEXT_PATH=xmlking/grpc-starter-kit
 docker rmi $(docker images -f "dangling=true" -q)
 
 # make kustomize OVERLAY=e2e NS=default VERSION=v0.1.0-440-g6c7fb7a

@@ -4,7 +4,7 @@ import (
 	"testing"
 	"time"
 
-	"github.com/facebookincubator/ent/dialect"
+	"github.com/facebook/ent/dialect"
 	_ "github.com/mattn/go-sqlite3"
 
 	"github.com/xmlking/grpc-starter-kit/shared/config"

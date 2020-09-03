@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"time"
 
-	"github.com/facebookincubator/ent/dialect"
+	"github.com/facebook/ent/dialect"
 )
 
 type Service struct {

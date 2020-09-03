@@ -3,8 +3,8 @@
 package migrate
 
 import (
-	"github.com/facebookincubator/ent/dialect/sql/schema"
-	"github.com/facebookincubator/ent/schema/field"
+	"github.com/facebook/ent/dialect/sql/schema"
+	"github.com/facebook/ent/schema/field"
 )
 
 var (
@@ -18,7 +18,7 @@ var (
 		{Name: "tz", Type: field.TypeString},
 		{Name: "avatar", Type: field.TypeJSON, Nullable: true},
 		{Name: "birthday", Type: field.TypeTime, Nullable: true},
-		{Name: "gender", Type: field.TypeEnum, Nullable: true, Enums: []string{"female", "male", "unspecified"}},
+		{Name: "gender", Type: field.TypeEnum, Nullable: true, Enums: []string{"male", "female", "unspecified"}},
 		{Name: "preferred_theme", Type: field.TypeString, Nullable: true},
 		{Name: "user_profile", Type: field.TypeUUID, Unique: true, Nullable: true},
 	}

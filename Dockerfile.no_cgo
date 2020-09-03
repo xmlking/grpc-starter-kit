@@ -2,7 +2,7 @@
 ARG BASE_VERSION=latest
 
 # First stage: build the executable.
-FROM docker.pkg.github.com/xmlking/grpc-starter-kit/base:${BASE_VERSION} AS builder
+FROM ghcr.io/xmlking/grpc-starter-kit/base:${BASE_VERSION} AS builder
 
 # Set the environment variables for the go command:
 # * CGO_ENABLED=0 to build a statically-linked executable

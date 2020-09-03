@@ -16,7 +16,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
-        uses: actions/checkout@master
+        uses: actions/checkout@v2
         with:
           fetch-depth: 1
       - name: Install kustomize
@@ -55,16 +55,20 @@ jobs:
     # needs: [release]
     steps:
       - name: Check out Code
-        uses: actions/checkout@v1
+        uses: actions/checkout@v2
         with:
           fetch-depth: 1
+      - name: Login to GitHub Container Registry
+        uses: docker/login-action@v1
+        with:
+          registry: ghcr.io
+          username: ${{ github.repository_owner }}
+          password: ${{ secrets.GITHUB_PACKAGES_TOKEN }}
       - name: Build docker images
-        run: make docker DOCKER_REGISTRY=docker.pkg.github.com DOCKER_CONTEXT_PATH=$GITHUB_REPOSITORY
-      - name: Push docker images
+        run: make docker DOCKER_REGISTRY=ghcr.io DOCKER_CONTEXT_PATH=$GITHUB_REPOSITORY
+      - name: Push Docker Images
         if: github.ref == 'refs/heads/master'
         run: |
-          # docker login docker.pkg.github.com --username $GITHUB_ACTOR --password ${{ secrets.GITHUB_DOCKER_PASSWORD }}
-          docker login docker.pkg.github.com --username $GITHUB_ACTOR --password ${{ secrets.GITHUB_TOKEN }}
           make docker_push
           echo "make docker_push done"
 
