@@ -18,14 +18,16 @@ email:
 
 services:
   account:
-    endpoint: dns:///localhost:8080
+    authority: "account-service"
     version: v0.1.0
+    endpoint: dns:///localhost:8080
     metadata:
       tenant_id: sumanth
   greeter:
+    authority: "greeter-service"
+    version: v0.1.0
     endpoint: dns:///localhost:8081
 #    endpoint: unix:///tmp/greeter.sock
-    version: v0.1.0
     service_config: |
       {
         "loadBalancingPolicy": "round_robin",
@@ -56,14 +58,17 @@ services:
         }
       }
   emailer:
+    authority: "emailer-service"
+    version: v0.1.0
     endpoint: http://localhost:8082
-    version: v0.1.0
   recorder:
+    authority: "recorder-service"
+    version: v0.1.0
     endpoint: http://localhost:8083
-    version: v0.1.0
   play:
-    endpoint: http://localhost:8084
+    authority: "play-service"
     version: v0.1.0
+    endpoint: http://localhost:8084
 
 features:
   metrics:

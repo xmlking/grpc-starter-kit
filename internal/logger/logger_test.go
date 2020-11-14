@@ -10,7 +10,7 @@ import (
 	"github.com/rs/zerolog"
 	"github.com/rs/zerolog/log"
 	// bootstrap logger
-	"github.com/xmlking/grpc-starter-kit/shared/logger"
+	"github.com/xmlking/grpc-starter-kit/internal/logger"
 )
 
 func TestLogger(t *testing.T) {

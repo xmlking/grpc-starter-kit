@@ -46,23 +46,25 @@ buf check lint
 buf check lint --error-format=config-ignore-yaml
 # Run breaking change detection
 # for dev local
-buf check breaking --against-input image.bin
-buf check breaking --against-input '.git#branch=master'
+buf check breaking --against image.bin
+buf check breaking --against '.git#branch=master'
 # for CI
 export HTTPS_GIT=https://github.com/xmlking/yeti.git
-buf check breaking --against-input "$(HTTPS_GIT)#branch=master"
+buf check breaking --against "$(HTTPS_GIT)#branch=master"
+```
+
+### Generate
+
+```bash
+buf generate
+buf generate -o gen
+make proto
 ```
 
 ### Format
 
 ```bash
 prototool format -w proto;
-```
-
-### Generate
-
-```bash
-make proto
 ```
 
 ## Tools

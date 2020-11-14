@@ -10,7 +10,7 @@ import (
 
 	transactionv1 "github.com/xmlking/grpc-starter-kit/mkit/service/transaction/v1"
 
-	"github.com/xmlking/grpc-starter-kit/shared/constants"
+	"github.com/xmlking/grpc-starter-kit/internal/constants"
 )
 
 type TransactionSubscriber struct {

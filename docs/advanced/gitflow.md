@@ -74,8 +74,8 @@ git push origin --tags
 > generate changelog using [git-chglog](https://github.com/git-chglog/git-chglog)
 
 ```bash
-git-chglog -c .github/chglog/config.yml -o CHANGELOG.md
-git-chglog -c .github/chglog/config.yml -o CHANGELOG.md --next-tag 2.0.0
+# on release branch, update CHANGELOG and commit
+git-chglog -c .github/chglog/config.yml -o CHANGELOG.md --next-tag v2.0.0
 ```
 
 ## Reference

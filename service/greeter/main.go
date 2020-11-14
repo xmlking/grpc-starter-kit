@@ -18,11 +18,11 @@ import (
 	"github.com/xmlking/toolkit/util/endpoint"
 	"github.com/xmlking/toolkit/util/tls"
 
+	"github.com/xmlking/grpc-starter-kit/internal/config"
+	"github.com/xmlking/grpc-starter-kit/internal/constants"
+	_ "github.com/xmlking/grpc-starter-kit/internal/logger"
 	"github.com/xmlking/grpc-starter-kit/mkit/service/greeter/v1"
 	"github.com/xmlking/grpc-starter-kit/service/greeter/handler"
-	"github.com/xmlking/grpc-starter-kit/shared/config"
-	"github.com/xmlking/grpc-starter-kit/shared/constants"
-	_ "github.com/xmlking/grpc-starter-kit/shared/logger"
 )
 
 func main() {

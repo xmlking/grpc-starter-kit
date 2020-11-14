@@ -7,7 +7,7 @@ This logger basically configure **zerolog** so that you can log via `github.com/
 Import `shared/logger` package. It will be *self-initialized*. 
 
 ```golang
-import  "github.com/xmlking/grpc-starter-kit/shared/logger"
+import  "github.com/xmlking/grpc-starter-kit/internal/logger"
 ```
 
 Once logger is initialized, then you can use standard `github.com/rs/zerolog/log` package's helper methods to log in your code.
@@ -29,5 +29,5 @@ CONFIGOR_LOG_FORMAT=<pretty/json/gcp>
 
 ## Test
 ```
-CONFIGOR_LOG_LEVEL=info CONFIGOR_LOG_FORMAT=json go test github.com/xmlking/grpc-starter-kit/shared/logger  -count=1
+CONFIGOR_LOG_LEVEL=info CONFIGOR_LOG_FORMAT=json go test github.com/xmlking/grpc-starter-kit/internal/logger  -count=1
 ```

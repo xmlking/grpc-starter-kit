@@ -5,8 +5,8 @@ import (
 
 	"github.com/rs/zerolog/log"
 
+	"github.com/xmlking/grpc-starter-kit/internal/config"
 	"github.com/xmlking/grpc-starter-kit/service/recorder/subscriber"
-	"github.com/xmlking/grpc-starter-kit/shared/config"
 )
 
 // Container - provide di Container

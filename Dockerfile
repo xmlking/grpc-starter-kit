@@ -1,5 +1,25 @@
-# Accept the Go Micro version for the image to be set as a build argument.
-ARG BASE_VERSION=latest
+# First stage: build the executable.
+FROM golang:1.15-alpine AS builder
+
+RUN mkdir /user && \
+    echo 'nobody:x:65534:65534:nobody:/:' > /user/passwd && \
+    echo 'nobody:x:65534:' > /user/group && \
+    apk --no-cache add make git gcc libtool musl-dev ca-certificates dumb-init && \
+    rm -rf /var/cache/apk/* /tmp/*  && \
+    GRPC_HEALTH_PROBE_VERSION=v0.3.2 && \
+    wget -q -O /bin/grpc_health_probe https://github.com/grpc-ecosystem/grpc-health-probe/releases/download/${GRPC_HEALTH_PROBE_VERSION}/grpc_health_probe-linux-amd64 && \
+    chmod +x /bin/grpc_health_probe
+
+ENV GO111MODULE=on
+ENV GOPROXY="https://proxy.golang.org,direct"
+
+# Get dependancies - will also be cached if we won't change mod/sum
+WORKDIR /
+COPY .go.mod go.sum ./
+RUN go mod download -x && \
+    go get github.com/ahmetb/govvv && \
+    go get github.com/markbates/pkger/cmd/pkger && \
+    rm go.mod go.sum
 
 # First stage: build the executable.
 FROM ghcr.io/xmlking/grpc-starter-kit/base:${BASE_VERSION} AS builder
@@ -18,7 +38,7 @@ WORKDIR /src
 # and will therefore be cached for speeding up the next build
 COPY ./go.mod ./go.sum ./
 # Get dependancies - will also be cached if we won't change mod/sum
-RUN go mod download
+RUN go mod download -x
 
 # COPY the source code as the last step
 COPY ./ ./
@@ -30,7 +50,7 @@ ARG TARGET=account
 
 RUN pkger -o $TYPE/$TARGET -include /config/config.yaml -include /config/config.production.yaml -include /config/certs
 RUN go build -a \
-    -ldflags="-w -s -linkmode external -extldflags '-static' $(govvv -flags -version ${VERSION} -pkg $(go list ./shared/config) )" \
+    -ldflags="-w -s -linkmode external -extldflags '-static' $(govvv -flags -version ${VERSION} -pkg $(go list ./internal/config) )" \
     -o /app ./$TYPE/$TARGET/main.go
 
 # Final stage: the running container.

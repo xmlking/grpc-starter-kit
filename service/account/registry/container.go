@@ -9,11 +9,11 @@ import (
 	"github.com/xmlking/toolkit/eventing"
 
 	"github.com/xmlking/grpc-starter-kit/ent"
+	"github.com/xmlking/grpc-starter-kit/internal/config"
+	"github.com/xmlking/grpc-starter-kit/internal/database"
 	greeterv1 "github.com/xmlking/grpc-starter-kit/mkit/service/greeter/v1"
 	"github.com/xmlking/grpc-starter-kit/service/account/handler"
 	"github.com/xmlking/grpc-starter-kit/service/account/repository"
-	"github.com/xmlking/grpc-starter-kit/shared/config"
-	"github.com/xmlking/grpc-starter-kit/shared/database"
 )
 
 // Container - provide di Container

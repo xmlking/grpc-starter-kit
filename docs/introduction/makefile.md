@@ -17,14 +17,13 @@ using Makefile
 
 ```bash
 make proto
-## generate for protos in shared package
-make proto_shared
 ```
 
 ```bash
 make proto_lint
 make proto_breaking
 make proto_format
+make proto_check
 make proto_clean
 make proto_gen
 ```
@@ -90,7 +89,7 @@ make lint-account
 make lint-account-service
 # goup checks if there are any updates for imports in your module.
 # the main purpose is using it as a linter in continuous integration or in development process.
-make gomod_lint
+make upgrade_deps
 ```
 
 ### Packager

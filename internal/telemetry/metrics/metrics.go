@@ -14,7 +14,7 @@ import (
 	//pmetrics "go.opentelemetry.io/otel/exporters/metric/prometheus"
 	gmetrics "github.com/GoogleCloudPlatform/opentelemetry-operations-go/exporter/metric"
 
-	"github.com/xmlking/grpc-starter-kit/shared/config"
+	"github.com/xmlking/grpc-starter-kit/internal/config"
 )
 
 // https://github.com/cds-snc/covid-alert-server/blob/master/pkg/telemetry/telemetry.go

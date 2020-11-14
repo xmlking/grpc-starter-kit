@@ -30,20 +30,20 @@ brew install grpcurl
 brew cask install --appdir=~/Applications bloomrpc
 # gRPC mock server for testing
 yarn global add bloomrpc-mock
-# for etcdctl
-brew install etcd
 # CHANGELOG generator
 brew tap git-chglog/git-chglog
 brew install git-chglog
 # buf: proto tool https://buf.build/docs/tour-1
 brew tap bufbuild/buf
 brew install buf
+# git flow
+brew install git-flow-avh
 ```
 
 #### For grpc-web development (optional)  
 
 ```bash
-GRPC_WEB_VERSION=1.2.0
+GRPC_WEB_VERSION=1.2.1
 wget -O ~/Downloads/protoc-gen-grpc-web https://github.com/grpc/grpc-web/releases/download/${GRPC_WEB_VERSION}/protoc-gen-grpc-web-${GRPC_WEB_VERSION}-darwin-x86_64
 chmod +x ~/Downloads/protoc-gen-grpc-web
 mv  ~/Downloads/protoc-gen-grpc-web /usr/local/bin/protoc-gen-grpc-web
@@ -61,7 +61,7 @@ GO111MODULE=off go get github.com/golangci/golangci-lint/cmd/golangci-lint
 # linter and tool for proto files
 # (if you use brew to install buf, skip next line)
 GO111MODULE=on go get github.com/bufbuild/buf/cmd/buf
-# prototool make it eazy to use protoc plugins
+# linter/generator and tool for proto files
 GO111MODULE=on go get github.com/uber/prototool/cmd/prototool@dev
 # kind - kubernetes in docker (optional)
 GO111MODULE=on go get sigs.k8s.io/kind
@@ -71,7 +71,8 @@ GO111MODULE=off go get github.com/google/ko/cmd/ko
 go install github.com/markbates/pkger/cmd/pkger
 
 # fetch protoc plugins into $GOPATH
-GO111MODULE=on go get github.com/golang/protobuf/{proto,protoc-gen-go}
+GO111MODULE=on go get google.golang.org/protobuf/cmd/protoc-gen-go
+GO111MODULE=on go get google.golang.org/grpc/cmd/protoc-gen-go-grpc@v1.0
 
 # GO111MODULE=off go get -u github.com/envoyproxy/protoc-gen-validate
 # goup checks if there are any updates for imports in your module.

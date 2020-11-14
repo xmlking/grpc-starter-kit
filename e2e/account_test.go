@@ -17,10 +17,10 @@ import (
 
 	"github.com/xmlking/toolkit/util"
 
+	"github.com/xmlking/grpc-starter-kit/internal/config"
+	"github.com/xmlking/grpc-starter-kit/internal/constants"
 	"github.com/xmlking/grpc-starter-kit/mkit/service/account/profile/v1"
 	"github.com/xmlking/grpc-starter-kit/mkit/service/account/user/v1"
-	"github.com/xmlking/grpc-starter-kit/shared/config"
-	"github.com/xmlking/grpc-starter-kit/shared/constants"
 )
 
 // Define the suite, and absorb the built-in basic suite

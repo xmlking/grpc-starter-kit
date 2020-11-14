@@ -9,31 +9,6 @@ excludes:
 
 # Protoc directives.
 protoc:
-  version: 3.12.3
+  version: 3.13.0
   includes:
     - ../third_party/proto
-
-# Create directives.
-create:
-  packages:
-    # This means that a file created "sumo.proto" in the `proto/mkit/service/sumo/v1` directory will have package "mkit.service.sumo.v1".
-    - directory: proto/mkit
-      name: mkit
-
-# Code generation directives.
-generate:
-  go_options:
-    import_path: github.com/xmlking/grpc-starter-kit/proto
-    extra_modifiers:
-      google/api/annotations.proto: google.golang.org/genproto/googleapis/api/annotations
-      google/api/http.proto: google.golang.org/genproto/googleapis/api/annotations
-
-  plugins:
-    - name: go
-      flags: plugins=grpc,paths=source_relative
-      output: ../
-      type: go
-    - name: validate
-      flags: lang=go,paths=source_relative
-      output: ../
-      type: go

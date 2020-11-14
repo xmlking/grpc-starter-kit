@@ -34,7 +34,7 @@ override TYPES:= service
 # Target for running the action
 TARGET = $(word 1,$(subst -, ,$*))
 
-override VERSION_PACKAGE = $(shell go list ./shared/config)
+override VERSION_PACKAGE = $(shell go list ./internal/config)
 BUILD_FLAGS = $(shell govvv -flags -version $(VERSION) -pkg $(VERSION_PACKAGE))
 
 # $(warning TYPES = $(TYPE), TARGET = $(TARGET))
@@ -43,7 +43,7 @@ BUILD_FLAGS = $(shell govvv -flags -version $(VERSION) -pkg $(VERSION_PACKAGE))
 
 .PHONY: all tools check_dirty clean update_dep
 .PHONY: proto proto_lint proto_breaking proto_format proto_gen proto_shared
-.PHONY: lint lint-% gomod_lint
+.PHONY: lint lint-% upgrade_deps
 .PHONY: format format-%
 .PHONY: pkger pkger-%
 .PHONY: build build-%
@@ -102,6 +102,9 @@ download_deps:
 		popd >/dev/null; \
 	done
 
+upgrade_deps:
+	@goup -v -m ./...
+
 ################################################################################
 # Target: proto                                                                #
 ################################################################################
@@ -123,8 +126,8 @@ proto_lint:
 
 proto_breaking:
 	@echo "Checking proto breaking changes";
-	@${GOPATH}/bin/buf check breaking --against-input '.git#branch=master'
-#	@${GOPATH}/bin/buf check breaking --against-input "$(HTTPS_GIT)#branch=master"
+	@${GOPATH}/bin/buf check breaking --against '.git#branch=master'
+#	@${GOPATH}/bin/buf check breaking --against "$(HTTPS_GIT)#branch=master"
 
 # I prefer VS Code's proto plugin to format my code then prototool
 proto_format: proto_lint
@@ -132,17 +135,17 @@ proto_format: proto_lint
 	@${GOPATH}/bin/prototool format -w proto;
 	@echo "✓ Proto: Formatted"
 
-proto_gen:
-	@${GOPATH}/bin/prototool generate proto;
+proto_check: proto_lint proto_breaking proto_format
 
-proto: proto_lint proto_breaking proto_format proto_clean proto_gen
+proto_gen:
+	@echo "Generating protos";
+	@${GOPATH}/bin/buf generate
+
+proto: proto_check proto_clean proto_gen
 
 ################################################################################
 # Target: lints                                                                #
 ################################################################################
-
-gomod_lint:
-	@goup -v -m ./...
 
 lint lint-%:
 	@if [ -z $(TARGET) ]; then \

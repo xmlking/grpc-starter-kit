@@ -14,13 +14,13 @@ import (
 	"github.com/xmlking/toolkit/service"
 	"github.com/xmlking/toolkit/util/tls"
 
+	"github.com/xmlking/grpc-starter-kit/internal/config"
+	"github.com/xmlking/grpc-starter-kit/internal/constants"
+	_ "github.com/xmlking/grpc-starter-kit/internal/logger"
+	"github.com/xmlking/grpc-starter-kit/internal/telemetry/metrics"
+	"github.com/xmlking/grpc-starter-kit/internal/telemetry/tracing"
 	"github.com/xmlking/grpc-starter-kit/mkit/service/greeter/v1"
 	"github.com/xmlking/grpc-starter-kit/service/play/handler"
-	"github.com/xmlking/grpc-starter-kit/shared/config"
-	"github.com/xmlking/grpc-starter-kit/shared/constants"
-	_ "github.com/xmlking/grpc-starter-kit/shared/logger"
-	"github.com/xmlking/grpc-starter-kit/shared/telemetry/metrics"
-	"github.com/xmlking/grpc-starter-kit/shared/telemetry/tracing"
 )
 
 func main() {

@@ -15,7 +15,7 @@ import (
 	"go.opentelemetry.io/otel/sdk/metric/controller/push"
 	sdktrace "go.opentelemetry.io/otel/sdk/trace"
 
-	"github.com/xmlking/grpc-starter-kit/shared/config"
+	"github.com/xmlking/grpc-starter-kit/internal/config"
 )
 
 var (

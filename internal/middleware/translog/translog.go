@@ -11,8 +11,8 @@ import (
 	"github.com/rs/zerolog/log"
 	"google.golang.org/grpc"
 
+	"github.com/xmlking/grpc-starter-kit/internal/constants"
 	transactionv1 "github.com/xmlking/grpc-starter-kit/mkit/service/transaction/v1"
-	"github.com/xmlking/grpc-starter-kit/shared/constants"
 )
 
 func publish(ctx context.Context, publisher cloudevents.Client, source string, req, rsp proto.Message) (err error) {

@@ -12,8 +12,8 @@ import (
 	"github.com/rs/zerolog/pkgerrors"
 	"google.golang.org/grpc/grpclog"
 
-	"github.com/xmlking/grpc-starter-kit/shared/logger/gcp"
-	grpcAdopter "github.com/xmlking/grpc-starter-kit/shared/logger/grpc"
+	"github.com/xmlking/grpc-starter-kit/internal/logger/gcp"
+	grpcAdopter "github.com/xmlking/grpc-starter-kit/internal/logger/grpc"
 )
 
 var (

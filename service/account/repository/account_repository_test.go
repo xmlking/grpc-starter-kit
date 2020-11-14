@@ -14,9 +14,9 @@ import (
 	"github.com/stretchr/testify/suite"
 
 	"github.com/xmlking/grpc-starter-kit/ent"
+	"github.com/xmlking/grpc-starter-kit/internal/config"
+	_ "github.com/xmlking/grpc-starter-kit/internal/logger"
 	"github.com/xmlking/grpc-starter-kit/service/account/repository"
-	"github.com/xmlking/grpc-starter-kit/shared/config"
-	_ "github.com/xmlking/grpc-starter-kit/shared/logger"
 )
 
 // https://github.com/WaranchitPk/funny_todo_list/blob/master/api/v1/tasks/repository/task_repository_test.go

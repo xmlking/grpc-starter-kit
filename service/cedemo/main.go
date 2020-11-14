@@ -6,8 +6,8 @@ import (
 	cloudevents "github.com/cloudevents/sdk-go/v2"
 	"github.com/rs/zerolog/log"
 
+	"github.com/xmlking/grpc-starter-kit/internal/config"
 	"github.com/xmlking/grpc-starter-kit/service/cedemo/subscriber"
-	"github.com/xmlking/grpc-starter-kit/shared/config"
 )
 
 func main() {

@@ -6,10 +6,10 @@ import (
 	"testing"
 	"time"
 
-	"github.com/xmlking/grpc-starter-kit/shared/config"
+	"github.com/xmlking/grpc-starter-kit/internal/config"
 )
 
-// CONFIGOR_DEBUG_MODE=true go test -v ./shared/config/... -count=1
+// CONFIGOR_DEBUG_MODE=true go test -v ./internal/config/... -count=1
 
 func TestNestedConfig(t *testing.T) {
 	t.Logf("Environment: %s", config.Configor.GetEnvironment())
@@ -50,7 +50,7 @@ func ExampleGetConfig_check_defaults() {
 
 func TestOverwriteConfigurationWithEnvironmentWithDefaultPrefix(t *testing.T) {
 	os.Setenv("CONFIGOR_SERVICES_ACCOUNT_ENDPOINT", "dns:///localhost:8088")
-	defer os.Setenv("CONFIGOR_SERVICES_ACCOUNT_ENDPOINT", "")
+	defer os.Clearenv()
 
 	var cfg config.Configuration
 	config.Configor.Load(&cfg, "/config/config.yaml")

@@ -11,7 +11,7 @@ import (
 	"github.com/xmlking/toolkit/service"
 	"github.com/xmlking/toolkit/util/tls"
 
-	"github.com/xmlking/grpc-starter-kit/shared/middleware/translog"
+	"github.com/xmlking/grpc-starter-kit/internal/middleware/translog"
 
 	_ "github.com/mattn/go-sqlite3"
 
@@ -26,9 +26,9 @@ import (
 	appendTags "github.com/xmlking/toolkit/middleware/tags/append"
 	forwardTags "github.com/xmlking/toolkit/middleware/tags/forward"
 
-	"github.com/xmlking/grpc-starter-kit/shared/config"
-	"github.com/xmlking/grpc-starter-kit/shared/constants"
-	_ "github.com/xmlking/grpc-starter-kit/shared/logger"
+	"github.com/xmlking/grpc-starter-kit/internal/config"
+	"github.com/xmlking/grpc-starter-kit/internal/constants"
+	_ "github.com/xmlking/grpc-starter-kit/internal/logger"
 )
 
 func main() {

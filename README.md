@@ -36,7 +36,10 @@ Microservices starter kit for **Golang**, aims to be developer friendly.
 - [x] Flexible [errors](https://github.com/cockroachdb/errors) lib: _PII-free, gRPC middleware, opt-in Sentry.io reporting_
 - [x] Graph-Based ORM [ent](https://entgo.io/)
 - [x] Dependency injection [Container](https://github.com/sarulabs/di), Try [wire](https://itnext.io/mastering-wire-f1226717bbac) next?
-- [ ] Adaptive System Protection / Adaptive concurrency limits with [Alibaba's Sentinel](https://github.com/alibaba/sentinel-golang/wiki), [Netflix's concurrency-limits](https://medium.com/@NetflixTechBlog/performance-under-load-3e6fa9a60581)
+- [ ] Adaptive System Protection / Adaptive concurrency limits with 
+        [Alibaba's Sentinel](https://github.com/alibaba/sentinel-golang/wiki), 
+        [Netflix's concurrency-limits](https://medium.com/@NetflixTechBlog/performance-under-load-3e6fa9a60581), 
+        [go-concurrency-limits](https://github.com/platinummonkey/go-concurrency-limits)
 - [x] multi-stage-multi-target Dockerfile
 - [x] One Step _build/publish/deploy_ with [ko](https://github.com/google/ko)
 - [x] BuildInfo with [govvv](https://github.com/ahmetb/govvv)
@@ -171,7 +174,7 @@ kubectl delete -f build/kubernetes.yaml
 8. [Google Protobuf Style Guide](https://github.com/uber-go/guide/blob/master/style.md)
 
 ### External Docs
-
+1. [Go Repo Layout](https://christine.website/blog/within-go-repo-layout-2020-09-07)
 1. [examples](https://github.com/micro/examples) - example usage code for micro
 1. [microhq](https://github.com/microhq) - a place for prebuilt microservices
 1. [explorer](https://micro.mu/explore/) - which aggregates micro based open source projects
@@ -181,7 +184,8 @@ kubectl delete -f build/kubernetes.yaml
 1. [Platform Web](https://github.com/micro-in-cn/platform-web)
 1. [grpc template](https://github.com/vtolstov/micro-template-grpc)
 1. [Simple API backed by PostgresQL, Golang and gRPC](https://medium.com/@vptech/complexity-is-the-bane-of-every-software-engineer-e2878d0ad45a)
-
+1. [securing gRPC connections with TLS](https://itnext.io/practical-guide-to-securing-grpc-connections-with-go-and-tls-part-2-994ef93b8ea9) via [certify](https://github.com/johanbrandhorst/certify)
 ## 🔗 Credits
 - [atlas-app-toolkit](https://github.com/infobloxopen/atlas-app-toolkit)
 - [dapr](https://github.com/dapr/dapr)
+- [goyave](https://github.com/System-Glitch/goyave)

@@ -5,10 +5,10 @@ import (
 
 	"github.com/rs/zerolog/log"
 
+	"github.com/xmlking/grpc-starter-kit/internal/config"
+	"github.com/xmlking/grpc-starter-kit/internal/email"
 	"github.com/xmlking/grpc-starter-kit/service/emailer/service"
 	"github.com/xmlking/grpc-starter-kit/service/emailer/subscriber"
-	"github.com/xmlking/grpc-starter-kit/shared/config"
-	"github.com/xmlking/grpc-starter-kit/shared/email"
 )
 
 // Container - provide di Container

@@ -33,14 +33,14 @@ CONFIGOR_ENV=prod ./build/greeter-service
 Import `shared/config` package. It will be *self-initialized*. 
 
 ```golang
-import  "github.com/xmlking/grpc-starter-kit/shared/config"
+import  "github.com/xmlking/grpc-starter-kit/internal/config"
 ```
 
-Once `config` is initialized, then you can use `github.com/xmlking/grpc-starter-kit/shared/config` package's helper methods retrieve config items.
+Once `config` is initialized, then you can use `github.com/xmlking/grpc-starter-kit/internal/config` package's helper methods retrieve config items.
 
 ```go
 import (
-    _ "github.com/xmlking/grpc-starter-kit/shared/config"
+    _ "github.com/xmlking/grpc-starter-kit/internal/config"
 )
 
 func ExampleGetConfig_check_defaults() {
@@ -59,7 +59,7 @@ You can also use `Configor` to load any yaml files into your Struct.
 
 ```go
 import (
-	"github.com/xmlking/grpc-starter-kit/shared/config"
+	"github.com/xmlking/grpc-starter-kit/internal/config"
 )
 
 func TestOverwriteConfigurationWithEnvironmentWithDefaultPrefix(t *testing.T) {
@@ -79,7 +79,7 @@ func TestOverwriteConfigurationWithEnvironmentWithDefaultPrefix(t *testing.T) {
 
 ## Test
 ```
-CONFIGOR_DEBUG_MODE=true go test -v ./shared/config/... -count=1
+CONFIGOR_DEBUG_MODE=true go test -v ./internal/config/... -count=1
 ```
 
 

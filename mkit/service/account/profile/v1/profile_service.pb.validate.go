@@ -17,7 +17,7 @@ import (
 
 	"github.com/golang/protobuf/ptypes"
 
-	v1 "github.com/xmlking/grpc-starter-kit/mkit/service/account/entities/v1"
+	entitiesv1 "github.com/xmlking/grpc-starter-kit/mkit/service/account/entities/v1"
 )
 
 // ensure the imports are used
@@ -34,9 +34,9 @@ var (
 	_ = (*mail.Address)(nil)
 	_ = ptypes.DynamicAny{}
 
-	_ = v1.Profile_GenderType(0)
+	_ = entitiesv1.Profile_GenderType(0)
 
-	_ = v1.Profile_GenderType(0)
+	_ = entitiesv1.Profile_GenderType(0)
 )
 
 // define the regex for a UUID once up-front
@@ -164,7 +164,7 @@ var _ListRequest_PreferredTheme_InLookup = map[string]struct{}{
 	"corporate": {},
 }
 
-var _ListRequest_Gender_InLookup = map[v1.Profile_GenderType]struct{}{
+var _ListRequest_Gender_InLookup = map[entitiesv1.Profile_GenderType]struct{}{
 	0: {},
 	1: {},
 	2: {},
@@ -538,7 +538,7 @@ var _ interface {
 	ErrorName() string
 } = CreateRequestValidationError{}
 
-var _CreateRequest_Gender_InLookup = map[v1.Profile_GenderType]struct{}{
+var _CreateRequest_Gender_InLookup = map[entitiesv1.Profile_GenderType]struct{}{
 	0: {},
 	1: {},
 	2: {},

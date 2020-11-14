@@ -11,7 +11,7 @@ import (
 	"github.com/rs/zerolog/log"
 
 	"github.com/xmlking/grpc-starter-kit/ent"
-	"github.com/xmlking/grpc-starter-kit/shared/config"
+	"github.com/xmlking/grpc-starter-kit/internal/config"
 )
 
 // https://github.com/reddydodda/magmatest/blob/master/orc8r/cloud/go/blobstore/ent/client.go
