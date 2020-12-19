@@ -1,14 +1,13 @@
-apiVersion: skaffold/v1beta13
+apiVersion: skaffold/v2beta9
 kind: Config
 build:
   artifacts:
-    - image: jwenz723/podlifecycle
-      context: ./
-      docker:
-        dockerfile: ./Dockerfile
-  local:
-    push: false
-deploy:
-  kubectl:
-    manifests:
-      - ./k8s/*
+    - image: skaffold-buildpacks
+      buildpacks:
+        builder: "gcr.io/buildpacks/builder:v1"
+        env:
+          - GOPROXY={{.GOPROXY}}
+profiles:
+  - name: gcb
+    build:
+      googleCloudBuild: {}

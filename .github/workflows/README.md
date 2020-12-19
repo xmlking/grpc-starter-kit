@@ -39,7 +39,8 @@
 ## TODO
 
 - [A Github Action to automatically bump and tag master, on merge, with the latest SemVer formatted version.](https://github.com/anothrNick/github-tag-action)
-
+- https://github.com/powerman/go-monolith-example/tree/master/.github/workflows
+  
 ## Ref
 
 - [GitHub Actions for Go](https://github.com/mvdan/github-actions-golang)
