@@ -11,7 +11,7 @@ require (
 	github.com/GoogleCloudPlatform/opentelemetry-operations-go/exporter/metric v0.13.0
 	github.com/GoogleCloudPlatform/opentelemetry-operations-go/exporter/trace v0.13.0
 	github.com/cloudevents/sdk-go/v2 v2.3.1
-	github.com/cockroachdb/errors v1.8.1
+	github.com/cockroachdb/errors v1.8.2
 	github.com/envoyproxy/protoc-gen-validate v0.4.1
 	github.com/facebook/ent v0.5.3
 	github.com/golang/protobuf v1.4.3
@@ -27,9 +27,10 @@ require (
 	github.com/thoas/go-funk v0.7.0
 	github.com/xmlking/configor v0.2.2
 	github.com/xmlking/toolkit v0.1.1
-	go.opentelemetry.io/otel v0.15.0
+	go.opentelemetry.io/otel v0.15.0 // indirect
 	go.opentelemetry.io/otel/exporters/stdout v0.15.0
 	go.opentelemetry.io/otel/sdk v0.15.0
 	google.golang.org/grpc v1.34.0
+	google.golang.org/grpc/examples v0.0.0-20201222210138-66c1393796be // indirect
 	google.golang.org/protobuf v1.25.0
 )
