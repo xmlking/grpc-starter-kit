@@ -15,7 +15,7 @@ require (
 	github.com/envoyproxy/protoc-gen-validate v0.4.1
 	github.com/facebook/ent v0.5.3
 	github.com/golang/protobuf v1.4.3
-	github.com/google/uuid v1.1.2
+	github.com/google/uuid v1.1.3
 	github.com/grpc-ecosystem/go-grpc-middleware v1.2.2
 	github.com/infobloxopen/atlas-app-toolkit v0.22.1
 	github.com/mattn/go-sqlite3 v1.14.5
@@ -27,9 +27,10 @@ require (
 	github.com/thoas/go-funk v0.7.0
 	github.com/xmlking/configor v0.2.2
 	github.com/xmlking/toolkit v0.1.1
-	go.opentelemetry.io/otel v0.15.0
+	go.opentelemetry.io/otel v0.15.0 // indirect
 	go.opentelemetry.io/otel/exporters/stdout v0.15.0
 	go.opentelemetry.io/otel/sdk v0.15.0
 	google.golang.org/grpc v1.34.0
+	google.golang.org/grpc/examples v0.0.0-20201226181154-53788aa5dcb4 // indirect
 	google.golang.org/protobuf v1.25.0
 )
