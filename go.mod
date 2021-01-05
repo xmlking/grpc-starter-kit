@@ -11,14 +11,14 @@ require (
 	github.com/GoogleCloudPlatform/opentelemetry-operations-go/exporter/metric v0.13.0
 	github.com/GoogleCloudPlatform/opentelemetry-operations-go/exporter/trace v0.13.0
 	github.com/cloudevents/sdk-go/v2 v2.3.1
-	github.com/cockroachdb/errors v1.8.1
+	github.com/cockroachdb/errors v1.8.2
 	github.com/envoyproxy/protoc-gen-validate v0.4.1
 	github.com/facebook/ent v0.5.3
 	github.com/golang/protobuf v1.4.3
-	github.com/google/uuid v1.1.2
+	github.com/google/uuid v1.1.4
 	github.com/grpc-ecosystem/go-grpc-middleware v1.2.2
 	github.com/infobloxopen/atlas-app-toolkit v0.22.1
-	github.com/mattn/go-sqlite3 v1.14.5
+	github.com/mattn/go-sqlite3 v1.14.6
 	github.com/rs/zerolog v1.20.0
 	github.com/sarulabs/di/v2 v2.4.0
 	github.com/sercand/kuberesolver v2.4.0+incompatible

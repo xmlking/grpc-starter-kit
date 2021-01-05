@@ -42,7 +42,7 @@ BUILD_FLAGS = $(shell govvv -flags -version $(VERSION) -pkg $(VERSION_PACKAGE))
 # $(warning VERSION_PACKAGE = $(VERSION_PACKAGE), BUILD_FLAGS = $(BUILD_FLAGS))
 
 .PHONY: all tools check_dirty clean update_dep
-.PHONY: proto proto_lint proto_breaking proto_format proto_gen proto_shared
+.PHONY: proto proto_lint proto_breaking proto_format proto_generate proto_shared
 .PHONY: lint lint-% upgrade_deps
 .PHONY: format format-%
 .PHONY: pkger pkger-%
@@ -137,11 +137,11 @@ proto_format: proto_lint
 
 proto_check: proto_lint proto_breaking proto_format
 
-proto_gen:
+proto_generate:
 	@echo "Generating protos";
-	@${GOPATH}/bin/buf generate
+	@${GOPATH}/bin/buf generate --path proto/mkit;
 
-proto: proto_check proto_clean proto_gen
+proto: proto_check proto_clean proto_generate
 
 ################################################################################
 # Target: lints                                                                #

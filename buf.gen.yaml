@@ -1,4 +1,5 @@
 version: v1beta1
+
 plugins:
   - name: go
     out: .
@@ -9,3 +10,9 @@ plugins:
   - name: validate
     out: .
     opt: lang=go,paths=source_relative
+
+#  - name: descriptor_set
+#    out: ./descriptor
+#    file_sufix: bin
+#    include_imports: true
+#    include_source_info: true

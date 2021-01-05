@@ -74,19 +74,15 @@ go install github.com/markbates/pkger/cmd/pkger
 GO111MODULE=on go get google.golang.org/protobuf/cmd/protoc-gen-go
 GO111MODULE=on go get google.golang.org/grpc/cmd/protoc-gen-go-grpc@v1.0
 
-# GO111MODULE=off go get -u github.com/envoyproxy/protoc-gen-validate
-# goup checks if there are any updates for imports in your module.
-# the main purpose is using it as a linter in continuous integration or in development process.
-# Usage: goup -v -m ./...
-GO111MODULE=on go get github.com/rvflash/goup
-```
-
-> Installing PGV can currently only be done from source:
-
-```bash
+# Installing PGV can currently only be done from source:
 go get -d github.com/envoyproxy/protoc-gen-validate
 cd ~/go/src/github.com/envoyproxy/protoc-gen-validate
 git pull
 make build
+
+# goup checks if there are any updates for imports in your module.
+# the main purpose is using it as a linter in continuous integration or in development process.
+# Usage: goup -v -m ./...
+GO111MODULE=on go get github.com/rvflash/goup
 ```
 

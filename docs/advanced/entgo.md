@@ -2,6 +2,12 @@
 
 [ent](https://entgo.io/docs/getting-started/) is facebook **ORM**  
  
+## Installation
+
+```bash
+go get github.com/facebook/ent/cmd/ent
+```
+
 ## Commands 
 
 ### Create Your First Schema
@@ -18,11 +24,11 @@ Run `entc generate` from the root directory of the project, or use `go generate`
 ```bash
 go generate ./ent
 # or
-entc generate --idtype string ./ent/schema
+ent generate --idtype string ./ent/schema
 ```
 
 # Schema Description
 
 ```bash
-entc describe ./ent/schema
+ent describe ./ent/schema
 ```
