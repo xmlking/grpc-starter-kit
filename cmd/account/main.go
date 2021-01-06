@@ -1,21 +1,22 @@
 package main
 
 import (
-    "context"
-    "flag"
-    "fmt"
+	"context"
+	"flag"
+	"fmt"
+	"os"
 
-    _ "github.com/xmlking/grpc-starter-kit/internal/logger"
+	_ "github.com/xmlking/grpc-starter-kit/internal/logger"
 
-    "github.com/golang/protobuf/ptypes/wrappers"
-    "github.com/rs/zerolog/log"
-    appendTags "github.com/xmlking/toolkit/middleware/tags/append"
-    "github.com/xmlking/toolkit/util"
-    "google.golang.org/grpc"
+	"github.com/golang/protobuf/ptypes/wrappers"
+	"github.com/rs/zerolog/log"
+	appendTags "github.com/xmlking/toolkit/middleware/tags/append"
+	"github.com/xmlking/toolkit/util"
+	"google.golang.org/grpc"
 
-    "github.com/xmlking/grpc-starter-kit/internal/config"
-    "github.com/xmlking/grpc-starter-kit/internal/constants"
-    userv1 "github.com/xmlking/grpc-starter-kit/mkit/service/account/user/v1"
+	"github.com/xmlking/grpc-starter-kit/internal/config"
+	"github.com/xmlking/grpc-starter-kit/internal/constants"
+	userv1 "github.com/xmlking/grpc-starter-kit/mkit/service/account/user/v1"
 )
 
 var (
@@ -59,7 +60,7 @@ func main() {
 		Email:     &wrappers.StringValue{Value: fmt.Sprintf("e_%s@demo.com", suffix)},
 	}); err != nil {
 		log.Error().Err(err).Send()
-		os.Exit(err.(*goyave.Error).ExitCode) //TODO ExitCode https://github.com/System-Glitch/goyave
+		os.Exit(1)
 	} else {
 		log.Info().Interface("createRsp", rsp).Send()
 	}
