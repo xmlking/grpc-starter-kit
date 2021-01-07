@@ -147,7 +147,7 @@ func (c *ProfileClient) Create() *ProfileCreate {
 	return &ProfileCreate{config: c.config, hooks: c.Hooks(), mutation: mutation}
 }
 
-// BulkCreate returns a builder for creating a bulk of Profile entities.
+// CreateBulk returns a builder for creating a bulk of Profile entities.
 func (c *ProfileClient) CreateBulk(builders ...*ProfileCreate) *ProfileCreateBulk {
 	return &ProfileCreateBulk{config: c.config, builders: builders}
 }
@@ -201,11 +201,11 @@ func (c *ProfileClient) Get(ctx context.Context, id uuid.UUID) (*Profile, error)
 
 // GetX is like Get, but panics if an error occurs.
 func (c *ProfileClient) GetX(ctx context.Context, id uuid.UUID) *Profile {
-	pr, err := c.Get(ctx, id)
+	obj, err := c.Get(ctx, id)
 	if err != nil {
 		panic(err)
 	}
-	return pr
+	return obj
 }
 
 // QueryUser queries the user edge of a Profile.
@@ -251,7 +251,7 @@ func (c *UserClient) Create() *UserCreate {
 	return &UserCreate{config: c.config, hooks: c.Hooks(), mutation: mutation}
 }
 
-// BulkCreate returns a builder for creating a bulk of User entities.
+// CreateBulk returns a builder for creating a bulk of User entities.
 func (c *UserClient) CreateBulk(builders ...*UserCreate) *UserCreateBulk {
 	return &UserCreateBulk{config: c.config, builders: builders}
 }
@@ -305,11 +305,11 @@ func (c *UserClient) Get(ctx context.Context, id uuid.UUID) (*User, error) {
 
 // GetX is like Get, but panics if an error occurs.
 func (c *UserClient) GetX(ctx context.Context, id uuid.UUID) *User {
-	u, err := c.Get(ctx, id)
+	obj, err := c.Get(ctx, id)
 	if err != nil {
 		panic(err)
 	}
-	return u
+	return obj
 }
 
 // QueryProfile queries the profile edge of a User.

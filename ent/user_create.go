@@ -134,20 +134,24 @@ func (uc *UserCreate) Mutation() *UserMutation {
 
 // Save creates the User in the database.
 func (uc *UserCreate) Save(ctx context.Context) (*User, error) {
-	if err := uc.preSave(); err != nil {
-		return nil, err
-	}
 	var (
 		err  error
 		node *User
 	)
+	uc.defaults()
 	if len(uc.hooks) == 0 {
+		if err = uc.check(); err != nil {
+			return nil, err
+		}
 		node, err = uc.sqlSave(ctx)
 	} else {
 		var mut Mutator = MutateFunc(func(ctx context.Context, m Mutation) (Value, error) {
 			mutation, ok := m.(*UserMutation)
 			if !ok {
 				return nil, fmt.Errorf("unexpected mutation type %T", m)
+			}
+			if err = uc.check(); err != nil {
+				return nil, err
 			}
 			uc.mutation = mutation
 			node, err = uc.sqlSave(ctx)
@@ -173,7 +177,8 @@ func (uc *UserCreate) SaveX(ctx context.Context) *User {
 	return v
 }
 
-func (uc *UserCreate) preSave() error {
+// defaults sets the default values of the builder before save.
+func (uc *UserCreate) defaults() {
 	if _, ok := uc.mutation.CreateTime(); !ok {
 		v := user.DefaultCreateTime()
 		uc.mutation.SetCreateTime(v)
@@ -181,6 +186,24 @@ func (uc *UserCreate) preSave() error {
 	if _, ok := uc.mutation.UpdateTime(); !ok {
 		v := user.DefaultUpdateTime()
 		uc.mutation.SetUpdateTime(v)
+	}
+	if _, ok := uc.mutation.Tenant(); !ok {
+		v := user.DefaultTenant
+		uc.mutation.SetTenant(v)
+	}
+	if _, ok := uc.mutation.ID(); !ok {
+		v := user.DefaultID()
+		uc.mutation.SetID(v)
+	}
+}
+
+// check runs all checks and user-defined validators on the builder.
+func (uc *UserCreate) check() error {
+	if _, ok := uc.mutation.CreateTime(); !ok {
+		return &ValidationError{Name: "create_time", err: errors.New("ent: missing required field \"create_time\"")}
+	}
+	if _, ok := uc.mutation.UpdateTime(); !ok {
+		return &ValidationError{Name: "update_time", err: errors.New("ent: missing required field \"update_time\"")}
 	}
 	if _, ok := uc.mutation.Username(); !ok {
 		return &ValidationError{Name: "username", err: errors.New("ent: missing required field \"username\"")}
@@ -215,30 +238,25 @@ func (uc *UserCreate) preSave() error {
 		}
 	}
 	if _, ok := uc.mutation.Tenant(); !ok {
-		v := user.DefaultTenant
-		uc.mutation.SetTenant(v)
-	}
-	if _, ok := uc.mutation.ID(); !ok {
-		v := user.DefaultID()
-		uc.mutation.SetID(v)
+		return &ValidationError{Name: "tenant", err: errors.New("ent: missing required field \"tenant\"")}
 	}
 	return nil
 }
 
 func (uc *UserCreate) sqlSave(ctx context.Context) (*User, error) {
-	u, _spec := uc.createSpec()
+	_node, _spec := uc.createSpec()
 	if err := sqlgraph.CreateNode(ctx, uc.driver, _spec); err != nil {
 		if cerr, ok := isSQLConstraintError(err); ok {
 			err = cerr
 		}
 		return nil, err
 	}
-	return u, nil
+	return _node, nil
 }
 
 func (uc *UserCreate) createSpec() (*User, *sqlgraph.CreateSpec) {
 	var (
-		u     = &User{config: uc.config}
+		_node = &User{config: uc.config}
 		_spec = &sqlgraph.CreateSpec{
 			Table: user.Table,
 			ID: &sqlgraph.FieldSpec{
@@ -248,7 +266,7 @@ func (uc *UserCreate) createSpec() (*User, *sqlgraph.CreateSpec) {
 		}
 	)
 	if id, ok := uc.mutation.ID(); ok {
-		u.ID = id
+		_node.ID = id
 		_spec.ID.Value = id
 	}
 	if value, ok := uc.mutation.CreateTime(); ok {
@@ -257,7 +275,7 @@ func (uc *UserCreate) createSpec() (*User, *sqlgraph.CreateSpec) {
 			Value:  value,
 			Column: user.FieldCreateTime,
 		})
-		u.CreateTime = value
+		_node.CreateTime = value
 	}
 	if value, ok := uc.mutation.UpdateTime(); ok {
 		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
@@ -265,7 +283,7 @@ func (uc *UserCreate) createSpec() (*User, *sqlgraph.CreateSpec) {
 			Value:  value,
 			Column: user.FieldUpdateTime,
 		})
-		u.UpdateTime = value
+		_node.UpdateTime = value
 	}
 	if value, ok := uc.mutation.DeleteTime(); ok {
 		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
@@ -273,7 +291,7 @@ func (uc *UserCreate) createSpec() (*User, *sqlgraph.CreateSpec) {
 			Value:  value,
 			Column: user.FieldDeleteTime,
 		})
-		u.DeleteTime = &value
+		_node.DeleteTime = &value
 	}
 	if value, ok := uc.mutation.Username(); ok {
 		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
@@ -281,7 +299,7 @@ func (uc *UserCreate) createSpec() (*User, *sqlgraph.CreateSpec) {
 			Value:  value,
 			Column: user.FieldUsername,
 		})
-		u.Username = value
+		_node.Username = value
 	}
 	if value, ok := uc.mutation.FirstName(); ok {
 		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
@@ -289,7 +307,7 @@ func (uc *UserCreate) createSpec() (*User, *sqlgraph.CreateSpec) {
 			Value:  value,
 			Column: user.FieldFirstName,
 		})
-		u.FirstName = value
+		_node.FirstName = value
 	}
 	if value, ok := uc.mutation.LastName(); ok {
 		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
@@ -297,7 +315,7 @@ func (uc *UserCreate) createSpec() (*User, *sqlgraph.CreateSpec) {
 			Value:  value,
 			Column: user.FieldLastName,
 		})
-		u.LastName = value
+		_node.LastName = value
 	}
 	if value, ok := uc.mutation.Email(); ok {
 		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
@@ -305,7 +323,7 @@ func (uc *UserCreate) createSpec() (*User, *sqlgraph.CreateSpec) {
 			Value:  value,
 			Column: user.FieldEmail,
 		})
-		u.Email = value
+		_node.Email = value
 	}
 	if value, ok := uc.mutation.Tenant(); ok {
 		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
@@ -313,7 +331,7 @@ func (uc *UserCreate) createSpec() (*User, *sqlgraph.CreateSpec) {
 			Value:  value,
 			Column: user.FieldTenant,
 		})
-		u.Tenant = value
+		_node.Tenant = value
 	}
 	if nodes := uc.mutation.ProfileIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
@@ -334,7 +352,7 @@ func (uc *UserCreate) createSpec() (*User, *sqlgraph.CreateSpec) {
 		}
 		_spec.Edges = append(_spec.Edges, edge)
 	}
-	return u, _spec
+	return _node, _spec
 }
 
 // UserCreateBulk is the builder for creating a bulk of User entities.
@@ -351,13 +369,14 @@ func (ucb *UserCreateBulk) Save(ctx context.Context) ([]*User, error) {
 	for i := range ucb.builders {
 		func(i int, root context.Context) {
 			builder := ucb.builders[i]
+			builder.defaults()
 			var mut Mutator = MutateFunc(func(ctx context.Context, m Mutation) (Value, error) {
-				if err := builder.preSave(); err != nil {
-					return nil, err
-				}
 				mutation, ok := m.(*UserMutation)
 				if !ok {
 					return nil, fmt.Errorf("unexpected mutation type %T", m)
+				}
+				if err := builder.check(); err != nil {
+					return nil, err
 				}
 				builder.mutation = mutation
 				nodes[i], specs[i] = builder.createSpec()

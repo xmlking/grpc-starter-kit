@@ -10,6 +10,7 @@ import (
 	"time"
 
 	"github.com/google/uuid"
+	"github.com/xmlking/grpc-starter-kit/ent/predicate"
 	"github.com/xmlking/grpc-starter-kit/ent/profile"
 	"github.com/xmlking/grpc-starter-kit/ent/user"
 
@@ -51,6 +52,7 @@ type ProfileMutation struct {
 	cleareduser     bool
 	done            bool
 	oldValue        func(context.Context) (*Profile, error)
+	predicates      []predicate.Profile
 }
 
 var _ ent.Mutation = (*ProfileMutation)(nil)
@@ -58,7 +60,7 @@ var _ ent.Mutation = (*ProfileMutation)(nil)
 // profileOption allows to manage the mutation configuration using functional options.
 type profileOption func(*ProfileMutation)
 
-// newProfileMutation creates new mutation for $n.Name.
+// newProfileMutation creates new mutation for Profile.
 func newProfileMutation(c config, op Op, opts ...profileOption) *ProfileMutation {
 	m := &ProfileMutation{
 		config:        c,
@@ -991,6 +993,7 @@ type UserMutation struct {
 	clearedprofile bool
 	done           bool
 	oldValue       func(context.Context) (*User, error)
+	predicates     []predicate.User
 }
 
 var _ ent.Mutation = (*UserMutation)(nil)
@@ -998,7 +1001,7 @@ var _ ent.Mutation = (*UserMutation)(nil)
 // userOption allows to manage the mutation configuration using functional options.
 type userOption func(*UserMutation)
 
-// newUserMutation creates new mutation for $n.Name.
+// newUserMutation creates new mutation for User.
 func newUserMutation(c config, op Op, opts ...userOption) *UserMutation {
 	m := &UserMutation{
 		config:        c,

@@ -19,14 +19,13 @@ import (
 // UserUpdate is the builder for updating User entities.
 type UserUpdate struct {
 	config
-	hooks      []Hook
-	mutation   *UserMutation
-	predicates []predicate.User
+	hooks    []Hook
+	mutation *UserMutation
 }
 
 // Where adds a new predicate for the builder.
 func (uu *UserUpdate) Where(ps ...predicate.User) *UserUpdate {
-	uu.predicates = append(uu.predicates, ps...)
+	uu.mutation.predicates = append(uu.mutation.predicates, ps...)
 	return uu
 }
 
@@ -92,45 +91,32 @@ func (uu *UserUpdate) Mutation() *UserMutation {
 	return uu.mutation
 }
 
-// ClearProfile clears the profile edge to Profile.
+// ClearProfile clears the "profile" edge to type Profile.
 func (uu *UserUpdate) ClearProfile() *UserUpdate {
 	uu.mutation.ClearProfile()
 	return uu
 }
 
-// Save executes the query and returns the number of rows/vertices matched by this operation.
+// Save executes the query and returns the number of nodes affected by the update operation.
 func (uu *UserUpdate) Save(ctx context.Context) (int, error) {
-	if _, ok := uu.mutation.UpdateTime(); !ok {
-		v := user.UpdateDefaultUpdateTime()
-		uu.mutation.SetUpdateTime(v)
-	}
-	if v, ok := uu.mutation.FirstName(); ok {
-		if err := user.FirstNameValidator(v); err != nil {
-			return 0, &ValidationError{Name: "first_name", err: fmt.Errorf("ent: validator failed for field \"first_name\": %w", err)}
-		}
-	}
-	if v, ok := uu.mutation.LastName(); ok {
-		if err := user.LastNameValidator(v); err != nil {
-			return 0, &ValidationError{Name: "last_name", err: fmt.Errorf("ent: validator failed for field \"last_name\": %w", err)}
-		}
-	}
-	if v, ok := uu.mutation.Email(); ok {
-		if err := user.EmailValidator(v); err != nil {
-			return 0, &ValidationError{Name: "email", err: fmt.Errorf("ent: validator failed for field \"email\": %w", err)}
-		}
-	}
-
 	var (
 		err      error
 		affected int
 	)
+	uu.defaults()
 	if len(uu.hooks) == 0 {
+		if err = uu.check(); err != nil {
+			return 0, err
+		}
 		affected, err = uu.sqlSave(ctx)
 	} else {
 		var mut Mutator = MutateFunc(func(ctx context.Context, m Mutation) (Value, error) {
 			mutation, ok := m.(*UserMutation)
 			if !ok {
 				return nil, fmt.Errorf("unexpected mutation type %T", m)
+			}
+			if err = uu.check(); err != nil {
+				return 0, err
 			}
 			uu.mutation = mutation
 			affected, err = uu.sqlSave(ctx)
@@ -169,6 +155,34 @@ func (uu *UserUpdate) ExecX(ctx context.Context) {
 	}
 }
 
+// defaults sets the default values of the builder before save.
+func (uu *UserUpdate) defaults() {
+	if _, ok := uu.mutation.UpdateTime(); !ok {
+		v := user.UpdateDefaultUpdateTime()
+		uu.mutation.SetUpdateTime(v)
+	}
+}
+
+// check runs all checks and user-defined validators on the builder.
+func (uu *UserUpdate) check() error {
+	if v, ok := uu.mutation.FirstName(); ok {
+		if err := user.FirstNameValidator(v); err != nil {
+			return &ValidationError{Name: "first_name", err: fmt.Errorf("ent: validator failed for field \"first_name\": %w", err)}
+		}
+	}
+	if v, ok := uu.mutation.LastName(); ok {
+		if err := user.LastNameValidator(v); err != nil {
+			return &ValidationError{Name: "last_name", err: fmt.Errorf("ent: validator failed for field \"last_name\": %w", err)}
+		}
+	}
+	if v, ok := uu.mutation.Email(); ok {
+		if err := user.EmailValidator(v); err != nil {
+			return &ValidationError{Name: "email", err: fmt.Errorf("ent: validator failed for field \"email\": %w", err)}
+		}
+	}
+	return nil
+}
+
 func (uu *UserUpdate) sqlSave(ctx context.Context) (n int, err error) {
 	_spec := &sqlgraph.UpdateSpec{
 		Node: &sqlgraph.NodeSpec{
@@ -180,7 +194,7 @@ func (uu *UserUpdate) sqlSave(ctx context.Context) (n int, err error) {
 			},
 		},
 	}
-	if ps := uu.predicates; len(ps) > 0 {
+	if ps := uu.mutation.predicates; len(ps) > 0 {
 		_spec.Predicate = func(selector *sql.Selector) {
 			for i := range ps {
 				ps[i](selector)
@@ -343,7 +357,7 @@ func (uuo *UserUpdateOne) Mutation() *UserMutation {
 	return uuo.mutation
 }
 
-// ClearProfile clears the profile edge to Profile.
+// ClearProfile clears the "profile" edge to type Profile.
 func (uuo *UserUpdateOne) ClearProfile() *UserUpdateOne {
 	uuo.mutation.ClearProfile()
 	return uuo
@@ -351,37 +365,24 @@ func (uuo *UserUpdateOne) ClearProfile() *UserUpdateOne {
 
 // Save executes the query and returns the updated entity.
 func (uuo *UserUpdateOne) Save(ctx context.Context) (*User, error) {
-	if _, ok := uuo.mutation.UpdateTime(); !ok {
-		v := user.UpdateDefaultUpdateTime()
-		uuo.mutation.SetUpdateTime(v)
-	}
-	if v, ok := uuo.mutation.FirstName(); ok {
-		if err := user.FirstNameValidator(v); err != nil {
-			return nil, &ValidationError{Name: "first_name", err: fmt.Errorf("ent: validator failed for field \"first_name\": %w", err)}
-		}
-	}
-	if v, ok := uuo.mutation.LastName(); ok {
-		if err := user.LastNameValidator(v); err != nil {
-			return nil, &ValidationError{Name: "last_name", err: fmt.Errorf("ent: validator failed for field \"last_name\": %w", err)}
-		}
-	}
-	if v, ok := uuo.mutation.Email(); ok {
-		if err := user.EmailValidator(v); err != nil {
-			return nil, &ValidationError{Name: "email", err: fmt.Errorf("ent: validator failed for field \"email\": %w", err)}
-		}
-	}
-
 	var (
 		err  error
 		node *User
 	)
+	uuo.defaults()
 	if len(uuo.hooks) == 0 {
+		if err = uuo.check(); err != nil {
+			return nil, err
+		}
 		node, err = uuo.sqlSave(ctx)
 	} else {
 		var mut Mutator = MutateFunc(func(ctx context.Context, m Mutation) (Value, error) {
 			mutation, ok := m.(*UserMutation)
 			if !ok {
 				return nil, fmt.Errorf("unexpected mutation type %T", m)
+			}
+			if err = uuo.check(); err != nil {
+				return nil, err
 			}
 			uuo.mutation = mutation
 			node, err = uuo.sqlSave(ctx)
@@ -400,11 +401,11 @@ func (uuo *UserUpdateOne) Save(ctx context.Context) (*User, error) {
 
 // SaveX is like Save, but panics if an error occurs.
 func (uuo *UserUpdateOne) SaveX(ctx context.Context) *User {
-	u, err := uuo.Save(ctx)
+	node, err := uuo.Save(ctx)
 	if err != nil {
 		panic(err)
 	}
-	return u
+	return node
 }
 
 // Exec executes the query on the entity.
@@ -420,7 +421,35 @@ func (uuo *UserUpdateOne) ExecX(ctx context.Context) {
 	}
 }
 
-func (uuo *UserUpdateOne) sqlSave(ctx context.Context) (u *User, err error) {
+// defaults sets the default values of the builder before save.
+func (uuo *UserUpdateOne) defaults() {
+	if _, ok := uuo.mutation.UpdateTime(); !ok {
+		v := user.UpdateDefaultUpdateTime()
+		uuo.mutation.SetUpdateTime(v)
+	}
+}
+
+// check runs all checks and user-defined validators on the builder.
+func (uuo *UserUpdateOne) check() error {
+	if v, ok := uuo.mutation.FirstName(); ok {
+		if err := user.FirstNameValidator(v); err != nil {
+			return &ValidationError{Name: "first_name", err: fmt.Errorf("ent: validator failed for field \"first_name\": %w", err)}
+		}
+	}
+	if v, ok := uuo.mutation.LastName(); ok {
+		if err := user.LastNameValidator(v); err != nil {
+			return &ValidationError{Name: "last_name", err: fmt.Errorf("ent: validator failed for field \"last_name\": %w", err)}
+		}
+	}
+	if v, ok := uuo.mutation.Email(); ok {
+		if err := user.EmailValidator(v); err != nil {
+			return &ValidationError{Name: "email", err: fmt.Errorf("ent: validator failed for field \"email\": %w", err)}
+		}
+	}
+	return nil
+}
+
+func (uuo *UserUpdateOne) sqlSave(ctx context.Context) (_node *User, err error) {
 	_spec := &sqlgraph.UpdateSpec{
 		Node: &sqlgraph.NodeSpec{
 			Table:   user.Table,
@@ -512,9 +541,9 @@ func (uuo *UserUpdateOne) sqlSave(ctx context.Context) (u *User, err error) {
 		}
 		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
-	u = &User{config: uuo.config}
-	_spec.Assign = u.assignValues
-	_spec.ScanValues = u.scanValues()
+	_node = &User{config: uuo.config}
+	_spec.Assign = _node.assignValues
+	_spec.ScanValues = _node.scanValues()
 	if err = sqlgraph.UpdateNode(ctx, uuo.driver, _spec); err != nil {
 		if _, ok := err.(*sqlgraph.NotFoundError); ok {
 			err = &NotFoundError{user.Label}
@@ -523,5 +552,5 @@ func (uuo *UserUpdateOne) sqlSave(ctx context.Context) (u *User, err error) {
 		}
 		return nil, err
 	}
-	return u, nil
+	return _node, nil
 }

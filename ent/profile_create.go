@@ -149,20 +149,24 @@ func (pc *ProfileCreate) Mutation() *ProfileMutation {
 
 // Save creates the Profile in the database.
 func (pc *ProfileCreate) Save(ctx context.Context) (*Profile, error) {
-	if err := pc.preSave(); err != nil {
-		return nil, err
-	}
 	var (
 		err  error
 		node *Profile
 	)
+	pc.defaults()
 	if len(pc.hooks) == 0 {
+		if err = pc.check(); err != nil {
+			return nil, err
+		}
 		node, err = pc.sqlSave(ctx)
 	} else {
 		var mut Mutator = MutateFunc(func(ctx context.Context, m Mutation) (Value, error) {
 			mutation, ok := m.(*ProfileMutation)
 			if !ok {
 				return nil, fmt.Errorf("unexpected mutation type %T", m)
+			}
+			if err = pc.check(); err != nil {
+				return nil, err
 			}
 			pc.mutation = mutation
 			node, err = pc.sqlSave(ctx)
@@ -188,7 +192,8 @@ func (pc *ProfileCreate) SaveX(ctx context.Context) *Profile {
 	return v
 }
 
-func (pc *ProfileCreate) preSave() error {
+// defaults sets the default values of the builder before save.
+func (pc *ProfileCreate) defaults() {
 	if _, ok := pc.mutation.CreateTime(); !ok {
 		v := profile.DefaultCreateTime()
 		pc.mutation.SetCreateTime(v)
@@ -196,6 +201,20 @@ func (pc *ProfileCreate) preSave() error {
 	if _, ok := pc.mutation.UpdateTime(); !ok {
 		v := profile.DefaultUpdateTime()
 		pc.mutation.SetUpdateTime(v)
+	}
+	if _, ok := pc.mutation.ID(); !ok {
+		v := profile.DefaultID()
+		pc.mutation.SetID(v)
+	}
+}
+
+// check runs all checks and user-defined validators on the builder.
+func (pc *ProfileCreate) check() error {
+	if _, ok := pc.mutation.CreateTime(); !ok {
+		return &ValidationError{Name: "create_time", err: errors.New("ent: missing required field \"create_time\"")}
+	}
+	if _, ok := pc.mutation.UpdateTime(); !ok {
+		return &ValidationError{Name: "update_time", err: errors.New("ent: missing required field \"update_time\"")}
 	}
 	if _, ok := pc.mutation.Age(); !ok {
 		return &ValidationError{Name: "age", err: errors.New("ent: missing required field \"age\"")}
@@ -213,10 +232,6 @@ func (pc *ProfileCreate) preSave() error {
 			return &ValidationError{Name: "gender", err: fmt.Errorf("ent: validator failed for field \"gender\": %w", err)}
 		}
 	}
-	if _, ok := pc.mutation.ID(); !ok {
-		v := profile.DefaultID()
-		pc.mutation.SetID(v)
-	}
 	if _, ok := pc.mutation.UserID(); !ok {
 		return &ValidationError{Name: "user", err: errors.New("ent: missing required edge \"user\"")}
 	}
@@ -224,19 +239,19 @@ func (pc *ProfileCreate) preSave() error {
 }
 
 func (pc *ProfileCreate) sqlSave(ctx context.Context) (*Profile, error) {
-	pr, _spec := pc.createSpec()
+	_node, _spec := pc.createSpec()
 	if err := sqlgraph.CreateNode(ctx, pc.driver, _spec); err != nil {
 		if cerr, ok := isSQLConstraintError(err); ok {
 			err = cerr
 		}
 		return nil, err
 	}
-	return pr, nil
+	return _node, nil
 }
 
 func (pc *ProfileCreate) createSpec() (*Profile, *sqlgraph.CreateSpec) {
 	var (
-		pr    = &Profile{config: pc.config}
+		_node = &Profile{config: pc.config}
 		_spec = &sqlgraph.CreateSpec{
 			Table: profile.Table,
 			ID: &sqlgraph.FieldSpec{
@@ -246,7 +261,7 @@ func (pc *ProfileCreate) createSpec() (*Profile, *sqlgraph.CreateSpec) {
 		}
 	)
 	if id, ok := pc.mutation.ID(); ok {
-		pr.ID = id
+		_node.ID = id
 		_spec.ID.Value = id
 	}
 	if value, ok := pc.mutation.CreateTime(); ok {
@@ -255,7 +270,7 @@ func (pc *ProfileCreate) createSpec() (*Profile, *sqlgraph.CreateSpec) {
 			Value:  value,
 			Column: profile.FieldCreateTime,
 		})
-		pr.CreateTime = value
+		_node.CreateTime = value
 	}
 	if value, ok := pc.mutation.UpdateTime(); ok {
 		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
@@ -263,7 +278,7 @@ func (pc *ProfileCreate) createSpec() (*Profile, *sqlgraph.CreateSpec) {
 			Value:  value,
 			Column: profile.FieldUpdateTime,
 		})
-		pr.UpdateTime = value
+		_node.UpdateTime = value
 	}
 	if value, ok := pc.mutation.DeleteTime(); ok {
 		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
@@ -271,7 +286,7 @@ func (pc *ProfileCreate) createSpec() (*Profile, *sqlgraph.CreateSpec) {
 			Value:  value,
 			Column: profile.FieldDeleteTime,
 		})
-		pr.DeleteTime = &value
+		_node.DeleteTime = &value
 	}
 	if value, ok := pc.mutation.Age(); ok {
 		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
@@ -279,7 +294,7 @@ func (pc *ProfileCreate) createSpec() (*Profile, *sqlgraph.CreateSpec) {
 			Value:  value,
 			Column: profile.FieldAge,
 		})
-		pr.Age = value
+		_node.Age = value
 	}
 	if value, ok := pc.mutation.Tz(); ok {
 		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
@@ -287,7 +302,7 @@ func (pc *ProfileCreate) createSpec() (*Profile, *sqlgraph.CreateSpec) {
 			Value:  value,
 			Column: profile.FieldTz,
 		})
-		pr.Tz = value
+		_node.Tz = value
 	}
 	if value, ok := pc.mutation.Avatar(); ok {
 		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
@@ -295,7 +310,7 @@ func (pc *ProfileCreate) createSpec() (*Profile, *sqlgraph.CreateSpec) {
 			Value:  value,
 			Column: profile.FieldAvatar,
 		})
-		pr.Avatar = value
+		_node.Avatar = value
 	}
 	if value, ok := pc.mutation.Birthday(); ok {
 		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
@@ -303,7 +318,7 @@ func (pc *ProfileCreate) createSpec() (*Profile, *sqlgraph.CreateSpec) {
 			Value:  value,
 			Column: profile.FieldBirthday,
 		})
-		pr.Birthday = value
+		_node.Birthday = value
 	}
 	if value, ok := pc.mutation.Gender(); ok {
 		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
@@ -311,7 +326,7 @@ func (pc *ProfileCreate) createSpec() (*Profile, *sqlgraph.CreateSpec) {
 			Value:  value,
 			Column: profile.FieldGender,
 		})
-		pr.Gender = value
+		_node.Gender = value
 	}
 	if value, ok := pc.mutation.PreferredTheme(); ok {
 		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
@@ -319,7 +334,7 @@ func (pc *ProfileCreate) createSpec() (*Profile, *sqlgraph.CreateSpec) {
 			Value:  value,
 			Column: profile.FieldPreferredTheme,
 		})
-		pr.PreferredTheme = value
+		_node.PreferredTheme = value
 	}
 	if nodes := pc.mutation.UserIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
@@ -340,7 +355,7 @@ func (pc *ProfileCreate) createSpec() (*Profile, *sqlgraph.CreateSpec) {
 		}
 		_spec.Edges = append(_spec.Edges, edge)
 	}
-	return pr, _spec
+	return _node, _spec
 }
 
 // ProfileCreateBulk is the builder for creating a bulk of Profile entities.
@@ -357,13 +372,14 @@ func (pcb *ProfileCreateBulk) Save(ctx context.Context) ([]*Profile, error) {
 	for i := range pcb.builders {
 		func(i int, root context.Context) {
 			builder := pcb.builders[i]
+			builder.defaults()
 			var mut Mutator = MutateFunc(func(ctx context.Context, m Mutation) (Value, error) {
-				if err := builder.preSave(); err != nil {
-					return nil, err
-				}
 				mutation, ok := m.(*ProfileMutation)
 				if !ok {
 					return nil, fmt.Errorf("unexpected mutation type %T", m)
+				}
+				if err := builder.check(); err != nil {
+					return nil, err
 				}
 				builder.mutation = mutation
 				nodes[i], specs[i] = builder.createSpec()

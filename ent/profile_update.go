@@ -21,14 +21,13 @@ import (
 // ProfileUpdate is the builder for updating Profile entities.
 type ProfileUpdate struct {
 	config
-	hooks      []Hook
-	mutation   *ProfileMutation
-	predicates []predicate.Profile
+	hooks    []Hook
+	mutation *ProfileMutation
 }
 
 // Where adds a new predicate for the builder.
 func (pu *ProfileUpdate) Where(ps ...predicate.Profile) *ProfileUpdate {
-	pu.predicates = append(pu.predicates, ps...)
+	pu.mutation.predicates = append(pu.mutation.predicates, ps...)
 	return pu
 }
 
@@ -159,43 +158,32 @@ func (pu *ProfileUpdate) Mutation() *ProfileMutation {
 	return pu.mutation
 }
 
-// ClearUser clears the user edge to User.
+// ClearUser clears the "user" edge to type User.
 func (pu *ProfileUpdate) ClearUser() *ProfileUpdate {
 	pu.mutation.ClearUser()
 	return pu
 }
 
-// Save executes the query and returns the number of rows/vertices matched by this operation.
+// Save executes the query and returns the number of nodes affected by the update operation.
 func (pu *ProfileUpdate) Save(ctx context.Context) (int, error) {
-	if _, ok := pu.mutation.UpdateTime(); !ok {
-		v := profile.UpdateDefaultUpdateTime()
-		pu.mutation.SetUpdateTime(v)
-	}
-	if v, ok := pu.mutation.Age(); ok {
-		if err := profile.AgeValidator(v); err != nil {
-			return 0, &ValidationError{Name: "age", err: fmt.Errorf("ent: validator failed for field \"age\": %w", err)}
-		}
-	}
-	if v, ok := pu.mutation.Gender(); ok {
-		if err := profile.GenderValidator(v); err != nil {
-			return 0, &ValidationError{Name: "gender", err: fmt.Errorf("ent: validator failed for field \"gender\": %w", err)}
-		}
-	}
-
-	if _, ok := pu.mutation.UserID(); pu.mutation.UserCleared() && !ok {
-		return 0, errors.New("ent: clearing a unique edge \"user\"")
-	}
 	var (
 		err      error
 		affected int
 	)
+	pu.defaults()
 	if len(pu.hooks) == 0 {
+		if err = pu.check(); err != nil {
+			return 0, err
+		}
 		affected, err = pu.sqlSave(ctx)
 	} else {
 		var mut Mutator = MutateFunc(func(ctx context.Context, m Mutation) (Value, error) {
 			mutation, ok := m.(*ProfileMutation)
 			if !ok {
 				return nil, fmt.Errorf("unexpected mutation type %T", m)
+			}
+			if err = pu.check(); err != nil {
+				return 0, err
 			}
 			pu.mutation = mutation
 			affected, err = pu.sqlSave(ctx)
@@ -234,6 +222,32 @@ func (pu *ProfileUpdate) ExecX(ctx context.Context) {
 	}
 }
 
+// defaults sets the default values of the builder before save.
+func (pu *ProfileUpdate) defaults() {
+	if _, ok := pu.mutation.UpdateTime(); !ok {
+		v := profile.UpdateDefaultUpdateTime()
+		pu.mutation.SetUpdateTime(v)
+	}
+}
+
+// check runs all checks and user-defined validators on the builder.
+func (pu *ProfileUpdate) check() error {
+	if v, ok := pu.mutation.Age(); ok {
+		if err := profile.AgeValidator(v); err != nil {
+			return &ValidationError{Name: "age", err: fmt.Errorf("ent: validator failed for field \"age\": %w", err)}
+		}
+	}
+	if v, ok := pu.mutation.Gender(); ok {
+		if err := profile.GenderValidator(v); err != nil {
+			return &ValidationError{Name: "gender", err: fmt.Errorf("ent: validator failed for field \"gender\": %w", err)}
+		}
+	}
+	if _, ok := pu.mutation.UserID(); pu.mutation.UserCleared() && !ok {
+		return errors.New("ent: clearing a required unique edge \"user\"")
+	}
+	return nil
+}
+
 func (pu *ProfileUpdate) sqlSave(ctx context.Context) (n int, err error) {
 	_spec := &sqlgraph.UpdateSpec{
 		Node: &sqlgraph.NodeSpec{
@@ -245,7 +259,7 @@ func (pu *ProfileUpdate) sqlSave(ctx context.Context) (n int, err error) {
 			},
 		},
 	}
-	if ps := pu.predicates; len(ps) > 0 {
+	if ps := pu.mutation.predicates; len(ps) > 0 {
 		_spec.Predicate = func(selector *sql.Selector) {
 			for i := range ps {
 				ps[i](selector)
@@ -525,7 +539,7 @@ func (puo *ProfileUpdateOne) Mutation() *ProfileMutation {
 	return puo.mutation
 }
 
-// ClearUser clears the user edge to User.
+// ClearUser clears the "user" edge to type User.
 func (puo *ProfileUpdateOne) ClearUser() *ProfileUpdateOne {
 	puo.mutation.ClearUser()
 	return puo
@@ -533,35 +547,24 @@ func (puo *ProfileUpdateOne) ClearUser() *ProfileUpdateOne {
 
 // Save executes the query and returns the updated entity.
 func (puo *ProfileUpdateOne) Save(ctx context.Context) (*Profile, error) {
-	if _, ok := puo.mutation.UpdateTime(); !ok {
-		v := profile.UpdateDefaultUpdateTime()
-		puo.mutation.SetUpdateTime(v)
-	}
-	if v, ok := puo.mutation.Age(); ok {
-		if err := profile.AgeValidator(v); err != nil {
-			return nil, &ValidationError{Name: "age", err: fmt.Errorf("ent: validator failed for field \"age\": %w", err)}
-		}
-	}
-	if v, ok := puo.mutation.Gender(); ok {
-		if err := profile.GenderValidator(v); err != nil {
-			return nil, &ValidationError{Name: "gender", err: fmt.Errorf("ent: validator failed for field \"gender\": %w", err)}
-		}
-	}
-
-	if _, ok := puo.mutation.UserID(); puo.mutation.UserCleared() && !ok {
-		return nil, errors.New("ent: clearing a unique edge \"user\"")
-	}
 	var (
 		err  error
 		node *Profile
 	)
+	puo.defaults()
 	if len(puo.hooks) == 0 {
+		if err = puo.check(); err != nil {
+			return nil, err
+		}
 		node, err = puo.sqlSave(ctx)
 	} else {
 		var mut Mutator = MutateFunc(func(ctx context.Context, m Mutation) (Value, error) {
 			mutation, ok := m.(*ProfileMutation)
 			if !ok {
 				return nil, fmt.Errorf("unexpected mutation type %T", m)
+			}
+			if err = puo.check(); err != nil {
+				return nil, err
 			}
 			puo.mutation = mutation
 			node, err = puo.sqlSave(ctx)
@@ -580,11 +583,11 @@ func (puo *ProfileUpdateOne) Save(ctx context.Context) (*Profile, error) {
 
 // SaveX is like Save, but panics if an error occurs.
 func (puo *ProfileUpdateOne) SaveX(ctx context.Context) *Profile {
-	pr, err := puo.Save(ctx)
+	node, err := puo.Save(ctx)
 	if err != nil {
 		panic(err)
 	}
-	return pr
+	return node
 }
 
 // Exec executes the query on the entity.
@@ -600,7 +603,33 @@ func (puo *ProfileUpdateOne) ExecX(ctx context.Context) {
 	}
 }
 
-func (puo *ProfileUpdateOne) sqlSave(ctx context.Context) (pr *Profile, err error) {
+// defaults sets the default values of the builder before save.
+func (puo *ProfileUpdateOne) defaults() {
+	if _, ok := puo.mutation.UpdateTime(); !ok {
+		v := profile.UpdateDefaultUpdateTime()
+		puo.mutation.SetUpdateTime(v)
+	}
+}
+
+// check runs all checks and user-defined validators on the builder.
+func (puo *ProfileUpdateOne) check() error {
+	if v, ok := puo.mutation.Age(); ok {
+		if err := profile.AgeValidator(v); err != nil {
+			return &ValidationError{Name: "age", err: fmt.Errorf("ent: validator failed for field \"age\": %w", err)}
+		}
+	}
+	if v, ok := puo.mutation.Gender(); ok {
+		if err := profile.GenderValidator(v); err != nil {
+			return &ValidationError{Name: "gender", err: fmt.Errorf("ent: validator failed for field \"gender\": %w", err)}
+		}
+	}
+	if _, ok := puo.mutation.UserID(); puo.mutation.UserCleared() && !ok {
+		return errors.New("ent: clearing a required unique edge \"user\"")
+	}
+	return nil
+}
+
+func (puo *ProfileUpdateOne) sqlSave(ctx context.Context) (_node *Profile, err error) {
 	_spec := &sqlgraph.UpdateSpec{
 		Node: &sqlgraph.NodeSpec{
 			Table:   profile.Table,
@@ -744,9 +773,9 @@ func (puo *ProfileUpdateOne) sqlSave(ctx context.Context) (pr *Profile, err erro
 		}
 		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
-	pr = &Profile{config: puo.config}
-	_spec.Assign = pr.assignValues
-	_spec.ScanValues = pr.scanValues()
+	_node = &Profile{config: puo.config}
+	_spec.Assign = _node.assignValues
+	_spec.ScanValues = _node.scanValues()
 	if err = sqlgraph.UpdateNode(ctx, puo.driver, _spec); err != nil {
 		if _, ok := err.(*sqlgraph.NotFoundError); ok {
 			err = &NotFoundError{profile.Label}
@@ -755,5 +784,5 @@ func (puo *ProfileUpdateOne) sqlSave(ctx context.Context) (pr *Profile, err erro
 		}
 		return nil, err
 	}
-	return pr, nil
+	return _node, nil
 }

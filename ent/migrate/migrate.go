@@ -29,8 +29,10 @@ var (
 	// flexibility in the schema changes.
 	WithDropIndex = schema.WithDropIndex
 	// WithFixture sets the foreign-key renaming option to the migration when upgrading
-	// ent from v0.1.0 (issue-#285). Defaults to true.
+	// ent from v0.1.0 (issue-#285). Defaults to false.
 	WithFixture = schema.WithFixture
+	// WithForeignKeys enables creating foreign-key in schema DDL. This defaults to true.
+	WithForeignKeys = schema.WithForeignKeys
 )
 
 // Schema is the API for creating, migrating and dropping a schema.

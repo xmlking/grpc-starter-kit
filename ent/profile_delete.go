@@ -16,14 +16,13 @@ import (
 // ProfileDelete is the builder for deleting a Profile entity.
 type ProfileDelete struct {
 	config
-	hooks      []Hook
-	mutation   *ProfileMutation
-	predicates []predicate.Profile
+	hooks    []Hook
+	mutation *ProfileMutation
 }
 
 // Where adds a new predicate to the delete builder.
 func (pd *ProfileDelete) Where(ps ...predicate.Profile) *ProfileDelete {
-	pd.predicates = append(pd.predicates, ps...)
+	pd.mutation.predicates = append(pd.mutation.predicates, ps...)
 	return pd
 }
 
@@ -75,7 +74,7 @@ func (pd *ProfileDelete) sqlExec(ctx context.Context) (int, error) {
 			},
 		},
 	}
-	if ps := pd.predicates; len(ps) > 0 {
+	if ps := pd.mutation.predicates; len(ps) > 0 {
 		_spec.Predicate = func(selector *sql.Selector) {
 			for i := range ps {
 				ps[i](selector)
