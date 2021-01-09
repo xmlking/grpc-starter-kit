@@ -82,19 +82,19 @@ func ValidColumn(column string) bool {
 }
 
 var (
-	// DefaultCreateTime holds the default value on creation for the create_time field.
+	// DefaultCreateTime holds the default value on creation for the "create_time" field.
 	DefaultCreateTime func() time.Time
-	// DefaultUpdateTime holds the default value on creation for the update_time field.
+	// DefaultUpdateTime holds the default value on creation for the "update_time" field.
 	DefaultUpdateTime func() time.Time
-	// UpdateDefaultUpdateTime holds the default value on update for the update_time field.
+	// UpdateDefaultUpdateTime holds the default value on update for the "update_time" field.
 	UpdateDefaultUpdateTime func() time.Time
 	// AgeValidator is a validator for the "age" field. It is called by the builders before save.
 	AgeValidator func(int) error
-	// DefaultID holds the default value on creation for the id field.
+	// DefaultID holds the default value on creation for the "id" field.
 	DefaultID func() uuid.UUID
 )
 
-// Gender defines the type for the gender enum field.
+// Gender defines the type for the "gender" enum field.
 type Gender string
 
 // Gender values.

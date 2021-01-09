@@ -23,13 +23,13 @@ type ProfileCreate struct {
 	hooks    []Hook
 }
 
-// SetCreateTime sets the create_time field.
+// SetCreateTime sets the "create_time" field.
 func (pc *ProfileCreate) SetCreateTime(t time.Time) *ProfileCreate {
 	pc.mutation.SetCreateTime(t)
 	return pc
 }
 
-// SetNillableCreateTime sets the create_time field if the given value is not nil.
+// SetNillableCreateTime sets the "create_time" field if the given value is not nil.
 func (pc *ProfileCreate) SetNillableCreateTime(t *time.Time) *ProfileCreate {
 	if t != nil {
 		pc.SetCreateTime(*t)
@@ -37,13 +37,13 @@ func (pc *ProfileCreate) SetNillableCreateTime(t *time.Time) *ProfileCreate {
 	return pc
 }
 
-// SetUpdateTime sets the update_time field.
+// SetUpdateTime sets the "update_time" field.
 func (pc *ProfileCreate) SetUpdateTime(t time.Time) *ProfileCreate {
 	pc.mutation.SetUpdateTime(t)
 	return pc
 }
 
-// SetNillableUpdateTime sets the update_time field if the given value is not nil.
+// SetNillableUpdateTime sets the "update_time" field if the given value is not nil.
 func (pc *ProfileCreate) SetNillableUpdateTime(t *time.Time) *ProfileCreate {
 	if t != nil {
 		pc.SetUpdateTime(*t)
@@ -51,13 +51,13 @@ func (pc *ProfileCreate) SetNillableUpdateTime(t *time.Time) *ProfileCreate {
 	return pc
 }
 
-// SetDeleteTime sets the delete_time field.
+// SetDeleteTime sets the "delete_time" field.
 func (pc *ProfileCreate) SetDeleteTime(t time.Time) *ProfileCreate {
 	pc.mutation.SetDeleteTime(t)
 	return pc
 }
 
-// SetNillableDeleteTime sets the delete_time field if the given value is not nil.
+// SetNillableDeleteTime sets the "delete_time" field if the given value is not nil.
 func (pc *ProfileCreate) SetNillableDeleteTime(t *time.Time) *ProfileCreate {
 	if t != nil {
 		pc.SetDeleteTime(*t)
@@ -65,31 +65,31 @@ func (pc *ProfileCreate) SetNillableDeleteTime(t *time.Time) *ProfileCreate {
 	return pc
 }
 
-// SetAge sets the age field.
+// SetAge sets the "age" field.
 func (pc *ProfileCreate) SetAge(i int) *ProfileCreate {
 	pc.mutation.SetAge(i)
 	return pc
 }
 
-// SetTz sets the tz field.
+// SetTz sets the "tz" field.
 func (pc *ProfileCreate) SetTz(s string) *ProfileCreate {
 	pc.mutation.SetTz(s)
 	return pc
 }
 
-// SetAvatar sets the avatar field.
+// SetAvatar sets the "avatar" field.
 func (pc *ProfileCreate) SetAvatar(u *url.URL) *ProfileCreate {
 	pc.mutation.SetAvatar(u)
 	return pc
 }
 
-// SetBirthday sets the birthday field.
+// SetBirthday sets the "birthday" field.
 func (pc *ProfileCreate) SetBirthday(t time.Time) *ProfileCreate {
 	pc.mutation.SetBirthday(t)
 	return pc
 }
 
-// SetNillableBirthday sets the birthday field if the given value is not nil.
+// SetNillableBirthday sets the "birthday" field if the given value is not nil.
 func (pc *ProfileCreate) SetNillableBirthday(t *time.Time) *ProfileCreate {
 	if t != nil {
 		pc.SetBirthday(*t)
@@ -97,13 +97,13 @@ func (pc *ProfileCreate) SetNillableBirthday(t *time.Time) *ProfileCreate {
 	return pc
 }
 
-// SetGender sets the gender field.
+// SetGender sets the "gender" field.
 func (pc *ProfileCreate) SetGender(pr profile.Gender) *ProfileCreate {
 	pc.mutation.SetGender(pr)
 	return pc
 }
 
-// SetNillableGender sets the gender field if the given value is not nil.
+// SetNillableGender sets the "gender" field if the given value is not nil.
 func (pc *ProfileCreate) SetNillableGender(pr *profile.Gender) *ProfileCreate {
 	if pr != nil {
 		pc.SetGender(*pr)
@@ -111,13 +111,13 @@ func (pc *ProfileCreate) SetNillableGender(pr *profile.Gender) *ProfileCreate {
 	return pc
 }
 
-// SetPreferredTheme sets the preferred_theme field.
+// SetPreferredTheme sets the "preferred_theme" field.
 func (pc *ProfileCreate) SetPreferredTheme(s string) *ProfileCreate {
 	pc.mutation.SetPreferredTheme(s)
 	return pc
 }
 
-// SetNillablePreferredTheme sets the preferred_theme field if the given value is not nil.
+// SetNillablePreferredTheme sets the "preferred_theme" field if the given value is not nil.
 func (pc *ProfileCreate) SetNillablePreferredTheme(s *string) *ProfileCreate {
 	if s != nil {
 		pc.SetPreferredTheme(*s)
@@ -125,19 +125,19 @@ func (pc *ProfileCreate) SetNillablePreferredTheme(s *string) *ProfileCreate {
 	return pc
 }
 
-// SetID sets the id field.
+// SetID sets the "id" field.
 func (pc *ProfileCreate) SetID(u uuid.UUID) *ProfileCreate {
 	pc.mutation.SetID(u)
 	return pc
 }
 
-// SetUserID sets the user edge to User by id.
+// SetUserID sets the "user" edge to the User entity by ID.
 func (pc *ProfileCreate) SetUserID(id uuid.UUID) *ProfileCreate {
 	pc.mutation.SetUserID(id)
 	return pc
 }
 
-// SetUser sets the user edge to User.
+// SetUser sets the "user" edge to the User entity.
 func (pc *ProfileCreate) SetUser(u *User) *ProfileCreate {
 	return pc.SetUserID(u.ID)
 }
@@ -358,7 +358,7 @@ func (pc *ProfileCreate) createSpec() (*Profile, *sqlgraph.CreateSpec) {
 	return _node, _spec
 }
 
-// ProfileCreateBulk is the builder for creating a bulk of Profile entities.
+// ProfileCreateBulk is the builder for creating many Profile entities in bulk.
 type ProfileCreateBulk struct {
 	config
 	builders []*ProfileCreate
@@ -414,7 +414,7 @@ func (pcb *ProfileCreateBulk) Save(ctx context.Context) ([]*Profile, error) {
 	return nodes, nil
 }
 
-// SaveX calls Save and panics if Save returns an error.
+// SaveX is like Save, but panics if an error occurs.
 func (pcb *ProfileCreateBulk) SaveX(ctx context.Context) []*Profile {
 	v, err := pcb.Save(ctx)
 	if err != nil {

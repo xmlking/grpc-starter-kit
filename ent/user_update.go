@@ -23,19 +23,19 @@ type UserUpdate struct {
 	mutation *UserMutation
 }
 
-// Where adds a new predicate for the builder.
+// Where adds a new predicate for the UserUpdate builder.
 func (uu *UserUpdate) Where(ps ...predicate.User) *UserUpdate {
 	uu.mutation.predicates = append(uu.mutation.predicates, ps...)
 	return uu
 }
 
-// SetDeleteTime sets the delete_time field.
+// SetDeleteTime sets the "delete_time" field.
 func (uu *UserUpdate) SetDeleteTime(t time.Time) *UserUpdate {
 	uu.mutation.SetDeleteTime(t)
 	return uu
 }
 
-// SetNillableDeleteTime sets the delete_time field if the given value is not nil.
+// SetNillableDeleteTime sets the "delete_time" field if the given value is not nil.
 func (uu *UserUpdate) SetNillableDeleteTime(t *time.Time) *UserUpdate {
 	if t != nil {
 		uu.SetDeleteTime(*t)
@@ -43,37 +43,37 @@ func (uu *UserUpdate) SetNillableDeleteTime(t *time.Time) *UserUpdate {
 	return uu
 }
 
-// ClearDeleteTime clears the value of delete_time.
+// ClearDeleteTime clears the value of the "delete_time" field.
 func (uu *UserUpdate) ClearDeleteTime() *UserUpdate {
 	uu.mutation.ClearDeleteTime()
 	return uu
 }
 
-// SetFirstName sets the first_name field.
+// SetFirstName sets the "first_name" field.
 func (uu *UserUpdate) SetFirstName(s string) *UserUpdate {
 	uu.mutation.SetFirstName(s)
 	return uu
 }
 
-// SetLastName sets the last_name field.
+// SetLastName sets the "last_name" field.
 func (uu *UserUpdate) SetLastName(s string) *UserUpdate {
 	uu.mutation.SetLastName(s)
 	return uu
 }
 
-// SetEmail sets the email field.
+// SetEmail sets the "email" field.
 func (uu *UserUpdate) SetEmail(s string) *UserUpdate {
 	uu.mutation.SetEmail(s)
 	return uu
 }
 
-// SetProfileID sets the profile edge to Profile by id.
+// SetProfileID sets the "profile" edge to the Profile entity by ID.
 func (uu *UserUpdate) SetProfileID(id uuid.UUID) *UserUpdate {
 	uu.mutation.SetProfileID(id)
 	return uu
 }
 
-// SetNillableProfileID sets the profile edge to Profile by id if the given value is not nil.
+// SetNillableProfileID sets the "profile" edge to the Profile entity by ID if the given value is not nil.
 func (uu *UserUpdate) SetNillableProfileID(id *uuid.UUID) *UserUpdate {
 	if id != nil {
 		uu = uu.SetProfileID(*id)
@@ -81,7 +81,7 @@ func (uu *UserUpdate) SetNillableProfileID(id *uuid.UUID) *UserUpdate {
 	return uu
 }
 
-// SetProfile sets the profile edge to Profile.
+// SetProfile sets the "profile" edge to the Profile entity.
 func (uu *UserUpdate) SetProfile(p *Profile) *UserUpdate {
 	return uu.SetProfileID(p.ID)
 }
@@ -91,7 +91,7 @@ func (uu *UserUpdate) Mutation() *UserMutation {
 	return uu.mutation
 }
 
-// ClearProfile clears the "profile" edge to type Profile.
+// ClearProfile clears the "profile" edge to the Profile entity.
 func (uu *UserUpdate) ClearProfile() *UserUpdate {
 	uu.mutation.ClearProfile()
 	return uu
@@ -295,13 +295,13 @@ type UserUpdateOne struct {
 	mutation *UserMutation
 }
 
-// SetDeleteTime sets the delete_time field.
+// SetDeleteTime sets the "delete_time" field.
 func (uuo *UserUpdateOne) SetDeleteTime(t time.Time) *UserUpdateOne {
 	uuo.mutation.SetDeleteTime(t)
 	return uuo
 }
 
-// SetNillableDeleteTime sets the delete_time field if the given value is not nil.
+// SetNillableDeleteTime sets the "delete_time" field if the given value is not nil.
 func (uuo *UserUpdateOne) SetNillableDeleteTime(t *time.Time) *UserUpdateOne {
 	if t != nil {
 		uuo.SetDeleteTime(*t)
@@ -309,37 +309,37 @@ func (uuo *UserUpdateOne) SetNillableDeleteTime(t *time.Time) *UserUpdateOne {
 	return uuo
 }
 
-// ClearDeleteTime clears the value of delete_time.
+// ClearDeleteTime clears the value of the "delete_time" field.
 func (uuo *UserUpdateOne) ClearDeleteTime() *UserUpdateOne {
 	uuo.mutation.ClearDeleteTime()
 	return uuo
 }
 
-// SetFirstName sets the first_name field.
+// SetFirstName sets the "first_name" field.
 func (uuo *UserUpdateOne) SetFirstName(s string) *UserUpdateOne {
 	uuo.mutation.SetFirstName(s)
 	return uuo
 }
 
-// SetLastName sets the last_name field.
+// SetLastName sets the "last_name" field.
 func (uuo *UserUpdateOne) SetLastName(s string) *UserUpdateOne {
 	uuo.mutation.SetLastName(s)
 	return uuo
 }
 
-// SetEmail sets the email field.
+// SetEmail sets the "email" field.
 func (uuo *UserUpdateOne) SetEmail(s string) *UserUpdateOne {
 	uuo.mutation.SetEmail(s)
 	return uuo
 }
 
-// SetProfileID sets the profile edge to Profile by id.
+// SetProfileID sets the "profile" edge to the Profile entity by ID.
 func (uuo *UserUpdateOne) SetProfileID(id uuid.UUID) *UserUpdateOne {
 	uuo.mutation.SetProfileID(id)
 	return uuo
 }
 
-// SetNillableProfileID sets the profile edge to Profile by id if the given value is not nil.
+// SetNillableProfileID sets the "profile" edge to the Profile entity by ID if the given value is not nil.
 func (uuo *UserUpdateOne) SetNillableProfileID(id *uuid.UUID) *UserUpdateOne {
 	if id != nil {
 		uuo = uuo.SetProfileID(*id)
@@ -347,7 +347,7 @@ func (uuo *UserUpdateOne) SetNillableProfileID(id *uuid.UUID) *UserUpdateOne {
 	return uuo
 }
 
-// SetProfile sets the profile edge to Profile.
+// SetProfile sets the "profile" edge to the Profile entity.
 func (uuo *UserUpdateOne) SetProfile(p *Profile) *UserUpdateOne {
 	return uuo.SetProfileID(p.ID)
 }
@@ -357,13 +357,13 @@ func (uuo *UserUpdateOne) Mutation() *UserMutation {
 	return uuo.mutation
 }
 
-// ClearProfile clears the "profile" edge to type Profile.
+// ClearProfile clears the "profile" edge to the Profile entity.
 func (uuo *UserUpdateOne) ClearProfile() *UserUpdateOne {
 	uuo.mutation.ClearProfile()
 	return uuo
 }
 
-// Save executes the query and returns the updated entity.
+// Save executes the query and returns the updated User entity.
 func (uuo *UserUpdateOne) Save(ctx context.Context) (*User, error) {
 	var (
 		err  error
@@ -543,7 +543,7 @@ func (uuo *UserUpdateOne) sqlSave(ctx context.Context) (_node *User, err error) 
 	}
 	_node = &User{config: uuo.config}
 	_spec.Assign = _node.assignValues
-	_spec.ScanValues = _node.scanValues()
+	_spec.ScanValues = _node.scanValues
 	if err = sqlgraph.UpdateNode(ctx, uuo.driver, _spec); err != nil {
 		if _, ok := err.(*sqlgraph.NotFoundError); ok {
 			err = &NotFoundError{user.Label}

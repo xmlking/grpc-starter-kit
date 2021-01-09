@@ -10,11 +10,14 @@ import (
 	grpc_middleware "github.com/grpc-ecosystem/go-grpc-middleware"
 	"github.com/rs/zerolog/log"
 	"github.com/xmlking/configor"
-	"google.golang.org/grpc"
-	"google.golang.org/grpc/credentials"
-
 	"github.com/xmlking/toolkit/middleware/rpclog"
 	"github.com/xmlking/toolkit/util/tls"
+	"google.golang.org/grpc"
+	"google.golang.org/grpc/credentials"
+	"google.golang.org/grpc/resolver"
+
+	//k8s resolver
+	_ "github.com/tcfw/go-grpc-k8s-resolver"
 )
 
 var (
@@ -124,6 +127,9 @@ func GetClientConn(service *Service, ucInterceptors []grpc.UnaryClientIntercepto
 	if len(ucInterceptors) > 0 {
 		dialOptions = append(dialOptions, grpc.WithUnaryInterceptor(grpc_middleware.ChainUnaryClient(ucInterceptors...)))
 	}
+
+	resolver.SetDefaultScheme("k8s") //optional
+
 	clientConn, err = grpc.Dial(service.Endpoint, dialOptions...)
 	return
 }

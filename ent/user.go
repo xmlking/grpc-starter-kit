@@ -63,90 +63,105 @@ func (e UserEdges) ProfileOrErr() (*Profile, error) {
 }
 
 // scanValues returns the types for scanning values from sql.Rows.
-func (*User) scanValues() []interface{} {
-	return []interface{}{
-		&uuid.UUID{},      // id
-		&sql.NullTime{},   // create_time
-		&sql.NullTime{},   // update_time
-		&sql.NullTime{},   // delete_time
-		&sql.NullString{}, // username
-		&sql.NullString{}, // first_name
-		&sql.NullString{}, // last_name
-		&sql.NullString{}, // email
-		&sql.NullString{}, // tenant
+func (*User) scanValues(columns []string) ([]interface{}, error) {
+	values := make([]interface{}, len(columns))
+	for i := range columns {
+		switch columns[i] {
+		case user.FieldUsername, user.FieldFirstName, user.FieldLastName, user.FieldEmail, user.FieldTenant:
+			values[i] = &sql.NullString{}
+		case user.FieldCreateTime, user.FieldUpdateTime, user.FieldDeleteTime:
+			values[i] = &sql.NullTime{}
+		case user.FieldID:
+			values[i] = &uuid.UUID{}
+		default:
+			return nil, fmt.Errorf("unexpected column %q for type User", columns[i])
+		}
 	}
+	return values, nil
 }
 
 // assignValues assigns the values that were returned from sql.Rows (after scanning)
 // to the User fields.
-func (u *User) assignValues(values ...interface{}) error {
-	if m, n := len(values), len(user.Columns); m < n {
+func (u *User) assignValues(columns []string, values []interface{}) error {
+	if m, n := len(values), len(columns); m < n {
 		return fmt.Errorf("mismatch number of scan values: %d != %d", m, n)
 	}
-	if value, ok := values[0].(*uuid.UUID); !ok {
-		return fmt.Errorf("unexpected type %T for field id", values[0])
-	} else if value != nil {
-		u.ID = *value
-	}
-	values = values[1:]
-	if value, ok := values[0].(*sql.NullTime); !ok {
-		return fmt.Errorf("unexpected type %T for field create_time", values[0])
-	} else if value.Valid {
-		u.CreateTime = value.Time
-	}
-	if value, ok := values[1].(*sql.NullTime); !ok {
-		return fmt.Errorf("unexpected type %T for field update_time", values[1])
-	} else if value.Valid {
-		u.UpdateTime = value.Time
-	}
-	if value, ok := values[2].(*sql.NullTime); !ok {
-		return fmt.Errorf("unexpected type %T for field delete_time", values[2])
-	} else if value.Valid {
-		u.DeleteTime = new(time.Time)
-		*u.DeleteTime = value.Time
-	}
-	if value, ok := values[3].(*sql.NullString); !ok {
-		return fmt.Errorf("unexpected type %T for field username", values[3])
-	} else if value.Valid {
-		u.Username = value.String
-	}
-	if value, ok := values[4].(*sql.NullString); !ok {
-		return fmt.Errorf("unexpected type %T for field first_name", values[4])
-	} else if value.Valid {
-		u.FirstName = value.String
-	}
-	if value, ok := values[5].(*sql.NullString); !ok {
-		return fmt.Errorf("unexpected type %T for field last_name", values[5])
-	} else if value.Valid {
-		u.LastName = value.String
-	}
-	if value, ok := values[6].(*sql.NullString); !ok {
-		return fmt.Errorf("unexpected type %T for field email", values[6])
-	} else if value.Valid {
-		u.Email = value.String
-	}
-	if value, ok := values[7].(*sql.NullString); !ok {
-		return fmt.Errorf("unexpected type %T for field tenant", values[7])
-	} else if value.Valid {
-		u.Tenant = value.String
+	for i := range columns {
+		switch columns[i] {
+		case user.FieldID:
+			if value, ok := values[i].(*uuid.UUID); !ok {
+				return fmt.Errorf("unexpected type %T for field id", values[i])
+			} else if value != nil {
+				u.ID = *value
+			}
+		case user.FieldCreateTime:
+			if value, ok := values[i].(*sql.NullTime); !ok {
+				return fmt.Errorf("unexpected type %T for field create_time", values[i])
+			} else if value.Valid {
+				u.CreateTime = value.Time
+			}
+		case user.FieldUpdateTime:
+			if value, ok := values[i].(*sql.NullTime); !ok {
+				return fmt.Errorf("unexpected type %T for field update_time", values[i])
+			} else if value.Valid {
+				u.UpdateTime = value.Time
+			}
+		case user.FieldDeleteTime:
+			if value, ok := values[i].(*sql.NullTime); !ok {
+				return fmt.Errorf("unexpected type %T for field delete_time", values[i])
+			} else if value.Valid {
+				u.DeleteTime = new(time.Time)
+				*u.DeleteTime = value.Time
+			}
+		case user.FieldUsername:
+			if value, ok := values[i].(*sql.NullString); !ok {
+				return fmt.Errorf("unexpected type %T for field username", values[i])
+			} else if value.Valid {
+				u.Username = value.String
+			}
+		case user.FieldFirstName:
+			if value, ok := values[i].(*sql.NullString); !ok {
+				return fmt.Errorf("unexpected type %T for field first_name", values[i])
+			} else if value.Valid {
+				u.FirstName = value.String
+			}
+		case user.FieldLastName:
+			if value, ok := values[i].(*sql.NullString); !ok {
+				return fmt.Errorf("unexpected type %T for field last_name", values[i])
+			} else if value.Valid {
+				u.LastName = value.String
+			}
+		case user.FieldEmail:
+			if value, ok := values[i].(*sql.NullString); !ok {
+				return fmt.Errorf("unexpected type %T for field email", values[i])
+			} else if value.Valid {
+				u.Email = value.String
+			}
+		case user.FieldTenant:
+			if value, ok := values[i].(*sql.NullString); !ok {
+				return fmt.Errorf("unexpected type %T for field tenant", values[i])
+			} else if value.Valid {
+				u.Tenant = value.String
+			}
+		}
 	}
 	return nil
 }
 
-// QueryProfile queries the profile edge of the User.
+// QueryProfile queries the "profile" edge of the User entity.
 func (u *User) QueryProfile() *ProfileQuery {
 	return (&UserClient{config: u.config}).QueryProfile(u)
 }
 
 // Update returns a builder for updating this User.
-// Note that, you need to call User.Unwrap() before calling this method, if this User
+// Note that you need to call User.Unwrap() before calling this method if this User
 // was returned from a transaction, and the transaction was committed or rolled back.
 func (u *User) Update() *UserUpdateOne {
 	return (&UserClient{config: u.config}).UpdateOne(u)
 }
 
-// Unwrap unwraps the entity that was returned from a transaction after it was closed,
-// so that all next queries will be executed through the driver which created the transaction.
+// Unwrap unwraps the User entity that was returned from a transaction after it was closed,
+// so that all future queries will be executed through the driver which created the transaction.
 func (u *User) Unwrap() *User {
 	tx, ok := u.config.driver.(*txDriver)
 	if !ok {

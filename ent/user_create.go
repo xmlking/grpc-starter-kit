@@ -22,13 +22,13 @@ type UserCreate struct {
 	hooks    []Hook
 }
 
-// SetCreateTime sets the create_time field.
+// SetCreateTime sets the "create_time" field.
 func (uc *UserCreate) SetCreateTime(t time.Time) *UserCreate {
 	uc.mutation.SetCreateTime(t)
 	return uc
 }
 
-// SetNillableCreateTime sets the create_time field if the given value is not nil.
+// SetNillableCreateTime sets the "create_time" field if the given value is not nil.
 func (uc *UserCreate) SetNillableCreateTime(t *time.Time) *UserCreate {
 	if t != nil {
 		uc.SetCreateTime(*t)
@@ -36,13 +36,13 @@ func (uc *UserCreate) SetNillableCreateTime(t *time.Time) *UserCreate {
 	return uc
 }
 
-// SetUpdateTime sets the update_time field.
+// SetUpdateTime sets the "update_time" field.
 func (uc *UserCreate) SetUpdateTime(t time.Time) *UserCreate {
 	uc.mutation.SetUpdateTime(t)
 	return uc
 }
 
-// SetNillableUpdateTime sets the update_time field if the given value is not nil.
+// SetNillableUpdateTime sets the "update_time" field if the given value is not nil.
 func (uc *UserCreate) SetNillableUpdateTime(t *time.Time) *UserCreate {
 	if t != nil {
 		uc.SetUpdateTime(*t)
@@ -50,13 +50,13 @@ func (uc *UserCreate) SetNillableUpdateTime(t *time.Time) *UserCreate {
 	return uc
 }
 
-// SetDeleteTime sets the delete_time field.
+// SetDeleteTime sets the "delete_time" field.
 func (uc *UserCreate) SetDeleteTime(t time.Time) *UserCreate {
 	uc.mutation.SetDeleteTime(t)
 	return uc
 }
 
-// SetNillableDeleteTime sets the delete_time field if the given value is not nil.
+// SetNillableDeleteTime sets the "delete_time" field if the given value is not nil.
 func (uc *UserCreate) SetNillableDeleteTime(t *time.Time) *UserCreate {
 	if t != nil {
 		uc.SetDeleteTime(*t)
@@ -64,37 +64,37 @@ func (uc *UserCreate) SetNillableDeleteTime(t *time.Time) *UserCreate {
 	return uc
 }
 
-// SetUsername sets the username field.
+// SetUsername sets the "username" field.
 func (uc *UserCreate) SetUsername(s string) *UserCreate {
 	uc.mutation.SetUsername(s)
 	return uc
 }
 
-// SetFirstName sets the first_name field.
+// SetFirstName sets the "first_name" field.
 func (uc *UserCreate) SetFirstName(s string) *UserCreate {
 	uc.mutation.SetFirstName(s)
 	return uc
 }
 
-// SetLastName sets the last_name field.
+// SetLastName sets the "last_name" field.
 func (uc *UserCreate) SetLastName(s string) *UserCreate {
 	uc.mutation.SetLastName(s)
 	return uc
 }
 
-// SetEmail sets the email field.
+// SetEmail sets the "email" field.
 func (uc *UserCreate) SetEmail(s string) *UserCreate {
 	uc.mutation.SetEmail(s)
 	return uc
 }
 
-// SetTenant sets the tenant field.
+// SetTenant sets the "tenant" field.
 func (uc *UserCreate) SetTenant(s string) *UserCreate {
 	uc.mutation.SetTenant(s)
 	return uc
 }
 
-// SetNillableTenant sets the tenant field if the given value is not nil.
+// SetNillableTenant sets the "tenant" field if the given value is not nil.
 func (uc *UserCreate) SetNillableTenant(s *string) *UserCreate {
 	if s != nil {
 		uc.SetTenant(*s)
@@ -102,19 +102,19 @@ func (uc *UserCreate) SetNillableTenant(s *string) *UserCreate {
 	return uc
 }
 
-// SetID sets the id field.
+// SetID sets the "id" field.
 func (uc *UserCreate) SetID(u uuid.UUID) *UserCreate {
 	uc.mutation.SetID(u)
 	return uc
 }
 
-// SetProfileID sets the profile edge to Profile by id.
+// SetProfileID sets the "profile" edge to the Profile entity by ID.
 func (uc *UserCreate) SetProfileID(id uuid.UUID) *UserCreate {
 	uc.mutation.SetProfileID(id)
 	return uc
 }
 
-// SetNillableProfileID sets the profile edge to Profile by id if the given value is not nil.
+// SetNillableProfileID sets the "profile" edge to the Profile entity by ID if the given value is not nil.
 func (uc *UserCreate) SetNillableProfileID(id *uuid.UUID) *UserCreate {
 	if id != nil {
 		uc = uc.SetProfileID(*id)
@@ -122,7 +122,7 @@ func (uc *UserCreate) SetNillableProfileID(id *uuid.UUID) *UserCreate {
 	return uc
 }
 
-// SetProfile sets the profile edge to Profile.
+// SetProfile sets the "profile" edge to the Profile entity.
 func (uc *UserCreate) SetProfile(p *Profile) *UserCreate {
 	return uc.SetProfileID(p.ID)
 }
@@ -355,7 +355,7 @@ func (uc *UserCreate) createSpec() (*User, *sqlgraph.CreateSpec) {
 	return _node, _spec
 }
 
-// UserCreateBulk is the builder for creating a bulk of User entities.
+// UserCreateBulk is the builder for creating many User entities in bulk.
 type UserCreateBulk struct {
 	config
 	builders []*UserCreate
@@ -411,7 +411,7 @@ func (ucb *UserCreateBulk) Save(ctx context.Context) ([]*User, error) {
 	return nodes, nil
 }
 
-// SaveX calls Save and panics if Save returns an error.
+// SaveX is like Save, but panics if an error occurs.
 func (ucb *UserCreateBulk) SaveX(ctx context.Context) []*User {
 	v, err := ucb.Save(ctx)
 	if err != nil {

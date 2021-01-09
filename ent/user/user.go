@@ -68,11 +68,11 @@ func ValidColumn(column string) bool {
 }
 
 var (
-	// DefaultCreateTime holds the default value on creation for the create_time field.
+	// DefaultCreateTime holds the default value on creation for the "create_time" field.
 	DefaultCreateTime func() time.Time
-	// DefaultUpdateTime holds the default value on creation for the update_time field.
+	// DefaultUpdateTime holds the default value on creation for the "update_time" field.
 	DefaultUpdateTime func() time.Time
-	// UpdateDefaultUpdateTime holds the default value on update for the update_time field.
+	// UpdateDefaultUpdateTime holds the default value on update for the "update_time" field.
 	UpdateDefaultUpdateTime func() time.Time
 	// UsernameValidator is a validator for the "username" field. It is called by the builders before save.
 	UsernameValidator func(string) error
@@ -82,8 +82,8 @@ var (
 	LastNameValidator func(string) error
 	// EmailValidator is a validator for the "email" field. It is called by the builders before save.
 	EmailValidator func(string) error
-	// DefaultTenant holds the default value on creation for the tenant field.
+	// DefaultTenant holds the default value on creation for the "tenant" field.
 	DefaultTenant string
-	// DefaultID holds the default value on creation for the id field.
+	// DefaultID holds the default value on creation for the "id" field.
 	DefaultID func() uuid.UUID
 )

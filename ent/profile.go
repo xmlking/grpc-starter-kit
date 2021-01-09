@@ -68,114 +68,126 @@ func (e ProfileEdges) UserOrErr() (*User, error) {
 }
 
 // scanValues returns the types for scanning values from sql.Rows.
-func (*Profile) scanValues() []interface{} {
-	return []interface{}{
-		&uuid.UUID{},      // id
-		&sql.NullTime{},   // create_time
-		&sql.NullTime{},   // update_time
-		&sql.NullTime{},   // delete_time
-		&sql.NullInt64{},  // age
-		&sql.NullString{}, // tz
-		&[]byte{},         // avatar
-		&sql.NullTime{},   // birthday
-		&sql.NullString{}, // gender
-		&sql.NullString{}, // preferred_theme
+func (*Profile) scanValues(columns []string) ([]interface{}, error) {
+	values := make([]interface{}, len(columns))
+	for i := range columns {
+		switch columns[i] {
+		case profile.FieldAvatar:
+			values[i] = &[]byte{}
+		case profile.FieldAge:
+			values[i] = &sql.NullInt64{}
+		case profile.FieldTz, profile.FieldGender, profile.FieldPreferredTheme:
+			values[i] = &sql.NullString{}
+		case profile.FieldCreateTime, profile.FieldUpdateTime, profile.FieldDeleteTime, profile.FieldBirthday:
+			values[i] = &sql.NullTime{}
+		case profile.FieldID:
+			values[i] = &uuid.UUID{}
+		case profile.ForeignKeys[0]: // user_profile
+			values[i] = &uuid.UUID{}
+		default:
+			return nil, fmt.Errorf("unexpected column %q for type Profile", columns[i])
+		}
 	}
-}
-
-// fkValues returns the types for scanning foreign-keys values from sql.Rows.
-func (*Profile) fkValues() []interface{} {
-	return []interface{}{
-		&uuid.UUID{}, // user_profile
-	}
+	return values, nil
 }
 
 // assignValues assigns the values that were returned from sql.Rows (after scanning)
 // to the Profile fields.
-func (pr *Profile) assignValues(values ...interface{}) error {
-	if m, n := len(values), len(profile.Columns); m < n {
+func (pr *Profile) assignValues(columns []string, values []interface{}) error {
+	if m, n := len(values), len(columns); m < n {
 		return fmt.Errorf("mismatch number of scan values: %d != %d", m, n)
 	}
-	if value, ok := values[0].(*uuid.UUID); !ok {
-		return fmt.Errorf("unexpected type %T for field id", values[0])
-	} else if value != nil {
-		pr.ID = *value
-	}
-	values = values[1:]
-	if value, ok := values[0].(*sql.NullTime); !ok {
-		return fmt.Errorf("unexpected type %T for field create_time", values[0])
-	} else if value.Valid {
-		pr.CreateTime = value.Time
-	}
-	if value, ok := values[1].(*sql.NullTime); !ok {
-		return fmt.Errorf("unexpected type %T for field update_time", values[1])
-	} else if value.Valid {
-		pr.UpdateTime = value.Time
-	}
-	if value, ok := values[2].(*sql.NullTime); !ok {
-		return fmt.Errorf("unexpected type %T for field delete_time", values[2])
-	} else if value.Valid {
-		pr.DeleteTime = new(time.Time)
-		*pr.DeleteTime = value.Time
-	}
-	if value, ok := values[3].(*sql.NullInt64); !ok {
-		return fmt.Errorf("unexpected type %T for field age", values[3])
-	} else if value.Valid {
-		pr.Age = int(value.Int64)
-	}
-	if value, ok := values[4].(*sql.NullString); !ok {
-		return fmt.Errorf("unexpected type %T for field tz", values[4])
-	} else if value.Valid {
-		pr.Tz = value.String
-	}
+	for i := range columns {
+		switch columns[i] {
+		case profile.FieldID:
+			if value, ok := values[i].(*uuid.UUID); !ok {
+				return fmt.Errorf("unexpected type %T for field id", values[i])
+			} else if value != nil {
+				pr.ID = *value
+			}
+		case profile.FieldCreateTime:
+			if value, ok := values[i].(*sql.NullTime); !ok {
+				return fmt.Errorf("unexpected type %T for field create_time", values[i])
+			} else if value.Valid {
+				pr.CreateTime = value.Time
+			}
+		case profile.FieldUpdateTime:
+			if value, ok := values[i].(*sql.NullTime); !ok {
+				return fmt.Errorf("unexpected type %T for field update_time", values[i])
+			} else if value.Valid {
+				pr.UpdateTime = value.Time
+			}
+		case profile.FieldDeleteTime:
+			if value, ok := values[i].(*sql.NullTime); !ok {
+				return fmt.Errorf("unexpected type %T for field delete_time", values[i])
+			} else if value.Valid {
+				pr.DeleteTime = new(time.Time)
+				*pr.DeleteTime = value.Time
+			}
+		case profile.FieldAge:
+			if value, ok := values[i].(*sql.NullInt64); !ok {
+				return fmt.Errorf("unexpected type %T for field age", values[i])
+			} else if value.Valid {
+				pr.Age = int(value.Int64)
+			}
+		case profile.FieldTz:
+			if value, ok := values[i].(*sql.NullString); !ok {
+				return fmt.Errorf("unexpected type %T for field tz", values[i])
+			} else if value.Valid {
+				pr.Tz = value.String
+			}
+		case profile.FieldAvatar:
 
-	if value, ok := values[5].(*[]byte); !ok {
-		return fmt.Errorf("unexpected type %T for field avatar", values[5])
-	} else if value != nil && len(*value) > 0 {
-		if err := json.Unmarshal(*value, &pr.Avatar); err != nil {
-			return fmt.Errorf("unmarshal field avatar: %v", err)
-		}
-	}
-	if value, ok := values[6].(*sql.NullTime); !ok {
-		return fmt.Errorf("unexpected type %T for field birthday", values[6])
-	} else if value.Valid {
-		pr.Birthday = value.Time
-	}
-	if value, ok := values[7].(*sql.NullString); !ok {
-		return fmt.Errorf("unexpected type %T for field gender", values[7])
-	} else if value.Valid {
-		pr.Gender = profile.Gender(value.String)
-	}
-	if value, ok := values[8].(*sql.NullString); !ok {
-		return fmt.Errorf("unexpected type %T for field preferred_theme", values[8])
-	} else if value.Valid {
-		pr.PreferredTheme = value.String
-	}
-	values = values[9:]
-	if len(values) == len(profile.ForeignKeys) {
-		if value, ok := values[0].(*uuid.UUID); !ok {
-			return fmt.Errorf("unexpected type %T for field user_profile", values[0])
-		} else if value != nil {
-			pr.user_profile = value
+			if value, ok := values[i].(*[]byte); !ok {
+				return fmt.Errorf("unexpected type %T for field avatar", values[i])
+			} else if value != nil && len(*value) > 0 {
+				if err := json.Unmarshal(*value, &pr.Avatar); err != nil {
+					return fmt.Errorf("unmarshal field avatar: %v", err)
+				}
+			}
+		case profile.FieldBirthday:
+			if value, ok := values[i].(*sql.NullTime); !ok {
+				return fmt.Errorf("unexpected type %T for field birthday", values[i])
+			} else if value.Valid {
+				pr.Birthday = value.Time
+			}
+		case profile.FieldGender:
+			if value, ok := values[i].(*sql.NullString); !ok {
+				return fmt.Errorf("unexpected type %T for field gender", values[i])
+			} else if value.Valid {
+				pr.Gender = profile.Gender(value.String)
+			}
+		case profile.FieldPreferredTheme:
+			if value, ok := values[i].(*sql.NullString); !ok {
+				return fmt.Errorf("unexpected type %T for field preferred_theme", values[i])
+			} else if value.Valid {
+				pr.PreferredTheme = value.String
+			}
+		case profile.ForeignKeys[0]:
+			if value, ok := values[i].(*uuid.UUID); !ok {
+				return fmt.Errorf("unexpected type %T for field user_profile", values[i])
+			} else if value != nil {
+				pr.user_profile = value
+			}
 		}
 	}
 	return nil
 }
 
-// QueryUser queries the user edge of the Profile.
+// QueryUser queries the "user" edge of the Profile entity.
 func (pr *Profile) QueryUser() *UserQuery {
 	return (&ProfileClient{config: pr.config}).QueryUser(pr)
 }
 
 // Update returns a builder for updating this Profile.
-// Note that, you need to call Profile.Unwrap() before calling this method, if this Profile
+// Note that you need to call Profile.Unwrap() before calling this method if this Profile
 // was returned from a transaction, and the transaction was committed or rolled back.
 func (pr *Profile) Update() *ProfileUpdateOne {
 	return (&ProfileClient{config: pr.config}).UpdateOne(pr)
 }
 
-// Unwrap unwraps the entity that was returned from a transaction after it was closed,
-// so that all next queries will be executed through the driver which created the transaction.
+// Unwrap unwraps the Profile entity that was returned from a transaction after it was closed,
+// so that all future queries will be executed through the driver which created the transaction.
 func (pr *Profile) Unwrap() *Profile {
 	tx, ok := pr.config.driver.(*txDriver)
 	if !ok {

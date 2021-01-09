@@ -20,7 +20,7 @@ type ProfileDelete struct {
 	mutation *ProfileMutation
 }
 
-// Where adds a new predicate to the delete builder.
+// Where adds a new predicate to the ProfileDelete builder.
 func (pd *ProfileDelete) Where(ps ...predicate.Profile) *ProfileDelete {
 	pd.mutation.predicates = append(pd.mutation.predicates, ps...)
 	return pd

@@ -30,8 +30,7 @@ const (
 	TypeUser    = "User"
 )
 
-// ProfileMutation represents an operation that mutate the Profiles
-// nodes in the graph.
+// ProfileMutation represents an operation that mutates the Profile nodes in the graph.
 type ProfileMutation struct {
 	config
 	op              Op
@@ -57,10 +56,10 @@ type ProfileMutation struct {
 
 var _ ent.Mutation = (*ProfileMutation)(nil)
 
-// profileOption allows to manage the mutation configuration using functional options.
+// profileOption allows management of the mutation configuration using functional options.
 type profileOption func(*ProfileMutation)
 
-// newProfileMutation creates new mutation for Profile.
+// newProfileMutation creates new mutation for the Profile entity.
 func newProfileMutation(c config, op Op, opts ...profileOption) *ProfileMutation {
 	m := &ProfileMutation{
 		config:        c,
@@ -74,7 +73,7 @@ func newProfileMutation(c config, op Op, opts ...profileOption) *ProfileMutation
 	return m
 }
 
-// withProfileID sets the id field of the mutation.
+// withProfileID sets the ID field of the mutation.
 func withProfileID(id uuid.UUID) profileOption {
 	return func(m *ProfileMutation) {
 		var (
@@ -125,14 +124,14 @@ func (m ProfileMutation) Tx() (*Tx, error) {
 	return tx, nil
 }
 
-// SetID sets the value of the id field. Note that, this
-// operation is accepted only on Profile creation.
+// SetID sets the value of the id field. Note that this
+// operation is only accepted on creation of Profile entities.
 func (m *ProfileMutation) SetID(id uuid.UUID) {
 	m.id = &id
 }
 
-// ID returns the id value in the mutation. Note that, the id
-// is available only if it was provided to the builder.
+// ID returns the ID value in the mutation. Note that the ID
+// is only available if it was provided to the builder.
 func (m *ProfileMutation) ID() (id uuid.UUID, exists bool) {
 	if m.id == nil {
 		return
@@ -140,12 +139,12 @@ func (m *ProfileMutation) ID() (id uuid.UUID, exists bool) {
 	return *m.id, true
 }
 
-// SetCreateTime sets the create_time field.
+// SetCreateTime sets the "create_time" field.
 func (m *ProfileMutation) SetCreateTime(t time.Time) {
 	m.create_time = &t
 }
 
-// CreateTime returns the create_time value in the mutation.
+// CreateTime returns the value of the "create_time" field in the mutation.
 func (m *ProfileMutation) CreateTime() (r time.Time, exists bool) {
 	v := m.create_time
 	if v == nil {
@@ -154,13 +153,12 @@ func (m *ProfileMutation) CreateTime() (r time.Time, exists bool) {
 	return *v, true
 }
 
-// OldCreateTime returns the old create_time value of the Profile.
-// If the Profile object wasn't provided to the builder, the object is fetched
-// from the database.
-// An error is returned if the mutation operation is not UpdateOne, or database query fails.
+// OldCreateTime returns the old "create_time" field's value of the Profile entity.
+// If the Profile object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
 func (m *ProfileMutation) OldCreateTime(ctx context.Context) (v time.Time, err error) {
 	if !m.op.Is(OpUpdateOne) {
-		return v, fmt.Errorf("OldCreateTime is allowed only on UpdateOne operations")
+		return v, fmt.Errorf("OldCreateTime is only allowed on UpdateOne operations")
 	}
 	if m.id == nil || m.oldValue == nil {
 		return v, fmt.Errorf("OldCreateTime requires an ID field in the mutation")
@@ -172,17 +170,17 @@ func (m *ProfileMutation) OldCreateTime(ctx context.Context) (v time.Time, err e
 	return oldValue.CreateTime, nil
 }
 
-// ResetCreateTime reset all changes of the "create_time" field.
+// ResetCreateTime resets all changes to the "create_time" field.
 func (m *ProfileMutation) ResetCreateTime() {
 	m.create_time = nil
 }
 
-// SetUpdateTime sets the update_time field.
+// SetUpdateTime sets the "update_time" field.
 func (m *ProfileMutation) SetUpdateTime(t time.Time) {
 	m.update_time = &t
 }
 
-// UpdateTime returns the update_time value in the mutation.
+// UpdateTime returns the value of the "update_time" field in the mutation.
 func (m *ProfileMutation) UpdateTime() (r time.Time, exists bool) {
 	v := m.update_time
 	if v == nil {
@@ -191,13 +189,12 @@ func (m *ProfileMutation) UpdateTime() (r time.Time, exists bool) {
 	return *v, true
 }
 
-// OldUpdateTime returns the old update_time value of the Profile.
-// If the Profile object wasn't provided to the builder, the object is fetched
-// from the database.
-// An error is returned if the mutation operation is not UpdateOne, or database query fails.
+// OldUpdateTime returns the old "update_time" field's value of the Profile entity.
+// If the Profile object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
 func (m *ProfileMutation) OldUpdateTime(ctx context.Context) (v time.Time, err error) {
 	if !m.op.Is(OpUpdateOne) {
-		return v, fmt.Errorf("OldUpdateTime is allowed only on UpdateOne operations")
+		return v, fmt.Errorf("OldUpdateTime is only allowed on UpdateOne operations")
 	}
 	if m.id == nil || m.oldValue == nil {
 		return v, fmt.Errorf("OldUpdateTime requires an ID field in the mutation")
@@ -209,17 +206,17 @@ func (m *ProfileMutation) OldUpdateTime(ctx context.Context) (v time.Time, err e
 	return oldValue.UpdateTime, nil
 }
 
-// ResetUpdateTime reset all changes of the "update_time" field.
+// ResetUpdateTime resets all changes to the "update_time" field.
 func (m *ProfileMutation) ResetUpdateTime() {
 	m.update_time = nil
 }
 
-// SetDeleteTime sets the delete_time field.
+// SetDeleteTime sets the "delete_time" field.
 func (m *ProfileMutation) SetDeleteTime(t time.Time) {
 	m.delete_time = &t
 }
 
-// DeleteTime returns the delete_time value in the mutation.
+// DeleteTime returns the value of the "delete_time" field in the mutation.
 func (m *ProfileMutation) DeleteTime() (r time.Time, exists bool) {
 	v := m.delete_time
 	if v == nil {
@@ -228,13 +225,12 @@ func (m *ProfileMutation) DeleteTime() (r time.Time, exists bool) {
 	return *v, true
 }
 
-// OldDeleteTime returns the old delete_time value of the Profile.
-// If the Profile object wasn't provided to the builder, the object is fetched
-// from the database.
-// An error is returned if the mutation operation is not UpdateOne, or database query fails.
+// OldDeleteTime returns the old "delete_time" field's value of the Profile entity.
+// If the Profile object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
 func (m *ProfileMutation) OldDeleteTime(ctx context.Context) (v *time.Time, err error) {
 	if !m.op.Is(OpUpdateOne) {
-		return v, fmt.Errorf("OldDeleteTime is allowed only on UpdateOne operations")
+		return v, fmt.Errorf("OldDeleteTime is only allowed on UpdateOne operations")
 	}
 	if m.id == nil || m.oldValue == nil {
 		return v, fmt.Errorf("OldDeleteTime requires an ID field in the mutation")
@@ -246,31 +242,31 @@ func (m *ProfileMutation) OldDeleteTime(ctx context.Context) (v *time.Time, err 
 	return oldValue.DeleteTime, nil
 }
 
-// ClearDeleteTime clears the value of delete_time.
+// ClearDeleteTime clears the value of the "delete_time" field.
 func (m *ProfileMutation) ClearDeleteTime() {
 	m.delete_time = nil
 	m.clearedFields[profile.FieldDeleteTime] = struct{}{}
 }
 
-// DeleteTimeCleared returns if the field delete_time was cleared in this mutation.
+// DeleteTimeCleared returns if the "delete_time" field was cleared in this mutation.
 func (m *ProfileMutation) DeleteTimeCleared() bool {
 	_, ok := m.clearedFields[profile.FieldDeleteTime]
 	return ok
 }
 
-// ResetDeleteTime reset all changes of the "delete_time" field.
+// ResetDeleteTime resets all changes to the "delete_time" field.
 func (m *ProfileMutation) ResetDeleteTime() {
 	m.delete_time = nil
 	delete(m.clearedFields, profile.FieldDeleteTime)
 }
 
-// SetAge sets the age field.
+// SetAge sets the "age" field.
 func (m *ProfileMutation) SetAge(i int) {
 	m.age = &i
 	m.addage = nil
 }
 
-// Age returns the age value in the mutation.
+// Age returns the value of the "age" field in the mutation.
 func (m *ProfileMutation) Age() (r int, exists bool) {
 	v := m.age
 	if v == nil {
@@ -279,13 +275,12 @@ func (m *ProfileMutation) Age() (r int, exists bool) {
 	return *v, true
 }
 
-// OldAge returns the old age value of the Profile.
-// If the Profile object wasn't provided to the builder, the object is fetched
-// from the database.
-// An error is returned if the mutation operation is not UpdateOne, or database query fails.
+// OldAge returns the old "age" field's value of the Profile entity.
+// If the Profile object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
 func (m *ProfileMutation) OldAge(ctx context.Context) (v int, err error) {
 	if !m.op.Is(OpUpdateOne) {
-		return v, fmt.Errorf("OldAge is allowed only on UpdateOne operations")
+		return v, fmt.Errorf("OldAge is only allowed on UpdateOne operations")
 	}
 	if m.id == nil || m.oldValue == nil {
 		return v, fmt.Errorf("OldAge requires an ID field in the mutation")
@@ -297,7 +292,7 @@ func (m *ProfileMutation) OldAge(ctx context.Context) (v int, err error) {
 	return oldValue.Age, nil
 }
 
-// AddAge adds i to age.
+// AddAge adds i to the "age" field.
 func (m *ProfileMutation) AddAge(i int) {
 	if m.addage != nil {
 		*m.addage += i
@@ -306,7 +301,7 @@ func (m *ProfileMutation) AddAge(i int) {
 	}
 }
 
-// AddedAge returns the value that was added to the age field in this mutation.
+// AddedAge returns the value that was added to the "age" field in this mutation.
 func (m *ProfileMutation) AddedAge() (r int, exists bool) {
 	v := m.addage
 	if v == nil {
@@ -315,18 +310,18 @@ func (m *ProfileMutation) AddedAge() (r int, exists bool) {
 	return *v, true
 }
 
-// ResetAge reset all changes of the "age" field.
+// ResetAge resets all changes to the "age" field.
 func (m *ProfileMutation) ResetAge() {
 	m.age = nil
 	m.addage = nil
 }
 
-// SetTz sets the tz field.
+// SetTz sets the "tz" field.
 func (m *ProfileMutation) SetTz(s string) {
 	m.tz = &s
 }
 
-// Tz returns the tz value in the mutation.
+// Tz returns the value of the "tz" field in the mutation.
 func (m *ProfileMutation) Tz() (r string, exists bool) {
 	v := m.tz
 	if v == nil {
@@ -335,13 +330,12 @@ func (m *ProfileMutation) Tz() (r string, exists bool) {
 	return *v, true
 }
 
-// OldTz returns the old tz value of the Profile.
-// If the Profile object wasn't provided to the builder, the object is fetched
-// from the database.
-// An error is returned if the mutation operation is not UpdateOne, or database query fails.
+// OldTz returns the old "tz" field's value of the Profile entity.
+// If the Profile object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
 func (m *ProfileMutation) OldTz(ctx context.Context) (v string, err error) {
 	if !m.op.Is(OpUpdateOne) {
-		return v, fmt.Errorf("OldTz is allowed only on UpdateOne operations")
+		return v, fmt.Errorf("OldTz is only allowed on UpdateOne operations")
 	}
 	if m.id == nil || m.oldValue == nil {
 		return v, fmt.Errorf("OldTz requires an ID field in the mutation")
@@ -353,17 +347,17 @@ func (m *ProfileMutation) OldTz(ctx context.Context) (v string, err error) {
 	return oldValue.Tz, nil
 }
 
-// ResetTz reset all changes of the "tz" field.
+// ResetTz resets all changes to the "tz" field.
 func (m *ProfileMutation) ResetTz() {
 	m.tz = nil
 }
 
-// SetAvatar sets the avatar field.
+// SetAvatar sets the "avatar" field.
 func (m *ProfileMutation) SetAvatar(u *url.URL) {
 	m.avatar = &u
 }
 
-// Avatar returns the avatar value in the mutation.
+// Avatar returns the value of the "avatar" field in the mutation.
 func (m *ProfileMutation) Avatar() (r *url.URL, exists bool) {
 	v := m.avatar
 	if v == nil {
@@ -372,13 +366,12 @@ func (m *ProfileMutation) Avatar() (r *url.URL, exists bool) {
 	return *v, true
 }
 
-// OldAvatar returns the old avatar value of the Profile.
-// If the Profile object wasn't provided to the builder, the object is fetched
-// from the database.
-// An error is returned if the mutation operation is not UpdateOne, or database query fails.
+// OldAvatar returns the old "avatar" field's value of the Profile entity.
+// If the Profile object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
 func (m *ProfileMutation) OldAvatar(ctx context.Context) (v *url.URL, err error) {
 	if !m.op.Is(OpUpdateOne) {
-		return v, fmt.Errorf("OldAvatar is allowed only on UpdateOne operations")
+		return v, fmt.Errorf("OldAvatar is only allowed on UpdateOne operations")
 	}
 	if m.id == nil || m.oldValue == nil {
 		return v, fmt.Errorf("OldAvatar requires an ID field in the mutation")
@@ -390,30 +383,30 @@ func (m *ProfileMutation) OldAvatar(ctx context.Context) (v *url.URL, err error)
 	return oldValue.Avatar, nil
 }
 
-// ClearAvatar clears the value of avatar.
+// ClearAvatar clears the value of the "avatar" field.
 func (m *ProfileMutation) ClearAvatar() {
 	m.avatar = nil
 	m.clearedFields[profile.FieldAvatar] = struct{}{}
 }
 
-// AvatarCleared returns if the field avatar was cleared in this mutation.
+// AvatarCleared returns if the "avatar" field was cleared in this mutation.
 func (m *ProfileMutation) AvatarCleared() bool {
 	_, ok := m.clearedFields[profile.FieldAvatar]
 	return ok
 }
 
-// ResetAvatar reset all changes of the "avatar" field.
+// ResetAvatar resets all changes to the "avatar" field.
 func (m *ProfileMutation) ResetAvatar() {
 	m.avatar = nil
 	delete(m.clearedFields, profile.FieldAvatar)
 }
 
-// SetBirthday sets the birthday field.
+// SetBirthday sets the "birthday" field.
 func (m *ProfileMutation) SetBirthday(t time.Time) {
 	m.birthday = &t
 }
 
-// Birthday returns the birthday value in the mutation.
+// Birthday returns the value of the "birthday" field in the mutation.
 func (m *ProfileMutation) Birthday() (r time.Time, exists bool) {
 	v := m.birthday
 	if v == nil {
@@ -422,13 +415,12 @@ func (m *ProfileMutation) Birthday() (r time.Time, exists bool) {
 	return *v, true
 }
 
-// OldBirthday returns the old birthday value of the Profile.
-// If the Profile object wasn't provided to the builder, the object is fetched
-// from the database.
-// An error is returned if the mutation operation is not UpdateOne, or database query fails.
+// OldBirthday returns the old "birthday" field's value of the Profile entity.
+// If the Profile object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
 func (m *ProfileMutation) OldBirthday(ctx context.Context) (v time.Time, err error) {
 	if !m.op.Is(OpUpdateOne) {
-		return v, fmt.Errorf("OldBirthday is allowed only on UpdateOne operations")
+		return v, fmt.Errorf("OldBirthday is only allowed on UpdateOne operations")
 	}
 	if m.id == nil || m.oldValue == nil {
 		return v, fmt.Errorf("OldBirthday requires an ID field in the mutation")
@@ -440,30 +432,30 @@ func (m *ProfileMutation) OldBirthday(ctx context.Context) (v time.Time, err err
 	return oldValue.Birthday, nil
 }
 
-// ClearBirthday clears the value of birthday.
+// ClearBirthday clears the value of the "birthday" field.
 func (m *ProfileMutation) ClearBirthday() {
 	m.birthday = nil
 	m.clearedFields[profile.FieldBirthday] = struct{}{}
 }
 
-// BirthdayCleared returns if the field birthday was cleared in this mutation.
+// BirthdayCleared returns if the "birthday" field was cleared in this mutation.
 func (m *ProfileMutation) BirthdayCleared() bool {
 	_, ok := m.clearedFields[profile.FieldBirthday]
 	return ok
 }
 
-// ResetBirthday reset all changes of the "birthday" field.
+// ResetBirthday resets all changes to the "birthday" field.
 func (m *ProfileMutation) ResetBirthday() {
 	m.birthday = nil
 	delete(m.clearedFields, profile.FieldBirthday)
 }
 
-// SetGender sets the gender field.
+// SetGender sets the "gender" field.
 func (m *ProfileMutation) SetGender(pr profile.Gender) {
 	m.gender = &pr
 }
 
-// Gender returns the gender value in the mutation.
+// Gender returns the value of the "gender" field in the mutation.
 func (m *ProfileMutation) Gender() (r profile.Gender, exists bool) {
 	v := m.gender
 	if v == nil {
@@ -472,13 +464,12 @@ func (m *ProfileMutation) Gender() (r profile.Gender, exists bool) {
 	return *v, true
 }
 
-// OldGender returns the old gender value of the Profile.
-// If the Profile object wasn't provided to the builder, the object is fetched
-// from the database.
-// An error is returned if the mutation operation is not UpdateOne, or database query fails.
+// OldGender returns the old "gender" field's value of the Profile entity.
+// If the Profile object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
 func (m *ProfileMutation) OldGender(ctx context.Context) (v profile.Gender, err error) {
 	if !m.op.Is(OpUpdateOne) {
-		return v, fmt.Errorf("OldGender is allowed only on UpdateOne operations")
+		return v, fmt.Errorf("OldGender is only allowed on UpdateOne operations")
 	}
 	if m.id == nil || m.oldValue == nil {
 		return v, fmt.Errorf("OldGender requires an ID field in the mutation")
@@ -490,30 +481,30 @@ func (m *ProfileMutation) OldGender(ctx context.Context) (v profile.Gender, err 
 	return oldValue.Gender, nil
 }
 
-// ClearGender clears the value of gender.
+// ClearGender clears the value of the "gender" field.
 func (m *ProfileMutation) ClearGender() {
 	m.gender = nil
 	m.clearedFields[profile.FieldGender] = struct{}{}
 }
 
-// GenderCleared returns if the field gender was cleared in this mutation.
+// GenderCleared returns if the "gender" field was cleared in this mutation.
 func (m *ProfileMutation) GenderCleared() bool {
 	_, ok := m.clearedFields[profile.FieldGender]
 	return ok
 }
 
-// ResetGender reset all changes of the "gender" field.
+// ResetGender resets all changes to the "gender" field.
 func (m *ProfileMutation) ResetGender() {
 	m.gender = nil
 	delete(m.clearedFields, profile.FieldGender)
 }
 
-// SetPreferredTheme sets the preferred_theme field.
+// SetPreferredTheme sets the "preferred_theme" field.
 func (m *ProfileMutation) SetPreferredTheme(s string) {
 	m.preferred_theme = &s
 }
 
-// PreferredTheme returns the preferred_theme value in the mutation.
+// PreferredTheme returns the value of the "preferred_theme" field in the mutation.
 func (m *ProfileMutation) PreferredTheme() (r string, exists bool) {
 	v := m.preferred_theme
 	if v == nil {
@@ -522,13 +513,12 @@ func (m *ProfileMutation) PreferredTheme() (r string, exists bool) {
 	return *v, true
 }
 
-// OldPreferredTheme returns the old preferred_theme value of the Profile.
-// If the Profile object wasn't provided to the builder, the object is fetched
-// from the database.
-// An error is returned if the mutation operation is not UpdateOne, or database query fails.
+// OldPreferredTheme returns the old "preferred_theme" field's value of the Profile entity.
+// If the Profile object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
 func (m *ProfileMutation) OldPreferredTheme(ctx context.Context) (v string, err error) {
 	if !m.op.Is(OpUpdateOne) {
-		return v, fmt.Errorf("OldPreferredTheme is allowed only on UpdateOne operations")
+		return v, fmt.Errorf("OldPreferredTheme is only allowed on UpdateOne operations")
 	}
 	if m.id == nil || m.oldValue == nil {
 		return v, fmt.Errorf("OldPreferredTheme requires an ID field in the mutation")
@@ -540,40 +530,40 @@ func (m *ProfileMutation) OldPreferredTheme(ctx context.Context) (v string, err 
 	return oldValue.PreferredTheme, nil
 }
 
-// ClearPreferredTheme clears the value of preferred_theme.
+// ClearPreferredTheme clears the value of the "preferred_theme" field.
 func (m *ProfileMutation) ClearPreferredTheme() {
 	m.preferred_theme = nil
 	m.clearedFields[profile.FieldPreferredTheme] = struct{}{}
 }
 
-// PreferredThemeCleared returns if the field preferred_theme was cleared in this mutation.
+// PreferredThemeCleared returns if the "preferred_theme" field was cleared in this mutation.
 func (m *ProfileMutation) PreferredThemeCleared() bool {
 	_, ok := m.clearedFields[profile.FieldPreferredTheme]
 	return ok
 }
 
-// ResetPreferredTheme reset all changes of the "preferred_theme" field.
+// ResetPreferredTheme resets all changes to the "preferred_theme" field.
 func (m *ProfileMutation) ResetPreferredTheme() {
 	m.preferred_theme = nil
 	delete(m.clearedFields, profile.FieldPreferredTheme)
 }
 
-// SetUserID sets the user edge to User by id.
+// SetUserID sets the "user" edge to the User entity by id.
 func (m *ProfileMutation) SetUserID(id uuid.UUID) {
 	m.user = &id
 }
 
-// ClearUser clears the user edge to User.
+// ClearUser clears the "user" edge to the User entity.
 func (m *ProfileMutation) ClearUser() {
 	m.cleareduser = true
 }
 
-// UserCleared returns if the edge user was cleared.
+// UserCleared returns if the "user" edge to the User entity was cleared.
 func (m *ProfileMutation) UserCleared() bool {
 	return m.cleareduser
 }
 
-// UserID returns the user id in the mutation.
+// UserID returns the "user" edge ID in the mutation.
 func (m *ProfileMutation) UserID() (id uuid.UUID, exists bool) {
 	if m.user != nil {
 		return *m.user, true
@@ -581,8 +571,8 @@ func (m *ProfileMutation) UserID() (id uuid.UUID, exists bool) {
 	return
 }
 
-// UserIDs returns the user ids in the mutation.
-// Note that ids always returns len(ids) <= 1 for unique edges, and you should use
+// UserIDs returns the "user" edge IDs in the mutation.
+// Note that IDs always returns len(IDs) <= 1 for unique edges, and you should use
 // UserID instead. It exists only for internal usage by the builders.
 func (m *ProfileMutation) UserIDs() (ids []uuid.UUID) {
 	if id := m.user; id != nil {
@@ -591,7 +581,7 @@ func (m *ProfileMutation) UserIDs() (ids []uuid.UUID) {
 	return
 }
 
-// ResetUser reset all changes of the "user" edge.
+// ResetUser resets all changes to the "user" edge.
 func (m *ProfileMutation) ResetUser() {
 	m.user = nil
 	m.cleareduser = false
@@ -607,9 +597,9 @@ func (m *ProfileMutation) Type() string {
 	return m.typ
 }
 
-// Fields returns all fields that were changed during
-// this mutation. Note that, in order to get all numeric
-// fields that were in/decremented, call AddedFields().
+// Fields returns all fields that were changed during this mutation. Note that in
+// order to get all numeric fields that were incremented/decremented, call
+// AddedFields().
 func (m *ProfileMutation) Fields() []string {
 	fields := make([]string, 0, 9)
 	if m.create_time != nil {
@@ -642,9 +632,9 @@ func (m *ProfileMutation) Fields() []string {
 	return fields
 }
 
-// Field returns the value of a field with the given name.
-// The second boolean value indicates that this field was
-// not set, or was not define in the schema.
+// Field returns the value of a field with the given name. The second boolean
+// return value indicates that this field was not set, or was not defined in the
+// schema.
 func (m *ProfileMutation) Field(name string) (ent.Value, bool) {
 	switch name {
 	case profile.FieldCreateTime:
@@ -669,9 +659,9 @@ func (m *ProfileMutation) Field(name string) (ent.Value, bool) {
 	return nil, false
 }
 
-// OldField returns the old value of the field from the database.
-// An error is returned if the mutation operation is not UpdateOne,
-// or the query to the database was failed.
+// OldField returns the old value of the field from the database. An error is
+// returned if the mutation operation is not UpdateOne, or the query to the
+// database failed.
 func (m *ProfileMutation) OldField(ctx context.Context, name string) (ent.Value, error) {
 	switch name {
 	case profile.FieldCreateTime:
@@ -696,9 +686,9 @@ func (m *ProfileMutation) OldField(ctx context.Context, name string) (ent.Value,
 	return nil, fmt.Errorf("unknown Profile field %s", name)
 }
 
-// SetField sets the value for the given name. It returns an
-// error if the field is not defined in the schema, or if the
-// type mismatch the field type.
+// SetField sets the value of a field with the given name. It returns an error if
+// the field is not defined in the schema, or if the type mismatched the field
+// type.
 func (m *ProfileMutation) SetField(name string, value ent.Value) error {
 	switch name {
 	case profile.FieldCreateTime:
@@ -768,8 +758,8 @@ func (m *ProfileMutation) SetField(name string, value ent.Value) error {
 	return fmt.Errorf("unknown Profile field %s", name)
 }
 
-// AddedFields returns all numeric fields that were incremented
-// or decremented during this mutation.
+// AddedFields returns all numeric fields that were incremented/decremented during
+// this mutation.
 func (m *ProfileMutation) AddedFields() []string {
 	var fields []string
 	if m.addage != nil {
@@ -778,9 +768,9 @@ func (m *ProfileMutation) AddedFields() []string {
 	return fields
 }
 
-// AddedField returns the numeric value that was in/decremented
-// from a field with the given name. The second value indicates
-// that this field was not set, or was not define in the schema.
+// AddedField returns the numeric value that was incremented/decremented on a field
+// with the given name. The second boolean return value indicates that this field
+// was not set, or was not defined in the schema.
 func (m *ProfileMutation) AddedField(name string) (ent.Value, bool) {
 	switch name {
 	case profile.FieldAge:
@@ -789,9 +779,9 @@ func (m *ProfileMutation) AddedField(name string) (ent.Value, bool) {
 	return nil, false
 }
 
-// AddField adds the value for the given name. It returns an
-// error if the field is not defined in the schema, or if the
-// type mismatch the field type.
+// AddField adds the value to the field with the given name. It returns an error if
+// the field is not defined in the schema, or if the type mismatched the field
+// type.
 func (m *ProfileMutation) AddField(name string, value ent.Value) error {
 	switch name {
 	case profile.FieldAge:
@@ -805,8 +795,8 @@ func (m *ProfileMutation) AddField(name string, value ent.Value) error {
 	return fmt.Errorf("unknown Profile numeric field %s", name)
 }
 
-// ClearedFields returns all nullable fields that were cleared
-// during this mutation.
+// ClearedFields returns all nullable fields that were cleared during this
+// mutation.
 func (m *ProfileMutation) ClearedFields() []string {
 	var fields []string
 	if m.FieldCleared(profile.FieldDeleteTime) {
@@ -827,14 +817,14 @@ func (m *ProfileMutation) ClearedFields() []string {
 	return fields
 }
 
-// FieldCleared returns a boolean indicates if this field was
+// FieldCleared returns a boolean indicating if a field with the given name was
 // cleared in this mutation.
 func (m *ProfileMutation) FieldCleared(name string) bool {
 	_, ok := m.clearedFields[name]
 	return ok
 }
 
-// ClearField clears the value for the given name. It returns an
+// ClearField clears the value of the field with the given name. It returns an
 // error if the field is not defined in the schema.
 func (m *ProfileMutation) ClearField(name string) error {
 	switch name {
@@ -857,9 +847,8 @@ func (m *ProfileMutation) ClearField(name string) error {
 	return fmt.Errorf("unknown Profile nullable field %s", name)
 }
 
-// ResetField resets all changes in the mutation regarding the
-// given field name. It returns an error if the field is not
-// defined in the schema.
+// ResetField resets all changes in the mutation for the field with the given name.
+// It returns an error if the field is not defined in the schema.
 func (m *ProfileMutation) ResetField(name string) error {
 	switch name {
 	case profile.FieldCreateTime:
@@ -893,8 +882,7 @@ func (m *ProfileMutation) ResetField(name string) error {
 	return fmt.Errorf("unknown Profile field %s", name)
 }
 
-// AddedEdges returns all edge names that were set/added in this
-// mutation.
+// AddedEdges returns all edge names that were set/added in this mutation.
 func (m *ProfileMutation) AddedEdges() []string {
 	edges := make([]string, 0, 1)
 	if m.user != nil {
@@ -903,8 +891,8 @@ func (m *ProfileMutation) AddedEdges() []string {
 	return edges
 }
 
-// AddedIDs returns all ids (to other nodes) that were added for
-// the given edge name.
+// AddedIDs returns all IDs (to other nodes) that were added for the given edge
+// name in this mutation.
 func (m *ProfileMutation) AddedIDs(name string) []ent.Value {
 	switch name {
 	case profile.EdgeUser:
@@ -915,23 +903,21 @@ func (m *ProfileMutation) AddedIDs(name string) []ent.Value {
 	return nil
 }
 
-// RemovedEdges returns all edge names that were removed in this
-// mutation.
+// RemovedEdges returns all edge names that were removed in this mutation.
 func (m *ProfileMutation) RemovedEdges() []string {
 	edges := make([]string, 0, 1)
 	return edges
 }
 
-// RemovedIDs returns all ids (to other nodes) that were removed for
-// the given edge name.
+// RemovedIDs returns all IDs (to other nodes) that were removed for the edge with
+// the given name in this mutation.
 func (m *ProfileMutation) RemovedIDs(name string) []ent.Value {
 	switch name {
 	}
 	return nil
 }
 
-// ClearedEdges returns all edge names that were cleared in this
-// mutation.
+// ClearedEdges returns all edge names that were cleared in this mutation.
 func (m *ProfileMutation) ClearedEdges() []string {
 	edges := make([]string, 0, 1)
 	if m.cleareduser {
@@ -940,8 +926,8 @@ func (m *ProfileMutation) ClearedEdges() []string {
 	return edges
 }
 
-// EdgeCleared returns a boolean indicates if this edge was
-// cleared in this mutation.
+// EdgeCleared returns a boolean which indicates if the edge with the given name
+// was cleared in this mutation.
 func (m *ProfileMutation) EdgeCleared(name string) bool {
 	switch name {
 	case profile.EdgeUser:
@@ -950,8 +936,8 @@ func (m *ProfileMutation) EdgeCleared(name string) bool {
 	return false
 }
 
-// ClearEdge clears the value for the given name. It returns an
-// error if the edge name is not defined in the schema.
+// ClearEdge clears the value of the edge with the given name. It returns an error
+// if that edge is not defined in the schema.
 func (m *ProfileMutation) ClearEdge(name string) error {
 	switch name {
 	case profile.EdgeUser:
@@ -961,9 +947,8 @@ func (m *ProfileMutation) ClearEdge(name string) error {
 	return fmt.Errorf("unknown Profile unique edge %s", name)
 }
 
-// ResetEdge resets all changes in the mutation regarding the
-// given edge name. It returns an error if the edge is not
-// defined in the schema.
+// ResetEdge resets all changes to the edge with the given name in this mutation.
+// It returns an error if the edge is not defined in the schema.
 func (m *ProfileMutation) ResetEdge(name string) error {
 	switch name {
 	case profile.EdgeUser:
@@ -973,8 +958,7 @@ func (m *ProfileMutation) ResetEdge(name string) error {
 	return fmt.Errorf("unknown Profile edge %s", name)
 }
 
-// UserMutation represents an operation that mutate the Users
-// nodes in the graph.
+// UserMutation represents an operation that mutates the User nodes in the graph.
 type UserMutation struct {
 	config
 	op             Op
@@ -998,10 +982,10 @@ type UserMutation struct {
 
 var _ ent.Mutation = (*UserMutation)(nil)
 
-// userOption allows to manage the mutation configuration using functional options.
+// userOption allows management of the mutation configuration using functional options.
 type userOption func(*UserMutation)
 
-// newUserMutation creates new mutation for User.
+// newUserMutation creates new mutation for the User entity.
 func newUserMutation(c config, op Op, opts ...userOption) *UserMutation {
 	m := &UserMutation{
 		config:        c,
@@ -1015,7 +999,7 @@ func newUserMutation(c config, op Op, opts ...userOption) *UserMutation {
 	return m
 }
 
-// withUserID sets the id field of the mutation.
+// withUserID sets the ID field of the mutation.
 func withUserID(id uuid.UUID) userOption {
 	return func(m *UserMutation) {
 		var (
@@ -1066,14 +1050,14 @@ func (m UserMutation) Tx() (*Tx, error) {
 	return tx, nil
 }
 
-// SetID sets the value of the id field. Note that, this
-// operation is accepted only on User creation.
+// SetID sets the value of the id field. Note that this
+// operation is only accepted on creation of User entities.
 func (m *UserMutation) SetID(id uuid.UUID) {
 	m.id = &id
 }
 
-// ID returns the id value in the mutation. Note that, the id
-// is available only if it was provided to the builder.
+// ID returns the ID value in the mutation. Note that the ID
+// is only available if it was provided to the builder.
 func (m *UserMutation) ID() (id uuid.UUID, exists bool) {
 	if m.id == nil {
 		return
@@ -1081,12 +1065,12 @@ func (m *UserMutation) ID() (id uuid.UUID, exists bool) {
 	return *m.id, true
 }
 
-// SetCreateTime sets the create_time field.
+// SetCreateTime sets the "create_time" field.
 func (m *UserMutation) SetCreateTime(t time.Time) {
 	m.create_time = &t
 }
 
-// CreateTime returns the create_time value in the mutation.
+// CreateTime returns the value of the "create_time" field in the mutation.
 func (m *UserMutation) CreateTime() (r time.Time, exists bool) {
 	v := m.create_time
 	if v == nil {
@@ -1095,13 +1079,12 @@ func (m *UserMutation) CreateTime() (r time.Time, exists bool) {
 	return *v, true
 }
 
-// OldCreateTime returns the old create_time value of the User.
-// If the User object wasn't provided to the builder, the object is fetched
-// from the database.
-// An error is returned if the mutation operation is not UpdateOne, or database query fails.
+// OldCreateTime returns the old "create_time" field's value of the User entity.
+// If the User object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
 func (m *UserMutation) OldCreateTime(ctx context.Context) (v time.Time, err error) {
 	if !m.op.Is(OpUpdateOne) {
-		return v, fmt.Errorf("OldCreateTime is allowed only on UpdateOne operations")
+		return v, fmt.Errorf("OldCreateTime is only allowed on UpdateOne operations")
 	}
 	if m.id == nil || m.oldValue == nil {
 		return v, fmt.Errorf("OldCreateTime requires an ID field in the mutation")
@@ -1113,17 +1096,17 @@ func (m *UserMutation) OldCreateTime(ctx context.Context) (v time.Time, err erro
 	return oldValue.CreateTime, nil
 }
 
-// ResetCreateTime reset all changes of the "create_time" field.
+// ResetCreateTime resets all changes to the "create_time" field.
 func (m *UserMutation) ResetCreateTime() {
 	m.create_time = nil
 }
 
-// SetUpdateTime sets the update_time field.
+// SetUpdateTime sets the "update_time" field.
 func (m *UserMutation) SetUpdateTime(t time.Time) {
 	m.update_time = &t
 }
 
-// UpdateTime returns the update_time value in the mutation.
+// UpdateTime returns the value of the "update_time" field in the mutation.
 func (m *UserMutation) UpdateTime() (r time.Time, exists bool) {
 	v := m.update_time
 	if v == nil {
@@ -1132,13 +1115,12 @@ func (m *UserMutation) UpdateTime() (r time.Time, exists bool) {
 	return *v, true
 }
 
-// OldUpdateTime returns the old update_time value of the User.
-// If the User object wasn't provided to the builder, the object is fetched
-// from the database.
-// An error is returned if the mutation operation is not UpdateOne, or database query fails.
+// OldUpdateTime returns the old "update_time" field's value of the User entity.
+// If the User object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
 func (m *UserMutation) OldUpdateTime(ctx context.Context) (v time.Time, err error) {
 	if !m.op.Is(OpUpdateOne) {
-		return v, fmt.Errorf("OldUpdateTime is allowed only on UpdateOne operations")
+		return v, fmt.Errorf("OldUpdateTime is only allowed on UpdateOne operations")
 	}
 	if m.id == nil || m.oldValue == nil {
 		return v, fmt.Errorf("OldUpdateTime requires an ID field in the mutation")
@@ -1150,17 +1132,17 @@ func (m *UserMutation) OldUpdateTime(ctx context.Context) (v time.Time, err erro
 	return oldValue.UpdateTime, nil
 }
 
-// ResetUpdateTime reset all changes of the "update_time" field.
+// ResetUpdateTime resets all changes to the "update_time" field.
 func (m *UserMutation) ResetUpdateTime() {
 	m.update_time = nil
 }
 
-// SetDeleteTime sets the delete_time field.
+// SetDeleteTime sets the "delete_time" field.
 func (m *UserMutation) SetDeleteTime(t time.Time) {
 	m.delete_time = &t
 }
 
-// DeleteTime returns the delete_time value in the mutation.
+// DeleteTime returns the value of the "delete_time" field in the mutation.
 func (m *UserMutation) DeleteTime() (r time.Time, exists bool) {
 	v := m.delete_time
 	if v == nil {
@@ -1169,13 +1151,12 @@ func (m *UserMutation) DeleteTime() (r time.Time, exists bool) {
 	return *v, true
 }
 
-// OldDeleteTime returns the old delete_time value of the User.
-// If the User object wasn't provided to the builder, the object is fetched
-// from the database.
-// An error is returned if the mutation operation is not UpdateOne, or database query fails.
+// OldDeleteTime returns the old "delete_time" field's value of the User entity.
+// If the User object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
 func (m *UserMutation) OldDeleteTime(ctx context.Context) (v *time.Time, err error) {
 	if !m.op.Is(OpUpdateOne) {
-		return v, fmt.Errorf("OldDeleteTime is allowed only on UpdateOne operations")
+		return v, fmt.Errorf("OldDeleteTime is only allowed on UpdateOne operations")
 	}
 	if m.id == nil || m.oldValue == nil {
 		return v, fmt.Errorf("OldDeleteTime requires an ID field in the mutation")
@@ -1187,30 +1168,30 @@ func (m *UserMutation) OldDeleteTime(ctx context.Context) (v *time.Time, err err
 	return oldValue.DeleteTime, nil
 }
 
-// ClearDeleteTime clears the value of delete_time.
+// ClearDeleteTime clears the value of the "delete_time" field.
 func (m *UserMutation) ClearDeleteTime() {
 	m.delete_time = nil
 	m.clearedFields[user.FieldDeleteTime] = struct{}{}
 }
 
-// DeleteTimeCleared returns if the field delete_time was cleared in this mutation.
+// DeleteTimeCleared returns if the "delete_time" field was cleared in this mutation.
 func (m *UserMutation) DeleteTimeCleared() bool {
 	_, ok := m.clearedFields[user.FieldDeleteTime]
 	return ok
 }
 
-// ResetDeleteTime reset all changes of the "delete_time" field.
+// ResetDeleteTime resets all changes to the "delete_time" field.
 func (m *UserMutation) ResetDeleteTime() {
 	m.delete_time = nil
 	delete(m.clearedFields, user.FieldDeleteTime)
 }
 
-// SetUsername sets the username field.
+// SetUsername sets the "username" field.
 func (m *UserMutation) SetUsername(s string) {
 	m.username = &s
 }
 
-// Username returns the username value in the mutation.
+// Username returns the value of the "username" field in the mutation.
 func (m *UserMutation) Username() (r string, exists bool) {
 	v := m.username
 	if v == nil {
@@ -1219,13 +1200,12 @@ func (m *UserMutation) Username() (r string, exists bool) {
 	return *v, true
 }
 
-// OldUsername returns the old username value of the User.
-// If the User object wasn't provided to the builder, the object is fetched
-// from the database.
-// An error is returned if the mutation operation is not UpdateOne, or database query fails.
+// OldUsername returns the old "username" field's value of the User entity.
+// If the User object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
 func (m *UserMutation) OldUsername(ctx context.Context) (v string, err error) {
 	if !m.op.Is(OpUpdateOne) {
-		return v, fmt.Errorf("OldUsername is allowed only on UpdateOne operations")
+		return v, fmt.Errorf("OldUsername is only allowed on UpdateOne operations")
 	}
 	if m.id == nil || m.oldValue == nil {
 		return v, fmt.Errorf("OldUsername requires an ID field in the mutation")
@@ -1237,17 +1217,17 @@ func (m *UserMutation) OldUsername(ctx context.Context) (v string, err error) {
 	return oldValue.Username, nil
 }
 
-// ResetUsername reset all changes of the "username" field.
+// ResetUsername resets all changes to the "username" field.
 func (m *UserMutation) ResetUsername() {
 	m.username = nil
 }
 
-// SetFirstName sets the first_name field.
+// SetFirstName sets the "first_name" field.
 func (m *UserMutation) SetFirstName(s string) {
 	m.first_name = &s
 }
 
-// FirstName returns the first_name value in the mutation.
+// FirstName returns the value of the "first_name" field in the mutation.
 func (m *UserMutation) FirstName() (r string, exists bool) {
 	v := m.first_name
 	if v == nil {
@@ -1256,13 +1236,12 @@ func (m *UserMutation) FirstName() (r string, exists bool) {
 	return *v, true
 }
 
-// OldFirstName returns the old first_name value of the User.
-// If the User object wasn't provided to the builder, the object is fetched
-// from the database.
-// An error is returned if the mutation operation is not UpdateOne, or database query fails.
+// OldFirstName returns the old "first_name" field's value of the User entity.
+// If the User object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
 func (m *UserMutation) OldFirstName(ctx context.Context) (v string, err error) {
 	if !m.op.Is(OpUpdateOne) {
-		return v, fmt.Errorf("OldFirstName is allowed only on UpdateOne operations")
+		return v, fmt.Errorf("OldFirstName is only allowed on UpdateOne operations")
 	}
 	if m.id == nil || m.oldValue == nil {
 		return v, fmt.Errorf("OldFirstName requires an ID field in the mutation")
@@ -1274,17 +1253,17 @@ func (m *UserMutation) OldFirstName(ctx context.Context) (v string, err error) {
 	return oldValue.FirstName, nil
 }
 
-// ResetFirstName reset all changes of the "first_name" field.
+// ResetFirstName resets all changes to the "first_name" field.
 func (m *UserMutation) ResetFirstName() {
 	m.first_name = nil
 }
 
-// SetLastName sets the last_name field.
+// SetLastName sets the "last_name" field.
 func (m *UserMutation) SetLastName(s string) {
 	m.last_name = &s
 }
 
-// LastName returns the last_name value in the mutation.
+// LastName returns the value of the "last_name" field in the mutation.
 func (m *UserMutation) LastName() (r string, exists bool) {
 	v := m.last_name
 	if v == nil {
@@ -1293,13 +1272,12 @@ func (m *UserMutation) LastName() (r string, exists bool) {
 	return *v, true
 }
 
-// OldLastName returns the old last_name value of the User.
-// If the User object wasn't provided to the builder, the object is fetched
-// from the database.
-// An error is returned if the mutation operation is not UpdateOne, or database query fails.
+// OldLastName returns the old "last_name" field's value of the User entity.
+// If the User object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
 func (m *UserMutation) OldLastName(ctx context.Context) (v string, err error) {
 	if !m.op.Is(OpUpdateOne) {
-		return v, fmt.Errorf("OldLastName is allowed only on UpdateOne operations")
+		return v, fmt.Errorf("OldLastName is only allowed on UpdateOne operations")
 	}
 	if m.id == nil || m.oldValue == nil {
 		return v, fmt.Errorf("OldLastName requires an ID field in the mutation")
@@ -1311,17 +1289,17 @@ func (m *UserMutation) OldLastName(ctx context.Context) (v string, err error) {
 	return oldValue.LastName, nil
 }
 
-// ResetLastName reset all changes of the "last_name" field.
+// ResetLastName resets all changes to the "last_name" field.
 func (m *UserMutation) ResetLastName() {
 	m.last_name = nil
 }
 
-// SetEmail sets the email field.
+// SetEmail sets the "email" field.
 func (m *UserMutation) SetEmail(s string) {
 	m.email = &s
 }
 
-// Email returns the email value in the mutation.
+// Email returns the value of the "email" field in the mutation.
 func (m *UserMutation) Email() (r string, exists bool) {
 	v := m.email
 	if v == nil {
@@ -1330,13 +1308,12 @@ func (m *UserMutation) Email() (r string, exists bool) {
 	return *v, true
 }
 
-// OldEmail returns the old email value of the User.
-// If the User object wasn't provided to the builder, the object is fetched
-// from the database.
-// An error is returned if the mutation operation is not UpdateOne, or database query fails.
+// OldEmail returns the old "email" field's value of the User entity.
+// If the User object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
 func (m *UserMutation) OldEmail(ctx context.Context) (v string, err error) {
 	if !m.op.Is(OpUpdateOne) {
-		return v, fmt.Errorf("OldEmail is allowed only on UpdateOne operations")
+		return v, fmt.Errorf("OldEmail is only allowed on UpdateOne operations")
 	}
 	if m.id == nil || m.oldValue == nil {
 		return v, fmt.Errorf("OldEmail requires an ID field in the mutation")
@@ -1348,17 +1325,17 @@ func (m *UserMutation) OldEmail(ctx context.Context) (v string, err error) {
 	return oldValue.Email, nil
 }
 
-// ResetEmail reset all changes of the "email" field.
+// ResetEmail resets all changes to the "email" field.
 func (m *UserMutation) ResetEmail() {
 	m.email = nil
 }
 
-// SetTenant sets the tenant field.
+// SetTenant sets the "tenant" field.
 func (m *UserMutation) SetTenant(s string) {
 	m.tenant = &s
 }
 
-// Tenant returns the tenant value in the mutation.
+// Tenant returns the value of the "tenant" field in the mutation.
 func (m *UserMutation) Tenant() (r string, exists bool) {
 	v := m.tenant
 	if v == nil {
@@ -1367,13 +1344,12 @@ func (m *UserMutation) Tenant() (r string, exists bool) {
 	return *v, true
 }
 
-// OldTenant returns the old tenant value of the User.
-// If the User object wasn't provided to the builder, the object is fetched
-// from the database.
-// An error is returned if the mutation operation is not UpdateOne, or database query fails.
+// OldTenant returns the old "tenant" field's value of the User entity.
+// If the User object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
 func (m *UserMutation) OldTenant(ctx context.Context) (v string, err error) {
 	if !m.op.Is(OpUpdateOne) {
-		return v, fmt.Errorf("OldTenant is allowed only on UpdateOne operations")
+		return v, fmt.Errorf("OldTenant is only allowed on UpdateOne operations")
 	}
 	if m.id == nil || m.oldValue == nil {
 		return v, fmt.Errorf("OldTenant requires an ID field in the mutation")
@@ -1385,27 +1361,27 @@ func (m *UserMutation) OldTenant(ctx context.Context) (v string, err error) {
 	return oldValue.Tenant, nil
 }
 
-// ResetTenant reset all changes of the "tenant" field.
+// ResetTenant resets all changes to the "tenant" field.
 func (m *UserMutation) ResetTenant() {
 	m.tenant = nil
 }
 
-// SetProfileID sets the profile edge to Profile by id.
+// SetProfileID sets the "profile" edge to the Profile entity by id.
 func (m *UserMutation) SetProfileID(id uuid.UUID) {
 	m.profile = &id
 }
 
-// ClearProfile clears the profile edge to Profile.
+// ClearProfile clears the "profile" edge to the Profile entity.
 func (m *UserMutation) ClearProfile() {
 	m.clearedprofile = true
 }
 
-// ProfileCleared returns if the edge profile was cleared.
+// ProfileCleared returns if the "profile" edge to the Profile entity was cleared.
 func (m *UserMutation) ProfileCleared() bool {
 	return m.clearedprofile
 }
 
-// ProfileID returns the profile id in the mutation.
+// ProfileID returns the "profile" edge ID in the mutation.
 func (m *UserMutation) ProfileID() (id uuid.UUID, exists bool) {
 	if m.profile != nil {
 		return *m.profile, true
@@ -1413,8 +1389,8 @@ func (m *UserMutation) ProfileID() (id uuid.UUID, exists bool) {
 	return
 }
 
-// ProfileIDs returns the profile ids in the mutation.
-// Note that ids always returns len(ids) <= 1 for unique edges, and you should use
+// ProfileIDs returns the "profile" edge IDs in the mutation.
+// Note that IDs always returns len(IDs) <= 1 for unique edges, and you should use
 // ProfileID instead. It exists only for internal usage by the builders.
 func (m *UserMutation) ProfileIDs() (ids []uuid.UUID) {
 	if id := m.profile; id != nil {
@@ -1423,7 +1399,7 @@ func (m *UserMutation) ProfileIDs() (ids []uuid.UUID) {
 	return
 }
 
-// ResetProfile reset all changes of the "profile" edge.
+// ResetProfile resets all changes to the "profile" edge.
 func (m *UserMutation) ResetProfile() {
 	m.profile = nil
 	m.clearedprofile = false
@@ -1439,9 +1415,9 @@ func (m *UserMutation) Type() string {
 	return m.typ
 }
 
-// Fields returns all fields that were changed during
-// this mutation. Note that, in order to get all numeric
-// fields that were in/decremented, call AddedFields().
+// Fields returns all fields that were changed during this mutation. Note that in
+// order to get all numeric fields that were incremented/decremented, call
+// AddedFields().
 func (m *UserMutation) Fields() []string {
 	fields := make([]string, 0, 8)
 	if m.create_time != nil {
@@ -1471,9 +1447,9 @@ func (m *UserMutation) Fields() []string {
 	return fields
 }
 
-// Field returns the value of a field with the given name.
-// The second boolean value indicates that this field was
-// not set, or was not define in the schema.
+// Field returns the value of a field with the given name. The second boolean
+// return value indicates that this field was not set, or was not defined in the
+// schema.
 func (m *UserMutation) Field(name string) (ent.Value, bool) {
 	switch name {
 	case user.FieldCreateTime:
@@ -1496,9 +1472,9 @@ func (m *UserMutation) Field(name string) (ent.Value, bool) {
 	return nil, false
 }
 
-// OldField returns the old value of the field from the database.
-// An error is returned if the mutation operation is not UpdateOne,
-// or the query to the database was failed.
+// OldField returns the old value of the field from the database. An error is
+// returned if the mutation operation is not UpdateOne, or the query to the
+// database failed.
 func (m *UserMutation) OldField(ctx context.Context, name string) (ent.Value, error) {
 	switch name {
 	case user.FieldCreateTime:
@@ -1521,9 +1497,9 @@ func (m *UserMutation) OldField(ctx context.Context, name string) (ent.Value, er
 	return nil, fmt.Errorf("unknown User field %s", name)
 }
 
-// SetField sets the value for the given name. It returns an
-// error if the field is not defined in the schema, or if the
-// type mismatch the field type.
+// SetField sets the value of a field with the given name. It returns an error if
+// the field is not defined in the schema, or if the type mismatched the field
+// type.
 func (m *UserMutation) SetField(name string, value ent.Value) error {
 	switch name {
 	case user.FieldCreateTime:
@@ -1586,30 +1562,30 @@ func (m *UserMutation) SetField(name string, value ent.Value) error {
 	return fmt.Errorf("unknown User field %s", name)
 }
 
-// AddedFields returns all numeric fields that were incremented
-// or decremented during this mutation.
+// AddedFields returns all numeric fields that were incremented/decremented during
+// this mutation.
 func (m *UserMutation) AddedFields() []string {
 	return nil
 }
 
-// AddedField returns the numeric value that was in/decremented
-// from a field with the given name. The second value indicates
-// that this field was not set, or was not define in the schema.
+// AddedField returns the numeric value that was incremented/decremented on a field
+// with the given name. The second boolean return value indicates that this field
+// was not set, or was not defined in the schema.
 func (m *UserMutation) AddedField(name string) (ent.Value, bool) {
 	return nil, false
 }
 
-// AddField adds the value for the given name. It returns an
-// error if the field is not defined in the schema, or if the
-// type mismatch the field type.
+// AddField adds the value to the field with the given name. It returns an error if
+// the field is not defined in the schema, or if the type mismatched the field
+// type.
 func (m *UserMutation) AddField(name string, value ent.Value) error {
 	switch name {
 	}
 	return fmt.Errorf("unknown User numeric field %s", name)
 }
 
-// ClearedFields returns all nullable fields that were cleared
-// during this mutation.
+// ClearedFields returns all nullable fields that were cleared during this
+// mutation.
 func (m *UserMutation) ClearedFields() []string {
 	var fields []string
 	if m.FieldCleared(user.FieldDeleteTime) {
@@ -1618,14 +1594,14 @@ func (m *UserMutation) ClearedFields() []string {
 	return fields
 }
 
-// FieldCleared returns a boolean indicates if this field was
+// FieldCleared returns a boolean indicating if a field with the given name was
 // cleared in this mutation.
 func (m *UserMutation) FieldCleared(name string) bool {
 	_, ok := m.clearedFields[name]
 	return ok
 }
 
-// ClearField clears the value for the given name. It returns an
+// ClearField clears the value of the field with the given name. It returns an
 // error if the field is not defined in the schema.
 func (m *UserMutation) ClearField(name string) error {
 	switch name {
@@ -1636,9 +1612,8 @@ func (m *UserMutation) ClearField(name string) error {
 	return fmt.Errorf("unknown User nullable field %s", name)
 }
 
-// ResetField resets all changes in the mutation regarding the
-// given field name. It returns an error if the field is not
-// defined in the schema.
+// ResetField resets all changes in the mutation for the field with the given name.
+// It returns an error if the field is not defined in the schema.
 func (m *UserMutation) ResetField(name string) error {
 	switch name {
 	case user.FieldCreateTime:
@@ -1669,8 +1644,7 @@ func (m *UserMutation) ResetField(name string) error {
 	return fmt.Errorf("unknown User field %s", name)
 }
 
-// AddedEdges returns all edge names that were set/added in this
-// mutation.
+// AddedEdges returns all edge names that were set/added in this mutation.
 func (m *UserMutation) AddedEdges() []string {
 	edges := make([]string, 0, 1)
 	if m.profile != nil {
@@ -1679,8 +1653,8 @@ func (m *UserMutation) AddedEdges() []string {
 	return edges
 }
 
-// AddedIDs returns all ids (to other nodes) that were added for
-// the given edge name.
+// AddedIDs returns all IDs (to other nodes) that were added for the given edge
+// name in this mutation.
 func (m *UserMutation) AddedIDs(name string) []ent.Value {
 	switch name {
 	case user.EdgeProfile:
@@ -1691,23 +1665,21 @@ func (m *UserMutation) AddedIDs(name string) []ent.Value {
 	return nil
 }
 
-// RemovedEdges returns all edge names that were removed in this
-// mutation.
+// RemovedEdges returns all edge names that were removed in this mutation.
 func (m *UserMutation) RemovedEdges() []string {
 	edges := make([]string, 0, 1)
 	return edges
 }
 
-// RemovedIDs returns all ids (to other nodes) that were removed for
-// the given edge name.
+// RemovedIDs returns all IDs (to other nodes) that were removed for the edge with
+// the given name in this mutation.
 func (m *UserMutation) RemovedIDs(name string) []ent.Value {
 	switch name {
 	}
 	return nil
 }
 
-// ClearedEdges returns all edge names that were cleared in this
-// mutation.
+// ClearedEdges returns all edge names that were cleared in this mutation.
 func (m *UserMutation) ClearedEdges() []string {
 	edges := make([]string, 0, 1)
 	if m.clearedprofile {
@@ -1716,8 +1688,8 @@ func (m *UserMutation) ClearedEdges() []string {
 	return edges
 }
 
-// EdgeCleared returns a boolean indicates if this edge was
-// cleared in this mutation.
+// EdgeCleared returns a boolean which indicates if the edge with the given name
+// was cleared in this mutation.
 func (m *UserMutation) EdgeCleared(name string) bool {
 	switch name {
 	case user.EdgeProfile:
@@ -1726,8 +1698,8 @@ func (m *UserMutation) EdgeCleared(name string) bool {
 	return false
 }
 
-// ClearEdge clears the value for the given name. It returns an
-// error if the edge name is not defined in the schema.
+// ClearEdge clears the value of the edge with the given name. It returns an error
+// if that edge is not defined in the schema.
 func (m *UserMutation) ClearEdge(name string) error {
 	switch name {
 	case user.EdgeProfile:
@@ -1737,9 +1709,8 @@ func (m *UserMutation) ClearEdge(name string) error {
 	return fmt.Errorf("unknown User unique edge %s", name)
 }
 
-// ResetEdge resets all changes in the mutation regarding the
-// given edge name. It returns an error if the edge is not
-// defined in the schema.
+// ResetEdge resets all changes to the edge with the given name in this mutation.
+// It returns an error if the edge is not defined in the schema.
 func (m *UserMutation) ResetEdge(name string) error {
 	switch name {
 	case user.EdgeProfile:

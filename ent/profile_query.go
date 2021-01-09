@@ -23,6 +23,7 @@ type ProfileQuery struct {
 	limit      *int
 	offset     *int
 	order      []OrderFunc
+	fields     []string
 	predicates []predicate.Profile
 	// eager-loading edges.
 	withUser *UserQuery
@@ -32,7 +33,7 @@ type ProfileQuery struct {
 	path func(context.Context) (*sql.Selector, error)
 }
 
-// Where adds a new predicate for the builder.
+// Where adds a new predicate for the ProfileQuery builder.
 func (pq *ProfileQuery) Where(ps ...predicate.Profile) *ProfileQuery {
 	pq.predicates = append(pq.predicates, ps...)
 	return pq
@@ -56,7 +57,7 @@ func (pq *ProfileQuery) Order(o ...OrderFunc) *ProfileQuery {
 	return pq
 }
 
-// QueryUser chains the current query on the user edge.
+// QueryUser chains the current query on the "user" edge.
 func (pq *ProfileQuery) QueryUser() *UserQuery {
 	query := &UserQuery{config: pq.config}
 	query.path = func(ctx context.Context) (fromU *sql.Selector, err error) {
@@ -78,7 +79,8 @@ func (pq *ProfileQuery) QueryUser() *UserQuery {
 	return query
 }
 
-// First returns the first Profile entity in the query. Returns *NotFoundError when no profile was found.
+// First returns the first Profile entity from the query.
+// Returns a *NotFoundError when no Profile was found.
 func (pq *ProfileQuery) First(ctx context.Context) (*Profile, error) {
 	nodes, err := pq.Limit(1).All(ctx)
 	if err != nil {
@@ -99,7 +101,8 @@ func (pq *ProfileQuery) FirstX(ctx context.Context) *Profile {
 	return node
 }
 
-// FirstID returns the first Profile id in the query. Returns *NotFoundError when no id was found.
+// FirstID returns the first Profile ID from the query.
+// Returns a *NotFoundError when no Profile ID was found.
 func (pq *ProfileQuery) FirstID(ctx context.Context) (id uuid.UUID, err error) {
 	var ids []uuid.UUID
 	if ids, err = pq.Limit(1).IDs(ctx); err != nil {
@@ -121,7 +124,9 @@ func (pq *ProfileQuery) FirstIDX(ctx context.Context) uuid.UUID {
 	return id
 }
 
-// Only returns the only Profile entity in the query, returns an error if not exactly one entity was returned.
+// Only returns a single Profile entity found by the query, ensuring it only returns one.
+// Returns a *NotSingularError when exactly one Profile entity is not found.
+// Returns a *NotFoundError when no Profile entities are found.
 func (pq *ProfileQuery) Only(ctx context.Context) (*Profile, error) {
 	nodes, err := pq.Limit(2).All(ctx)
 	if err != nil {
@@ -146,7 +151,9 @@ func (pq *ProfileQuery) OnlyX(ctx context.Context) *Profile {
 	return node
 }
 
-// OnlyID returns the only Profile id in the query, returns an error if not exactly one id was returned.
+// OnlyID is like Only, but returns the only Profile ID in the query.
+// Returns a *NotSingularError when exactly one Profile ID is not found.
+// Returns a *NotFoundError when no entities are found.
 func (pq *ProfileQuery) OnlyID(ctx context.Context) (id uuid.UUID, err error) {
 	var ids []uuid.UUID
 	if ids, err = pq.Limit(2).IDs(ctx); err != nil {
@@ -189,7 +196,7 @@ func (pq *ProfileQuery) AllX(ctx context.Context) []*Profile {
 	return nodes
 }
 
-// IDs executes the query and returns a list of Profile ids.
+// IDs executes the query and returns a list of Profile IDs.
 func (pq *ProfileQuery) IDs(ctx context.Context) ([]uuid.UUID, error) {
 	var ids []uuid.UUID
 	if err := pq.Select(profile.FieldID).Scan(ctx, &ids); err != nil {
@@ -241,7 +248,7 @@ func (pq *ProfileQuery) ExistX(ctx context.Context) bool {
 	return exist
 }
 
-// Clone returns a duplicate of the query builder, including all associated steps. It can be
+// Clone returns a duplicate of the ProfileQuery builder, including all associated steps. It can be
 // used to prepare common query builders and use them differently after the clone is made.
 func (pq *ProfileQuery) Clone() *ProfileQuery {
 	if pq == nil {
@@ -260,8 +267,8 @@ func (pq *ProfileQuery) Clone() *ProfileQuery {
 	}
 }
 
-//  WithUser tells the query-builder to eager-loads the nodes that are connected to
-// the "user" edge. The optional arguments used to configure the query builder of the edge.
+// WithUser tells the query-builder to eager-load the nodes that are connected to
+// the "user" edge. The optional arguments are used to configure the query builder of the edge.
 func (pq *ProfileQuery) WithUser(opts ...func(*UserQuery)) *ProfileQuery {
 	query := &UserQuery{config: pq.config}
 	for _, opt := range opts {
@@ -271,7 +278,7 @@ func (pq *ProfileQuery) WithUser(opts ...func(*UserQuery)) *ProfileQuery {
 	return pq
 }
 
-// GroupBy used to group vertices by one or more fields/columns.
+// GroupBy is used to group vertices by one or more fields/columns.
 // It is often used with aggregate functions, like: count, max, mean, min, sum.
 //
 // Example:
@@ -298,7 +305,8 @@ func (pq *ProfileQuery) GroupBy(field string, fields ...string) *ProfileGroupBy 
 	return group
 }
 
-// Select one or more fields from the given query.
+// Select allows the selection one or more fields/columns for the given query,
+// instead of selecting all fields in the entity.
 //
 // Example:
 //
@@ -311,18 +319,16 @@ func (pq *ProfileQuery) GroupBy(field string, fields ...string) *ProfileGroupBy 
 //		Scan(ctx, &v)
 //
 func (pq *ProfileQuery) Select(field string, fields ...string) *ProfileSelect {
-	selector := &ProfileSelect{config: pq.config}
-	selector.fields = append([]string{field}, fields...)
-	selector.path = func(ctx context.Context) (prev *sql.Selector, err error) {
-		if err := pq.prepareQuery(ctx); err != nil {
-			return nil, err
-		}
-		return pq.sqlQuery(), nil
-	}
-	return selector
+	pq.fields = append([]string{field}, fields...)
+	return &ProfileSelect{ProfileQuery: pq}
 }
 
 func (pq *ProfileQuery) prepareQuery(ctx context.Context) error {
+	for _, f := range pq.fields {
+		if !profile.ValidColumn(f) {
+			return &ValidationError{Name: f, err: fmt.Errorf("ent: invalid field %q for query", f)}
+		}
+	}
 	if pq.path != nil {
 		prev, err := pq.path(ctx)
 		if err != nil {
@@ -348,22 +354,18 @@ func (pq *ProfileQuery) sqlAll(ctx context.Context) ([]*Profile, error) {
 	if withFKs {
 		_spec.Node.Columns = append(_spec.Node.Columns, profile.ForeignKeys...)
 	}
-	_spec.ScanValues = func() []interface{} {
+	_spec.ScanValues = func(columns []string) ([]interface{}, error) {
 		node := &Profile{config: pq.config}
 		nodes = append(nodes, node)
-		values := node.scanValues()
-		if withFKs {
-			values = append(values, node.fkValues()...)
-		}
-		return values
+		return node.scanValues(columns)
 	}
-	_spec.Assign = func(values ...interface{}) error {
+	_spec.Assign = func(columns []string, values []interface{}) error {
 		if len(nodes) == 0 {
 			return fmt.Errorf("ent: Assign called without calling ScanValues")
 		}
 		node := nodes[len(nodes)-1]
 		node.Edges.loadedTypes = loadedTypes
-		return node.assignValues(values...)
+		return node.assignValues(columns, values)
 	}
 	if err := sqlgraph.QueryNodes(ctx, pq.driver, _spec); err != nil {
 		return nil, err
@@ -426,6 +428,15 @@ func (pq *ProfileQuery) querySpec() *sqlgraph.QuerySpec {
 		From:   pq.sql,
 		Unique: true,
 	}
+	if fields := pq.fields; len(fields) > 0 {
+		_spec.Node.Columns = make([]string, 0, len(fields))
+		_spec.Node.Columns = append(_spec.Node.Columns, profile.FieldID)
+		for i := range fields {
+			if fields[i] != profile.FieldID {
+				_spec.Node.Columns = append(_spec.Node.Columns, fields[i])
+			}
+		}
+	}
 	if ps := pq.predicates; len(ps) > 0 {
 		_spec.Predicate = func(selector *sql.Selector) {
 			for i := range ps {
@@ -474,7 +485,7 @@ func (pq *ProfileQuery) sqlQuery() *sql.Selector {
 	return selector
 }
 
-// ProfileGroupBy is the builder for group-by Profile entities.
+// ProfileGroupBy is the group-by builder for Profile entities.
 type ProfileGroupBy struct {
 	config
 	fields []string
@@ -490,7 +501,7 @@ func (pgb *ProfileGroupBy) Aggregate(fns ...AggregateFunc) *ProfileGroupBy {
 	return pgb
 }
 
-// Scan applies the group-by query and scan the result into the given value.
+// Scan applies the group-by query and scans the result into the given value.
 func (pgb *ProfileGroupBy) Scan(ctx context.Context, v interface{}) error {
 	query, err := pgb.path(ctx)
 	if err != nil {
@@ -507,7 +518,8 @@ func (pgb *ProfileGroupBy) ScanX(ctx context.Context, v interface{}) {
 	}
 }
 
-// Strings returns list of strings from group-by. It is only allowed when querying group-by with one field.
+// Strings returns list of strings from group-by.
+// It is only allowed when executing a group-by query with one field.
 func (pgb *ProfileGroupBy) Strings(ctx context.Context) ([]string, error) {
 	if len(pgb.fields) > 1 {
 		return nil, errors.New("ent: ProfileGroupBy.Strings is not achievable when grouping more than 1 field")
@@ -528,7 +540,8 @@ func (pgb *ProfileGroupBy) StringsX(ctx context.Context) []string {
 	return v
 }
 
-// String returns a single string from group-by. It is only allowed when querying group-by with one field.
+// String returns a single string from a group-by query.
+// It is only allowed when executing a group-by query with one field.
 func (pgb *ProfileGroupBy) String(ctx context.Context) (_ string, err error) {
 	var v []string
 	if v, err = pgb.Strings(ctx); err != nil {
@@ -554,7 +567,8 @@ func (pgb *ProfileGroupBy) StringX(ctx context.Context) string {
 	return v
 }
 
-// Ints returns list of ints from group-by. It is only allowed when querying group-by with one field.
+// Ints returns list of ints from group-by.
+// It is only allowed when executing a group-by query with one field.
 func (pgb *ProfileGroupBy) Ints(ctx context.Context) ([]int, error) {
 	if len(pgb.fields) > 1 {
 		return nil, errors.New("ent: ProfileGroupBy.Ints is not achievable when grouping more than 1 field")
@@ -575,7 +589,8 @@ func (pgb *ProfileGroupBy) IntsX(ctx context.Context) []int {
 	return v
 }
 
-// Int returns a single int from group-by. It is only allowed when querying group-by with one field.
+// Int returns a single int from a group-by query.
+// It is only allowed when executing a group-by query with one field.
 func (pgb *ProfileGroupBy) Int(ctx context.Context) (_ int, err error) {
 	var v []int
 	if v, err = pgb.Ints(ctx); err != nil {
@@ -601,7 +616,8 @@ func (pgb *ProfileGroupBy) IntX(ctx context.Context) int {
 	return v
 }
 
-// Float64s returns list of float64s from group-by. It is only allowed when querying group-by with one field.
+// Float64s returns list of float64s from group-by.
+// It is only allowed when executing a group-by query with one field.
 func (pgb *ProfileGroupBy) Float64s(ctx context.Context) ([]float64, error) {
 	if len(pgb.fields) > 1 {
 		return nil, errors.New("ent: ProfileGroupBy.Float64s is not achievable when grouping more than 1 field")
@@ -622,7 +638,8 @@ func (pgb *ProfileGroupBy) Float64sX(ctx context.Context) []float64 {
 	return v
 }
 
-// Float64 returns a single float64 from group-by. It is only allowed when querying group-by with one field.
+// Float64 returns a single float64 from a group-by query.
+// It is only allowed when executing a group-by query with one field.
 func (pgb *ProfileGroupBy) Float64(ctx context.Context) (_ float64, err error) {
 	var v []float64
 	if v, err = pgb.Float64s(ctx); err != nil {
@@ -648,7 +665,8 @@ func (pgb *ProfileGroupBy) Float64X(ctx context.Context) float64 {
 	return v
 }
 
-// Bools returns list of bools from group-by. It is only allowed when querying group-by with one field.
+// Bools returns list of bools from group-by.
+// It is only allowed when executing a group-by query with one field.
 func (pgb *ProfileGroupBy) Bools(ctx context.Context) ([]bool, error) {
 	if len(pgb.fields) > 1 {
 		return nil, errors.New("ent: ProfileGroupBy.Bools is not achievable when grouping more than 1 field")
@@ -669,7 +687,8 @@ func (pgb *ProfileGroupBy) BoolsX(ctx context.Context) []bool {
 	return v
 }
 
-// Bool returns a single bool from group-by. It is only allowed when querying group-by with one field.
+// Bool returns a single bool from a group-by query.
+// It is only allowed when executing a group-by query with one field.
 func (pgb *ProfileGroupBy) Bool(ctx context.Context) (_ bool, err error) {
 	var v []bool
 	if v, err = pgb.Bools(ctx); err != nil {
@@ -724,22 +743,19 @@ func (pgb *ProfileGroupBy) sqlQuery() *sql.Selector {
 	return selector.Select(columns...).GroupBy(pgb.fields...)
 }
 
-// ProfileSelect is the builder for select fields of Profile entities.
+// ProfileSelect is the builder for selecting fields of Profile entities.
 type ProfileSelect struct {
-	config
-	fields []string
+	*ProfileQuery
 	// intermediate query (i.e. traversal path).
-	sql  *sql.Selector
-	path func(context.Context) (*sql.Selector, error)
+	sql *sql.Selector
 }
 
-// Scan applies the selector query and scan the result into the given value.
+// Scan applies the selector query and scans the result into the given value.
 func (ps *ProfileSelect) Scan(ctx context.Context, v interface{}) error {
-	query, err := ps.path(ctx)
-	if err != nil {
+	if err := ps.prepareQuery(ctx); err != nil {
 		return err
 	}
-	ps.sql = query
+	ps.sql = ps.ProfileQuery.sqlQuery()
 	return ps.sqlScan(ctx, v)
 }
 
@@ -750,7 +766,7 @@ func (ps *ProfileSelect) ScanX(ctx context.Context, v interface{}) {
 	}
 }
 
-// Strings returns list of strings from selector. It is only allowed when selecting one field.
+// Strings returns list of strings from a selector. It is only allowed when selecting one field.
 func (ps *ProfileSelect) Strings(ctx context.Context) ([]string, error) {
 	if len(ps.fields) > 1 {
 		return nil, errors.New("ent: ProfileSelect.Strings is not achievable when selecting more than 1 field")
@@ -771,7 +787,7 @@ func (ps *ProfileSelect) StringsX(ctx context.Context) []string {
 	return v
 }
 
-// String returns a single string from selector. It is only allowed when selecting one field.
+// String returns a single string from a selector. It is only allowed when selecting one field.
 func (ps *ProfileSelect) String(ctx context.Context) (_ string, err error) {
 	var v []string
 	if v, err = ps.Strings(ctx); err != nil {
@@ -797,7 +813,7 @@ func (ps *ProfileSelect) StringX(ctx context.Context) string {
 	return v
 }
 
-// Ints returns list of ints from selector. It is only allowed when selecting one field.
+// Ints returns list of ints from a selector. It is only allowed when selecting one field.
 func (ps *ProfileSelect) Ints(ctx context.Context) ([]int, error) {
 	if len(ps.fields) > 1 {
 		return nil, errors.New("ent: ProfileSelect.Ints is not achievable when selecting more than 1 field")
@@ -818,7 +834,7 @@ func (ps *ProfileSelect) IntsX(ctx context.Context) []int {
 	return v
 }
 
-// Int returns a single int from selector. It is only allowed when selecting one field.
+// Int returns a single int from a selector. It is only allowed when selecting one field.
 func (ps *ProfileSelect) Int(ctx context.Context) (_ int, err error) {
 	var v []int
 	if v, err = ps.Ints(ctx); err != nil {
@@ -844,7 +860,7 @@ func (ps *ProfileSelect) IntX(ctx context.Context) int {
 	return v
 }
 
-// Float64s returns list of float64s from selector. It is only allowed when selecting one field.
+// Float64s returns list of float64s from a selector. It is only allowed when selecting one field.
 func (ps *ProfileSelect) Float64s(ctx context.Context) ([]float64, error) {
 	if len(ps.fields) > 1 {
 		return nil, errors.New("ent: ProfileSelect.Float64s is not achievable when selecting more than 1 field")
@@ -865,7 +881,7 @@ func (ps *ProfileSelect) Float64sX(ctx context.Context) []float64 {
 	return v
 }
 
-// Float64 returns a single float64 from selector. It is only allowed when selecting one field.
+// Float64 returns a single float64 from a selector. It is only allowed when selecting one field.
 func (ps *ProfileSelect) Float64(ctx context.Context) (_ float64, err error) {
 	var v []float64
 	if v, err = ps.Float64s(ctx); err != nil {
@@ -891,7 +907,7 @@ func (ps *ProfileSelect) Float64X(ctx context.Context) float64 {
 	return v
 }
 
-// Bools returns list of bools from selector. It is only allowed when selecting one field.
+// Bools returns list of bools from a selector. It is only allowed when selecting one field.
 func (ps *ProfileSelect) Bools(ctx context.Context) ([]bool, error) {
 	if len(ps.fields) > 1 {
 		return nil, errors.New("ent: ProfileSelect.Bools is not achievable when selecting more than 1 field")
@@ -912,7 +928,7 @@ func (ps *ProfileSelect) BoolsX(ctx context.Context) []bool {
 	return v
 }
 
-// Bool returns a single bool from selector. It is only allowed when selecting one field.
+// Bool returns a single bool from a selector. It is only allowed when selecting one field.
 func (ps *ProfileSelect) Bool(ctx context.Context) (_ bool, err error) {
 	var v []bool
 	if v, err = ps.Bools(ctx); err != nil {
@@ -939,11 +955,6 @@ func (ps *ProfileSelect) BoolX(ctx context.Context) bool {
 }
 
 func (ps *ProfileSelect) sqlScan(ctx context.Context, v interface{}) error {
-	for _, f := range ps.fields {
-		if !profile.ValidColumn(f) {
-			return &ValidationError{Name: f, err: fmt.Errorf("invalid field %q for selection", f)}
-		}
-	}
 	rows := &sql.Rows{}
 	query, args := ps.sqlQuery().Query()
 	if err := ps.driver.Query(ctx, query, args, rows); err != nil {

@@ -17,6 +17,7 @@ import (
 func init() {
 	profileMixin := schema.Profile{}.Mixin()
 	profileMixinFields0 := profileMixin[0].Fields()
+	_ = profileMixinFields0
 	profileFields := schema.Profile{}.Fields()
 	_ = profileFields
 	// profileDescCreateTime is the schema descriptor for create_time field.
@@ -39,6 +40,7 @@ func init() {
 	profile.DefaultID = profileDescID.Default.(func() uuid.UUID)
 	userMixin := schema.User{}.Mixin()
 	userMixinFields0 := userMixin[0].Fields()
+	_ = userMixinFields0
 	userFields := schema.User{}.Fields()
 	_ = userFields
 	// userDescCreateTime is the schema descriptor for create_time field.

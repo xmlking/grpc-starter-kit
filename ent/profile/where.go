@@ -11,7 +11,7 @@ import (
 	"github.com/xmlking/grpc-starter-kit/ent/predicate"
 )
 
-// ID filters vertices based on their identifier.
+// ID filters vertices based on their ID field.
 func ID(id uuid.UUID) predicate.Profile {
 	return predicate.Profile(func(s *sql.Selector) {
 		s.Where(sql.EQ(s.C(FieldID), id))
@@ -891,7 +891,7 @@ func HasUserWith(preds ...predicate.User) predicate.Profile {
 	})
 }
 
-// And groups list of predicates with the AND operator between them.
+// And groups predicates with the AND operator between them.
 func And(predicates ...predicate.Profile) predicate.Profile {
 	return predicate.Profile(func(s *sql.Selector) {
 		s1 := s.Clone().SetP(nil)
@@ -902,7 +902,7 @@ func And(predicates ...predicate.Profile) predicate.Profile {
 	})
 }
 
-// Or groups list of predicates with the OR operator between them.
+// Or groups predicates with the OR operator between them.
 func Or(predicates ...predicate.Profile) predicate.Profile {
 	return predicate.Profile(func(s *sql.Selector) {
 		s1 := s.Clone().SetP(nil)

@@ -25,19 +25,19 @@ type ProfileUpdate struct {
 	mutation *ProfileMutation
 }
 
-// Where adds a new predicate for the builder.
+// Where adds a new predicate for the ProfileUpdate builder.
 func (pu *ProfileUpdate) Where(ps ...predicate.Profile) *ProfileUpdate {
 	pu.mutation.predicates = append(pu.mutation.predicates, ps...)
 	return pu
 }
 
-// SetDeleteTime sets the delete_time field.
+// SetDeleteTime sets the "delete_time" field.
 func (pu *ProfileUpdate) SetDeleteTime(t time.Time) *ProfileUpdate {
 	pu.mutation.SetDeleteTime(t)
 	return pu
 }
 
-// SetNillableDeleteTime sets the delete_time field if the given value is not nil.
+// SetNillableDeleteTime sets the "delete_time" field if the given value is not nil.
 func (pu *ProfileUpdate) SetNillableDeleteTime(t *time.Time) *ProfileUpdate {
 	if t != nil {
 		pu.SetDeleteTime(*t)
@@ -45,50 +45,50 @@ func (pu *ProfileUpdate) SetNillableDeleteTime(t *time.Time) *ProfileUpdate {
 	return pu
 }
 
-// ClearDeleteTime clears the value of delete_time.
+// ClearDeleteTime clears the value of the "delete_time" field.
 func (pu *ProfileUpdate) ClearDeleteTime() *ProfileUpdate {
 	pu.mutation.ClearDeleteTime()
 	return pu
 }
 
-// SetAge sets the age field.
+// SetAge sets the "age" field.
 func (pu *ProfileUpdate) SetAge(i int) *ProfileUpdate {
 	pu.mutation.ResetAge()
 	pu.mutation.SetAge(i)
 	return pu
 }
 
-// AddAge adds i to age.
+// AddAge adds i to the "age" field.
 func (pu *ProfileUpdate) AddAge(i int) *ProfileUpdate {
 	pu.mutation.AddAge(i)
 	return pu
 }
 
-// SetTz sets the tz field.
+// SetTz sets the "tz" field.
 func (pu *ProfileUpdate) SetTz(s string) *ProfileUpdate {
 	pu.mutation.SetTz(s)
 	return pu
 }
 
-// SetAvatar sets the avatar field.
+// SetAvatar sets the "avatar" field.
 func (pu *ProfileUpdate) SetAvatar(u *url.URL) *ProfileUpdate {
 	pu.mutation.SetAvatar(u)
 	return pu
 }
 
-// ClearAvatar clears the value of avatar.
+// ClearAvatar clears the value of the "avatar" field.
 func (pu *ProfileUpdate) ClearAvatar() *ProfileUpdate {
 	pu.mutation.ClearAvatar()
 	return pu
 }
 
-// SetBirthday sets the birthday field.
+// SetBirthday sets the "birthday" field.
 func (pu *ProfileUpdate) SetBirthday(t time.Time) *ProfileUpdate {
 	pu.mutation.SetBirthday(t)
 	return pu
 }
 
-// SetNillableBirthday sets the birthday field if the given value is not nil.
+// SetNillableBirthday sets the "birthday" field if the given value is not nil.
 func (pu *ProfileUpdate) SetNillableBirthday(t *time.Time) *ProfileUpdate {
 	if t != nil {
 		pu.SetBirthday(*t)
@@ -96,19 +96,19 @@ func (pu *ProfileUpdate) SetNillableBirthday(t *time.Time) *ProfileUpdate {
 	return pu
 }
 
-// ClearBirthday clears the value of birthday.
+// ClearBirthday clears the value of the "birthday" field.
 func (pu *ProfileUpdate) ClearBirthday() *ProfileUpdate {
 	pu.mutation.ClearBirthday()
 	return pu
 }
 
-// SetGender sets the gender field.
+// SetGender sets the "gender" field.
 func (pu *ProfileUpdate) SetGender(pr profile.Gender) *ProfileUpdate {
 	pu.mutation.SetGender(pr)
 	return pu
 }
 
-// SetNillableGender sets the gender field if the given value is not nil.
+// SetNillableGender sets the "gender" field if the given value is not nil.
 func (pu *ProfileUpdate) SetNillableGender(pr *profile.Gender) *ProfileUpdate {
 	if pr != nil {
 		pu.SetGender(*pr)
@@ -116,19 +116,19 @@ func (pu *ProfileUpdate) SetNillableGender(pr *profile.Gender) *ProfileUpdate {
 	return pu
 }
 
-// ClearGender clears the value of gender.
+// ClearGender clears the value of the "gender" field.
 func (pu *ProfileUpdate) ClearGender() *ProfileUpdate {
 	pu.mutation.ClearGender()
 	return pu
 }
 
-// SetPreferredTheme sets the preferred_theme field.
+// SetPreferredTheme sets the "preferred_theme" field.
 func (pu *ProfileUpdate) SetPreferredTheme(s string) *ProfileUpdate {
 	pu.mutation.SetPreferredTheme(s)
 	return pu
 }
 
-// SetNillablePreferredTheme sets the preferred_theme field if the given value is not nil.
+// SetNillablePreferredTheme sets the "preferred_theme" field if the given value is not nil.
 func (pu *ProfileUpdate) SetNillablePreferredTheme(s *string) *ProfileUpdate {
 	if s != nil {
 		pu.SetPreferredTheme(*s)
@@ -136,19 +136,19 @@ func (pu *ProfileUpdate) SetNillablePreferredTheme(s *string) *ProfileUpdate {
 	return pu
 }
 
-// ClearPreferredTheme clears the value of preferred_theme.
+// ClearPreferredTheme clears the value of the "preferred_theme" field.
 func (pu *ProfileUpdate) ClearPreferredTheme() *ProfileUpdate {
 	pu.mutation.ClearPreferredTheme()
 	return pu
 }
 
-// SetUserID sets the user edge to User by id.
+// SetUserID sets the "user" edge to the User entity by ID.
 func (pu *ProfileUpdate) SetUserID(id uuid.UUID) *ProfileUpdate {
 	pu.mutation.SetUserID(id)
 	return pu
 }
 
-// SetUser sets the user edge to User.
+// SetUser sets the "user" edge to the User entity.
 func (pu *ProfileUpdate) SetUser(u *User) *ProfileUpdate {
 	return pu.SetUserID(u.ID)
 }
@@ -158,7 +158,7 @@ func (pu *ProfileUpdate) Mutation() *ProfileMutation {
 	return pu.mutation
 }
 
-// ClearUser clears the "user" edge to type User.
+// ClearUser clears the "user" edge to the User entity.
 func (pu *ProfileUpdate) ClearUser() *ProfileUpdate {
 	pu.mutation.ClearUser()
 	return pu
@@ -412,13 +412,13 @@ type ProfileUpdateOne struct {
 	mutation *ProfileMutation
 }
 
-// SetDeleteTime sets the delete_time field.
+// SetDeleteTime sets the "delete_time" field.
 func (puo *ProfileUpdateOne) SetDeleteTime(t time.Time) *ProfileUpdateOne {
 	puo.mutation.SetDeleteTime(t)
 	return puo
 }
 
-// SetNillableDeleteTime sets the delete_time field if the given value is not nil.
+// SetNillableDeleteTime sets the "delete_time" field if the given value is not nil.
 func (puo *ProfileUpdateOne) SetNillableDeleteTime(t *time.Time) *ProfileUpdateOne {
 	if t != nil {
 		puo.SetDeleteTime(*t)
@@ -426,50 +426,50 @@ func (puo *ProfileUpdateOne) SetNillableDeleteTime(t *time.Time) *ProfileUpdateO
 	return puo
 }
 
-// ClearDeleteTime clears the value of delete_time.
+// ClearDeleteTime clears the value of the "delete_time" field.
 func (puo *ProfileUpdateOne) ClearDeleteTime() *ProfileUpdateOne {
 	puo.mutation.ClearDeleteTime()
 	return puo
 }
 
-// SetAge sets the age field.
+// SetAge sets the "age" field.
 func (puo *ProfileUpdateOne) SetAge(i int) *ProfileUpdateOne {
 	puo.mutation.ResetAge()
 	puo.mutation.SetAge(i)
 	return puo
 }
 
-// AddAge adds i to age.
+// AddAge adds i to the "age" field.
 func (puo *ProfileUpdateOne) AddAge(i int) *ProfileUpdateOne {
 	puo.mutation.AddAge(i)
 	return puo
 }
 
-// SetTz sets the tz field.
+// SetTz sets the "tz" field.
 func (puo *ProfileUpdateOne) SetTz(s string) *ProfileUpdateOne {
 	puo.mutation.SetTz(s)
 	return puo
 }
 
-// SetAvatar sets the avatar field.
+// SetAvatar sets the "avatar" field.
 func (puo *ProfileUpdateOne) SetAvatar(u *url.URL) *ProfileUpdateOne {
 	puo.mutation.SetAvatar(u)
 	return puo
 }
 
-// ClearAvatar clears the value of avatar.
+// ClearAvatar clears the value of the "avatar" field.
 func (puo *ProfileUpdateOne) ClearAvatar() *ProfileUpdateOne {
 	puo.mutation.ClearAvatar()
 	return puo
 }
 
-// SetBirthday sets the birthday field.
+// SetBirthday sets the "birthday" field.
 func (puo *ProfileUpdateOne) SetBirthday(t time.Time) *ProfileUpdateOne {
 	puo.mutation.SetBirthday(t)
 	return puo
 }
 
-// SetNillableBirthday sets the birthday field if the given value is not nil.
+// SetNillableBirthday sets the "birthday" field if the given value is not nil.
 func (puo *ProfileUpdateOne) SetNillableBirthday(t *time.Time) *ProfileUpdateOne {
 	if t != nil {
 		puo.SetBirthday(*t)
@@ -477,19 +477,19 @@ func (puo *ProfileUpdateOne) SetNillableBirthday(t *time.Time) *ProfileUpdateOne
 	return puo
 }
 
-// ClearBirthday clears the value of birthday.
+// ClearBirthday clears the value of the "birthday" field.
 func (puo *ProfileUpdateOne) ClearBirthday() *ProfileUpdateOne {
 	puo.mutation.ClearBirthday()
 	return puo
 }
 
-// SetGender sets the gender field.
+// SetGender sets the "gender" field.
 func (puo *ProfileUpdateOne) SetGender(pr profile.Gender) *ProfileUpdateOne {
 	puo.mutation.SetGender(pr)
 	return puo
 }
 
-// SetNillableGender sets the gender field if the given value is not nil.
+// SetNillableGender sets the "gender" field if the given value is not nil.
 func (puo *ProfileUpdateOne) SetNillableGender(pr *profile.Gender) *ProfileUpdateOne {
 	if pr != nil {
 		puo.SetGender(*pr)
@@ -497,19 +497,19 @@ func (puo *ProfileUpdateOne) SetNillableGender(pr *profile.Gender) *ProfileUpdat
 	return puo
 }
 
-// ClearGender clears the value of gender.
+// ClearGender clears the value of the "gender" field.
 func (puo *ProfileUpdateOne) ClearGender() *ProfileUpdateOne {
 	puo.mutation.ClearGender()
 	return puo
 }
 
-// SetPreferredTheme sets the preferred_theme field.
+// SetPreferredTheme sets the "preferred_theme" field.
 func (puo *ProfileUpdateOne) SetPreferredTheme(s string) *ProfileUpdateOne {
 	puo.mutation.SetPreferredTheme(s)
 	return puo
 }
 
-// SetNillablePreferredTheme sets the preferred_theme field if the given value is not nil.
+// SetNillablePreferredTheme sets the "preferred_theme" field if the given value is not nil.
 func (puo *ProfileUpdateOne) SetNillablePreferredTheme(s *string) *ProfileUpdateOne {
 	if s != nil {
 		puo.SetPreferredTheme(*s)
@@ -517,19 +517,19 @@ func (puo *ProfileUpdateOne) SetNillablePreferredTheme(s *string) *ProfileUpdate
 	return puo
 }
 
-// ClearPreferredTheme clears the value of preferred_theme.
+// ClearPreferredTheme clears the value of the "preferred_theme" field.
 func (puo *ProfileUpdateOne) ClearPreferredTheme() *ProfileUpdateOne {
 	puo.mutation.ClearPreferredTheme()
 	return puo
 }
 
-// SetUserID sets the user edge to User by id.
+// SetUserID sets the "user" edge to the User entity by ID.
 func (puo *ProfileUpdateOne) SetUserID(id uuid.UUID) *ProfileUpdateOne {
 	puo.mutation.SetUserID(id)
 	return puo
 }
 
-// SetUser sets the user edge to User.
+// SetUser sets the "user" edge to the User entity.
 func (puo *ProfileUpdateOne) SetUser(u *User) *ProfileUpdateOne {
 	return puo.SetUserID(u.ID)
 }
@@ -539,13 +539,13 @@ func (puo *ProfileUpdateOne) Mutation() *ProfileMutation {
 	return puo.mutation
 }
 
-// ClearUser clears the "user" edge to type User.
+// ClearUser clears the "user" edge to the User entity.
 func (puo *ProfileUpdateOne) ClearUser() *ProfileUpdateOne {
 	puo.mutation.ClearUser()
 	return puo
 }
 
-// Save executes the query and returns the updated entity.
+// Save executes the query and returns the updated Profile entity.
 func (puo *ProfileUpdateOne) Save(ctx context.Context) (*Profile, error) {
 	var (
 		err  error
@@ -775,7 +775,7 @@ func (puo *ProfileUpdateOne) sqlSave(ctx context.Context) (_node *Profile, err e
 	}
 	_node = &Profile{config: puo.config}
 	_spec.Assign = _node.assignValues
-	_spec.ScanValues = _node.scanValues()
+	_spec.ScanValues = _node.scanValues
 	if err = sqlgraph.UpdateNode(ctx, puo.driver, _spec); err != nil {
 		if _, ok := err.(*sqlgraph.NotFoundError); ok {
 			err = &NotFoundError{profile.Label}
