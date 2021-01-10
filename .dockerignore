@@ -21,7 +21,7 @@ build
 # Ignore unnecessary files inside allowed directories
 # This should go after the allowed directories
 config/README.md
-docker-compose.yml
+docker-compose.yaml
 no_cgo.dockerfile
 cgo.dockerfile
 Makefile_proto
