@@ -1,9 +1,9 @@
 package main
 
 import (
-	cloudevents "github.com/cloudevents/sdk-go/v2"
 	"github.com/rs/zerolog/log"
 	"github.com/sercand/kuberesolver"
+	broker "github.com/xmlking/toolkit/broker/cloudevents"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials"
 
@@ -48,7 +48,7 @@ func main() {
 		log.Fatal().Msgf("failed to build container: %v", err)
 	}
 
-	translogPublisher := ctn.Resolve("translog-publisher").(cloudevents.Client)
+	translogPublisher := ctn.Resolve("translog-publisher").(broker.Publisher)
 
 	// Handlers
 	userHandler := ctn.Resolve("user-handler").(userv1.UserServiceServer)

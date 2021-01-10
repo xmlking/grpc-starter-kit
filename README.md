@@ -82,8 +82,8 @@ By default, this project use embedded `sqlite3` database. if you want to use **p
 
 - start **postgres** via `docker-compose` command provided below
 - uncomment `postgres` import statement and comment `sqlite` in `main.go`
-- start micro server with `export export CONFIGOR_FILES=/config/config.yaml,/config/config.pg.yaml` flag <br/>
-  i.e., `CONFIGOR_FILES=/config/config.yaml,/config/config.pg.yaml go run service/account/main.go`
+- start micro server with `export export CONFIG_FILES=/config/config.yml,/config/config.pg.yml` flag <br/>
+  i.e., `CONFIG_FILES=/config/config.yml,/config/config.pg.yml go run service/account/main.go`
 
 ```bash
 # to start postgres in foreground

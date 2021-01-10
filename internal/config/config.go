@@ -9,7 +9,7 @@ import (
 
 	grpc_middleware "github.com/grpc-ecosystem/go-grpc-middleware"
 	"github.com/rs/zerolog/log"
-	"github.com/xmlking/configor"
+	"github.com/xmlking/toolkit/configurator"
 	"github.com/xmlking/toolkit/middleware/rpclog"
 	"github.com/xmlking/toolkit/util/tls"
 	"google.golang.org/grpc"
@@ -21,7 +21,6 @@ import (
 )
 
 var (
-	Configor   *configor.Configor
 	cfg        Configuration
 	configLock = new(sync.RWMutex)
 
@@ -53,14 +52,15 @@ git summary : %s
 `
 
 func init() {
-	configFiles, exists := os.LookupEnv("CONFIGOR_FILES")
+	configFiles, exists := os.LookupEnv("CONFIG_FILES")
 	if !exists {
-		configFiles = "/config/config.yaml"
+		configFiles = "/config/config.yml"
 	}
 
-	Configor = configor.New(&configor.Config{UsePkger: true, ErrorOnUnmatchedKeys: true})
+	configurator.DefaultConfigurator = configurator.NewConfigurator(configurator.WithPkger(), configurator.WithErrorOnUnmatchedKeys())
+
 	log.Info().Msgf("loading config files: %s", configFiles)
-	if err := Configor.Load(&cfg, strings.Split(configFiles, ",")...); err != nil {
+	if err := configurator.Load(&cfg, strings.Split(configFiles, ",")...); err != nil {
 		if strings.Contains(err.Error(), "no such file") {
 			log.Panic().Err(err).Msgf("missing config file at %s", configFiles)
 		} else {
@@ -85,7 +85,7 @@ func GetConfig() Configuration { // FIXME: return a deep copy?
 }
 
 func IsProduction() bool {
-	return Configor.GetEnvironment() == "production"
+	return configurator.GetEnvironment() == "production"
 }
 
 func IsSecure() bool {

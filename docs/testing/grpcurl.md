@@ -8,7 +8,7 @@ API testing with **grpcurl** via Envoy
 1. start greeter service
    `make run-greeter`
 2. start envoy via docker-compose
-    `docker-compose up envoy` or `docker-compose up envoy_secure_backend` when **tls** is enabled in [config.yaml](/config/config.yaml)
+    `docker-compose up envoy` or `docker-compose up envoy_secure_backend` when **tls** is enabled in [config.yml](/config/config.yml)
 
 > envoy via docker-compose will be exposing '9901', '9090', '9444' ports
 
@@ -43,7 +43,7 @@ grpcurl -cacert=config/certs/ca-cert.pem \
 
 ### Test API via Envoy with TLS, and client cert
 
-1. set **tls** enabled **true** in [config.yaml](/config/config.yaml) and start greeter service
+1. set **tls** enabled **true** in [config.yml](/config/config.yml) and start greeter service
    `make run-greeter`
 2. start envoy via docker-compose
     `docker-compose up envoy_secure_backend_cleint_cert`

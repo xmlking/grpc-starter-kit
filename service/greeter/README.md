@@ -13,7 +13,7 @@ Showcase
 ```bash
 make build TARGET=greeter TYPE=service
 # then run with custom env
-CONFIGOR_ENV_PREFIX=APP APP_FEATURES_TLS_ENABLED=true ./build/greeter-service
+CONFIG_ENV_PREFIX=APP APP_FEATURES_TLS_ENABLED=true ./build/greeter-service
 ```
 
 ### Run the service
@@ -35,7 +35,7 @@ make docker TARGET=greeter TYPE=service VERSION=v0.1.1
 1. start greeter service
    `make run-greeter`
 2. start envoy via docker-compose
-    `docker-compose up envoy` or `docker-compose up envoy_http` or `docker-compose up envoy_secure_backend` when **tls** is enabled in [config.yaml](/config/config.yaml)
+    `docker-compose up envoy` or `docker-compose up envoy_http` or `docker-compose up envoy_secure_backend` when **tls** is enabled in [config.yaml](/config/config.yml)
 
 > envoy via docker-compose will be exposing '9901', '9090', '9444' ports
 

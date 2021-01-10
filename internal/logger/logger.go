@@ -24,7 +24,7 @@ var (
 func init() {
 	var opts []Option
 
-	if lvlStr := os.Getenv("CONFIGOR_LOG_LEVEL"); len(lvlStr) > 0 {
+	if lvlStr := os.Getenv("CONFIG_LOG_LEVEL"); len(lvlStr) > 0 {
 		if lvl, err := zerolog.ParseLevel(lvlStr); err != nil {
 			log.Fatal().Err(err).Send()
 		} else {
@@ -32,7 +32,7 @@ func init() {
 		}
 	}
 
-	if fmtStr := os.Getenv("CONFIGOR_LOG_FORMAT"); len(fmtStr) > 0 {
+	if fmtStr := os.Getenv("CONFIG_LOG_FORMAT"); len(fmtStr) > 0 {
 		if logFmt, err := ParseFormat(fmtStr); err != nil {
 			log.Fatal().Err(err).Send()
 		} else {

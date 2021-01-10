@@ -3,7 +3,7 @@ package main
 import (
 	"github.com/rs/zerolog/log"
 
-	"github.com/xmlking/toolkit/broker"
+	"github.com/xmlking/toolkit/broker/cloudevents"
 	"github.com/xmlking/toolkit/service"
 
 	"github.com/xmlking/grpc-starter-kit/internal/config"
@@ -29,13 +29,14 @@ func main() {
 	srv := service.NewService(
 		service.Name(serviceName),
 		service.Version(cfg.Services.Emailer.Version),
-		service.WithBrokerOptions(
-			broker.Name("mkit.broker.emailer"),
-			broker.WithEndpoint(cfg.Services.Emailer.Endpoint),
-		),
 		// service.WithBrokerOptions(...),
 	)
-	srv.AddSubscriber(emailSubscriber.HandleSend)
+	bkr := broker.NewBroker(broker.Name("mkit.broker.emailer"))
+	_, _ = bkr.NewSubscriber(cfg.Services.Emailer.Endpoint, emailSubscriber.HandleSend)
+	err = bkr.Start()
+	if err != nil {
+		log.Fatal().Err(err).Msgf("failed to start the Broker: %s", cfg.Services.Emailer.Endpoint)
+	}
 
 	// Start server!
 	log.Info().Msg(config.GetBuildInfo())

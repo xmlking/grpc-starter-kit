@@ -3,15 +3,15 @@
 # make clean  	# remove ALL binaries and objects
 # make release  # add git TAG and push
 GITHUB_REPO_OWNER 				:= xmlking
-GITHUB_REPO_NAME 					:= grpc-starter-kit
-GITHUB_RELEASES_UI_URL 		:= https://github.com/$(GITHUB_REPO_OWNER)/$(GITHUB_REPO_NAME)/releases
-GITHUB_RELEASES_API_URL 	:= https://api.github.com/repos/$(GITHUB_REPO_OWNER)/$(GITHUB_REPO_NAME)/releases
-GITHUB_RELEASE_ASSET_URL	:= https://uploads.github.com/repos/$(GITHUB_REPO_OWNER)/$(GITHUB_REPO_NAME)/releases
+GITHUB_REPO_NAME 				:= grpc-starter-kit
+GITHUB_RELEASES_UI_URL 			:= https://github.com/$(GITHUB_REPO_OWNER)/$(GITHUB_REPO_NAME)/releases
+GITHUB_RELEASES_API_URL 		:= https://api.github.com/repos/$(GITHUB_REPO_OWNER)/$(GITHUB_REPO_NAME)/releases
+GITHUB_RELEASE_ASSET_URL		:= https://uploads.github.com/repos/$(GITHUB_REPO_OWNER)/$(GITHUB_REPO_NAME)/releases
 GITHUB_DEPLOY_API_URL			:= https://api.github.com/repos/$(GITHUB_REPO_OWNER)/$(GITHUB_REPO_NAME)/deployments
-DOCKER_REGISTRY 					:= ghcr.io
-# DOCKER_REGISTRY 					:= us.gcr.io
+DOCKER_REGISTRY 				:= ghcr.io
+# DOCKER_REGISTRY 				:= us.gcr.io
 DOCKER_CONTEXT_PATH 			:= $(GITHUB_REPO_OWNER)/$(GITHUB_REPO_NAME)
-# DOCKER_REGISTRY 					:= docker.io
+# DOCKER_REGISTRY 				:= docker.io
 # DOCKER_CONTEXT_PATH 			:= xmlking
 BASE_VERSION					:= latest
 

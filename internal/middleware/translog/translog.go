@@ -9,13 +9,14 @@ import (
 	"github.com/golang/protobuf/ptypes/any"
 	"github.com/grpc-ecosystem/go-grpc-middleware/util/metautils"
 	"github.com/rs/zerolog/log"
+	broker "github.com/xmlking/toolkit/broker/cloudevents"
 	"google.golang.org/grpc"
 
 	"github.com/xmlking/grpc-starter-kit/internal/constants"
 	transactionv1 "github.com/xmlking/grpc-starter-kit/mkit/service/transaction/v1"
 )
 
-func publish(ctx context.Context, publisher cloudevents.Client, source string, req, rsp proto.Message) (err error) {
+func publish(ctx context.Context, publisher broker.Publisher, source string, req, rsp proto.Message) (err error) {
 	var anyReq, anyRsp *any.Any
 	var event cloudevents.Event
 	anyReq, err = ptypes.MarshalAny(req)
@@ -41,7 +42,7 @@ func publish(ctx context.Context, publisher cloudevents.Client, source string, r
 		goto End
 	}
 
-	if result := publisher.Send(ctx, event); cloudevents.IsUndelivered(result) {
+	if result := publisher.Publish(ctx, event); cloudevents.IsUndelivered(result) {
 		log.Error().Err(result).Str("component", "translog").Msg("Publish: Failed to send")
 		err = result
 	} else if cloudevents.IsNACK(result) {
@@ -57,7 +58,7 @@ End:
 }
 
 // UnaryServerInterceptor publish request and response to cloudevents
-func UnaryServerInterceptor(publisher cloudevents.Client, source string) grpc.UnaryServerInterceptor {
+func UnaryServerInterceptor(publisher broker.Publisher, source string) grpc.UnaryServerInterceptor {
 
 	return func(ctx context.Context, req interface{}, info *grpc.UnaryServerInfo, handler grpc.UnaryHandler) (interface{}, error) {
 		resp, err := handler(ctx, req)

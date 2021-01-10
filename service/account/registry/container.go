@@ -1,12 +1,10 @@
 package registry
 
 import (
-	cloudevents "github.com/cloudevents/sdk-go/v2"
 	"github.com/rs/zerolog/log"
 	"github.com/sarulabs/di/v2"
+	broker "github.com/xmlking/toolkit/broker/cloudevents"
 	"google.golang.org/grpc"
-
-	"github.com/xmlking/toolkit/eventing"
 
 	"github.com/xmlking/grpc-starter-kit/ent"
 	"github.com/xmlking/grpc-starter-kit/internal/config"
@@ -51,14 +49,16 @@ func NewContainer(cfg config.Configuration) (*Container, error) {
 			Name:  "translog-publisher",
 			Scope: di.App,
 			Build: func(ctn di.Container) (interface{}, error) {
-				return eventing.NewSourceClient(cfg.Services.Recorder.Endpoint), nil
+				bkr := broker.NewBroker()
+				return bkr.NewPublisher(cfg.Services.Recorder.Endpoint)
 			},
 		},
 		{
 			Name:  "email-publisher",
 			Scope: di.App,
 			Build: func(ctn di.Container) (interface{}, error) {
-				return eventing.NewSourceClient(cfg.Services.Emailer.Endpoint), nil
+				bkr := broker.NewBroker()
+				return bkr.NewPublisher(cfg.Services.Emailer.Endpoint)
 			},
 		},
 		{
@@ -140,7 +140,7 @@ func buildProfileRepository(ctn di.Container) (interface{}, error) {
 
 func buildUserHandler(ctn di.Container) (interface{}, error) {
 	repo := ctn.Get("user-repository").(repository.UserRepository)
-	emailPublisher := ctn.Get("email-publisher").(cloudevents.Client)
+	emailPublisher := ctn.Get("email-publisher").(broker.Publisher)
 	greeterSrvClient := ctn.Get("greeter-client").(greeterv1.GreeterServiceClient)
 	return handler.NewUserHandler(repo, emailPublisher, greeterSrvClient), nil
 }

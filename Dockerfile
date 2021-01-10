@@ -48,7 +48,7 @@ ARG VERSION=0.0.1
 ARG TYPE=service
 ARG TARGET=account
 
-RUN pkger -o $TYPE/$TARGET -include /config/config.yaml -include /config/config.production.yaml -include /config/certs
+RUN pkger -o $TYPE/$TARGET -include /config/config.yml -include /config/config.production.yml -include /config/certs
 RUN go build -a \
     -ldflags="-w -s -linkmode external -extldflags '-static' $(govvv -flags -version ${VERSION} -pkg $(go list ./internal/config) )" \
     -o /app ./$TYPE/$TARGET/main.go
@@ -104,7 +104,7 @@ LABEL org.label-schema.build-date=$BUILD_DATE \
     org.label-schema.vendor=$VENDOR \
     org.label-schema.version=$VERSION \
     org.label-schema.docker.schema-version="1.0" \
-    org.label-schema.docker.cmd="docker run -it -e CONFIGOR_ENV=production -p 8080:8080  ${DOCKER_REGISTRY:+${DOCKER_REGISTRY}/}${DOCKER_CONTEXT_PATH}/${TARGET}-${TYPE}:${VERSION}"
+    org.label-schema.docker.cmd="docker run -it -e CONFIG_ENV=production -p 8080:8080  ${DOCKER_REGISTRY:+${DOCKER_REGISTRY}/}${DOCKER_CONTEXT_PATH}/${TARGET}-${TYPE}:${VERSION}"
 
 # Run the compiled binary.
 ENTRYPOINT ["/usr/bin/dumb-init", "/app"]

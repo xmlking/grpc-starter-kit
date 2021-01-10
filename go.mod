@@ -2,9 +2,8 @@ module github.com/xmlking/grpc-starter-kit
 
 go 1.15
 
-// replace github.com/xmlking/configor => /Users/schintha/Developer/Work/go/configor
-// replace github.com/xmlking/toolkit => /Users/schintha/Developer/Work/go/toolkit
-replace github.com/xmlking/toolkit => github.com/xmlking/toolkit v0.1.1-0.20200710152301-9029e438457f
+//replace github.com/xmlking/toolkit => /Users/schintha/Developer/Work/go/toolkit
+replace github.com/xmlking/toolkit => github.com/xmlking/toolkit v0.1.2-0.20210110045833-81de21a61dc0
 
 require (
 	github.com/DATA-DOG/go-sqlmock v1.5.0
@@ -14,6 +13,7 @@ require (
 	github.com/cockroachdb/errors v1.8.2
 	github.com/envoyproxy/protoc-gen-validate v0.4.1
 	github.com/facebook/ent v0.5.4
+	github.com/go-playground/validator/v10 v10.4.1 // indirect
 	github.com/golang/protobuf v1.4.3
 	github.com/google/uuid v1.1.4
 	github.com/grpc-ecosystem/go-grpc-middleware v1.2.2
@@ -26,7 +26,6 @@ require (
 	github.com/stretchr/testify v1.6.1
 	github.com/tcfw/go-grpc-k8s-resolver v0.0.0-20201027075059-d3a2d14aa08f
 	github.com/thoas/go-funk v0.7.0
-	github.com/xmlking/configor v0.2.2
 	github.com/xmlking/toolkit v0.1.1
 	go.opentelemetry.io/otel v0.15.0 // indirect
 	go.opentelemetry.io/otel/exporters/stdout v0.15.0

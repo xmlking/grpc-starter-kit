@@ -6,13 +6,15 @@ import (
 	"testing"
 	"time"
 
+	"github.com/xmlking/toolkit/configurator"
+
 	"github.com/xmlking/grpc-starter-kit/internal/config"
 )
 
-// CONFIGOR_DEBUG_MODE=true go test -v ./internal/config/... -count=1
+// CONFIG_DEBUG_MODE=true go test -v ./internal/config/... -count=1
 
 func TestNestedConfig(t *testing.T) {
-	t.Logf("Environment: %s", config.Configor.GetEnvironment())
+	t.Logf("Environment: %s", configurator.GetEnvironment())
 	t.Log(config.GetConfig().Database)
 	connMaxLifetime := config.GetConfig().Database.ConnMaxLifetime
 	if *connMaxLifetime != time.Duration(time.Hour*2) {
@@ -21,7 +23,7 @@ func TestNestedConfig(t *testing.T) {
 }
 
 func TestDefaultValues(t *testing.T) {
-	t.Logf("Environment: %s", config.Configor.GetEnvironment())
+	t.Logf("Environment: %s", configurator.GetEnvironment())
 	t.Log(config.GetConfig().Database)
 	connMaxLifetime := config.GetConfig().Database.ConnMaxLifetime
 	if *connMaxLifetime != time.Duration(time.Hour*2) {
@@ -34,7 +36,7 @@ func ExampleGetConfig() {
 	// fmt.Println(config.GetConfig().Services.Account.Authority)
 
 	// Output:
-	// username:"yourGmailUsername" password:"yourGmailAppPassword" email_server:"smtp.gmail.com" port:587 from:"from-test@gmail.com"
+	// &{yourGmailUsername yourGmailAppPassword smtp.gmail.com 587 from-test@gmail.com}
 }
 
 func ExampleGetConfig_check_defaults() {
@@ -49,13 +51,14 @@ func ExampleGetConfig_check_defaults() {
 }
 
 func TestOverwriteConfigurationWithEnvironmentWithDefaultPrefix(t *testing.T) {
-	os.Setenv("CONFIGOR_SERVICES_ACCOUNT_ENDPOINT", "dns:///localhost:8088")
+	os.Setenv("CONFIG_SERVICES_ACCOUNT_ENDPOINT", "dns:///localhost:8088")
 	defer os.Clearenv()
 
 	var cfg config.Configuration
-	config.Configor.Load(&cfg, "/config/config.yaml")
+	configurator.Load(&cfg, "/config/config.yml")
 
-	t.Logf("Environment: %s", config.Configor.GetEnvironment())
+	t.Logf("Environment: %s", configurator.GetEnvironment())
+	t.Log(cfg)
 	t.Log(cfg.Services.Account)
 	if cfg.Services.Account.Endpoint != "dns:///localhost:8088" {
 		t.Errorf("Account Endpoint is %s, want %s", cfg.Services.Account.Endpoint, "dns:///localhost:8088")

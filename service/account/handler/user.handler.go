@@ -10,6 +10,7 @@ import (
 	"github.com/grpc-ecosystem/go-grpc-middleware/util/metautils"
 	"github.com/rs/zerolog/log"
 	"github.com/thoas/go-funk"
+	broker "github.com/xmlking/toolkit/broker/cloudevents"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 
@@ -27,17 +28,17 @@ import (
 
 // UserHandler struct
 type userHandler struct {
-	userRepository repository.UserRepository
-	emailerClient  cloudevents.Client
-	greeterClient  greeterv1.GreeterServiceClient
+	userRepository   repository.UserRepository
+	emailerPublisher broker.Publisher
+	greeterClient    greeterv1.GreeterServiceClient
 }
 
 // NewUserHandler returns an instance of `UserServiceHandler`.
-func NewUserHandler(repo repository.UserRepository, emailerClient cloudevents.Client, greeterClient greeterv1.GreeterServiceClient) userv1.UserServiceServer {
+func NewUserHandler(repo repository.UserRepository, emailerPublisher broker.Publisher, greeterClient greeterv1.GreeterServiceClient) userv1.UserServiceServer {
 	return &userHandler{
-		userRepository: repo,
-		emailerClient:  emailerClient,
-		greeterClient:  greeterClient,
+		userRepository:   repo,
+		emailerPublisher: emailerPublisher,
+		greeterClient:    greeterClient,
 	}
 }
 
@@ -136,7 +137,7 @@ func (h *userHandler) Create(ctx context.Context, req *userv1.CreateRequest) (rs
 		event.SetID(traceId)
 	}
 
-	if result := h.emailerClient.Send(ctxWithRetries, event); cloudevents.IsUndelivered(result) {
+	if result := h.emailerPublisher.Publish(ctxWithRetries, event); cloudevents.IsUndelivered(result) {
 		log.Error().Err(result).Msg("EmailEvent: Failed to send. Ignoring")
 		// return nil, myErrors.AppError(myErrors.PSE, err)
 	} else if cloudevents.IsNACK(result) {
