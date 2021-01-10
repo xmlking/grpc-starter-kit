@@ -27,3 +27,4 @@
 - [ ] GraphQL Gateway with [gqlgen](https://gqlgen.com/), [rejoiner](https://github.com/google/rejoiner),[gqlgen](https://github.com/Shpota/skmz)
 - [ ] Switch to [Bazel Build](https://bazel.build/)
 - [ ] Graceful / zero downtime upgrades [tableflip](https://github.com/cloudflare/tableflip)
+- [ ] Truly cross-platform Task Runner [Taskfile](https://taskfile.dev/#/), [proxyless-grpc-lb](https://github.com/asishrs/proxyless-grpc-lb/blob/master/Taskfile.yml)
