@@ -17,7 +17,7 @@ require (
 	github.com/golang/protobuf v1.4.3
 	github.com/google/uuid v1.1.4
 	github.com/grpc-ecosystem/go-grpc-middleware v1.2.2
-	github.com/infobloxopen/atlas-app-toolkit v0.22.1
+	github.com/infobloxopen/atlas-app-toolkit v0.23.0
 	github.com/mattn/go-sqlite3 v1.14.6
 	github.com/rs/zerolog v1.20.0
 	github.com/sarulabs/di/v2 v2.4.0
