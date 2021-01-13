@@ -3,16 +3,14 @@ package main
 import (
 	grpc_middleware "github.com/grpc-ecosystem/go-grpc-middleware"
 	grpc_validator "github.com/grpc-ecosystem/go-grpc-middleware/validator"
-	"github.com/sercand/kuberesolver"
-	"go.opentelemetry.io/otel/api/global"
-	"go.opentelemetry.io/otel/instrumentation/grpctrace"
-	"google.golang.org/grpc"
-	"google.golang.org/grpc/credentials"
-
 	"github.com/rs/zerolog/log"
+	"github.com/sercand/kuberesolver"
 	"github.com/xmlking/toolkit/middleware/rpclog"
 	"github.com/xmlking/toolkit/service"
 	"github.com/xmlking/toolkit/util/tls"
+	"go.opentelemetry.io/contrib/instrumentation/google.golang.org/grpc/otelgrpc"
+	"google.golang.org/grpc"
+	"google.golang.org/grpc/credentials"
 
 	"github.com/xmlking/grpc-starter-kit/internal/config"
 	"github.com/xmlking/grpc-starter-kit/internal/constants"
@@ -46,8 +44,8 @@ func main() {
 	var streamInterceptors = []grpc.StreamServerInterceptor{grpc_validator.StreamServerInterceptor()}
 
 	if cfg.Features.Tracing.Enabled {
-		unaryInterceptors = append(unaryInterceptors, grpctrace.UnaryServerInterceptor(global.Tracer("")))
-		streamInterceptors = append(streamInterceptors, grpctrace.StreamServerInterceptor(global.Tracer("")))
+		unaryInterceptors = append(unaryInterceptors, otelgrpc.UnaryServerInterceptor())
+		streamInterceptors = append(streamInterceptors, otelgrpc.StreamServerInterceptor())
 	}
 	if cfg.Features.Rpclog.Enabled {
 		// keep it last in the interceptor chain

@@ -6,12 +6,13 @@ import (
 	"testing"
 	"time"
 
+	broker "github.com/xmlking/toolkit/broker/cloudevents"
+
 	_ "github.com/xmlking/grpc-starter-kit/internal/logger"
 
 	cloudevents "github.com/cloudevents/sdk-go/v2"
 	// cecontext "github.com/cloudevents/sdk-go/v2/context"
 	"github.com/rs/zerolog/log"
-	"github.com/xmlking/toolkit/eventing"
 
 	"github.com/xmlking/grpc-starter-kit/internal/config"
 	"github.com/xmlking/grpc-starter-kit/mkit/service/emailer/v1"
@@ -24,7 +25,8 @@ func TestEmailSubscriber_Handle_Send_E2E(t *testing.T) {
 
 	cfg := config.GetConfig()
 	topic := cfg.Services.Emailer.Endpoint
-	client := eventing.NewSourceClient(topic)
+	bkr := broker.NewBroker()
+	client, _ := bkr.NewPublisher(topic)
 
 	// Create an Event.
 	event := cloudevents.NewEvent()
@@ -42,7 +44,7 @@ func TestEmailSubscriber_Handle_Send_E2E(t *testing.T) {
 	// ctx = cloudevents.WithEncodingBinary(ctx)
 
 	// Send that Event.
-	if result := client.Send(ctxWithRetries, event); !cloudevents.IsACK(result) {
+	if result := client.Publish(ctxWithRetries, event); !cloudevents.IsACK(result) {
 		log.Fatal().Msgf("failed to send, %+v", result)
 	}
 
@@ -56,7 +58,8 @@ func TestEmailSubscriber_Handle_Request_E2E(t *testing.T) {
 
 	cfg := config.GetConfig()
 	topic := cfg.Services.Emailer.Endpoint
-	client := eventing.NewSourceClient(topic)
+	bkr := broker.NewBroker()
+	client, _ := bkr.NewPublisher(topic)
 
 	// Create an Event.
 	event := cloudevents.NewEvent()
@@ -70,13 +73,17 @@ func TestEmailSubscriber_Handle_Request_E2E(t *testing.T) {
 	// if you want to send raw like Avro or protobuf
 	// ctx = cloudevents.WithEncodingBinary(ctx)
 
-	// Request that Event.
-	if resp, res := client.Request(ctxWithRetries, event); !cloudevents.IsACK(res) {
-		log.Fatal().Msgf("failed to send, %+v", res)
-	} else if resp != nil {
-		log.Debug().Msg(resp.String())
-		log.Debug().Msgf("Got Event Response Context: %+v\n", resp.Context)
+	if err := client.Publish(ctxWithRetries, event); err != nil {
+		log.Error().Err(err).Msg("failed publishing")
 	}
+
+	// Request that Event.
+	//if resp, res := client.Request(ctxWithRetries, event); !cloudevents.IsACK(res) {
+	//	log.Fatal().Msgf("failed to send, %+v", res)
+	//} else if resp != nil {
+	//	log.Debug().Msg(resp.String())
+	//	log.Debug().Msgf("Got Event Response Context: %+v\n", resp.Context)
+	//}
 
 	t.Logf("Successfully published to: %s", topic)
 }

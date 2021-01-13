@@ -10,8 +10,6 @@
 
 ```bash
 # buf: proto tool https://buf.build/docs/tour-1
-brew tap bufbuild/buf
-brew install buf
 # or use `go get` to install Buf
 GO111MODULE=on go get github.com/bufbuild/buf/cmd/buf
 ```

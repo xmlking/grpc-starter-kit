@@ -32,7 +32,7 @@ configMapGenerator:
       - CONFIG_ENV=staging
       - CONFIG_LOG_LEVEL=debug
       - CONFIG_LOG_FORMAT=gcp
-      - CONFIG_FILE_PATH=/config/config.yaml
+      - CONFIG_FILE_PATH=/config/config.yml
       - CONFIG_DEBUG_MODE=true
       - CONFIG_VERBOSE_MODE=true
       - CONFIG_USE_PKGER=true

@@ -17,12 +17,12 @@ BASE_VERSION					:= latest
 
 VERSION					:= $(shell git describe --tags || echo "HEAD")
 GOPATH					:= $(shell go env GOPATH)
-CODECOV_FILE 		:= build/coverage.txt
+CODECOV_FILE 			:= build/coverage.txt
 TIMEOUT  				:= 60s
 # don't override
 GIT_TAG					:= $(shell git describe --tags --abbrev=0 --always --match "v*")
-GIT_DIRTY 			:= $(shell git status --porcelain 2> /dev/null)
-GIT_BRANCH  		:= $(shell git rev-parse --abbrev-ref HEAD)
+GIT_DIRTY 				:= $(shell git status --porcelain 2> /dev/null)
+GIT_BRANCH  			:= $(shell git rev-parse --abbrev-ref HEAD)
 HAS_GOVVV				:= $(shell command -v govvv 2> /dev/null)
 HAS_PKGER				:= $(shell command -v pkger 2> /dev/null)
 HAS_KO					:= $(shell command -v ko 2> /dev/null)
@@ -122,12 +122,12 @@ proto_clean:
 
 proto_lint:
 	@echo "Linting protos";
-	@${GOPATH}/bin/buf check lint
+	@${GOPATH}/bin/buf lint
 
 proto_breaking:
 	@echo "Checking proto breaking changes";
-	@${GOPATH}/bin/buf check breaking --against '.git#branch=master'
-#	@${GOPATH}/bin/buf check breaking --against "$(HTTPS_GIT)#branch=master"
+	@${GOPATH}/bin/buf breaking --against '.git#branch=master'
+#	@${GOPATH}/bin/buf breaking --against "$(HTTPS_GIT)#branch=master"
 
 # I prefer VS Code's proto plugin to format my code then prototool
 proto_format: proto_lint
@@ -183,12 +183,12 @@ endif
 			for _target in $${type}/*/; do \
 				temp=$${_target%%/}; target=$${temp#*/}; \
 				echo "\tPackaging config for $${target}-$${type}"; \
-				${GOPATH}/bin/pkger -o $${type}/$${target} -include /config/config.yaml -include /config/config.production.yaml -include /config/certs; \
+				${GOPATH}/bin/pkger -o $${type}/$${target} -include /config/config.yml -include /config/config.production.yml -include /config/certs; \
 			done \
 		done \
 	else \
 		echo "Packaging config for ${TARGET}-${TYPE}..."; \
-		${GOPATH}/bin/pkger -o ${TYPE}/${TARGET} -include /config/config.yaml -include /config/config.production.yaml -include /config/certs ; \
+		${GOPATH}/bin/pkger -o ${TYPE}/${TARGET} -include /config/config.yml -include /config/config.production.yml -include /config/certs ; \
 	fi
 
 build build-%: pkger-%

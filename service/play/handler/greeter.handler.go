@@ -4,12 +4,20 @@ import (
 	"context"
 
 	"github.com/rs/zerolog/log"
-	"go.opentelemetry.io/otel/api/global"
-	"go.opentelemetry.io/otel/api/kv"
-	"go.opentelemetry.io/otel/api/metric"
-	"go.opentelemetry.io/otel/api/trace"
+	"go.opentelemetry.io/otel"
+	"go.opentelemetry.io/otel/baggage"
+	"go.opentelemetry.io/otel/label"
+	"go.opentelemetry.io/otel/metric"
+	"go.opentelemetry.io/otel/trace"
 
 	"github.com/xmlking/grpc-starter-kit/mkit/service/greeter/v1"
+)
+
+var (
+	fooKey     = label.Key("ex.com/foo")
+	barKey     = label.Key("ex.com/bar")
+	lemonsKey  = label.Key("ex.com/lemons")
+	anotherKey = label.Key("ex.com/another")
 )
 
 type greeterHandler struct {
@@ -21,7 +29,7 @@ type greeterHandler struct {
 func NewGreeterHandler() greeterv1.GreeterServiceServer {
 	visitsCounter := createIntCounter("visit-counter",
 		"A counter representing number of times a website is visited.")
-	tracer := global.Tracer("ex.com/basic")
+	tracer := otel.Tracer("ex.com/basic")
 	return &greeterHandler{
 		visitsCounter: visitsCounter,
 		tracer:        tracer,
@@ -31,24 +39,38 @@ func NewGreeterHandler() greeterv1.GreeterServiceServer {
 // Hello method
 func (s *greeterHandler) Hello(ctx context.Context, req *greeterv1.HelloRequest) (*greeterv1.HelloResponse, error) {
 	log.Info().Msg("Received Greeter.Hello request")
+
+	ctx = baggage.ContextWithValues(ctx, fooKey.String("foo1"), barKey.String("bar1"))
+
 	// metrics
 	s.visitsCounter.Add(ctx, 1)
 	// trace
-	s.tracer.WithSpan(context.Background(), "foo",
-		func(ctx context.Context) error {
-			s.tracer.WithSpan(ctx, "bar",
-				func(ctx context.Context) error {
-					s.tracer.WithSpan(ctx, "baz",
-						func(ctx context.Context) error {
-							return nil
-						},
-					)
-					return nil
-				},
-			)
+	var span trace.Span
+	ctx, span = s.tracer.Start(ctx, "operation")
+	defer span.End()
+
+	span.AddEvent("Nice operation!", trace.WithAttributes(label.Int("bogons", 100)))
+	span.SetAttributes(anotherKey.String("yes"))
+
+	_ = func(ctx context.Context) error {
+		var span trace.Span
+		ctx, span = s.tracer.Start(ctx, "operation")
+		defer span.End()
+
+		span.AddEvent("Nice operation!", trace.WithAttributes(label.Int("bogons", 100)))
+		span.SetAttributes(anotherKey.String("yes"))
+
+		return func(ctx context.Context) error {
+			var span trace.Span
+			ctx, span = s.tracer.Start(ctx, "Sub operation...")
+			defer span.End()
+
+			span.SetAttributes(lemonsKey.String("five"))
+			span.AddEvent("Sub span event")
+
 			return nil
-		},
-	)
+		}(ctx)
+	}(ctx)
 
 	log.Info().Msgf("visitsCounter: %v", s.visitsCounter)
 
@@ -56,9 +78,9 @@ func (s *greeterHandler) Hello(ctx context.Context, req *greeterv1.HelloRequest)
 }
 
 func createIntCounter(name string, desc string) metric.BoundInt64Counter {
-	meter := global.Meter("otel-switch-backend")
+	meter := otel.Meter("otel-switch-backend")
 	counter := metric.Must(meter).NewInt64Counter(name,
 		metric.WithDescription(desc),
-	).Bind(kv.String("label", "test"))
+	).Bind(label.String("label", "test"))
 	return counter
 }
