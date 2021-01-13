@@ -1,0 +1,23 @@
+account:
+  - service/account/**/*
+  - change-notes/**/*account*
+documentation:
+  - "**/*.md"
+  - docs/**/*
+emailer:
+  - service/emailer/**/*
+  - change-notes/**/*emailer*
+greeter:
+  - service/greeter/**/*
+  - change-notes/**/*greeter*
+internal:
+  - service/internal/**/*
+  - change-notes/**/*internal*
+recorder:
+  - service/recorder/**/*
+  - change-notes/**/*recorder*
+workspace:
+  - .github/**/*
+  - Dockerfile*.*
+  - go.mod
+  - Makefile

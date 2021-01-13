@@ -17,14 +17,13 @@ using Makefile
 
 ```bash
 make proto
-## generate for protos in shared package
-make proto_shared
 ```
 
 ```bash
 make proto_lint
 make proto_breaking
 make proto_format
+make proto_check
 make proto_clean
 make proto_gen
 ```
@@ -90,7 +89,7 @@ make lint-account
 make lint-account-service
 # goup checks if there are any updates for imports in your module.
 # the main purpose is using it as a linter in continuous integration or in development process.
-make gomod_lint
+make upgrade_deps
 ```
 
 ### Packager
@@ -100,7 +99,7 @@ make pkger TARGET=greeter
 make pkger-greeter
 make pkger
 # other pkger commands
-pkger list -include /config/config.yaml -include /config/config.prod.yaml -include /config/certs
+pkger list -include /config/config.yml -include /config/config.production.yml -include /config/certs
 pkger info github.com/xmlking/grpc-starter-kit
 ```
 
@@ -135,23 +134,30 @@ make docker-account-service VERSION=v0.1.1
 make docker TARGET=account VERSION=v0.1.1
 make docker TARGET=account TYPE=service VERSION=v0.1.1
 make docker TARGET=account DOCKER_REGISTRY=us.gcr.io DOCKER_CONTEXT_PATH=<MY_PROJECT_ID>/grpc-starter-kit
-make docker TARGET=account DOCKER_REGISTRY=us.gcr.io DOCKER_CONTEXT_PATH=<MY_PROJECT_ID>/grpc-starter-kit GO_MICRO_VERSION=v1.17.1
+make docker TARGET=account DOCKER_REGISTRY=us.gcr.io DOCKER_CONTEXT_PATH=<MY_PROJECT_ID>/grpc-starter-kit BASE_VERSION=v0.1.0
 # short hand for TARGET and TYPE args
 make docker-emailer-service
 
 # build all docker images for docker-compose
 make docker
 make docker DOCKER_REGISTRY=us.gcr.io
-make docker VERSION=v0.3.2 GO_MICRO_VERSION=v2.3.0
-make docker DOCKER_REGISTRY=docker.pkg.github.com DOCKER_CONTEXT_PATH=xmlking/grpc-starter-kit
-make docker DOCKER_REGISTRY=docker.pkg.github.com DOCKER_CONTEXT_PATH=xmlking/grpc-starter-kit VERSION=v0.2.9
-make docker DOCKER_REGISTRY=docker.pkg.github.com DOCKER_CONTEXT_PATH=xmlking/grpc-starter-kit VERSION=v0.2.9 GO_MICRO_VERSION=v1.17.1
+make docker VERSION=v0.3.2 BASE_VERSION=v0.1.0
+make docker DOCKER_REGISTRY=ghcr.io DOCKER_CONTEXT_PATH=xmlking/grpc-starter-kit
+make docker DOCKER_REGISTRY=ghcr.io DOCKER_CONTEXT_PATH=xmlking/grpc-starter-kit VERSION=v0.2.9
+make docker DOCKER_REGISTRY=ghcr.io DOCKER_CONTEXT_PATH=xmlking/grpc-starter-kit VERSION=v0.2.9 BASE_VERSION=v0.1.0
 
 # publish all microservices images
 make docker_push
 
 # remove all previous microservices images and any dangling images
 make docker_clean
+```
+
+This will build and publish base image: `ghcr.io/xmlking/grpc-starter-kit/base`
+
+```
+make docker_base VERSION=v0.1.0
+make docker_base 
 ```
 
 ### kustomize

@@ -1,3 +1,4 @@
+version: v1beta1
 build:
   roots:
     - proto
@@ -8,17 +9,10 @@ lint:
     - DEFAULT
     - FILE_LOWER_SNAKE_CASE
   ignore:
-    - protoc-gen-gorm
     - validate
-    - gogoproto
   ignore_only:
     RPC_RESPONSE_STANDARD_NAME:
       - mkit/service/transaction/v1/transaction.proto
-      - mkit/shared/config/v1/config.proto
-    RPC_REQUEST_STANDARD_NAME:
-      - mkit/shared/config/v1/config.proto
-    RPC_REQUEST_RESPONSE_UNIQUE:
-      - mkit/shared/config/v1/config.proto
   rpc_allow_google_protobuf_empty_requests: true
   rpc_allow_google_protobuf_empty_responses: true
 
@@ -26,5 +20,4 @@ breaking:
   use:
     - WIRE_JSON
   ignore:
-    - protoc-gen-gorm
     - validate

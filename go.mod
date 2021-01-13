@@ -1,26 +1,36 @@
 module github.com/xmlking/grpc-starter-kit
 
-go 1.14
+go 1.15
+
+//replace github.com/xmlking/toolkit => /Users/schintha/Developer/Work/go/toolkit
+replace github.com/xmlking/toolkit => github.com/xmlking/toolkit v0.1.2-0.20210110180932-82c7b80b90a9
 
 require (
-	github.com/cloudevents/sdk-go/v2 v2.0.0
-	github.com/envoyproxy/protoc-gen-validate v0.3.0
-	github.com/gogo/protobuf v1.3.1
-	github.com/golang/protobuf v1.4.2
-	github.com/grpc-ecosystem/go-grpc-middleware v1.2.0
-	github.com/infobloxopen/atlas-app-toolkit v0.21.1
-	github.com/infobloxopen/protoc-gen-gorm v0.20.0
-	github.com/jinzhu/gorm v1.9.14
-	github.com/markbates/pkger v0.17.0
-	github.com/pkg/errors v0.9.1
-	github.com/rs/zerolog v1.19.0
+	github.com/DATA-DOG/go-sqlmock v1.5.0
+	github.com/GoogleCloudPlatform/opentelemetry-operations-go/exporter/metric v0.15.0
+	github.com/GoogleCloudPlatform/opentelemetry-operations-go/exporter/trace v0.15.0
+	github.com/cloudevents/sdk-go/v2 v2.3.1
+	github.com/cockroachdb/errors v1.8.2
+	github.com/envoyproxy/protoc-gen-validate v0.4.1
+	github.com/facebook/ent v0.5.4
+	github.com/golang/protobuf v1.4.3
+	github.com/google/uuid v1.1.4
+	github.com/grpc-ecosystem/go-grpc-middleware v1.2.2
+	github.com/markbates/pkger v0.17.1
+	github.com/mattn/go-sqlite3 v1.14.6
+	github.com/rs/zerolog v1.20.0
 	github.com/sarulabs/di/v2 v2.4.0
-	github.com/satori/go.uuid v1.2.0
+	github.com/sercand/kuberesolver v2.4.0+incompatible
 	github.com/soheilhy/cmux v0.1.4
-	github.com/stretchr/testify v1.5.1
-	github.com/thoas/go-funk v0.6.0
-	github.com/xmlking/configor v0.1.0
-	google.golang.org/genproto v0.0.0-20200619004808-3e7fca5c55db
-	google.golang.org/grpc v1.29.1
-	google.golang.org/protobuf v1.24.0
+	github.com/stretchr/testify v1.7.0
+	github.com/tcfw/go-grpc-k8s-resolver v0.0.0-20201027075059-d3a2d14aa08f
+	github.com/thoas/go-funk v0.7.0
+	github.com/xmlking/toolkit v0.1.1
+	go.opentelemetry.io/contrib/instrumentation/google.golang.org/grpc/otelgrpc v0.15.1
+	go.opentelemetry.io/otel v0.15.0
+	go.opentelemetry.io/otel/exporters/stdout v0.15.0
+	go.opentelemetry.io/otel/sdk v0.15.0
+	google.golang.org/grpc v1.34.1
+	google.golang.org/grpc/examples v0.0.0-20210112202341-d3ae124a07fc // indirect
+	google.golang.org/protobuf v1.25.0
 )

@@ -3,26 +3,26 @@
 # make clean  	# remove ALL binaries and objects
 # make release  # add git TAG and push
 GITHUB_REPO_OWNER 				:= xmlking
-GITHUB_REPO_NAME 					:= grpc-starter-kit
-GITHUB_RELEASES_UI_URL 		:= https://github.com/$(GITHUB_REPO_OWNER)/$(GITHUB_REPO_NAME)/releases
-GITHUB_RELEASES_API_URL 	:= https://api.github.com/repos/$(GITHUB_REPO_OWNER)/$(GITHUB_REPO_NAME)/releases
-GITHUB_RELEASE_ASSET_URL	:= https://uploads.github.com/repos/$(GITHUB_REPO_OWNER)/$(GITHUB_REPO_NAME)/releases
+GITHUB_REPO_NAME 				:= grpc-starter-kit
+GITHUB_RELEASES_UI_URL 			:= https://github.com/$(GITHUB_REPO_OWNER)/$(GITHUB_REPO_NAME)/releases
+GITHUB_RELEASES_API_URL 		:= https://api.github.com/repos/$(GITHUB_REPO_OWNER)/$(GITHUB_REPO_NAME)/releases
+GITHUB_RELEASE_ASSET_URL		:= https://uploads.github.com/repos/$(GITHUB_REPO_OWNER)/$(GITHUB_REPO_NAME)/releases
 GITHUB_DEPLOY_API_URL			:= https://api.github.com/repos/$(GITHUB_REPO_OWNER)/$(GITHUB_REPO_NAME)/deployments
-DOCKER_REGISTRY 					:= docker.pkg.github.com
-# DOCKER_REGISTRY 					:= us.gcr.io
+DOCKER_REGISTRY 				:= ghcr.io
+# DOCKER_REGISTRY 				:= us.gcr.io
 DOCKER_CONTEXT_PATH 			:= $(GITHUB_REPO_OWNER)/$(GITHUB_REPO_NAME)
-# DOCKER_REGISTRY 					:= docker.io
+# DOCKER_REGISTRY 				:= docker.io
 # DOCKER_CONTEXT_PATH 			:= xmlking
-GO_MICRO_VERSION 					:= latest
+BASE_VERSION					:= latest
 
 VERSION					:= $(shell git describe --tags || echo "HEAD")
 GOPATH					:= $(shell go env GOPATH)
-CODECOV_FILE 		:= build/coverage.txt
+CODECOV_FILE 			:= build/coverage.txt
 TIMEOUT  				:= 60s
 # don't override
 GIT_TAG					:= $(shell git describe --tags --abbrev=0 --always --match "v*")
-GIT_DIRTY 			:= $(shell git status --porcelain 2> /dev/null)
-GIT_BRANCH  		:= $(shell git rev-parse --abbrev-ref HEAD)
+GIT_DIRTY 				:= $(shell git status --porcelain 2> /dev/null)
+GIT_BRANCH  			:= $(shell git rev-parse --abbrev-ref HEAD)
 HAS_GOVVV				:= $(shell command -v govvv 2> /dev/null)
 HAS_PKGER				:= $(shell command -v pkger 2> /dev/null)
 HAS_KO					:= $(shell command -v ko 2> /dev/null)
@@ -34,7 +34,7 @@ override TYPES:= service
 # Target for running the action
 TARGET = $(word 1,$(subst -, ,$*))
 
-override VERSION_PACKAGE = $(shell go list ./shared/config)
+override VERSION_PACKAGE = $(shell go list ./internal/config)
 BUILD_FLAGS = $(shell govvv -flags -version $(VERSION) -pkg $(VERSION_PACKAGE))
 
 # $(warning TYPES = $(TYPE), TARGET = $(TARGET))
@@ -42,8 +42,8 @@ BUILD_FLAGS = $(shell govvv -flags -version $(VERSION) -pkg $(VERSION_PACKAGE))
 # $(warning VERSION_PACKAGE = $(VERSION_PACKAGE), BUILD_FLAGS = $(BUILD_FLAGS))
 
 .PHONY: all tools check_dirty clean update_dep
-.PHONY: proto proto_lint proto_breaking proto_format proto_gen proto_shared
-.PHONY: lint lint-% gomod_lint
+.PHONY: proto proto_lint proto_breaking proto_format proto_generate proto_shared
+.PHONY: lint lint-% upgrade_deps
 .PHONY: format format-%
 .PHONY: pkger pkger-%
 .PHONY: build build-%
@@ -54,6 +54,10 @@ BUILD_FLAGS = $(shell govvv -flags -version $(VERSION) -pkg $(VERSION_PACKAGE))
 .PHONY: deploy/e2e deploy/prod
 
 all: build
+
+################################################################################
+# Target: tools
+################################################################################
 
 tools:
 	@echo "==> Installing dev tools"
@@ -78,9 +82,32 @@ clean:
 		rm -f $$f; \
 	done
 
+################################################################################
+# Target: go-mod                                                               #
+################################################################################
+
 update_deps:
-	go mod verify
-	go mod tidy
+	@for d in `find * -name 'go.mod'`; do \
+		pushd `dirname $$d` >/dev/null; \
+		go mod verify; \
+		go mod tidy; \
+		popd >/dev/null; \
+	done
+
+download_deps:
+	@for d in `find * -name 'go.mod'`; do \
+		pushd `dirname $$d` >/dev/null; \
+		rm -f go.sum; \
+		go mod download; \
+		popd >/dev/null; \
+	done
+
+upgrade_deps:
+	@goup -v -m ./...
+
+################################################################################
+# Target: proto                                                                #
+################################################################################
 
 proto_clean:
 	@echo "Deleting generated Go files....";
@@ -95,12 +122,12 @@ proto_clean:
 
 proto_lint:
 	@echo "Linting protos";
-	@${GOPATH}/bin/buf check lint
+	@${GOPATH}/bin/buf lint
 
 proto_breaking:
 	@echo "Checking proto breaking changes";
-	@${GOPATH}/bin/buf check breaking --against-input '.git#branch=master'
-#	@${GOPATH}/bin/buf check breaking --against-input "$(HTTPS_GIT)#branch=master"
+	@${GOPATH}/bin/buf breaking --against '.git#branch=master'
+#	@${GOPATH}/bin/buf breaking --against "$(HTTPS_GIT)#branch=master"
 
 # I prefer VS Code's proto plugin to format my code then prototool
 proto_format: proto_lint
@@ -108,22 +135,17 @@ proto_format: proto_lint
 	@${GOPATH}/bin/prototool format -w proto;
 	@echo "✓ Proto: Formatted"
 
-proto_gen:
-	@${GOPATH}/bin/prototool generate proto;
-	@rsync -a github.com/xmlking/grpc-starter-kit/mkit/service/account/ mkit/service/account && rm -Rf github.com
+proto_check: proto_lint proto_breaking proto_format
 
-proto: proto_lint proto_breaking proto_format proto_clean proto_gen
+proto_generate:
+	@echo "Generating protos";
+	@${GOPATH}/bin/buf generate --path proto/mkit;
 
-proto_shared:
-	@for f in ./shared/proto/**/*.proto; do \
-		protoc --proto_path=.:${GOPATH}/src \
-		--gofast_out=plugins=grpc,paths=source_relative:. \
-		--validate_out=lang=gogo,paths=source_relative:. $$f; \
-		echo ✓ compiled: $$f; \
-	done
+proto: proto_check proto_clean proto_generate
 
-gomod_lint:
-	@goup -v -m ./...
+################################################################################
+# Target: lints                                                                #
+################################################################################
 
 lint lint-%:
 	@if [ -z $(TARGET) ]; then \
@@ -147,6 +169,10 @@ format format-%:
 		echo "Formating protos in ${TARGET}/${TYPE}..."; \
 	fi
 
+################################################################################
+# Target: build                                                                #
+################################################################################
+
 pkger pkger-%:
 ifndef HAS_PKGER
 	$(error "No pkger in PATH". Please install via 'go install github.com/markbates/pkger/cmd/pkger'")
@@ -157,12 +183,12 @@ endif
 			for _target in $${type}/*/; do \
 				temp=$${_target%%/}; target=$${temp#*/}; \
 				echo "\tPackaging config for $${target}-$${type}"; \
-				${GOPATH}/bin/pkger -o $${type}/$${target} -include /config/config.yaml -include /config/config.prod.yaml -include /config/certs; \
+				${GOPATH}/bin/pkger -o $${type}/$${target} -include /config/config.yml -include /config/config.production.yml -include /config/certs; \
 			done \
 		done \
 	else \
 		echo "Packaging config for ${TARGET}-${TYPE}..."; \
-		${GOPATH}/bin/pkger -o ${TYPE}/${TARGET} -include /config/config.yaml -include /config/config.prod.yaml -include /config/certs ; \
+		${GOPATH}/bin/pkger -o ${TYPE}/${TARGET} -include /config/config.yml -include /config/config.production.yml -include /config/certs ; \
 	fi
 
 build build-%: pkger-%
@@ -183,6 +209,10 @@ endif
 		go build -o  build/${TARGET}-${TYPE} -a -trimpath -ldflags "-w -s ${BUILD_FLAGS}" ./${TYPE}/${TARGET}; \
 	fi
 
+################################################################################
+# Target: tests                                                                #
+################################################################################
+
 TEST_TARGETS := test-default test-bench test-unit test-inte test-e2e test-race test-cover
 .PHONY: $(TEST_TARGETS) check test tests
 test-bench:   	ARGS=-run=__absolutelynothing__ -bench=. ## Run benchmarks
@@ -202,11 +232,28 @@ check test tests:
 		go test -timeout $(TIMEOUT) -v $(ARGS) ./${TYPE}/${TARGET}/... ; \
 	fi
 
+################################################################################
+# Target: run                                                                  #
+################################################################################
+
 run run-%:
 	@if [ -z $(TARGET) ]; then \
 		echo "no  TARGET. example usage: make test TARGET=account"; \
 	else \
 		go run  ./${TYPE}/${TARGET} ${ARGS}; \
+	fi
+
+################################################################################
+# Target: release                                                              #
+################################################################################
+
+release: download_deps
+	@if [ -z $(TAG) ]; then \
+		echo "no  TAG. Usage: make release TAG=v0.1.1"; \
+	else \
+		for m in `find * -name 'go.mod' -mindepth 1 -exec dirname {} \;`; do \
+			hub release create -m "$$m/${TAG} release" $$m/${TAG}; \
+		done \
 	fi
 
 release/draft: check_dirty
@@ -233,6 +280,10 @@ deploy/prod:
     -XPOST $(GITHUB_DEPLOY_API_URL) \
     -d '{"ref": "develop", "environment": "production", "payload": { "what": "production deployment to GKE"}}'
 
+################################################################################
+# Target: docker                                                               #
+################################################################################
+
 # TODO: DOCKER_BUILDKIT=1 docker build --rm
 docker docker-%:
 	@if [ -z $(TARGET) ]; then \
@@ -245,7 +296,7 @@ docker docker-%:
 				docker build --rm \
 				--build-arg BUILDKIT_INLINE_CACHE=1 \
 				--build-arg VERSION=$(VERSION) \
-				--build-arg GO_MICRO_VERSION=$(GO_MICRO_VERSION) \
+				--build-arg BASE_VERSION=$(BASE_VERSION) \
 				--build-arg TYPE=$${type} \
 				--build-arg TARGET=$${target} \
 				--build-arg DOCKER_REGISTRY=${DOCKER_REGISTRY} \
@@ -260,7 +311,7 @@ docker docker-%:
 		docker build --rm \
 		--build-arg BUILDKIT_INLINE_CACHE=1 \
 		--build-arg VERSION=$(VERSION) \
-		--build-arg GO_MICRO_VERSION=$(GO_MICRO_VERSION) \
+		--build-arg BASE_VERSION=$(BASE_VERSION) \
 		--build-arg TYPE=${TYPE} \
 		--build-arg TARGET=${TARGET} \
 		--build-arg DOCKER_REGISTRY=${DOCKER_REGISTRY} \
@@ -286,8 +337,18 @@ docker_push:
 		docker push $$image; \
 	done;
 
+docker_base:
+	docker build --build-arg BUILD_DATE=$(shell date +%FT%T%Z) -f Dockerfile.base -t ${DOCKER_REGISTRY}/${DOCKER_CONTEXT_PATH}/base:$(VERSION) .
+	docker tag ${DOCKER_REGISTRY}/${DOCKER_CONTEXT_PATH}/base:$(VERSION) ${DOCKER_REGISTRY}/${DOCKER_CONTEXT_PATH}/base:latest
+#	docker push ${DOCKER_REGISTRY}/${DOCKER_CONTEXT_PATH}/base:$(VERSION)
+#	docker push ${DOCKER_REGISTRY}/${DOCKER_CONTEXT_PATH}/base:latest
+
+################################################################################
+# Target: deploy                                                               #
+################################################################################
+
 kustomize: OVERLAY 	:= local
-kustomize: NS 			:= default
+kustomize: NS 		:= default
 kustomize:
 	# @kustomize build --load_restrictor none config/envs/${OVERLAY}/ | sed -e "s|\$$(NS)|${NS}|g" 		-e "s|\$$(IMAGE_VERSION)|${VERSION}|g" | kubectl apply -f -
 	@kustomize build --load_restrictor none config/envs/${OVERLAY}/ | sed -e "s|\$$(NS)|${NS}|g" 		-e "s|\$$(IMAGE_VERSION)|${VERSION}|g" > build/kubernetes.yaml

@@ -1,0 +1,4 @@
+// logger setup from micro-strter-kit
+// import "github.com/xmlking/grpc-starter-kit/internal/logger" to `main.go` and all test files.
+// set log level and format in config.yml
+package logger

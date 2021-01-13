@@ -3,21 +3,24 @@ package e2e
 
 import (
 	"context"
+	"fmt"
 	"testing"
 
 	"github.com/golang/protobuf/ptypes/wrappers"
-	grpc_middleware "github.com/grpc-ecosystem/go-grpc-middleware"
 	"github.com/rs/zerolog/log"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 	"github.com/stretchr/testify/suite"
 	"google.golang.org/grpc"
-	"google.golang.org/grpc/metadata"
 
-	"github.com/xmlking/grpc-starter-kit/micro/middleware/rpclog"
+	appendTags "github.com/xmlking/toolkit/middleware/tags/append"
+
+	"github.com/xmlking/toolkit/util"
+
+	"github.com/xmlking/grpc-starter-kit/internal/config"
+	"github.com/xmlking/grpc-starter-kit/internal/constants"
 	"github.com/xmlking/grpc-starter-kit/mkit/service/account/profile/v1"
 	"github.com/xmlking/grpc-starter-kit/mkit/service/account/user/v1"
-	"github.com/xmlking/grpc-starter-kit/shared/config"
 )
 
 // Define the suite, and absorb the built-in basic suite
@@ -25,6 +28,7 @@ import (
 // returns the current testing context
 type AccountTestSuite struct {
 	suite.Suite
+	suffix        string
 	conn          *grpc.ClientConn
 	userClient    userv1.UserServiceClient
 	profileClient profilev1.ProfileServiceClient
@@ -35,19 +39,22 @@ func (suite *AccountTestSuite) SetupSuite() {
 	cfg := config.GetConfig()
 	suite.T().Log("in SetupSuite")
 
-	var err error
-	suite.conn, err = grpc.Dial(
-		cfg.Services.Account.Endpoint, grpc.WithInsecure(),
-		grpc.WithDefaultServiceConfig(`{"loadBalancingPolicy":"round_robin"}`),
-		grpc.WithUnaryInterceptor(grpc_middleware.ChainUnaryClient(
-			rpclog.UnaryClientInterceptor(),
-		)),
-	)
-	if err != nil {
-		log.Fatal().Msgf("did not connect: %s", err)
+	suite.suffix = util.RandomStringLower(5)
+
+	pairs := []string{constants.FromServiceKey, constants.ACCOUNT_CLIENT}
+	for key, val := range cfg.Services.Account.Metadata {
+		pairs = append(pairs, key, val)
 	}
 
-	println(suite.conn.Target())
+	var err error
+	var ucInterceptors = []grpc.UnaryClientInterceptor{
+		appendTags.UnaryClientInterceptor(appendTags.WithTraceID(), appendTags.WithPairs(pairs...)),
+	}
+	suite.conn, err = config.GetClientConn(cfg.Services.Account, ucInterceptors)
+	if err != nil {
+		log.Fatal().Err(err).Msgf("Failed connect to: %s", cfg.Services.Account.Endpoint)
+	}
+
 	suite.userClient = userv1.NewUserServiceClient(suite.conn)
 	suite.profileClient = profilev1.NewProfileServiceClient(suite.conn)
 }
@@ -63,18 +70,15 @@ func (suite *AccountTestSuite) SetupTest() {
 	t := suite.T()
 	t.Log("in SetupTest - creating user")
 
-	// Sending metadata - client side
-	//md := metadata.Pairs("k1", "v1", "k1", "v2", "k2", "v3")
-	//ctx := metadata.NewOutgoingContext(context.Background(), md)
-	// create a new context with some metadata - (Optional) Just for demonstration
-	ctx := metadata.AppendToOutgoingContext(context.Background(), "X-User-Id", "john", "X-From-Id", "script")
-
-	_, err := suite.userClient.Create(ctx, &userv1.CreateRequest{
-		Username:  &wrappers.StringValue{Value: "sumo"},
-		FirstName: &wrappers.StringValue{Value: "sumo"},
-		LastName:  &wrappers.StringValue{Value: "demo"},
-		Email:     &wrappers.StringValue{Value: "sumo@demo.com"},
+	_, err := suite.userClient.Create(context.Background(), &userv1.CreateRequest{
+		Username:  &wrappers.StringValue{Value: fmt.Sprintf("u_%s", suite.suffix)},
+		FirstName: &wrappers.StringValue{Value: fmt.Sprintf("f_%s", suite.suffix)},
+		LastName:  &wrappers.StringValue{Value: fmt.Sprintf("l_%s", suite.suffix)},
+		Email:     &wrappers.StringValue{Value: fmt.Sprintf("e_%s@demo.com", suite.suffix)},
 	})
+	if err != nil {
+		log.Error().Err(err).Send()
+	}
 	require.Nil(t, err)
 }
 
@@ -88,8 +92,8 @@ func (suite *AccountTestSuite) TestUserHandler_Exist_E2E() {
 	t := suite.T()
 	t.Log("in TestUserHandler_Exist_E2E, checking if user Exist")
 
-	rsp, err := suite.userClient.Exist(context.TODO(), &userv1.ExistRequest{
-		Username: &wrappers.StringValue{Value: "sumo"},
+	rsp, err := suite.userClient.Exist(context.Background(), &userv1.ExistRequest{
+		Username: &wrappers.StringValue{Value: fmt.Sprintf("u_%s", suite.suffix)},
 	})
 	require.Nil(t, err)
 	assert.Equal(suite.T(), rsp.GetResult(), true)

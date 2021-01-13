@@ -169,7 +169,7 @@ go test -v -run Integration ./service/emailer/service
 
   ```bash
   /bin/busybox ls config
-  /bin/busybox more config/config.yaml
+  /bin/busybox more config/config.yml
   ```
 
 - Why some ORM model fields are pointers?

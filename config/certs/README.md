@@ -35,3 +35,4 @@ execute them in command line.
 ## Reference
 
 - [RSA vs DSA vs ECDSA](https://www.misterpki.com/rsa-dsa-ecdsa/)
+- [Securing gRPC connections with TLS](https://itnext.io/practical-guide-to-securing-grpc-connections-with-go-and-tls-part-2-994ef93b8ea9) via [certify](https://github.com/johanbrandhorst/certify)

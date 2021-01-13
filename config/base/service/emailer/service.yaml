@@ -4,11 +4,9 @@ metadata:
   name: service
 spec:
   type: ClusterIP
-  # We want the servers to become available even if they're not ready
-  publishNotReadyAddresses: true
+  clusterIP: None  # headless service
+  publishNotReadyAddresses: true  # We want the servers to become available even if they're not ready
   ports:
     - name: grpc-port
-      appProtocol: grpc
-      port: 8080
+      port: 8080  # no targetPort for headless service
       protocol: TCP
-      targetPort: grpc-port

@@ -35,7 +35,7 @@ kubectl create secret docker-registry regcred \
 export GITHUB_DOCKER_READ_PASSWORD=15650agc4e8a6602284643f7caf76134eb977b45
 
 kubectl create secret docker-registry regcred \
---docker-server=https://docker.pkg.github.com \
+--docker-server=https://ghcr.io \
 --docker-username=xmlking \
 --docker-password=$GITHUB_DOCKER_READ_PASSWORD \
 --docker-email=xmlking@gmail.com \
@@ -177,7 +177,7 @@ kubectl apply -k ./deploy/overlays/production
 
 # update image version
 IMAGE_VERSION=v0.1.0-118-g21f8a30
-cd deploy && kustomize edit set image docker.pkg.github.com/xmlking/grpc-starter-kit/service/account:$IMAGE_VERSION && cd ..
+cd deploy && kustomize edit set image ghcr.io/xmlking/grpc-starter-kit/service/account:$IMAGE_VERSION && cd ..
 
 kustomize build deploy/overlays/staging | kubectl apply -f -
 kustomize build deploy/overlays/production | kubectl apply -f -

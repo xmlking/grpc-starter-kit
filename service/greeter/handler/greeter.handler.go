@@ -19,5 +19,5 @@ func NewGreeterHandler() greeterv1.GreeterServiceServer {
 // Hello method
 func (s *greeterHandler) Hello(ctx context.Context, req *greeterv1.HelloRequest) (*greeterv1.HelloResponse, error) {
 	log.Info().Msg("Received Greeter.Hello request")
-	return &greeterv1.HelloResponse{Msg: "Hello " + req.Name + " from cmux"}, nil
+	return &greeterv1.HelloResponse{Msg: "Hello " + req.Name + " from backend"}, nil
 }

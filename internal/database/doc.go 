@@ -1,0 +1,10 @@
+// ENT database package from micro-strter-kit
+
+// add one of the following drivers to main.go
+// add 	_ "github.com/mattn/go-sqlite3"
+// add 	_ "github.com/go-sql-driver/mysql"
+// add 	_ "github.com/jackc/pgx/v4/stdlib"
+
+// set connection settings in config.yml
+// depends on "github.com/xmlking/grpc-starter-kit/internal/config"
+package database

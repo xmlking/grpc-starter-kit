@@ -110,3 +110,4 @@ appctl apply development --from-tag v0.1.0
 1. [Application Delivery](https://cloud.google.com/kubernetes-engine/docs/concepts/add-on/application-delivery)
 1. [Application Manager for GKE](https://cloud.google.com/blog/products/containers-kubernetes/announcing-application-manager-for-google-kubernetes-engine)
 1. [Application Manager brings GitOps to GKE](https://www.youtube.com/watch?v=r5_xYtbZPfc)
+1. [Using Envoy Proxy to load-balance gRPC services on GKE](https://github.com/GoogleCloudPlatform/grpc-gke-nlb-tutorial)

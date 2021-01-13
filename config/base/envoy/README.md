@@ -3,7 +3,7 @@
 ### Prerequisite
 
 ```bash
-wget -O ~/Downloads/protoc-gen-grpc-web https://github.com/grpc/grpc-web/releases/download/1.0.7/protoc-gen-grpc-web-1.0.7-darwin-x86_64
+wget -O ~/Downloads/protoc-gen-grpc-web https://github.com/grpc/grpc-web/releases/download/1.2.0/protoc-gen-grpc-web-1.2.0-darwin-x86_64
 chmod +x ~/Downloads/protoc-gen-grpc-web
 mv  ~/Downloads/protoc-gen-grpc-web /usr/local/bin/protoc-gen-grpc-web
 

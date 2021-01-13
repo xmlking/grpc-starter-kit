@@ -17,34 +17,44 @@ Microservices starter kit for **Golang**, aims to be developer friendly.
 [![Language grade: Go](https://img.shields.io/lgtm/grade/go/g/xmlking/grpc-starter-kit.svg?logo=lgtm&logoWidth=18)](https://lgtm.com/projects/g/xmlking/grpc-starter-kit/context:go)
 [![fuzzit](https://app.fuzzit.dev/badge?org_id=xmlkinggithub&branch=develop)](https://app.fuzzit.dev/orgs/xmlkinggithub/dashboard)
 
+
 ## Overview
 
-![Image of Deployment](docs/images/deployment.png)
+<p align="center">
+  <img src="docs/images/deployment.drawio.svg" width="60%">
+</p>
 
 ### What you get
 
 - [x] Monorepo - Sharing Code Between Microservices
-- [x] gRPC microservices with REST Gateway
+- [x] gRPC microservices
+- [x] Versatile ingress gateway based on Envoy with Config Manager [esp-v2](https://github.com/GoogleCloudPlatform/esp-v2)
+- [ ] Proxy-less Service Discovery and xDS based gRPC Load Balancer with [Traffic Director](https://cloud.google.com/blog/products/networking/traffic-director-supports-proxyless-grpc)
 - [x] Input Validation with [protoc-gen-validate (PGV)](https://github.com/envoyproxy/protoc-gen-validate)
-- [x] Config - Pluggable Sources, Mergeable Config, Safe Recovery
+- [x] Config - Pluggable Sources, Mergeable Config, Environment Overlays
 - [x] Customizable Logging
-- [x] CRUD Example using [GORM](https://gorm.io/), [benchmarks](https://github.com/kihamo/orm-benchmark), [XORM](https://xorm.io/) next?
-- [x] GORM code gen via [protoc-gen-gorm](https://github.com/infobloxopen/protoc-gen-gorm) or use [protoc-go-inject-tag](https://github.com/favadi/protoc-go-inject-tag)?
+- [x] Flexible [errors](https://github.com/cockroachdb/errors) lib: _PII-free, gRPC middleware, opt-in Sentry.io reporting_
+- [x] Graph-Based ORM [ent](https://entgo.io/)
 - [x] Dependency injection [Container](https://github.com/sarulabs/di), Try [wire](https://itnext.io/mastering-wire-f1226717bbac) next?
+- [ ] Adaptive System Protection / Adaptive concurrency limits with 
+        [Alibaba's Sentinel](https://github.com/alibaba/sentinel-golang/wiki), 
+        [Netflix's concurrency-limits](https://medium.com/@NetflixTechBlog/performance-under-load-3e6fa9a60581), 
+        [go-concurrency-limits](https://github.com/platinummonkey/go-concurrency-limits)
 - [x] multi-stage-multi-target Dockerfile
 - [x] One Step _build/publish/deploy_ with [ko](https://github.com/google/ko)
 - [x] BuildInfo with [govvv](https://github.com/ahmetb/govvv)
 - [x] Linting with [GolangCI](https://github.com/golangci/golangci-lint) linters aggregator
 - [x] Linting Protos with [Buf](https://buf.build/docs/introduction)
+- [x] Linting rest with [super-linter](https://github.com/github/super-linter/blob/master/docs/disabling-linters.md)
 - [x] CICD Pipelines with [GitHub Actions](https://github.com/features/actions)
 - [x] Kubernetes _Matrix Deployment_ with [Kustomize](https://kustomize.io/)
 - [ ] Add k8s [healthchecks](https://github.com/heptiolabs/healthcheck) with [cmux](https://medium.com/@drgarcia1986/listen-grpc-and-http-requests-on-the-same-port-263c40cb45ff)
 - [x] Feature Flags (enable/disable with zero cost)
-- [ ] Observability
+- [ ] Observability via [OpenTelemetry](https://github.com/open-telemetry/opentelemetry-go)
 - [ ] Service Mesh with [Istio](https://istio.io/)
 - [ ] GraphQL Gateway with [gqlgen](https://gqlgen.com/), [rejoiner](https://github.com/google/rejoiner),[gqlgen](https://github.com/Shpota/skmz)
-- [ ] Graph-Based ORM [ent](https://entgo.io/)
 - [ ] Switch to [Bazel Build](https://bazel.build/)
+- [ ] Graceful / zero downtime upgrades [tableflip](https://github.com/cloudflare/tableflip)
 
 ## Getting Started
 
@@ -68,12 +78,12 @@ go mod download
 
 #### Database
 
-By default this project use embedded `sqlite3` database. if you want to use **postgreSQL**,
+By default, this project use embedded `sqlite3` database. if you want to use **postgreSQL**,
 
 - start **postgres** via `docker-compose` command provided below
-- uncommend `postgres` import statement and comment `sqlite` in `plugin.go`
-- start micro server with `--configFile=config.dev.postgres.yaml` flag <br/>
-  i.e., `go run srv/account/main.go srv/account/plugin.go --configFile=config.dev.postgres.yaml`
+- uncomment `postgres` import statement and comment `sqlite` in `main.go`
+- start micro server with `export export CONFIG_FILES=/config/config.yml,/config/config.pg.yml` flag <br/>
+  i.e., `CONFIG_FILES=/config/config.yml,/config/config.pg.yml go run service/account/main.go`
 
 ```bash
 # to start postgres in foreground
@@ -94,7 +104,7 @@ make run-account
 # or
 make run-account ARGS="--server_address=localhost:55011 --broker_address=localhost:55021"
 # or
-go run srv/account/main.go srv/account/plugin.go \
+go run srv/account/main.go \
 --configDir deploy/bases/account-srv/config \
 --server_address=localhost:55011 --broker_address=localhost:55021
 
@@ -137,7 +147,7 @@ Refer [releasing](docs/concepts/releasing.md) docs
 ### Deploy
 
 ```bash
-make docker DOCKER_REGISTRY=docker.pkg.github.com DOCKER_CONTEXT_PATH=xmlking/grpc-starter-kit
+make docker DOCKER_REGISTRY=ghcr.io DOCKER_CONTEXT_PATH=xmlking/grpc-starter-kit
 docker rmi $(docker images -f "dangling=true" -q)
 
 # make kustomize OVERLAY=e2e NS=default VERSION=v0.1.0-440-g6c7fb7a
@@ -164,14 +174,18 @@ kubectl delete -f build/kubernetes.yaml
 8. [Google Protobuf Style Guide](https://github.com/uber-go/guide/blob/master/style.md)
 
 ### External Docs
-
-1. [Go-Micro Getting Started](https://itnext.io/micro-in-action-getting-started-a79916ae3cac)
-2. [examples](https://github.com/micro/examples) - example usage code for micro
-3. [microhq](https://github.com/microhq) - a place for prebuilt microservices
-4. [explorer](https://micro.mu/explore/) - which aggregates micro based open source projects
-5. [micro-plugins](https://github.com/micro/go-plugins) extensible micro plugins
-6. [step-by-step-guide-micro](https://github.com/micro-in-cn/tutorials/tree/master/microservice-in-micro)
-7. [micro-in-cn](https://github.com/micro-in-cn/tutorials/tree/master/examples)
-8. [Platform Web](https://github.com/micro-in-cn/platform-web)
-9. [grpc template](https://github.com/vtolstov/micro-template-grpc)
-10. [Simple API backed by PostgresQL, Golang and gRPC](https://medium.com/@vptech/complexity-is-the-bane-of-every-software-engineer-e2878d0ad45a)
+1. [Go Repo Layout](https://christine.website/blog/within-go-repo-layout-2020-09-07)
+1. [examples](https://github.com/micro/examples) - example usage code for micro
+1. [microhq](https://github.com/microhq) - a place for prebuilt microservices
+1. [explorer](https://micro.mu/explore/) - which aggregates micro based open source projects
+1. [micro-plugins](https://github.com/micro/go-plugins) extensible micro plugins
+1. [step-by-step-guide-micro](https://github.com/micro-in-cn/tutorials/tree/master/microservice-in-micro)
+1. [micro-in-cn](https://github.com/micro-in-cn/tutorials/tree/master/examples)
+1. [Platform Web](https://github.com/micro-in-cn/platform-web)
+1. [grpc template](https://github.com/vtolstov/micro-template-grpc)
+1. [Simple API backed by PostgresQL, Golang and gRPC](https://medium.com/@vptech/complexity-is-the-bane-of-every-software-engineer-e2878d0ad45a)
+1. [securing gRPC connections with TLS](https://itnext.io/practical-guide-to-securing-grpc-connections-with-go-and-tls-part-2-994ef93b8ea9) via [certify](https://github.com/johanbrandhorst/certify)
+## 🔗 Credits
+- [atlas-app-toolkit](https://github.com/infobloxopen/atlas-app-toolkit)
+- [dapr](https://github.com/dapr/dapr)
+- [goyave](https://github.com/System-Glitch/goyave)

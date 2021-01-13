@@ -11,12 +11,12 @@ jobs:
       contains(github.event.commits[0].message, '[ci skip]') == false
     steps:
       - name: Set up Go 1.14
-        uses: actions/setup-go@v1
+        uses: actions/setup-go@v2.1.3
         with:
           go-version: 1.14
         id: go
       - name: Check out Code
-        uses: actions/checkout@v1
+        uses: actions/checkout@v2.3.4
       - name: Cache go modules
         id: cache
         uses: actions/cache@preview
@@ -56,11 +56,11 @@ jobs:
   #   runs-on: ubuntu-latest
   #   steps:
   #     - name: Set up Go 1.14
-  #       uses: actions/setup-go@v1
+  #       uses: actions/setup-go@v2.1.3
   #       with:
   #         go-version: 1.14
   #     - name: Checkout code
-  #       uses: actions/checkout@v1
+  #       uses: actions/checkout@v2.3.4
   #     - name: fuzz regression tests
   #       run: ./scripts/fuzzit.sh
   #       env:

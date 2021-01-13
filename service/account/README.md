@@ -7,7 +7,7 @@ showcase
 1. Implements basic CRUD API
 2. Multiple handlers, repositories, subscribers
 3. Publishing events
-4. GORM data access
+4. EntORM data access
 5. Config Managment
 6. Custom Logging
 

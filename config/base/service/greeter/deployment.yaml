@@ -13,11 +13,6 @@ spec:
             - name: grpc-port
               containerPort: 8080
               protocol: TCP
-          volumeMounts:
-            - name: config
-              mountPath: /config/config.yaml
-              subPath: config.yaml
-              readOnly: true
           envFrom:
             - configMapRef:
                 name: env-vars
@@ -25,7 +20,11 @@ spec:
                 name: env-vars-common
             - secretRef:
                 name: secrets
-      volumes:
-        - name: config
-          configMap:
-            name: config
+          readinessProbe:
+            exec:
+              command: ["/bin/grpc_health_probe", "-addr=:8080"]
+            initialDelaySeconds: 1
+          livenessProbe:
+            exec:
+              command: ["/bin/grpc_health_probe", "-addr=:8080"]
+            initialDelaySeconds: 1

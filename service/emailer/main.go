@@ -1,17 +1,17 @@
 package main
 
 import (
-	"context"
-
 	"github.com/rs/zerolog/log"
 
+	"github.com/xmlking/toolkit/broker/cloudevents"
+	"github.com/xmlking/toolkit/service"
+
+	"github.com/xmlking/grpc-starter-kit/internal/config"
+	"github.com/xmlking/grpc-starter-kit/internal/constants"
+	_ "github.com/xmlking/grpc-starter-kit/internal/constants"
+	_ "github.com/xmlking/grpc-starter-kit/internal/logger"
 	"github.com/xmlking/grpc-starter-kit/service/emailer/registry"
 	"github.com/xmlking/grpc-starter-kit/service/emailer/subscriber"
-	"github.com/xmlking/grpc-starter-kit/shared/config"
-	"github.com/xmlking/grpc-starter-kit/shared/constants"
-	_ "github.com/xmlking/grpc-starter-kit/shared/constants"
-	"github.com/xmlking/grpc-starter-kit/shared/eventing"
-	_ "github.com/xmlking/grpc-starter-kit/shared/logger"
 )
 
 func main() {
@@ -26,12 +26,21 @@ func main() {
 	}
 	emailSubscriber := ctn.Resolve("emailer-subscriber").(*subscriber.EmailSubscriber)
 
-	ceClient := eventing.NewSinkClient(cfg.Services.Emailer.Endpoint)
+	srv := service.NewService(
+		service.Name(serviceName),
+		service.Version(cfg.Services.Emailer.Version),
+		// service.WithBrokerOptions(...),
+	)
+	bkr := broker.NewBroker(broker.Name("mkit.broker.emailer"))
+	_, _ = bkr.NewSubscriber(cfg.Services.Emailer.Endpoint, emailSubscriber.HandleSend)
+	err = bkr.Start()
+	if err != nil {
+		log.Fatal().Err(err).Msgf("failed to start the Broker: %s", cfg.Services.Emailer.Endpoint)
+	}
 
 	// Start server!
-	println(config.GetBuildInfo())
-	log.Info().Msgf("Server (%s) started at: %s", serviceName, cfg.Services.Emailer.Endpoint)
-	if err := ceClient.StartReceiver(context.Background(), emailSubscriber.HandleSend); err != nil {
+	log.Info().Msg(config.GetBuildInfo())
+	if err := srv.Start(); err != nil {
 		log.Fatal().Err(err).Send()
 	}
 }

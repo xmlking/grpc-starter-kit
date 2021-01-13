@@ -2,8 +2,8 @@ apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
 
 commonLabels:
-  app.kubernetes.io/name: account-service
-  app.kubernetes.io/instance: account-service-abcxzy
+  app.kubernetes.io/name: account
+  app.kubernetes.io/instance: account-abcxzy
   app.kubernetes.io/component: microservice
 
 namePrefix: account-

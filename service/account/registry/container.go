@@ -1,22 +1,17 @@
 package registry
 
 import (
-	grpc_middleware "github.com/grpc-ecosystem/go-grpc-middleware"
-	"github.com/jinzhu/gorm"
 	"github.com/rs/zerolog/log"
 	"github.com/sarulabs/di/v2"
+	broker "github.com/xmlking/toolkit/broker/cloudevents"
 	"google.golang.org/grpc"
-	"google.golang.org/grpc/credentials"
 
-	"github.com/xmlking/grpc-starter-kit/micro/middleware/rpclog"
-	account_entities "github.com/xmlking/grpc-starter-kit/mkit/service/account/entities/v1"
+	"github.com/xmlking/grpc-starter-kit/ent"
+	"github.com/xmlking/grpc-starter-kit/internal/config"
+	"github.com/xmlking/grpc-starter-kit/internal/database"
 	greeterv1 "github.com/xmlking/grpc-starter-kit/mkit/service/greeter/v1"
 	"github.com/xmlking/grpc-starter-kit/service/account/handler"
 	"github.com/xmlking/grpc-starter-kit/service/account/repository"
-	"github.com/xmlking/grpc-starter-kit/shared/database"
-	"github.com/xmlking/grpc-starter-kit/shared/eventing"
-	configPB "github.com/xmlking/grpc-starter-kit/shared/proto/config"
-	uTLS "github.com/xmlking/grpc-starter-kit/shared/util/tls"
 )
 
 // Container - provide di Container
@@ -25,7 +20,7 @@ type Container struct {
 }
 
 // NewContainer - create new Container
-func NewContainer(cfg configPB.Configuration) (*Container, error) {
+func NewContainer(cfg config.Configuration) (*Container, error) {
 	builder, err := di.NewBuilder()
 	if err != nil {
 		log.Fatal().Err(err).Msg("")
@@ -51,42 +46,26 @@ func NewContainer(cfg configPB.Configuration) (*Container, error) {
 			Build: buildProfileRepository,
 		},
 		{
+			Name:  "translog-publisher",
+			Scope: di.App,
+			Build: func(ctn di.Container) (interface{}, error) {
+				bkr := broker.NewBroker()
+				return bkr.NewPublisher(cfg.Services.Recorder.Endpoint)
+			},
+		},
+		{
 			Name:  "email-publisher",
 			Scope: di.App,
 			Build: func(ctn di.Container) (interface{}, error) {
-				return eventing.NewSourceClient(cfg.Services.Emailer.Endpoint), nil
+				bkr := broker.NewBroker()
+				return bkr.NewPublisher(cfg.Services.Emailer.Endpoint)
 			},
 		},
 		{
 			Name:  "greeter-connection",
 			Scope: di.App,
-			Build: func(ctn di.Container) (greeterConn interface{}, err error) {
-				var dialOptions []grpc.DialOption
-				var ucInterceptors []grpc.UnaryClientInterceptor
-				tlsConf := cfg.Features.Tls
-				if tlsConf.Enabled {
-					if creds, err := uTLS.GetTLSConfig(tlsConf.CertFile, tlsConf.KeyFile, tlsConf.CaFile, tlsConf.Servername); err != nil {
-						return nil, err
-					} else {
-						dialOptions = append(dialOptions, grpc.WithTransportCredentials(credentials.NewTLS(creds)))
-					}
-				} else {
-					dialOptions = append(dialOptions, grpc.WithInsecure())
-				}
-				if cfg.Services.Greeter.ServiceConfig != "" {
-					dialOptions = append(dialOptions, grpc.WithDefaultServiceConfig(cfg.Services.Greeter.ServiceConfig))
-				}
-				if cfg.Features.Rpclog.Enabled {
-					ucInterceptors = append(ucInterceptors, rpclog.UnaryClientInterceptor())
-				}
-				if len(ucInterceptors) > 0 {
-					dialOptions = append(dialOptions, grpc.WithUnaryInterceptor(grpc_middleware.ChainUnaryClient(ucInterceptors...)))
-				}
-				greeterConn, err = grpc.Dial(cfg.Services.Greeter.Endpoint, dialOptions...)
-				if err != nil {
-					log.Fatal().Msgf("Failed connect to greeterConn: %s", err)
-				}
-				return
+			Build: func(ctn di.Container) (interface{}, error) {
+				return config.GetClientConn(cfg.Services.Greeter, nil)
 			},
 			Close: func(obj interface{}) error {
 				return obj.(*grpc.ClientConn).Close()
@@ -119,10 +98,10 @@ func NewContainer(cfg configPB.Configuration) (*Container, error) {
 			Name:  "database",
 			Scope: di.App,
 			Build: func(ctn di.Container) (interface{}, error) {
-				return database.GetDatabaseConnection(*cfg.Database)
+				return database.InitDatabase(*cfg.Database)
 			},
 			Close: func(obj interface{}) error {
-				return obj.(*gorm.DB).Close()
+				return obj.(*ent.Client).Close()
 			},
 		},
 	}...); err != nil {
@@ -150,18 +129,18 @@ func (c *Container) Delete() error {
 }
 
 func buildUserRepository(ctn di.Container) (interface{}, error) {
-	db := ctn.Get("database").(*gorm.DB)
-	db.AutoMigrate(&account_entities.UserORM{})
+	db := ctn.Get("database").(*ent.Client)
 	return repository.NewUserRepository(db), nil
 }
 
 func buildProfileRepository(ctn di.Container) (interface{}, error) {
-	db := ctn.Get("database").(*gorm.DB)
-	db.AutoMigrate(&account_entities.ProfileORM{})
+	db := ctn.Get("database").(*ent.Client)
 	return repository.NewProfileRepository(db), nil
 }
 
 func buildUserHandler(ctn di.Container) (interface{}, error) {
 	repo := ctn.Get("user-repository").(repository.UserRepository)
-	return handler.NewUserHandler(repo, nil, nil), nil // FIXME inject Publisher, and greeter service
+	emailPublisher := ctn.Get("email-publisher").(broker.Publisher)
+	greeterSrvClient := ctn.Get("greeter-client").(greeterv1.GreeterServiceClient)
+	return handler.NewUserHandler(repo, emailPublisher, greeterSrvClient), nil
 }

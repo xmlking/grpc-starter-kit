@@ -12,9 +12,15 @@ configMapGenerator:
 #    behavior: merge
   - name: env-vars-common
     literals:
-      - APP_ENV=development
-      - MICRO_LOG_LEVEL=debug
-      - MICRO_CLIENT_REQUEST_TIMEOUT=5s
+      - CONFIG_ENV=development
+      - CONFIG_LOG_LEVEL=debug
+      - CONFIG_LOG_FORMAT=text
+      - CONFIG_FILE_PATH=/config/config.yml
+      - CONFIG_DEBUG_MODE=true
+      - CONFIG_VERBOSE_MODE=true
+      - CONFIG_USE_PKGER=true
+      - GRPC_GO_LOG_SEVERITY_LEVEL="info"
+      - GRPC_GO_LOG_VERBOSITY_LEVEL="99"
 
 #secretGenerator:
 #   - name: app-tls

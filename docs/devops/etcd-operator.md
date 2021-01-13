@@ -8,7 +8,7 @@ We will be using forked image from [xmlking/etcd-operator](https://github.com/xm
 
 About __cbws__ fork: <https://blog.cloudbear.nl/reviving-etcd-operator/>
 
-`docker.pkg.github.com/cbws/etcd-operator/operator:v0.10.0`
+`ghcr.io/cbws/etcd-operator/operator:v0.10.0`
 
 ```yaml
 apiVersion: apps/v1

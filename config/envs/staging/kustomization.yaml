@@ -15,7 +15,7 @@ commonAnnotations:
 
 resources:
   - ../../base/service
-  - ../../base/etcd
+  - ../../base/envoy
 
 # enable mage-pull-policy and resource_limit as needed
 patches:
@@ -29,17 +29,24 @@ configMapGenerator:
   - name: env-vars-common
     behavior: merge
     literals:
-      - APP_ENV=production
-      - MICRO_LOG_LEVEL=info
-      # profile specific variables
-      - MICRO_REGISTRY=etcd
-      - MICRO_REGISTRY_ADDRESS="$(ETCD_SERVICE_ENDPOINT)-client"
-      - MICRO_REGISTER_TTL="60"
-      - MICRO_REGISTER_INTERVAL="30"
-      # - FEATURES_MTLS_ENABLED=true
+      - CONFIG_ENV=staging
+      - CONFIG_LOG_LEVEL=debug
+      - CONFIG_LOG_FORMAT=gcp
+      - CONFIG_FILE_PATH=/config/config.yml
+      - CONFIG_DEBUG_MODE=true
+      - CONFIG_VERBOSE_MODE=true
+      - CONFIG_USE_PKGER=true
+      - CONFIG_FEATURES_TLS_ENABLED=true
+      - CONFIG_FEATURES_RPCLOG_ENABLED=false
+      - MICRO_BROKER=googlepubsub
+      - GRPC_GO_LOG_SEVERITY_LEVEL="info"
+      - GRPC_GO_LOG_VERBOSITY_LEVEL="99"
       # - INSECURE_SKIP_VERIFY=true
-      - FEATURES_REQLOGS_ENABLED=false
-
+      # following endpoint overwrites (in config.yml)
+      # - CONFIG_SERVICES_ACCOUNT_ENDPOINT=$(ACCOUNT_SERVICE_ENDPOINT)
+      # - CONFIG_SERVICES_GREETER_ENDPOINT=$(GREETER_SERVICE_ENDPOINT)
+      # - CONFIG_SERVICES_EMAILER_SERVICE_ENDPOINT=$(EMAILER_SERVICE_ENDPOINT)
+      # - CONFIG_SERVICES_RECORDER_ENDPOINT=$(RECORDER_SERVICE_ENDPOINT)
 secretGenerator:
   - name: secrets
     behavior: replace
@@ -64,17 +71,17 @@ images:
     newName: docker.io/envoyproxy/envoy-alpine
     newTag: v1.14.2
   - name: micro/micro
-    newName: docker.pkg.github.com/xmlking/grpc-starter-kit/micro
+    newName: ghcr.io/xmlking/grpc-starter-kit/micro
     newTag: v2.0.0
   - name: xmlking/account-service
-    newName: docker.pkg.github.com/xmlking/grpc-starter-kit/account-service
+    newName: ghcr.io/xmlking/grpc-starter-kit/account-service
     newTag: $(IMAGE_VERSION)
   - name: xmlking/emailer-service
-    newName: docker.pkg.github.com/xmlking/grpc-starter-kit/emailer-service
+    newName: ghcr.io/xmlking/grpc-starter-kit/emailer-service
     newTag: $(IMAGE_VERSION)
   - name: xmlking/greeter-service
-    newName: docker.pkg.github.com/xmlking/grpc-starter-kit/greeter-service
+    newName: ghcr.io/xmlking/grpc-starter-kit/greeter-service
     newTag: $(IMAGE_VERSION)
   - name: xmlking/recorder-service
-    newName: docker.pkg.github.com/xmlking/grpc-starter-kit/recorder-service
+    newName: ghcr.io/xmlking/grpc-starter-kit/recorder-service
     newTag: $(IMAGE_VERSION)
