@@ -1,0 +1,16 @@
+# https://taskfile.dev
+
+version: '3'
+
+tasks:
+
+  install:
+    desc: Install required Homebrew apps
+    cmds:
+      - brew install ansible kubernetes-cli helm
+
+  install:dev:
+    desc: Install required Homebrew apps for local development with Vagrant and Virtualbox
+    cmds:
+      - brew tap esolitos/ipa
+      - brew install jq yq shellcheck sshpass coreutils findutils

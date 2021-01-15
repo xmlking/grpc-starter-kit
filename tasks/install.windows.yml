@@ -1,0 +1,16 @@
+# https://taskfile.dev
+
+version: '3'
+
+tasks:
+
+  install:
+    desc: Install required winget packages
+    cmds:
+      - winget install terminal powershell powertoys
+
+  install:dev:
+    desc: Install required winget packages for local development
+    cmds:
+      - winget install vscpde
+      - scoop install curl

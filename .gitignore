@@ -60,3 +60,6 @@ pkged.go
 ca.key
 ca.srl
 micro.csr
+
+./task
+.task

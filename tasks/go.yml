@@ -1,0 +1,86 @@
+# https://taskfile.dev
+
+version: '3'
+
+vars:
+  GIT_COMMIT:
+    sh: git log -n 1 --format=%h
+  GIT_REPO: github.com/xmlking/grpc-starter-kit.git
+  DOCKER_REGISTRY: docker.pkg.github.com/xmlking/grpc-starter-kit
+  VERSION:
+    sh: git rev-parse --short HEAD
+  GO_PACKAGES:
+    sh: go list ./...
+
+tasks:
+  default:
+    cmds:
+      - task: test
+
+  hello:
+    desc: hello task desc
+    cmds:
+      - echo 'Hello World from Task!'
+    silent: true
+#    preconditions:
+#      - sh: "[ 1 = 0 ]"
+#        msg: "One doesn't equal Zero, Halting"
+    sources:
+      - ./config/config.yml
+
+  install:
+    desc: Installs Task
+    cmds:
+      - go install -v -ldflags="-w -s -X main.version={{.GIT_COMMIT}}" ./cmd/task
+    env:
+      CGO_ENABLED: '0'
+
+  mod:
+    desc: Downloads and tidy Go modules
+    cmds:
+      - go mod download
+      - go mod tidy
+
+  cli-deps:
+    desc: Downloads CLI dependencies
+    cmds:
+      - task: go-get
+        vars: {REPO: golang.org/x/lint/golint}
+      - task: go-get
+        vars: {REPO: github.com/goreleaser/goreleaser}
+      - task: go-get
+        vars: {REPO: github.com/goreleaser/godownloader}
+
+  clean:
+    desc: Cleans temp files and folders
+    cmds:
+      - rm -rf dist/
+
+  lint:
+    desc: Runs golint
+    cmds:
+      - golint {{catLines .GO_PACKAGES}}
+    silent: true
+
+  test:
+    desc: Runs test suite
+    deps: [install]
+    cmds:
+      - go test {{catLines .GO_PACKAGES}}
+
+  ci:
+    - task: go-get
+      vars: {REPO: golang.org/x/lint/golint}
+    - task: lint
+    - task: test
+
+  go-get: go get -u {{.REPO}}
+
+  packages:
+    cmds:
+      - echo '{{.GO_PACKAGES}}'
+    silent: true
+
+  ent:
+    cmds:
+      - ent generate --idtype string ./ent/schema
