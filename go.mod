@@ -16,7 +16,7 @@ require (
 	github.com/golang/protobuf v1.4.3
 	github.com/google/uuid v1.1.5
 	github.com/grpc-ecosystem/go-grpc-middleware v1.2.2
-	github.com/markbates/pkger v0.17.1
+	github.com/markbates/pkger v0.17.1 // indirect
 	github.com/mattn/go-sqlite3 v1.14.6
 	github.com/rs/zerolog v1.20.0
 	github.com/sarulabs/di/v2 v2.4.0
@@ -26,7 +26,7 @@ require (
 	github.com/tcfw/go-grpc-k8s-resolver v0.0.0-20201027075059-d3a2d14aa08f
 	github.com/thoas/go-funk v0.7.0
 	github.com/xmlking/toolkit v0.1.1
-	go.opentelemetry.io/contrib/instrumentation/google.golang.org/grpc/otelgrpc v0.15.1
+	go.opentelemetry.io/contrib/instrumentation/google.golang.org/grpc/otelgrpc v0.16.0
 	go.opentelemetry.io/otel v0.16.0
 	go.opentelemetry.io/otel/exporters/stdout v0.16.0
 	go.opentelemetry.io/otel/sdk v0.16.0
