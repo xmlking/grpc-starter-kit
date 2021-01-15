@@ -8,12 +8,19 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: checkout
-        uses: actions/checkout@v2.3.4
+        uses: actions/checkout@v2
         with:
           ref: master
       - name: checkout-master
         run: git checkout master
       - name: checkout
-        uses: actions/checkout@v2.3.4
-      - name: make local
-        run: make -f Makefile_proto local
+        uses: actions/checkout@v2
+
+      - name: Install Taskfile
+        uses: Arduino/actions/setup-taskfile@master
+        with:
+          version: '3.x'
+
+      - name: proto check
+        run: >-
+          task proto:breaking

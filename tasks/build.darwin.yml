@@ -1,0 +1,16 @@
+# https://taskfile.dev
+
+version: '3'
+
+tasks:
+
+  build:
+    desc: build darwin app
+    env:
+      GOOS: "darwin"
+      GOARCH: "amd64"
+      CGO_ENABLED: "1"
+    cmds:
+      - go build -o golden-darwin-amd64 .
+    generates:
+      - golden-darwin-amd64

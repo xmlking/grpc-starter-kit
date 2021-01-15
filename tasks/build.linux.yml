@@ -1,0 +1,15 @@
+# https://taskfile.dev
+
+version: '3'
+
+tasks:
+  build:
+    desc: build linux app
+    env:
+      GOOS: "linux"
+      GOARCH: "amd64"
+      CGO_ENABLED: "1"
+    cmds:
+      - go build -o golden-linux-amd64 .
+    generates:
+      - golden-linux-amd64

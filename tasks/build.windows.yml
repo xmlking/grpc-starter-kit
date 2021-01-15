@@ -1,0 +1,33 @@
+# https://taskfile.dev
+
+version: '3'
+
+tasks:
+  build:
+    deps: [build_386, build_amd64]
+
+  build_386:
+    desc: build 386 app
+    env:
+      GOOS: "windows"
+      GOARCH: "386"
+      CGO_ENABLED: "1"
+      CC: "gcc.exe"
+      CXX: "g++.exe"
+    cmds:
+      - go build -o golden-windows-386.exe .
+    generates:
+      - golden-windows-386.exe
+
+  build_amd64:
+    desc: build amd64 app
+    env:
+      GOOS: "windows"
+      GOARCH: "amd64"
+      CGO_ENABLED: "1"
+      CC: "x86_64-w64-mingw32-gcc.exe"
+      CXX: "x86_64-w64-mingw32-g++.exe"
+    cmds:
+      - go build -o golden-windows-amd64.exe .
+    generates:
+      - golden-windows-amd64.exe
