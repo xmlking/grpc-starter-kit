@@ -24,7 +24,6 @@ config/README.md
 docker-compose.yaml
 no_cgo.dockerfile
 cgo.dockerfile
-Makefile_proto
 **/*~
 **/*.log
 **/.DS_Store
