@@ -23,8 +23,6 @@ jobs:
           ref: master
       - name: checkout-master
         run: git checkout master
-      - name: checkout
-        uses: actions/checkout@v2
 
       - name: proto check
         run: >-
