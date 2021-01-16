@@ -29,8 +29,8 @@ jobs:
       - name: proto check
 #        run: >-
 #          git fetch --depth 1 origin master
+#          git branch -f master origin/master
 #          task proto:check
         run: |
-#          git branch -f master origin/master
           task proto:lint
           buf check breaking --against-input "https://github.com/xmlking/grpc-starter-kit.git#branch=master"
