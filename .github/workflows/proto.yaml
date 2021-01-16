@@ -30,6 +30,6 @@ jobs:
 #        run: >-
 #          git fetch --depth 1 origin master
 #          task proto:breaking
-        run:
+        run: |
           git branch -f master origin/master
           task proto:breaking
