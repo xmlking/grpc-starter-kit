@@ -6,7 +6,17 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
+#    container: bufbuild/buf
     steps:
+      - name: Install Taskfile
+        uses: Arduino/actions/setup-taskfile@master
+        with:
+          version: '3.x'
+      - name: Install buf
+        uses: wizhi/setup-buf@v1
+        with:
+          version: 0.35.1
+
       - name: checkout
         uses: actions/checkout@v2
         with:
@@ -15,11 +25,6 @@ jobs:
         run: git checkout master
       - name: checkout
         uses: actions/checkout@v2
-
-      - name: Install Taskfile
-        uses: Arduino/actions/setup-taskfile@master
-        with:
-          version: '3.x'
 
       - name: proto check
         run: >-
