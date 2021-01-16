@@ -17,11 +17,11 @@ jobs:
         with:
           version: 0.35.1
 
-#      - name: checkout-master
-#        if: success()
-#        uses: actions/checkout@v2
-#        with:
-#          ref: master
+      - name: checkout-master
+        if: success()
+        uses: actions/checkout@v2
+        with:
+          ref: master
       - name: checkout
         if: success()
         uses: actions/checkout@v2
