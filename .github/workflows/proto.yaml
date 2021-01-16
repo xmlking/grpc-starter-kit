@@ -17,16 +17,19 @@ jobs:
         with:
           version: 0.35.1
 
-      - name: checkout-master
-        if: success()
-        uses: actions/checkout@v2
-        with:
-          ref: master
+#      - name: checkout-master
+#        if: success()
+#        uses: actions/checkout@v2
+#        with:
+#          ref: master
       - name: checkout
         if: success()
         uses: actions/checkout@v2
 
       - name: proto check
-        run: >-
-          git fetch --depth 1 origin master
+#        run: >-
+#          git fetch --depth 1 origin master
+#          task proto:breaking
+        run:
+          git branch -f master origin/master
           task proto:breaking
