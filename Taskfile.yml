@@ -2,12 +2,23 @@
 
 version: '3'
 
+vars:
+  GOPATH:
+    sh: go env GOPATH
+  GIT_COMMIT:
+    sh: git log -n 1 --format=%h
+  PROTO_IN:   proto/mkit
+  PROTO_OUT:  mkit
+
+env:
+  FOO: foo
+
 includes:
-  config: ./config
-  proto: tasks/proto.yml
-  go: tasks/go.yml
-  install: tasks/install.{{OS}}.yml
-  build: tasks/build.{{OS}}.yml
+  config:     ./config
+  proto:      task/proto.yml
+  go:         task/go.yml
+  install:    task/install.{{OS}}.yml
+  build:      task/build.{{OS}}.yml
 
 tasks:
   default:

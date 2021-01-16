@@ -11,6 +11,7 @@ import (
 
 // This is a compile-time assertion to ensure that this generated file
 // is compatible with the grpc package it is being compiled against.
+// Requires gRPC-Go v1.32.0 or later.
 const _ = grpc.SupportPackageIsVersion7
 
 // ProfileServiceClient is the client API for ProfileService service.
@@ -88,7 +89,7 @@ type UnsafeProfileServiceServer interface {
 }
 
 func RegisterProfileServiceServer(s grpc.ServiceRegistrar, srv ProfileServiceServer) {
-	s.RegisterService(&_ProfileService_serviceDesc, srv)
+	s.RegisterService(&ProfileService_ServiceDesc, srv)
 }
 
 func _ProfileService_List_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
@@ -145,7 +146,10 @@ func _ProfileService_Create_Handler(srv interface{}, ctx context.Context, dec fu
 	return interceptor(ctx, in, info, handler)
 }
 
-var _ProfileService_serviceDesc = grpc.ServiceDesc{
+// ProfileService_ServiceDesc is the grpc.ServiceDesc for ProfileService service.
+// It's only intended for direct use with grpc.RegisterService,
+// and not to be introspected or modified (even as a copy)
+var ProfileService_ServiceDesc = grpc.ServiceDesc{
 	ServiceName: "mkit.service.account.profile.v1.ProfileService",
 	HandlerType: (*ProfileServiceServer)(nil),
 	Methods: []grpc.MethodDesc{

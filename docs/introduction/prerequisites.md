@@ -61,8 +61,6 @@ GO111MODULE=off go get github.com/golangci/golangci-lint/cmd/golangci-lint
 # linter and tool for proto files
 # (if you use brew to install buf, skip next line)
 GO111MODULE=on go get github.com/bufbuild/buf/cmd/buf
-# linter/generator and tool for proto files
-GO111MODULE=on go get github.com/uber/prototool/cmd/prototool@dev
 # kind - kubernetes in docker (optional)
 GO111MODULE=on go get sigs.k8s.io/kind
 # go lang  build/publish/deploy tool (optional)

@@ -1,6 +1,7 @@
 {
   "recommendations": [
     "golang.go",
+    "bufbuild.vscode-buf",
     "ms-azuretools.vscode-docker",
     "zxh404.vscode-proto3",
     "xaver.clang-format",

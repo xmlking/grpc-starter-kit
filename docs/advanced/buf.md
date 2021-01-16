@@ -62,6 +62,7 @@ make proto
 ### Format
 
 ```bash
+# FIXME buf don't have proto formatter yet 
 prototool format -w proto;
 ```
 

@@ -5,8 +5,8 @@
 - Getting Started
   - [Why](introduction/why.md)
   - [Prerequisites](introduction/prerequisites.md)
-  - [Installation](introduction/installation.md)
   - [Makefile](introduction/makefile.md)
+  - [Taskfile](introduction/taskfile.md)
 - Concepts
   - [Introduction](concepts/intro.md)
   - [Configuration](concepts/actions.md)

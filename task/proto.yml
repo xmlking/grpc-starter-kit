@@ -2,10 +2,6 @@
 
 version: '3'
 
-vars:
-  GOPATH:
-    sh: go env GOPATH
-
 env:
   BAR: baz
 
@@ -31,6 +27,7 @@ tasks:
     cmds:
       - echo "Linting proto"
       - '{{.GOPATH}}/bin/buf lint'
+      - "echo ✓ Proto: Linted"
     silent: true
 
   breaking:
@@ -38,13 +35,14 @@ tasks:
     cmds:
       - echo "Checking proto breaking changes"
       - '{{.GOPATH}}/bin/buf  breaking --against ".git#branch=master"'
+      - "echo ✓ Proto: Breaking"
     silent: true
 
   format:
     desc: Format protos.
     cmds:
       - echo "Formatting protos"
-      - '{{.GOPATH}}/bin/prototool format -w proto'
+#      - '{{.GOPATH}}/bin/prototool format -w proto'
       - "echo ✓ Proto: Formatted"
     silent: true
 
@@ -58,7 +56,11 @@ tasks:
     desc: Generate code from protos.
     cmds:
       - echo "Generating code"
-      - '{{.GOPATH}}/bin/buf generate --path proto/mkit'
+      - '{{.GOPATH}}/bin/buf generate --path {{.PROTO_IN}}'
+    sources:
+      - '{{.PROTO_IN}}/**/*.proto'
+    generates:
+      - '{{.PROTO_OUT}}/**/*.pb.*'
 
   default:
     desc: Do all protos.
@@ -68,3 +70,7 @@ tasks:
       - task: generate
       - "echo ✓ Proto: All done"
     silent: true
+    sources:
+      - '{{.PROTO_IN}}/**/*.proto'
+    generates:
+      - '{{.PROTO_OUT}}/**/*.pb.*'

@@ -123,16 +123,18 @@ proto_clean:
 proto_lint:
 	@echo "Linting protos";
 	@${GOPATH}/bin/buf lint
+	@echo "✓ Proto: Linted"
 
 proto_breaking:
 	@echo "Checking proto breaking changes";
 	@${GOPATH}/bin/buf breaking --against '.git#branch=master'
 #	@${GOPATH}/bin/buf breaking --against "$(HTTPS_GIT)#branch=master"
+	@echo "✓ Proto: Breaking"
 
 # I prefer VS Code's proto plugin to format my code then prototool
 proto_format: proto_lint
 	@echo "Formatting protos";
-	@${GOPATH}/bin/prototool format -w proto;
+#	@${GOPATH}/bin/prototool format -w proto;
 	@echo "✓ Proto: Formatted"
 
 proto_check: proto_lint proto_breaking proto_format

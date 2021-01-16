@@ -12,6 +12,7 @@ import (
 
 // This is a compile-time assertion to ensure that this generated file
 // is compatible with the grpc package it is being compiled against.
+// Requires gRPC-Go v1.32.0 or later.
 const _ = grpc.SupportPackageIsVersion7
 
 // TransactionServiceClient is the client API for TransactionService service.
@@ -75,7 +76,7 @@ type UnsafeTransactionServiceServer interface {
 }
 
 func RegisterTransactionServiceServer(s grpc.ServiceRegistrar, srv TransactionServiceServer) {
-	s.RegisterService(&_TransactionService_serviceDesc, srv)
+	s.RegisterService(&TransactionService_ServiceDesc, srv)
 }
 
 func _TransactionService_Read_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
@@ -114,7 +115,10 @@ func _TransactionService_Write_Handler(srv interface{}, ctx context.Context, dec
 	return interceptor(ctx, in, info, handler)
 }
 
-var _TransactionService_serviceDesc = grpc.ServiceDesc{
+// TransactionService_ServiceDesc is the grpc.ServiceDesc for TransactionService service.
+// It's only intended for direct use with grpc.RegisterService,
+// and not to be introspected or modified (even as a copy)
+var TransactionService_ServiceDesc = grpc.ServiceDesc{
 	ServiceName: "mkit.service.transaction.v1.TransactionService",
 	HandlerType: (*TransactionServiceServer)(nil),
 	Methods: []grpc.MethodDesc{

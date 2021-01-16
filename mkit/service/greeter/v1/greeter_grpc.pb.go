@@ -11,6 +11,7 @@ import (
 
 // This is a compile-time assertion to ensure that this generated file
 // is compatible with the grpc package it is being compiled against.
+// Requires gRPC-Go v1.32.0 or later.
 const _ = grpc.SupportPackageIsVersion7
 
 // GreeterServiceClient is the client API for GreeterService service.
@@ -62,7 +63,7 @@ type UnsafeGreeterServiceServer interface {
 }
 
 func RegisterGreeterServiceServer(s grpc.ServiceRegistrar, srv GreeterServiceServer) {
-	s.RegisterService(&_GreeterService_serviceDesc, srv)
+	s.RegisterService(&GreeterService_ServiceDesc, srv)
 }
 
 func _GreeterService_Hello_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
@@ -83,7 +84,10 @@ func _GreeterService_Hello_Handler(srv interface{}, ctx context.Context, dec fun
 	return interceptor(ctx, in, info, handler)
 }
 
-var _GreeterService_serviceDesc = grpc.ServiceDesc{
+// GreeterService_ServiceDesc is the grpc.ServiceDesc for GreeterService service.
+// It's only intended for direct use with grpc.RegisterService,
+// and not to be introspected or modified (even as a copy)
+var GreeterService_ServiceDesc = grpc.ServiceDesc{
 	ServiceName: "mkit.service.greeter.v1.GreeterService",
 	HandlerType: (*GreeterServiceServer)(nil),
 	Methods: []grpc.MethodDesc{
