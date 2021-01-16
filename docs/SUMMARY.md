@@ -24,6 +24,12 @@
   - [Release Process](advanced/release-process.md)
   - [Pub Sub](advanced/pubsub.md)
   - [Troubleshooting](advanced/troubleshooting.md)
+- Architecture
+  - [Architecture Decision Records](adr/ADR.md)
+    - [Handling Exceptions](adr/handle-exceptions.md)
+    - [Choose Database](adr/choose-database.md)
+    - [Timestamp Format](adr/timestamp-format.md)
+    - [Monorepo vs Multirepo](adr/monorepo-vs-multirepo.md)
 - Modules
   - Commands
     - [Demo](../cmd/demo/README.md)

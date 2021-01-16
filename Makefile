@@ -238,7 +238,7 @@ check test tests:
 
 run run-%:
 	@if [ -z $(TARGET) ]; then \
-		echo "no  TARGET. example usage: make test TARGET=account"; \
+		echo "no  TARGET. example usage: make run TARGET=account"; \
 	else \
 		go run  ./${TYPE}/${TARGET} ${ARGS}; \
 	fi

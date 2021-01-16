@@ -21,3 +21,5 @@ A curated list of awesome golang/gRPC resources and FAQ
     - [Task](https://taskfile.dev/#/) is a  cross-platform task runner / build tool.
 - Utils
 
+- Architecture
+    - [Solution Architecture Patterns](https://github.com/chanakaudaya/solution-architecture-patterns)
