@@ -17,11 +17,11 @@ jobs:
         with:
           version: 0.35.1
 
-      - name: checkout-master
-        if: success()
-        uses: actions/checkout@v2
-        with:
-          ref: master
+#      - name: checkout-master
+#        if: success()
+#        uses: actions/checkout@v2
+#        with:
+#          ref: master
       - name: checkout
         if: success()
         uses: actions/checkout@v2
@@ -31,5 +31,6 @@ jobs:
 #          git fetch --depth 1 origin master
 #          task proto:check
         run: |
-          git fetch --depth 1 origin master
-          task proto:check
+#          git branch -f master origin/master
+          task proto:lint
+          buf check breaking --against-input "https://github.com/xmlking/grpc-starter-kit.git#branch=master"

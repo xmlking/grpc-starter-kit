@@ -6,7 +6,7 @@ option go_package = "github.com/xmlking/grpc-starter-kit/mkit/service/account/en
 option java_multiple_files = true;
 option java_package = "mkit.service.account.entities.v1";
 
-// import "shared/proto/common/common.proto";1
+// import "shared/proto/common/common.proto";
 import "google/protobuf/timestamp.proto";
 import "google/protobuf/wrappers.proto";
 import "validate/validate.proto";
