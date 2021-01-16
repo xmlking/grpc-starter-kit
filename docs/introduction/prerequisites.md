@@ -73,7 +73,7 @@ pkger -h
 
 # fetch protoc plugins into $GOPATH
 GO111MODULE=on go get google.golang.org/protobuf/cmd/protoc-gen-go
-GO111MODULE=on go get google.golang.org/grpc/cmd/protoc-gen-go-grpc@v1.0
+GO111MODULE=on go get google.golang.org/grpc/cmd/protoc-gen-go-grpc
 
 # Installing PGV can currently only be done from source:
 GO111MODULE=off go get -d github.com/envoyproxy/protoc-gen-validate
