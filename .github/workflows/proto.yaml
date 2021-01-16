@@ -29,7 +29,7 @@ jobs:
       - name: proto check
 #        run: >-
 #          git fetch --depth 1 origin master
-#          task proto:breaking
+#          task proto:check
         run: |
-          git branch -f master origin/master
-          task proto:breaking
+          git fetch --depth 1 origin master
+          task proto:check
