@@ -1,0 +1,70 @@
+# https://taskfile.dev
+
+version: '3'
+
+vars:
+  GOPATH:
+    sh: go env GOPATH
+
+env:
+  BAR: baz
+
+tasks:
+  clean:
+    desc: Remove generated code.
+    cmds:
+      - echo "Deleting generated files...."
+      - |
+        for f in ./mkit/**/**/**/**/*.pb.*; do
+          echo ✓ deleting: $f
+          rm -f $f
+        done
+        for f in ./mkit/**/**/**/*.pb.*; do
+          echo ✓ deleting: $f
+          rm -f $f
+        done
+#      - task: :clean
+    silent: true
+
+  lint:
+    desc: Lint protos.
+    cmds:
+      - echo "Linting proto"
+      - '{{.GOPATH}}/bin/buf lint'
+    silent: true
+
+  breaking:
+    desc: Detect breaking proto changes.
+    cmds:
+      - echo "Checking proto breaking changes"
+      - '{{.GOPATH}}/bin/buf  breaking --against ".git#branch=master"'
+    silent: true
+
+  format:
+    desc: Format protos.
+    cmds:
+      - echo "Formatting protos"
+      - '{{.GOPATH}}/bin/prototool format -w proto'
+      - "echo ✓ Proto: Formatted"
+    silent: true
+
+  check:
+    desc: Check protos.
+    deps: [lint, breaking]
+    cmds:
+      - task: format
+
+  generate:
+    desc: Generate code from protos.
+    cmds:
+      - echo "Generating code"
+      - '{{.GOPATH}}/bin/buf generate --path proto/mkit'
+
+  default:
+    desc: Do all protos.
+    cmds:
+      - task: check
+      - task: clean
+      - task: generate
+      - "echo ✓ Proto: All done"
+    silent: true
