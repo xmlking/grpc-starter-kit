@@ -37,7 +37,7 @@ tasks:
 #      - 'buf  breaking --against ".git#branch=master"'
       - 'buf  breaking --against "{{.GIT_REPO_URL}}#branch=master"'
       - "echo ✓ Proto: Breaking"
-    silent: true
+#    silent: true
 
   format:
     desc: Format protos.
