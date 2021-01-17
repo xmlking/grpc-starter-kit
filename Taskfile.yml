@@ -7,11 +7,18 @@ vars:
     sh: go env GOPATH
   GIT_COMMIT:
     sh: git log -n 1 --format=%h
+  GIT_FULL_VERSION:
+    sh: git describe --long --dirty --always
+  GIT_SHORT_VERSION:
+    sh: git describe --abbrev=0
+  GIT_REPO_URL:
+    sh: git config --get remote.origin.url
   PROTO_IN:   proto/mkit
   PROTO_OUT:  mkit
 
 env:
   FOO: foo
+
 
 includes:
   config:     ./config

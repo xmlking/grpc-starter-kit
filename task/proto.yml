@@ -26,7 +26,6 @@ tasks:
     desc: Lint protos.
     cmds:
       - echo "Linting proto"
-#      - '{{.GOPATH}}/bin/buf lint'
       - buf lint
       - "echo ✓ Proto: Linted"
     silent: true
@@ -35,7 +34,8 @@ tasks:
     desc: Detect breaking proto changes.
     cmds:
       - echo "Checking proto breaking changes"
-      - 'buf  breaking --against ".git#branch=master"'
+#      - 'buf  breaking --against ".git#branch=master"'
+      - 'buf  breaking --against "{{.GIT_REPO_URL}}#branch=master"'
       - "echo ✓ Proto: Breaking"
     silent: true
 
