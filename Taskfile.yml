@@ -3,18 +3,18 @@
 version: '3'
 
 vars:
+  PROTO_IN:           proto/mkit
+  PROTO_OUT:          mkit
+  GITHUB_REPO_OWNER:  xmlking
+  GITHUB_REPO_NAME:   grpc-starter-kit
+  GITHUB_REPO_URL:    https://github.com/{{.GITHUB_REPO_OWNER}}/{{.GITHUB_REPO_NAME}}.git
   GOPATH:
     sh: go env GOPATH
   GIT_COMMIT:
     sh: git log -n 1 --format=%h
-  GIT_REPO_URL:
-    sh: git config --get remote.origin.url
-  PROTO_IN:   proto/mkit
-  PROTO_OUT:  mkit
 
 env:
   FOO: foo
-
 
 includes:
   config:     ./config
