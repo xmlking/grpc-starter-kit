@@ -15,7 +15,6 @@ Microservices starter kit for **Golang**, aims to be developer friendly.
 [![Total alerts](https://img.shields.io/lgtm/alerts/g/xmlking/grpc-starter-kit.svg?logo=lgtm&logoWidth=18)](https://lgtm.com/projects/g/xmlking/grpc-starter-kit/alerts/)
 [![codecov](https://codecov.io/gh/xmlking/grpc-starter-kit/branch/develop/graph/badge.svg)](https://codecov.io/gh/xmlking/grpc-starter-kit)
 [![Language grade: Go](https://img.shields.io/lgtm/grade/go/g/xmlking/grpc-starter-kit.svg?logo=lgtm&logoWidth=18)](https://lgtm.com/projects/g/xmlking/grpc-starter-kit/context:go)
-[![fuzzit](https://app.fuzzit.dev/badge?org_id=xmlkinggithub&branch=develop)](https://app.fuzzit.dev/orgs/xmlkinggithub/dashboard)
 
 
 ## Overview

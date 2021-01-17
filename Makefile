@@ -153,22 +153,24 @@ lint lint-%:
 	@if [ -z $(TARGET) ]; then \
 		echo "Linting all go"; \
 		${GOPATH}/bin/golangci-lint run ./... --deadline=5m --config=.github/linters/.golangci.yml; \
+		echo "✓ Go: Linted"; \
 	else \
 		echo "Linting go in ${TARGET}-${TYPE}..."; \
 		${GOPATH}/bin/golangci-lint run ./${TYPE}/${TARGET}/... --config=.github/linters/.golangci.yml; \
+		echo "✓ Go: Linted in ${TYPE}/${TARGET}..."; \
 	fi
 
 # @clang-format -i $(shell find . -type f -name '*.proto')
 
 format format-%:
 	@if [ -z $(TARGET) ]; then \
-		echo "Formating all go"; \
+		echo "Formatting all go"; \
 		gofmt -l -w . ; \
-		echo "Formating all protos"; \
+		echo "✓ Go: Formatted"; \
 	else \
-		echo "Formating go in ${TARGET}/${TYPE}..."; \
+		echo "Formatting go in ${TYPE}/${TARGET}..."; \
 		gofmt -l -w ./${TYPE}/${TARGET}/ ; \
-		echo "Formating protos in ${TARGET}/${TYPE}..."; \
+		echo "✓ Go: Formatted in ${TYPE}/${TARGET}..."; \
 	fi
 
 ################################################################################
@@ -218,9 +220,9 @@ endif
 TEST_TARGETS := test-default test-bench test-unit test-inte test-e2e test-race test-cover
 .PHONY: $(TEST_TARGETS) check test tests
 test-bench:   	ARGS=-run=__absolutelynothing__ -bench=. ## Run benchmarks
-test-unit:   		ARGS=-short        					## Run only unit tests
-test-inte:   		ARGS=-run Integration       ## Run only integration tests
-test-e2e:   		ARGS=-run E2E       				## Run only E2E tests
+test-unit:   	ARGS=-short        					## Run only unit tests
+test-inte:   	ARGS=-run Integration       		## Run only integration tests
+test-e2e:   	ARGS=-run E2E       				## Run only E2E tests
 test-race:    	ARGS=-race         					## Run tests with race detector
 test-cover:   	ARGS=-cover -short -coverprofile=${CODECOV_FILE} -covermode=atomic ## Run tests in verbose mode with coverage reporting
 $(TEST_TARGETS): NAME=$(MAKECMDGOALS:test-%=%)
