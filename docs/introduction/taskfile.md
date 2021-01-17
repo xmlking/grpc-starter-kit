@@ -6,6 +6,11 @@ You can use `--force` or `-f` if you want to force a task to run even when up-to
 
 Also, `task --status [tasks]...` will exit with a non-zero exit code if any of the tasks are not up-to-date.
 
+```bash
+task --list
+task --summary  proto:check
+```
+
 ### proto
 
 > codegen from proto

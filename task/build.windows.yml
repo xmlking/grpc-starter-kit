@@ -15,9 +15,9 @@ tasks:
       CC: "gcc.exe"
       CXX: "g++.exe"
     cmds:
-      - go build -o golden-windows-386.exe .
+      - go build -o golden-windows-386{{exeExt}} .
     generates:
-      - golden-windows-386.exe
+      - golden-windows-386{{exeExt}}
 
   build_amd64:
     desc: build amd64 app
@@ -28,6 +28,6 @@ tasks:
       CC: "x86_64-w64-mingw32-gcc.exe"
       CXX: "x86_64-w64-mingw32-g++.exe"
     cmds:
-      - go build -o golden-windows-amd64.exe .
+      - go build -o golden-windows-amd64{{exeExt}} .
     generates:
-      - golden-windows-amd64.exe
+      - golden-windows-amd64{{exeExt}}
