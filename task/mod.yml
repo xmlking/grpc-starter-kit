@@ -7,8 +7,9 @@ version: '3'
 
 tasks:
   default:
+    desc: "mod default is to run 'download' task"
     cmds:
-      - task: test
+      - task: download
 
   download:
     desc: Downloads and tidy Go modules

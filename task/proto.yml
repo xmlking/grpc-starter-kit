@@ -59,8 +59,9 @@ tasks:
   generate:
     desc: Generate code from protos.
     cmds:
-      - echo "Generating code"
+      - echo "Generating Go..."
       - 'buf generate --path {{.PROTO_IN}}'
+      - "echo ✓ Proto: Generated Go"
     sources:
       - '{{.PROTO_IN}}/**/*.proto'
     generates:
