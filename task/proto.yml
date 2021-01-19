@@ -1,4 +1,7 @@
 # https://taskfile.dev
+################################################################################
+# Target: proto                                                                #
+################################################################################
 
 version: '3'
 
@@ -36,7 +39,7 @@ tasks:
       - echo "Checking proto breaking changes"
 #      - 'buf  breaking --against ".git#branch=master"'
       - 'buf  breaking --against "{{.GITHUB_REPO_URL}}#branch=master"'
-      - "echo ✓ Proto: Breaking"
+      - "echo ✓ Proto: Breaking Check"
     silent: true
 
   format:
@@ -62,6 +65,9 @@ tasks:
       - '{{.PROTO_IN}}/**/*.proto'
     generates:
       - '{{.PROTO_OUT}}/**/*.pb.*'
+    preconditions:
+      - sh: "GIT_DIRTY"
+        msg: "Won't run on a dirty working copy. Commit or stash and try again."
 
   default:
     desc: Do all protos.

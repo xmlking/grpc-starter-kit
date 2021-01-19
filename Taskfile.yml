@@ -12,6 +12,8 @@ vars:
     sh: go env GOPATH
   GIT_COMMIT:
     sh: git log -n 1 --format=%h
+  GIT_DIRTY:
+    sh: git status --porcelain 2> /dev/null
 
 env:
   FOO: foo
@@ -20,11 +22,13 @@ includes:
   config:     ./config
   proto:      task/proto.yml
   go:         task/go.yml
+  mod:        task/mod.yml
   install:    task/install.{{OS}}.yml
   build:      task/build.{{OS}}.yml
 
 tasks:
   default:
     cmds:
-      - task: config:deploy
+      - task: proto:generate
       - task: build:build
+      - task: config:deploy
