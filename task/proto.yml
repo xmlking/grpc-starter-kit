@@ -65,9 +65,9 @@ tasks:
       - '{{.PROTO_IN}}/**/*.proto'
     generates:
       - '{{.PROTO_OUT}}/**/*.pb.*'
-    preconditions:
-      - sh: "GIT_DIRTY"
-        msg: "Won't run on a dirty working copy. Commit or stash and try again."
+#    preconditions:
+#      - sh: "GIT_DIRTY"
+#        msg: "Won't run on a dirty working copy. Commit or stash and try again."
 
   default:
     desc: Do all protos.
