@@ -5,9 +5,6 @@
 
 version: '3'
 
-env:
-  BAR: baz
-
 tasks:
   clean:
     desc: Remove generated code.
@@ -23,6 +20,7 @@ tasks:
           rm -f $f
         done
 #      - task: :clean
+      - "echo ✓ Proto: Cleaned"
     silent: true
 
   lint:
@@ -61,17 +59,14 @@ tasks:
     cmds:
       - echo "Generating Go..."
       - 'buf generate --path {{.PROTO_IN}}'
-      - "echo ✓ Proto: Generated Go"
+      - "echo ✓ Proto: Generated"
     sources:
       - '{{.PROTO_IN}}/**/*.proto'
     generates:
       - '{{.PROTO_OUT}}/**/*.pb.*'
-#    preconditions:
-#      - sh: "GIT_DIRTY"
-#        msg: "Won't run on a dirty working copy. Commit or stash and try again."
 
   default:
-    desc: Do all protos.
+    desc: Do all proto.
     cmds:
       - task: check
       - task: clean

@@ -27,8 +27,14 @@ includes:
   build:      task/build.{{OS}}.yml
 
 tasks:
-  default:
+  publish:
+    desc: Lint, Clean and Generate go code from protos.
     cmds:
-      - task: proto:generate
+      - task: proto:default
+
+  default:
+    desc: Lint, Clean and Generate go code from protos.
+    cmds:
+      - task: proto:default
       - task: build:build
       - task: config:deploy
