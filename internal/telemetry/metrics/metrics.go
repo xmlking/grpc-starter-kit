@@ -8,7 +8,7 @@ import (
 	"time"
 
 	"github.com/rs/zerolog/log"
-	"go.opentelemetry.io/otel/sdk/metric/controller/push"
+	controller "go.opentelemetry.io/otel/sdk/metric/controller/basic"
 
 	smetrics "go.opentelemetry.io/otel/exporters/stdout"
 	//pmetrics "go.opentelemetry.io/otel/exporters/metric/prometheus"
@@ -28,16 +28,16 @@ import (
 var (
 	once sync.Once
 
-	exporter *push.Controller
+	exporter *controller.Controller
 )
 
 // expected GOOGLE_CLOUD_PROJECT & GOOGLE_APPLICATION_CREDENTIALS Environment Variable set
-func InitMetrics(cfg *config.Features_Metrics) *push.Controller {
+func InitMetrics(cfg *config.Features_Metrics) *controller.Controller {
 	once.Do(func() {
 		log.Debug().Interface("MetricConfig", cfg).Msg("Initializing Metrics")
 		var err error
-		pushOpts := []push.Option{
-			push.WithPeriod(time.Second * 10),
+		pushOpts := []controller.Option{
+			controller.WithCollectPeriod(time.Second * 10),
 		}
 		if config.IsProduction() {
 			projectID := os.Getenv("GOOGLE_CLOUD_PROJECT")
@@ -45,7 +45,6 @@ func InitMetrics(cfg *config.Features_Metrics) *push.Controller {
 			exporter, err = gmetrics.InstallNewPipeline(opts, pushOpts...)
 		} else {
 			opts := []smetrics.Option{
-				smetrics.WithQuantiles([]float64{0.5}),
 				smetrics.WithPrettyPrint(),
 			}
 			exporter, err = smetrics.InstallNewPipeline(opts, pushOpts)

@@ -27,7 +27,7 @@ includes:
   build:      task/build.{{OS}}.yml
 
 tasks:
-  publish:
+  proto:
     desc: Lint, Clean and Generate go code from protos.
     cmds:
       - task: proto:default
