@@ -1,9 +1,9 @@
 # https://taskfile.dev
+################################################################################
+# Target: proto                                                                #
+################################################################################
 
 version: '3'
-
-env:
-  BAR: baz
 
 tasks:
   clean:
@@ -20,6 +20,7 @@ tasks:
           rm -f $f
         done
 #      - task: :clean
+      - "echo ✓ Proto: Cleaned"
     silent: true
 
   lint:
@@ -36,7 +37,7 @@ tasks:
       - echo "Checking proto breaking changes"
 #      - 'buf  breaking --against ".git#branch=master"'
       - 'buf  breaking --against "{{.GITHUB_REPO_URL}}#branch=master"'
-      - "echo ✓ Proto: Breaking"
+      - "echo ✓ Proto: Breaking Check"
     silent: true
 
   format:
@@ -56,15 +57,16 @@ tasks:
   generate:
     desc: Generate code from protos.
     cmds:
-      - echo "Generating code"
+      - echo "Generating Go..."
       - 'buf generate --path {{.PROTO_IN}}'
+      - "echo ✓ Proto: Generated"
     sources:
       - '{{.PROTO_IN}}/**/*.proto'
     generates:
       - '{{.PROTO_OUT}}/**/*.pb.*'
 
   default:
-    desc: Do all protos.
+    desc: Do all proto.
     cmds:
       - task: check
       - task: clean

@@ -1,0 +1,57 @@
+# https://taskfile.dev
+################################################################################
+# Target: gradle                                                               #
+################################################################################
+
+version: '3'
+
+tasks:
+  clean:
+    desc: Remove generated java artifacts.
+    cmds:
+      - echo "Deleting generated files...."
+      - gradle clean
+      - "echo ✓ Gradle: Cleaned"
+
+  version:
+    desc: Show future artifacts version.
+    cmds:
+      - gradle currentVersion
+
+  generate:
+    desc: Generate java artifacts from protos.
+    cmds:
+      - echo "Generating java..."
+      - gradle generateProto
+      - "echo ✓ Gradle: Generated"
+    sources:
+      - '{{.PROTO_IN}}/**/*.proto'
+    generates:
+      - 'build/generated/source/proto/main/**/*.java'
+      - 'build/generated/source/proto/main/**/*.kt'
+
+  publish:
+    desc: Publish java artifacts to nexus.
+    deps: [generate]
+    cmds:
+      - echo "Publishing Java..."
+      - gradle publish
+      - "echo ✓ Gradle: Published"
+    preconditions:
+      - sh: "{{ if .GIT_DIRTY }} exit 1 {{ end }}"
+        msg: "Working directory is dirty!. Commit or stash and try again. Aborting."
+
+  default:
+    desc: Do all protos.
+    cmds:
+      - task: clean
+      - task: publish
+      - "echo ✓ Gradle: All done"
+    silent: true
+    sources:
+      - '{{.PROTO_IN}}/**/*.proto'
+    generates:
+      - 'build/libs/*.jar'
+    preconditions:
+      - sh: "{{ if .GIT_DIRTY }} exit 1 {{ end }}"
+        msg: "Working directory is dirty!. Commit or stash and try again. Aborting."

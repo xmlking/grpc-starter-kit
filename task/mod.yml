@@ -1,0 +1,44 @@
+# https://taskfile.dev
+################################################################################
+# Target: go-mod                                                               #
+################################################################################
+
+version: '3'
+
+tasks:
+  default:
+    desc: "mod default is to run 'download' task"
+    cmds:
+      - task: download
+
+  download:
+    desc: Downloads and tidy Go modules
+    cmds:
+      - echo "Removeing go.sum and downloading deps...."
+      - |
+        for d in `find * -name 'go.mod'`; do
+          pushd `dirname $d` >/dev/null
+          rm -f go.sum
+          go mod download
+          popd >/dev/null
+        done
+    silent: true
+
+  update:
+    desc: Go mod verify and tidy.
+    cmds:
+      - echo "Go mod verify and tidy...."
+      - |
+        for d in `find * -name 'go.mod'`; do
+          pushd `dirname $d` >/dev/null
+          go mod verify
+          go mod tidy
+          popd >/dev/null
+        done
+    silent: true
+
+  upgrade:
+    desc: Show outdated dependencies
+    cmds:
+      - cmd: goup -v -m ./...
+        ignore_error: true

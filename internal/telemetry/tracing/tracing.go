@@ -5,6 +5,7 @@ package tracing
 
 // Adding new snap https://github.com/open-telemetry/opentelemetry-go
 import (
+	"context"
 	"os"
 	"sync"
 	"time"
@@ -12,7 +13,7 @@ import (
 	gtrace "github.com/GoogleCloudPlatform/opentelemetry-operations-go/exporter/trace"
 	"github.com/rs/zerolog/log"
 	strace "go.opentelemetry.io/otel/exporters/stdout"
-	"go.opentelemetry.io/otel/sdk/metric/controller/push"
+	controller "go.opentelemetry.io/otel/sdk/metric/controller/basic"
 	sdktrace "go.opentelemetry.io/otel/sdk/trace"
 
 	"github.com/xmlking/grpc-starter-kit/internal/config"
@@ -47,11 +48,10 @@ func InitTracing(cfg *config.Features_Tracing) func() {
 			}
 		} else {
 			opts := []strace.Option{
-				strace.WithQuantiles([]float64{0.5}),
 				strace.WithPrettyPrint(),
 			}
-			pushOpts := []push.Option{
-				push.WithPeriod(time.Second * 10),
+			pushOpts := []controller.Option{
+				controller.WithCollectPeriod(time.Second * 10),
 			}
 			// Registers both a trace and meter Provider globally.
 			pipeline, err := strace.InstallNewPipeline(opts, pushOpts)
@@ -59,7 +59,7 @@ func InitTracing(cfg *config.Features_Tracing) func() {
 				log.Fatal().Err(err).Msg("failed to initialize stdout tracing exporter")
 			}
 			closeFunc = func() {
-				pipeline.Stop()
+				pipeline.Stop(context.TODO())
 			}
 		}
 	})
