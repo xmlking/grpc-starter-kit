@@ -14,7 +14,7 @@ require (
 	github.com/envoyproxy/protoc-gen-validate v0.4.1
 	github.com/facebook/ent v0.5.4
 	github.com/golang/protobuf v1.4.3
-	github.com/google/uuid v1.1.5
+	github.com/google/uuid v1.2.0
 	github.com/grpc-ecosystem/go-grpc-middleware v1.2.2
 	github.com/markbates/pkger v0.17.1 // indirect
 	github.com/mattn/go-sqlite3 v1.14.6
