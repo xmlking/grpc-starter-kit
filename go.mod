@@ -8,7 +8,7 @@ replace github.com/xmlking/toolkit => github.com/xmlking/toolkit v0.1.2-0.202101
 require (
 	github.com/DATA-DOG/go-sqlmock v1.5.0
 	github.com/GoogleCloudPlatform/opentelemetry-operations-go/exporter/metric v0.15.0
-	github.com/GoogleCloudPlatform/opentelemetry-operations-go/exporter/trace v0.15.0
+	github.com/GoogleCloudPlatform/opentelemetry-operations-go/exporter/trace v0.16.0
 	github.com/cloudevents/sdk-go/v2 v2.3.1
 	github.com/cockroachdb/errors v1.8.2
 	github.com/envoyproxy/protoc-gen-validate v0.4.1
