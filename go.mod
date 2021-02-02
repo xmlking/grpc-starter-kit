@@ -7,7 +7,7 @@ replace github.com/xmlking/toolkit => github.com/xmlking/toolkit v0.1.2-0.202101
 
 require (
 	github.com/DATA-DOG/go-sqlmock v1.5.0
-	github.com/GoogleCloudPlatform/opentelemetry-operations-go/exporter/metric v0.15.0
+	github.com/GoogleCloudPlatform/opentelemetry-operations-go/exporter/metric v0.16.0
 	github.com/GoogleCloudPlatform/opentelemetry-operations-go/exporter/trace v0.15.0
 	github.com/cloudevents/sdk-go/v2 v2.3.1
 	github.com/cockroachdb/errors v1.8.2
@@ -16,7 +16,6 @@ require (
 	github.com/golang/protobuf v1.4.3
 	github.com/google/uuid v1.1.5
 	github.com/grpc-ecosystem/go-grpc-middleware v1.2.2
-	github.com/markbates/pkger v0.17.1 // indirect
 	github.com/mattn/go-sqlite3 v1.14.6
 	github.com/rs/zerolog v1.20.0
 	github.com/sarulabs/di/v2 v2.4.0
