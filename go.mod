@@ -35,9 +35,12 @@ require (
 	github.com/xmlking/toolkit v0.1.2
 	github.com/xmlking/toolkit/confy v0.1.2
 	go.opentelemetry.io/contrib/instrumentation/google.golang.org/grpc/otelgrpc v0.16.0
-	go.opentelemetry.io/otel v0.16.0
+	go.opentelemetry.io/otel v0.17.0
 	go.opentelemetry.io/otel/exporters/stdout v0.16.0
-	go.opentelemetry.io/otel/sdk v0.16.0
+	go.opentelemetry.io/otel/metric v0.17.0
+	go.opentelemetry.io/otel/sdk v0.17.0
+	go.opentelemetry.io/otel/sdk/metric v0.17.0
+	go.opentelemetry.io/otel/trace v0.17.0
 	google.golang.org/grpc v1.35.0
 	google.golang.org/grpc/examples v0.0.0-20210122012134-2c42474aca0c // indirect
 	google.golang.org/protobuf v1.25.0
