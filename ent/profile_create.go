@@ -9,8 +9,8 @@ import (
 	"net/url"
 	"time"
 
-	"github.com/facebook/ent/dialect/sql/sqlgraph"
-	"github.com/facebook/ent/schema/field"
+	"entgo.io/ent/dialect/sql/sqlgraph"
+	"entgo.io/ent/schema/field"
 	"github.com/google/uuid"
 	"github.com/xmlking/grpc-starter-kit/ent/profile"
 	"github.com/xmlking/grpc-starter-kit/ent/user"

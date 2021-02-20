@@ -2,6 +2,7 @@ package config
 
 import (
 	"fmt"
+	"io/fs"
 	"os"
 	"runtime"
 	"strings"
@@ -9,18 +10,22 @@ import (
 
 	grpc_middleware "github.com/grpc-ecosystem/go-grpc-middleware"
 	"github.com/rs/zerolog/log"
-	"github.com/xmlking/toolkit/configurator"
+	"github.com/xmlking/toolkit/confy"
 	"github.com/xmlking/toolkit/middleware/rpclog"
 	"github.com/xmlking/toolkit/util/tls"
+	"github.com/xmlking/toolkit/util/xfs"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials"
 	"google.golang.org/grpc/resolver"
 
 	//k8s resolver
 	_ "github.com/tcfw/go-grpc-k8s-resolver"
+
+	embed "github.com/xmlking/grpc-starter-kit"
 )
 
 var (
+	efs        = xfs.FS(embed.StaticConfig)
 	cfg        Configuration
 	configLock = new(sync.RWMutex)
 
@@ -52,15 +57,16 @@ git summary : %s
 `
 
 func init() {
-	configFiles, exists := os.LookupEnv("CONFIG_FILES")
+
+	configFiles, exists := os.LookupEnv("CONFY_FILES")
 	if !exists {
-		configFiles = "/config/config.yml"
+		configFiles = "config/config.yml"
 	}
 
-	configurator.DefaultConfigurator = configurator.NewConfigurator(configurator.WithPkger(), configurator.WithErrorOnUnmatchedKeys())
+	confy.DefaultConfy = confy.NewConfy(confy.WithFS(efs), confy.WithErrorOnUnmatchedKeys())
 
 	log.Info().Msgf("loading config files: %s", configFiles)
-	if err := configurator.Load(&cfg, strings.Split(configFiles, ",")...); err != nil {
+	if err := confy.Load(&cfg, strings.Split(configFiles, ",")...); err != nil {
 		if strings.Contains(err.Error(), "no such file") {
 			log.Panic().Err(err).Msgf("missing config file at %s", configFiles)
 		} else {
@@ -72,6 +78,11 @@ func init() {
 /**
   Helper Functions
 */
+func GetFileSystem() fs.FS {
+	configLock.RLock()
+	defer configLock.RUnlock()
+	return efs
+}
 
 func GetBuildInfo() string {
 	return fmt.Sprintf(versionMsg, Version, BuildDate, runtime.Version(), runtime.Compiler, runtime.GOOS, runtime.GOARCH,
@@ -85,7 +96,7 @@ func GetConfig() Configuration { // FIXME: return a deep copy?
 }
 
 func IsProduction() bool {
-	return configurator.GetEnvironment() == "production"
+	return confy.GetEnvironment() == "production"
 }
 
 func IsSecure() bool {
@@ -103,7 +114,7 @@ func GetClientConn(service *Service, ucInterceptors []grpc.UnaryClientIntercepto
 
 	tlsConf := cfg.Features.Tls
 	if tlsConf.Enabled {
-		if creds, err := tls.NewTLSConfig(tlsConf.CertFile, tlsConf.KeyFile, tlsConf.CaFile, tlsConf.ServerName, tlsConf.Password); err != nil {
+		if creds, err := tls.NewTLSConfig(efs, tlsConf.CertFile, tlsConf.KeyFile, tlsConf.CaFile, tlsConf.ServerName, tlsConf.Password); err != nil {
 			return nil, err
 		} else {
 			dialOptions = append(dialOptions, grpc.WithTransportCredentials(credentials.NewTLS(creds)))

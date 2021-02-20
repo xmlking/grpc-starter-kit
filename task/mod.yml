@@ -42,3 +42,19 @@ tasks:
     cmds:
       - cmd: goup -v -m ./...
         ignore_error: true
+
+  release:
+    desc: Go mod tag and release.
+    cmds:
+      - echo "Go mod tag and release...."
+      - |
+        for d in {{.ALL_GO_MOD_DIRS}}; do
+          pushd `dirname $d` >/dev/null
+          hub release create -m "$d/{{.TAG}} release" $d/{{.TAG}}
+          popd >/dev/null
+        done
+        hub release create -m "{{.TAG}} release" {{.TAG}}
+    preconditions:
+      - sh: "[ '{{.TAG}}' != '' ]"
+        msg: "Missing  TAG. Usage: 'task mod:release TAG=v1.1.1'"
+    silent: true

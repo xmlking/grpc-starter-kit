@@ -8,9 +8,9 @@ import (
 	"fmt"
 	"math"
 
-	"github.com/facebook/ent/dialect/sql"
-	"github.com/facebook/ent/dialect/sql/sqlgraph"
-	"github.com/facebook/ent/schema/field"
+	"entgo.io/ent/dialect/sql"
+	"entgo.io/ent/dialect/sql/sqlgraph"
+	"entgo.io/ent/schema/field"
 	"github.com/google/uuid"
 	"github.com/xmlking/grpc-starter-kit/ent/predicate"
 	"github.com/xmlking/grpc-starter-kit/ent/profile"
@@ -64,7 +64,7 @@ func (pq *ProfileQuery) QueryUser() *UserQuery {
 		if err := pq.prepareQuery(ctx); err != nil {
 			return nil, err
 		}
-		selector := pq.sqlQuery()
+		selector := pq.sqlQuery(ctx)
 		if err := selector.Err(); err != nil {
 			return nil, err
 		}
@@ -300,7 +300,7 @@ func (pq *ProfileQuery) GroupBy(field string, fields ...string) *ProfileGroupBy 
 		if err := pq.prepareQuery(ctx); err != nil {
 			return nil, err
 		}
-		return pq.sqlQuery(), nil
+		return pq.sqlQuery(ctx), nil
 	}
 	return group
 }
@@ -460,7 +460,7 @@ func (pq *ProfileQuery) querySpec() *sqlgraph.QuerySpec {
 	return _spec
 }
 
-func (pq *ProfileQuery) sqlQuery() *sql.Selector {
+func (pq *ProfileQuery) sqlQuery(ctx context.Context) *sql.Selector {
 	builder := sql.Dialect(pq.driver.Dialect())
 	t1 := builder.Table(profile.Table)
 	selector := builder.Select(t1.Columns(profile.Columns...)...).From(t1)
@@ -755,7 +755,7 @@ func (ps *ProfileSelect) Scan(ctx context.Context, v interface{}) error {
 	if err := ps.prepareQuery(ctx); err != nil {
 		return err
 	}
-	ps.sql = ps.ProfileQuery.sqlQuery()
+	ps.sql = ps.ProfileQuery.sqlQuery(ctx)
 	return ps.sqlScan(ctx, v)
 }
 

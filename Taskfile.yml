@@ -14,6 +14,9 @@ vars:
     sh: git log -n 1 --format=%h
   GIT_DIRTY:
     sh: git status --porcelain 2> /dev/null
+  ALL_GO_MOD_DIRS:
+#    sh: find . -type f -name 'go.mod' -exec dirname {} \;  | sort
+    sh: find * -name 'go.mod' -mindepth 1 -exec dirname {} \; | sort
 
 env:
   FOO: foo

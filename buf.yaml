@@ -9,6 +9,7 @@ lint:
     - FILE_LOWER_SNAKE_CASE
   ignore:
     - validate
+    - tagger
   ignore_only:
     RPC_RESPONSE_STANDARD_NAME:
       - mkit/service/transaction/v1/transaction.proto
@@ -20,3 +21,4 @@ breaking:
     - WIRE_JSON
   ignore:
     - validate
+    - tagger

@@ -7,7 +7,7 @@ import (
 	"strings"
 	"time"
 
-	"github.com/facebook/ent/dialect/sql"
+	"entgo.io/ent/dialect/sql"
 	"github.com/google/uuid"
 	"github.com/xmlking/grpc-starter-kit/ent/profile"
 	"github.com/xmlking/grpc-starter-kit/ent/user"
@@ -42,7 +42,7 @@ type User struct {
 // UserEdges holds the relations/edges for other nodes in the graph.
 type UserEdges struct {
 	// Profile holds the value of the profile edge.
-	Profile *Profile
+	Profile *Profile `json:"profile,omitempty"`
 	// loadedTypes holds the information for reporting if a
 	// type was loaded (or requested) in eager-loading or not.
 	loadedTypes [1]bool

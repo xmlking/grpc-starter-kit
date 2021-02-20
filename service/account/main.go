@@ -34,6 +34,7 @@ import (
 func main() {
 	serviceName := constants.ACCOUNT_SERVICE
 	cfg := config.GetConfig()
+	efs := config.GetFileSystem()
 
 	// Register kuberesolver to grpc.
 	// This line should be before calling registry.NewContainer(cfg)
@@ -68,7 +69,7 @@ func main() {
 	}
 
 	if cfg.Features.Tls.Enabled {
-		tlsConf, err := tls.NewTLSConfig(cfg.Features.Tls.CertFile, cfg.Features.Tls.KeyFile, cfg.Features.Tls.CaFile, cfg.Features.Tls.ServerName, cfg.Features.Tls.Password)
+		tlsConf, err := tls.NewTLSConfig(efs, cfg.Features.Tls.CertFile, cfg.Features.Tls.KeyFile, cfg.Features.Tls.CaFile, cfg.Features.Tls.ServerName, cfg.Features.Tls.Password)
 		if err != nil {
 			log.Fatal().Err(err).Msg("failed to create cert")
 		}
@@ -82,7 +83,7 @@ func main() {
 
 	tlsConf := cfg.Features.Tls
 	if tlsConf.Enabled {
-		if creds, err := tls.NewTLSConfig(tlsConf.CertFile, tlsConf.KeyFile, tlsConf.CaFile, tlsConf.ServerName, cfg.Features.Tls.Password); err != nil {
+		if creds, err := tls.NewTLSConfig(efs, tlsConf.CertFile, tlsConf.KeyFile, tlsConf.CaFile, tlsConf.ServerName, cfg.Features.Tls.Password); err != nil {
 			log.Fatal().Err(err).Msg("Failed to create tlsConf")
 		} else {
 			dialOptions = append(dialOptions, grpc.WithTransportCredentials(credentials.NewTLS(creds)))

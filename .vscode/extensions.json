@@ -1,6 +1,7 @@
 {
   "recommendations": [
     "golang.go",
+    "streetsidesoftware.code-spell-checker",
     "paulvarache.vscode-taskfile",
     "bufbuild.vscode-buf",
     "ms-azuretools.vscode-docker",

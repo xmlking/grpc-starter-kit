@@ -1,31 +1,31 @@
 # Config
 
-This will configures [configurator](https://github.com/xmlking/toolkit/configurator) via environment variables and load `config.*.yml` files into a package level struct variable. 
+This will configures [confy](https://github.com/xmlking/toolkit/confy) via environment variables and load `config.*.yml` files into a package level struct variable. 
 Once loaded, you can use packet level helper methods to retrieve config data.  
 
 ## Usage
 
-Customize **Configurator** at runtime with Environment Variables 
+Customize **Confy** at runtime with Environment Variables 
 
 ### Environment Variables
 
 ```bash
-export CONFIG_FILES=/config/config.yml
-# (or) export CONFIG_FILES=/config/config.yml,/config/config.pg.yml
-export CONFIG_DEBUG_MODE=true
-export CONFIG_VERBOSE_MODE=true
-export CONFIG_SILENT_MODE=true
-export CONFIG_USE_PKGER=true
-export CONFIG_ENV=prod
+export CONFY_FILES=/config/config.yml
+# (or) export CONFY_FILES=/config/config.yml,/config/config.pg.yml
+export CONFY_DEBUG_MODE=true
+export CONFY_VERBOSE_MODE=true
+export CONFY_SILENT_MODE=true
+export CONFY_USE_PKGER=true
+export CONFY_ENV=production
 
-export CONFIG_ENV_PREFIX=APP
+export CONFY_ENV_PREFIX=APP
 export APP_FEATURES_TLS_ENABLED=true
 
 # for example
-CONFIG_SERVICES_GREETER_ENDPOINT=dns:///localhost:8088 ./build/greeter-service
-CONFIG_ENV_PREFIX=APP APP_SERVICES_GREETER_ENDPOINT=dns:///localhost:8088 ./build/greeter-service
-CONFIG_ENV_PREFIX=APP APP_FEATURES_TLS_ENABLED=true ./build/greeter-service
-CONFIG_ENV=prod ./build/greeter-service
+CONFY_SERVICES_GREETER_ENDPOINT=dns:///localhost:8088 ./build/greeter-service
+CONFY_ENV_PREFIX=APP APP_SERVICES_GREETER_ENDPOINT=dns:///localhost:8088 ./build/greeter-service
+CONFY_ENV_PREFIX=APP APP_FEATURES_TLS_ENABLED=true ./build/greeter-service
+CONFY_ENV=production ./build/greeter-service
 ```
 
 ### Examples
@@ -63,8 +63,8 @@ import (
 )
 
 func TestOverwriteConfigurationWithEnvironmentWithDefaultPrefix(t *testing.T) {
-	os.Setenv("CONFIG_SERVICES_ACCOUNT_ENDPOINT", "dns:///localhost:8088")
-	defer os.Setenv("CONFIG_SERVICES_ACCOUNT_ENDPOINT", "")
+	os.Setenv("CONFY_SERVICES_ACCOUNT_ENDPOINT", "dns:///localhost:8088")
+	defer os.Setenv("CONFY_SERVICES_ACCOUNT_ENDPOINT", "")
 
 	var cfg config.Configuration
 	config.Configor.Load(&cfg, "/config/config.yml")
@@ -79,7 +79,7 @@ func TestOverwriteConfigurationWithEnvironmentWithDefaultPrefix(t *testing.T) {
 
 ## Test
 ```
-CONFIG_DEBUG_MODE=true go test -v ./internal/config/... -count=1
+CONFY_DEBUG_MODE=true go test -v ./internal/config/... -count=1
 ```
 
 

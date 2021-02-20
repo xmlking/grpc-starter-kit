@@ -10,7 +10,7 @@ Transactions are published by other micro services i.e., `account`, `emailer`, `
 ```bash
 make build TARGET=recorder TYPE=service
 # then run with custom env
-CONFIG_ENV_PREFIX=APP APP_FEATURES_TLS_ENABLED=true ./build/recorder-service
+CONFY_ENV_PREFIX=APP APP_FEATURES_TLS_ENABLED=true ./build/recorder-service
 ```
 
 ### Run the service

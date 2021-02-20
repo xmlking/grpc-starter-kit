@@ -13,7 +13,7 @@ Showcase
 ```bash
 make build TARGET=greeter TYPE=service
 # then run with custom env
-CONFIG_ENV_PREFIX=APP APP_FEATURES_TLS_ENABLED=true ./build/greeter-service
+CONFY_ENV_PREFIX=APP APP_FEATURES_TLS_ENABLED=true ./build/greeter-service
 ```
 
 ### Run the service

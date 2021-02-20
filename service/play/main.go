@@ -15,7 +15,7 @@ import (
 	"github.com/xmlking/grpc-starter-kit/internal/config"
 	"github.com/xmlking/grpc-starter-kit/internal/constants"
 	_ "github.com/xmlking/grpc-starter-kit/internal/logger"
-	"github.com/xmlking/grpc-starter-kit/internal/telemetry/metrics"
+	//"github.com/xmlking/grpc-starter-kit/internal/telemetry/metrics"
 	"github.com/xmlking/grpc-starter-kit/internal/telemetry/tracing"
 	"github.com/xmlking/grpc-starter-kit/mkit/service/greeter/v1"
 	"github.com/xmlking/grpc-starter-kit/service/play/handler"
@@ -24,6 +24,7 @@ import (
 func main() {
 	serviceName := constants.PLAY_SERVICE
 	cfg := config.GetConfig()
+	efs := config.GetFileSystem()
 
 	// Register kuberesolver to grpc
 	if config.IsProduction() {
@@ -35,10 +36,10 @@ func main() {
 		defer closeFn()
 	}
 
-	if cfg.Features.Metrics.Enabled {
-		exporter := metrics.InitMetrics(cfg.Features.Metrics)
-		defer exporter.Stop()
-	}
+	//if cfg.Features.Metrics.Enabled {
+	//	exporter := metrics.InitMetrics(cfg.Features.Metrics)
+	//	defer exporter.Stop()
+	//}
 
 	var unaryInterceptors = []grpc.UnaryServerInterceptor{grpc_validator.UnaryServerInterceptor()}
 	var streamInterceptors = []grpc.StreamServerInterceptor{grpc_validator.StreamServerInterceptor()}
@@ -58,7 +59,7 @@ func main() {
 	}
 
 	if cfg.Features.Tls.Enabled {
-		tlsConf, err := tls.NewTLSConfig(cfg.Features.Tls.CertFile, cfg.Features.Tls.KeyFile, cfg.Features.Tls.CaFile, cfg.Features.Tls.ServerName, cfg.Features.Tls.Password)
+		tlsConf, err := tls.NewTLSConfig(efs, cfg.Features.Tls.CertFile, cfg.Features.Tls.KeyFile, cfg.Features.Tls.CaFile, cfg.Features.Tls.ServerName, cfg.Features.Tls.Password)
 		if err != nil {
 			log.Fatal().Err(err).Msg("failed to create cert")
 		}

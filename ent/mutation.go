@@ -14,7 +14,7 @@ import (
 	"github.com/xmlking/grpc-starter-kit/ent/profile"
 	"github.com/xmlking/grpc-starter-kit/ent/user"
 
-	"github.com/facebook/ent"
+	"entgo.io/ent"
 )
 
 const (

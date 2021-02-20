@@ -6,15 +6,17 @@ import (
 	"testing"
 	"time"
 
-	"github.com/xmlking/toolkit/configurator"
+	"github.com/xmlking/toolkit/confy"
+
+	"github.com/stretchr/testify/assert"
 
 	"github.com/xmlking/grpc-starter-kit/internal/config"
 )
 
-// CONFIG_DEBUG_MODE=true go test -v ./internal/config/... -count=1
+// CONFY_DEBUG_MODE=true go test -v ./internal/config/... -count=1
 
 func TestNestedConfig(t *testing.T) {
-	t.Logf("Environment: %s", configurator.GetEnvironment())
+	t.Logf("Environment: %s", confy.GetEnvironment())
 	t.Log(config.GetConfig().Database)
 	connMaxLifetime := config.GetConfig().Database.ConnMaxLifetime
 	if *connMaxLifetime != time.Duration(time.Hour*2) {
@@ -23,7 +25,7 @@ func TestNestedConfig(t *testing.T) {
 }
 
 func TestDefaultValues(t *testing.T) {
-	t.Logf("Environment: %s", configurator.GetEnvironment())
+	t.Logf("Environment: %s", confy.GetEnvironment())
 	t.Log(config.GetConfig().Database)
 	connMaxLifetime := config.GetConfig().Database.ConnMaxLifetime
 	if *connMaxLifetime != time.Duration(time.Hour*2) {
@@ -51,13 +53,15 @@ func ExampleGetConfig_check_defaults() {
 }
 
 func TestOverwriteConfigurationWithEnvironmentWithDefaultPrefix(t *testing.T) {
-	os.Setenv("CONFIG_SERVICES_ACCOUNT_ENDPOINT", "dns:///localhost:8088")
+	os.Setenv("CONFY_SERVICES_ACCOUNT_ENDPOINT", "dns:///localhost:8088")
 	defer os.Clearenv()
 
 	var cfg config.Configuration
-	configurator.Load(&cfg, "/config/config.yml")
+	confy.DefaultConfy = confy.NewConfy(confy.WithFS(config.GetFileSystem()), confy.WithDebugMode())
+	err := confy.Load(&cfg, "config/config.yml")
+	assert.NoError(t, err)
 
-	t.Logf("Environment: %s", configurator.GetEnvironment())
+	t.Logf("Environment: %s", confy.GetEnvironment())
 	t.Log(cfg)
 	t.Log(cfg.Services.Account)
 	if cfg.Services.Account.Endpoint != "dns:///localhost:8088" {

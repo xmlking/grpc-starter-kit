@@ -6,7 +6,7 @@ import (
 	"testing"
 	"time"
 
-	"github.com/facebook/ent/dialect"
+	"entgo.io/ent/dialect"
 	_ "github.com/mattn/go-sqlite3"
 
 	"github.com/xmlking/grpc-starter-kit/ent"

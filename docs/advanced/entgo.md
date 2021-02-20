@@ -5,7 +5,7 @@
 ## Installation
 
 ```bash
-go get github.com/facebook/ent/cmd/ent
+go install entgo.io/ent/cmd/ent
 ```
 
 ## Commands 
@@ -13,7 +13,7 @@ go get github.com/facebook/ent/cmd/ent
 ### Create Your First Schema
 
 ```bash
-entc init User Profile
+ent init User Profile
 ```
 
 Edit **schema** in `ent/schema` then:

@@ -1,4 +1,4 @@
-FROM golang:1.15-alpine
+FROM golang:1.16-rc-alpine
 
 RUN mkdir /user && \
     echo 'nobody:x:65534:65534:nobody:/:' > /user/passwd && \
@@ -8,17 +8,6 @@ RUN mkdir /user && \
     GRPC_HEALTH_PROBE_VERSION=v0.3.2 && \
     wget -q -O /bin/grpc_health_probe https://github.com/grpc-ecosystem/grpc-health-probe/releases/download/${GRPC_HEALTH_PROBE_VERSION}/grpc_health_probe-linux-amd64 && \
     chmod +x /bin/grpc_health_probe
-
-ENV GO111MODULE=on
-ENV GOPROXY="https://proxy.golang.org,direct"
-
-# Get dependancies - will also be cached if we won't change mod/sum
-WORKDIR /
-COPY ./go.mod ./go.sum ./
-RUN go mod download && \
-    go get github.com/ahmetb/govvv && \
-    go get github.com/markbates/pkger/cmd/pkger && \
-    rm go.mod go.sum
 
 # Metadata params
 ARG BUILD_DATE

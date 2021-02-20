@@ -38,12 +38,6 @@ tasks:
     env:
       CGO_ENABLED: '0'
 
-  mod:
-    desc: Downloads and tidy Go modules
-    cmds:
-      - go mod download
-      - go mod tidy
-
   cli-deps:
     desc: Downloads CLI dependencies
     cmds:
@@ -58,6 +52,12 @@ tasks:
     desc: Cleans temp files and folders
     cmds:
       - rm -rf dist/
+
+  format:
+    desc: Runs gofmt
+    cmds:
+      - go fmt {{catLines .GO_PACKAGES}}
+    silent: true
 
   lint:
     desc: Runs golint

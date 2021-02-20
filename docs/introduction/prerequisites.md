@@ -65,13 +65,13 @@ GO111MODULE=on go get github.com/bufbuild/buf/cmd/buf
 GO111MODULE=on go get sigs.k8s.io/kind
 # go lang  build/publish/deploy tool (optional)
 GO111MODULE=off go get github.com/google/ko/cmd/ko
-# pkger cli
-go get github.com/markbates/pkger/cmd/pkger
-pkger -h
 
 # fetch protoc plugins into $GOPATH
 GO111MODULE=on go get google.golang.org/protobuf/cmd/protoc-gen-go
 GO111MODULE=on go get google.golang.org/grpc/cmd/protoc-gen-go-grpc
+
+# to add tags to go struct
+GO111MODULE=on go get github.com/srikrsna/protoc-gen-gotag
 
 # Installing PGV can currently only be done from source:
 GO111MODULE=off go get -d github.com/envoyproxy/protoc-gen-validate

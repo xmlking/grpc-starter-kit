@@ -10,6 +10,7 @@ option java_package = "mkit.service.account.entities.v1";
 import "google/protobuf/timestamp.proto";
 import "google/protobuf/wrappers.proto";
 import "validate/validate.proto";
+import "tagger/tagger.proto";
 
 // User Entity
 message User {
@@ -21,7 +22,7 @@ message User {
   google.protobuf.StringValue username = 7;
   string first_name = 8;
   string last_name = 9;
-  string email = 10;
+  string email = 10 [(tagger.tags) = "avro:\"email\" graphql:\"withNewTags,optional\"" ];
   mkit.service.account.entities.v1.Profile profile = 11;
 }
 

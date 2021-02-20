@@ -92,17 +92,6 @@ make lint-account-service
 make upgrade_deps
 ```
 
-### Packager
-
-```bash
-make pkger TARGET=greeter
-make pkger-greeter
-make pkger
-# other pkger commands
-pkger list -include /config/config.yml -include /config/config.production.yml -include /config/certs
-pkger info github.com/xmlking/grpc-starter-kit
-```
-
 ### build
 
 ```bash
@@ -126,6 +115,14 @@ make release VERSION=v0.1.1 GITHUB_TOKEN=123...
 
 ### docker
 
+#### Base
+This will build and publish base image: `ghcr.io/xmlking/grpc-starter-kit/base`
+
+```bash
+make docker_base VERSION=v0.1.0
+```
+
+#### Services
 Optionally set `export DOCKER_BUILDKIT=1` to use `moby`
 
 ```bash
@@ -151,13 +148,6 @@ make docker_push
 
 # remove all previous microservices images and any dangling images
 make docker_clean
-```
-
-This will build and publish base image: `ghcr.io/xmlking/grpc-starter-kit/base`
-
-```
-make docker_base VERSION=v0.1.0
-make docker_base 
 ```
 
 ### kustomize

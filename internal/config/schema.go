@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"time"
 
-	"github.com/facebook/ent/dialect"
+	"entgo.io/ent/dialect"
 )
 
 type Service struct {

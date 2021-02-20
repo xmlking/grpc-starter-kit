@@ -9,7 +9,7 @@ import (
 	// required by schema hooks.
 	_ "github.com/xmlking/grpc-starter-kit/ent/runtime"
 
-	"github.com/facebook/ent/dialect/sql/schema"
+	"entgo.io/ent/dialect/sql/schema"
 )
 
 type (

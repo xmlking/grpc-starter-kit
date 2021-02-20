@@ -30,6 +30,7 @@ Microservices starter kit for **Golang**, aims to be developer friendly.
 - [x] Versatile ingress gateway based on Envoy with Config Manager [esp-v2](https://github.com/GoogleCloudPlatform/esp-v2)
 - [ ] Proxy-less Service Discovery and xDS based gRPC Load Balancer with [Traffic Director](https://cloud.google.com/blog/products/networking/traffic-director-supports-proxyless-grpc)
 - [x] Input Validation with [protoc-gen-validate (PGV)](https://github.com/envoyproxy/protoc-gen-validate)
+- [x] Add/replace struct tags on generated protobuf messages [protoc-gen-gotag (PGGT)](https://github.com/srikrsna/protoc-gen-gotag)
 - [x] Config - Pluggable Sources, Mergeable Config, Environment Overlays
 - [x] Customizable Logging
 - [x] Flexible [errors](https://github.com/cockroachdb/errors) lib: _PII-free, gRPC middleware, opt-in Sentry.io reporting_
@@ -81,8 +82,8 @@ By default, this project use embedded `sqlite3` database. if you want to use **p
 
 - start **postgres** via `docker-compose` command provided below
 - uncomment `postgres` import statement and comment `sqlite` in `main.go`
-- start micro server with `export export CONFIG_FILES=/config/config.yml,/config/config.pg.yml` flag <br/>
-  i.e., `CONFIG_FILES=/config/config.yml,/config/config.pg.yml go run service/account/main.go`
+- start micro server with `export export CONFY_FILES=/config/config.yml,/config/config.pg.yml` flag <br/>
+  i.e., `CONFY_FILES=/config/config.yml,/config/config.pg.yml go run service/account/main.go`
 
 ```bash
 # to start postgres in foreground

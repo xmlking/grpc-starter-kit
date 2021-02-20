@@ -1,14 +1,40 @@
 version: 2
 updates:
-  - package-ecosystem: 'github-actions'
-    directory: '/'
+  - package-ecosystem: github-actions
+    directory: /
+    labels:
+      - dependencies
+      - actions
+      - "Skip Changelog"
     schedule:
-      interval: 'daily'
-  - package-ecosystem: 'gomod'
-    directory: '/'
+      day: sunday
+      interval: weekly
+
+  - package-ecosystem: docker
+    directory: /
+    labels:
+      - dependencies
+      - docker
+      - "Skip Changelog"
     schedule:
-      interval: 'daily'
-  - package-ecosystem: 'docker'
-    directory: '/'
+      day: sunday
+      interval: weekly
+
+  - package-ecosystem: gomod
+    directory: /
+    labels:
+      - dependencies
+      - go
+      - "Skip Changelog"
     schedule:
-      interval: 'daily'
+      day: sunday
+      interval: weekly
+  - package-ecosystem: gomod
+    directory: /service/account
+    labels:
+      - dependencies
+      - go
+      - "Skip Changelog"
+    schedule:
+      day: sunday
+      interval: weekly

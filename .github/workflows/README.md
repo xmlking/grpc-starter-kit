@@ -57,3 +57,4 @@
 - [Deploy to Cloud Run](https://github.com/Preetam/contrast/blob/master/.github/workflows/push.yml)
 - GitHub Actions Blogs
   - [radu](https://radu-matei.com/)
+- opentelemetry-go [GitHub Actions](https://github.com/open-telemetry/opentelemetry-go/tree/main/.github/workflows)

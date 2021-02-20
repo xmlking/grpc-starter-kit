@@ -28,6 +28,7 @@ import (
 func main() {
 	serviceName := constants.GREETER_SERVICE
 	cfg := config.GetConfig()
+	efs := config.GetFileSystem()
 
 	grpcOps := []grpc.ServerOption{
 		grpc.UnaryInterceptor(grpc_middleware.ChainUnaryServer(
@@ -38,7 +39,7 @@ func main() {
 	}
 
 	if cfg.Features.Tls.Enabled {
-		tlsConf, err := tls.NewTLSConfig(cfg.Features.Tls.CertFile, cfg.Features.Tls.KeyFile, cfg.Features.Tls.CaFile, cfg.Features.Tls.ServerName, cfg.Features.Tls.Password)
+		tlsConf, err := tls.NewTLSConfig(efs, cfg.Features.Tls.CertFile, cfg.Features.Tls.KeyFile, cfg.Features.Tls.CaFile, cfg.Features.Tls.ServerName, cfg.Features.Tls.Password)
 		if err != nil {
 			log.Fatal().Err(err).Msg("failed to create cert")
 		}

@@ -29,24 +29,24 @@ configMapGenerator:
   - name: env-vars-common
     behavior: merge
     literals:
-      - CONFIG_ENV=staging
-      - CONFIG_LOG_LEVEL=debug
-      - CONFIG_LOG_FORMAT=gcp
-      - CONFIG_FILE_PATH=/config/config.yml
-      - CONFIG_DEBUG_MODE=true
-      - CONFIG_VERBOSE_MODE=true
-      - CONFIG_USE_PKGER=true
-      - CONFIG_FEATURES_TLS_ENABLED=true
-      - CONFIG_FEATURES_RPCLOG_ENABLED=false
+      - CONFY_ENV=staging
+      - CONFY_LOG_LEVEL=debug
+      - CONFY_LOG_FORMAT=gcp
+      - CONFY_FILE_PATH=/config/config.yml
+      - CONFY_DEBUG_MODE=true
+      - CONFY_VERBOSE_MODE=true
+      - CONFY_USE_PKGER=true
+      - CONFY_FEATURES_TLS_ENABLED=true
+      - CONFY_FEATURES_RPCLOG_ENABLED=false
       - MICRO_BROKER=googlepubsub
       - GRPC_GO_LOG_SEVERITY_LEVEL="info"
       - GRPC_GO_LOG_VERBOSITY_LEVEL="99"
       # - INSECURE_SKIP_VERIFY=true
       # following endpoint overwrites (in config.yml)
-      # - CONFIG_SERVICES_ACCOUNT_ENDPOINT=$(ACCOUNT_SERVICE_ENDPOINT)
-      # - CONFIG_SERVICES_GREETER_ENDPOINT=$(GREETER_SERVICE_ENDPOINT)
-      # - CONFIG_SERVICES_EMAILER_SERVICE_ENDPOINT=$(EMAILER_SERVICE_ENDPOINT)
-      # - CONFIG_SERVICES_RECORDER_ENDPOINT=$(RECORDER_SERVICE_ENDPOINT)
+      # - CONFY_SERVICES_ACCOUNT_ENDPOINT=$(ACCOUNT_SERVICE_ENDPOINT)
+      # - CONFY_SERVICES_GREETER_ENDPOINT=$(GREETER_SERVICE_ENDPOINT)
+      # - CONFY_SERVICES_EMAILER_SERVICE_ENDPOINT=$(EMAILER_SERVICE_ENDPOINT)
+      # - CONFY_SERVICES_RECORDER_ENDPOINT=$(RECORDER_SERVICE_ENDPOINT)
 secretGenerator:
   - name: secrets
     behavior: replace

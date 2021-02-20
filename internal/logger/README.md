@@ -18,16 +18,16 @@ Once logger is initialized, then you can use standard `github.com/rs/zerolog/log
 
 Your can set **Logger** config via Environment Variables
 
-> **grpc** internal logs also adopt `CONFIG_LOG_LEVEL` and `CONFIG_LOG_FORMAT`
+> **grpc** internal logs also adopt `CONFY_LOG_LEVEL` and `CONFY_LOG_FORMAT`
 
 > No need to set `GRPC_GO_LOG_SEVERITY_LEVEL` and `GRPC_GO_LOG_VERBOSITY_LEVEL`
 
 ```
-CONFIG_LOG_LEVEL=<trace,debug,info,warn,error,fatal,panic>
-CONFIG_LOG_FORMAT=<pretty/json/gcp>
+CONFY_LOG_LEVEL=<trace,debug,info,warn,error,fatal,panic>
+CONFY_LOG_FORMAT=<pretty/json/gcp>
 ```
 
 ## Test
 ```
-CONFIG_LOG_LEVEL=info CONFIG_LOG_FORMAT=json go test github.com/xmlking/grpc-starter-kit/internal/logger  -count=1
+CONFY_LOG_LEVEL=info CONFY_LOG_FORMAT=json go test github.com/xmlking/grpc-starter-kit/internal/logger  -count=1
 ```

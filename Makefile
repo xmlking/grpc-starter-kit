@@ -24,7 +24,6 @@ GIT_TAG					:= $(shell git describe --tags --abbrev=0 --always --match "v*")
 GIT_DIRTY 				:= $(shell git status --porcelain 2> /dev/null)
 GIT_BRANCH  			:= $(shell git rev-parse --abbrev-ref HEAD)
 HAS_GOVVV				:= $(shell command -v govvv 2> /dev/null)
-HAS_PKGER				:= $(shell command -v pkger 2> /dev/null)
 HAS_KO					:= $(shell command -v ko 2> /dev/null)
 HTTPS_GIT 				:= https://github.com/$(GITHUB_REPO_OWNER)/$(GITHUB_REPO_NAME).git
 
@@ -45,7 +44,6 @@ BUILD_FLAGS = $(shell govvv -flags -version $(VERSION) -pkg $(VERSION_PACKAGE))
 .PHONY: proto proto_lint proto_breaking proto_format proto_generate proto_shared
 .PHONY: lint lint-% upgrade_deps
 .PHONY: format format-%
-.PHONY: pkger pkger-%
 .PHONY: build build-%
 .PHONY: run run-%
 .PHONY: docker_clean docker docker-% docker_push
@@ -62,7 +60,6 @@ all: build
 tools:
 	@echo "==> Installing dev tools"
 	# go install github.com/ahmetb/govvv
-	# go install github.com/markbates/pkger/cmd/pkger
 	# GO111MODULE=off go get github.com/golangci/golangci-lint/cmd/golangci-lint
 	# GO111MODULE=on go get github.com/bufbuild/buf/cmd/buf
 	# GO111MODULE=on go get github.com/rvflash/goup
@@ -177,25 +174,7 @@ format format-%:
 # Target: build                                                                #
 ################################################################################
 
-pkger pkger-%:
-ifndef HAS_PKGER
-	$(error "No pkger in PATH". Please install via 'go install github.com/markbates/pkger/cmd/pkger'")
-endif
-	@if [ -z $(TARGET) ]; then \
-		for type in $(TYPES); do \
-			echo "Packaging config for Type: $${type}..."; \
-			for _target in $${type}/*/; do \
-				temp=$${_target%%/}; target=$${temp#*/}; \
-				echo "\tPackaging config for $${target}-$${type}"; \
-				${GOPATH}/bin/pkger -o $${type}/$${target} -include /config/config.yml -include /config/config.production.yml -include /config/certs; \
-			done \
-		done \
-	else \
-		echo "Packaging config for ${TARGET}-${TYPE}..."; \
-		${GOPATH}/bin/pkger -o ${TYPE}/${TARGET} -include /config/config.yml -include /config/config.production.yml -include /config/certs ; \
-	fi
-
-build build-%: pkger-%
+build build-%:
 ifndef HAS_GOVVV
 	$(error "No govvv in PATH". Please install via 'go install github.com/ahmetb/govvv'")
 endif

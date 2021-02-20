@@ -53,8 +53,6 @@ build/*
 # Project
 TODO
 config/envs/production/secrets/.dockerconfigjson
-# pkger cli generated files
-pkged.go
 
 # certs
 ca.key
