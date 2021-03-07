@@ -55,26 +55,27 @@ yarn global add grpc-tools
 
 ```bash
 # go better build tool
-GO111MODULE=off go get github.com/ahmetb/govvv
+go install github.com/ahmetb/govvv
 # for static check/linter
-GO111MODULE=off go get github.com/golangci/golangci-lint/cmd/golangci-lint
+go install github.com/golangci/golangci-lint/cmd/golangci-lint
 # linter and tool for proto files
 # (if you use brew to install buf, skip next line)
-GO111MODULE=on go get github.com/bufbuild/buf/cmd/buf
+go install github.com/bufbuild/buf/cmd/buf
 # kind - kubernetes in docker (optional)
-GO111MODULE=on go get sigs.k8s.io/kind
+go install sigs.k8s.io/kind
 # go lang  build/publish/deploy tool (optional)
-GO111MODULE=off go get github.com/google/ko/cmd/ko
+go install github.com/google/ko/cmd/ko
 
 # fetch protoc plugins into $GOPATH
-GO111MODULE=on go get google.golang.org/protobuf/cmd/protoc-gen-go
-GO111MODULE=on go get google.golang.org/grpc/cmd/protoc-gen-go-grpc
+go install google.golang.org/protobuf/cmd/protoc-gen-go
+go install google.golang.org/grpc/cmd/protoc-gen-go-grpc
 
 # to add tags to go struct
-GO111MODULE=on go get github.com/srikrsna/protoc-gen-gotag
+go install github.com/srikrsna/protoc-gen-gotag
 
 # Installing PGV can currently only be done from source:
-GO111MODULE=off go get -d github.com/envoyproxy/protoc-gen-validate
+# from user's home directory, run
+go get -d github.com/envoyproxy/protoc-gen-validate
 cd ~/go/src/github.com/envoyproxy/protoc-gen-validate
 git pull
 make build
@@ -82,6 +83,6 @@ make build
 # goup checks if there are any updates for imports in your module.
 # the main purpose is using it as a linter in continuous integration or in development process.
 # Usage: goup -v -m ./...
-GO111MODULE=on go get github.com/rvflash/goup
+go install github.com/rvflash/goup
 ```
 

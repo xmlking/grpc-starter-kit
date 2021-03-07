@@ -17,7 +17,7 @@ brew cask zap docker
 ## Install
 
 ```bash
-GO111MODULE=on go get sigs.k8s.io/kind
+go install sigs.k8s.io/kind
 ```
 
 ## Usage

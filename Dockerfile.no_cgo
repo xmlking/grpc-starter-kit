@@ -16,7 +16,7 @@ ENV CGO_ENABLED=0 GOOS=linux GOPROXY="https://proxy.golang.org,direct"
 #ENV GOPROXY="https://nexus.mycomp.com,direct"
 
 # Get tools - will also be cached if we won't add new tools
-RUN go get github.com/ahmetb/govvv
+RUN go install github.com/ahmetb/govvv
 
 # Set the working directory outside $GOPATH to enable the support for modules.
 WORKDIR /src

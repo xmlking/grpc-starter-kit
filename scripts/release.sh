@@ -8,7 +8,7 @@
 
 VERSION=$1
 
-GO111MODULE=off go get github.com/ahmetb/govvv
+GO111MODULE=off go install github.com/ahmetb/govvv
 govvv build -o build/account-service service/account/main.go -version $VERSION
 git tag $VERSION
 git push origin $VERSION

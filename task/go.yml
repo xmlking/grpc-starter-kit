@@ -72,12 +72,12 @@ tasks:
       - go test {{catLines .GO_PACKAGES}}
 
   ci:
-    - task: go-get
+    - task: go-install
       vars: {REPO: golang.org/x/lint/golint}
     - task: lint
     - task: test
 
-  go-get: go get -u {{.REPO}}
+  go-install: go install {{.REPO}}
 
   packages:
     cmds:

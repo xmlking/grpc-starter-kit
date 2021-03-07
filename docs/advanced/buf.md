@@ -10,8 +10,8 @@
 
 ```bash
 # buf: proto tool https://buf.build/docs/tour-1
-# or use `go get` to install Buf
-GO111MODULE=on go get github.com/bufbuild/buf/cmd/buf
+# or use `go install` to install Buf
+go install github.com/bufbuild/buf/cmd/buf
 ```
 
 ## Developer Workflow

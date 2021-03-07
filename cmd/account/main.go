@@ -34,9 +34,28 @@ func main() {
 	username := flag.String("username", "sumo", "username of user to be create")
 	email := flag.String("email", "sumo@demo.com", "email of user to be create")
 	limit := flag.Uint64("limit", 10, "Limit number of results")
+
+	output := os.Stdout
+	flag.Func("in", "path to file output (default STDOUT)", func(s string) error {
+		if s == "-" {
+			return nil
+		}
+		f, err := os.Open(s)
+		if err != nil {
+			return err
+		}
+		output = f
+		return nil
+	})
+
 	flag.Parse()
 
-	log.Debug().Str("username", *username).Str("email", *email).Uint64("limit", *limit).Msg("Flags Using:")
+	log.Debug().
+		Str("username", *username).
+		Str("email", *email).
+		Uint64("limit", *limit).
+		Str("output", output.Name()).
+		Msg("Flags Using:")
 
 	pairs := []string{constants.FromServiceKey, constants.ACCOUNT_CLIENT}
 	for key, val := range cfg.Services.Account.Metadata {

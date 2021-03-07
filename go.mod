@@ -8,9 +8,9 @@ replace github.com/xmlking/grpc-starter-kit => ./
 
 //replace github.com/xmlking/toolkit => github.com/xmlking/toolkit v0.1.2-0.20210125025404-51fc2d71fb2d
 
-replace github.com/GoogleCloudPlatform/opentelemetry-operations-go/exporter/trace => github.com/GoogleCloudPlatform/opentelemetry-operations-go/exporter/trace v0.15.1-0.20210128222945-8d20ac5c4dd4
+//replace github.com/GoogleCloudPlatform/opentelemetry-operations-go/exporter/trace => github.com/GoogleCloudPlatform/opentelemetry-operations-go/exporter/trace v0.15.1-0.20210128222945-8d20ac5c4dd4
 
-replace github.com/GoogleCloudPlatform/opentelemetry-operations-go/exporter/metric => github.com/GoogleCloudPlatform/opentelemetry-operations-go/exporter/metric v0.15.1-0.20210128222945-8d20ac5c4dd4
+//replace github.com/GoogleCloudPlatform/opentelemetry-operations-go/exporter/metric => github.com/GoogleCloudPlatform/opentelemetry-operations-go/exporter/metric v0.15.1-0.20210128222945-8d20ac5c4dd4
 
 require (
 	entgo.io/ent v0.6.0
@@ -38,7 +38,7 @@ require (
 	go.opentelemetry.io/otel v0.16.0
 	go.opentelemetry.io/otel/exporters/stdout v0.16.0
 	go.opentelemetry.io/otel/sdk v0.16.0
-	google.golang.org/grpc v1.35.0
+	google.golang.org/grpc v1.36.0
 	google.golang.org/grpc/examples v0.0.0-20210122012134-2c42474aca0c // indirect
 	google.golang.org/protobuf v1.25.0
 )

@@ -60,9 +60,9 @@ all: build
 tools:
 	@echo "==> Installing dev tools"
 	# go install github.com/ahmetb/govvv
-	# GO111MODULE=off go get github.com/golangci/golangci-lint/cmd/golangci-lint
-	# GO111MODULE=on go get github.com/bufbuild/buf/cmd/buf
-	# GO111MODULE=on go get github.com/rvflash/goup
+	# go install github.com/golangci/golangci-lint/cmd/golangci-lint
+	# go install github.com/bufbuild/buf/cmd/buf
+	# go install github.com/rvflash/goup
 
 check_dirty:
 ifdef GIT_DIRTY
