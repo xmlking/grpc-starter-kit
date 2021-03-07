@@ -38,7 +38,7 @@ require (
 	go.opentelemetry.io/otel v0.16.0
 	go.opentelemetry.io/otel/exporters/stdout v0.16.0
 	go.opentelemetry.io/otel/sdk v0.16.0
-	google.golang.org/grpc v1.35.0
+	google.golang.org/grpc v1.36.0
 	google.golang.org/grpc/examples v0.0.0-20210122012134-2c42474aca0c // indirect
 	google.golang.org/protobuf v1.25.0
 )
