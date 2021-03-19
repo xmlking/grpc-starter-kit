@@ -8,8 +8,8 @@ import (
     "go.opentelemetry.io/otel/attribute"
     "go.opentelemetry.io/otel/baggage"
     "go.opentelemetry.io/otel/metric"
+    metricglobal "go.opentelemetry.io/otel/metric/global"
     "go.opentelemetry.io/otel/trace"
-    "google.golang.org/genproto/googleapis/api/label"
 
     "github.com/xmlking/grpc-starter-kit/mkit/service/greeter/v1"
 )
@@ -50,7 +50,7 @@ func (s *greeterHandler) Hello(ctx context.Context, req *greeterv1.HelloRequest)
 	ctx, span = s.tracer.Start(ctx, "operation")
 	defer span.End()
 
-	span.AddEvent("Nice operation!", trace.WithAttributes(label.Int("bogons", 100)))
+	span.AddEvent("Nice operation!", trace.WithAttributes(attribute.Int("bogons", 100)))
 	span.SetAttributes(anotherKey.String("yes"))
 
 	_ = func(ctx context.Context) error {
@@ -58,7 +58,7 @@ func (s *greeterHandler) Hello(ctx context.Context, req *greeterv1.HelloRequest)
 		ctx, span = s.tracer.Start(ctx, "operation")
 		defer span.End()
 
-		span.AddEvent("Nice operation!", trace.WithAttributes(label.Int("bogons", 100)))
+		span.AddEvent("Nice operation!", trace.WithAttributes(attribute.Int("bogons", 100)))
 		span.SetAttributes(anotherKey.String("yes"))
 
 		return func(ctx context.Context) error {
@@ -79,9 +79,9 @@ func (s *greeterHandler) Hello(ctx context.Context, req *greeterv1.HelloRequest)
 }
 
 func createIntCounter(name string, desc string) metric.BoundInt64Counter {
-	meter := otel.Meter("otel-switch-backend")
+	meter := metricglobal.Meter("otel-switch-backend")
 	counter := metric.Must(meter).NewInt64Counter(name,
 		metric.WithDescription(desc),
-	).Bind(label.String("label", "test"))
+	).Bind(attribute.String("label", "test"))
 	return counter
 }
