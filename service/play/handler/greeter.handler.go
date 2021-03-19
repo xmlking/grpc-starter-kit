@@ -1,23 +1,24 @@
 package handler
 
 import (
-	"context"
+    "context"
 
-	"github.com/rs/zerolog/log"
-	"go.opentelemetry.io/otel"
-	"go.opentelemetry.io/otel/baggage"
-	"go.opentelemetry.io/otel/label"
-	"go.opentelemetry.io/otel/metric"
-	"go.opentelemetry.io/otel/trace"
+    "github.com/rs/zerolog/log"
+    "go.opentelemetry.io/otel"
+    "go.opentelemetry.io/otel/attribute"
+    "go.opentelemetry.io/otel/baggage"
+    "go.opentelemetry.io/otel/metric"
+    "go.opentelemetry.io/otel/trace"
+    "google.golang.org/genproto/googleapis/api/label"
 
-	"github.com/xmlking/grpc-starter-kit/mkit/service/greeter/v1"
+    "github.com/xmlking/grpc-starter-kit/mkit/service/greeter/v1"
 )
 
 var (
-	fooKey     = label.Key("ex.com/foo")
-	barKey     = label.Key("ex.com/bar")
-	lemonsKey  = label.Key("ex.com/lemons")
-	anotherKey = label.Key("ex.com/another")
+	fooKey     = attribute.Key("ex.com/foo")
+	barKey     = attribute.Key("ex.com/bar")
+	lemonsKey  = attribute.Key("ex.com/lemons")
+	anotherKey = attribute.Key("ex.com/another")
 )
 
 type greeterHandler struct {

@@ -16,7 +16,7 @@ ENV CGO_ENABLED=0 GOOS=linux GOPROXY="https://proxy.golang.org,direct"
 #ENV GOPROXY="https://nexus.mycomp.com,direct"
 
 # Get tools - will also be cached if we won't add new tools
-RUN go install github.com/ahmetb/govvv
+RUN go install github.com/ahmetb/govvv@v0.3.0
 
 # Set the working directory outside $GOPATH to enable the support for modules.
 WORKDIR /src
@@ -25,7 +25,7 @@ WORKDIR /src
 # and will therefore be cached for speeding up the next build
 COPY go.mod go.sum ./
 # Get dependancies - will also be cached if we won't change mod/sum
-RUN go mod download -x
+RUN go mod download
 
 # COPY the source code as the last step
 COPY ./ ./
@@ -43,7 +43,7 @@ RUN go build -a \
 FROM scratch AS final
 
 # copy 1 MiB busybox executable
-COPY --from=busybox:1.31.1 /bin/busybox /bin/busybox
+COPY --from=busybox:1.32.1 /bin/busybox /bin/busybox
 
 # copy grpc-health-probe to use with readiness and liveness probes
 COPY --from=builder /bin/grpc_health_probe /bin/grpc_health_probe
