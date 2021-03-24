@@ -35,6 +35,7 @@ Microservices starter kit for **Golang**, aims to be developer friendly.
 - [x] Customizable Logging
 - [x] Flexible [errors](https://github.com/cockroachdb/errors) lib: _PII-free, gRPC middleware, opt-in Sentry.io reporting_
 - [x] Graph-Based ORM [ent](https://entgo.io/)
+- [x] CRUD API with [ent](https://entgo.io/blog/2021/03/18/generating-a-grpc-server-with-ent/)
 - [x] Dependency injection [Container](https://github.com/sarulabs/di), Try [wire](https://itnext.io/mastering-wire-f1226717bbac) next?
 - [ ] Adaptive System Protection / Adaptive concurrency limits with 
         [Alibaba's Sentinel](https://github.com/alibaba/sentinel-golang/wiki), 

@@ -32,3 +32,7 @@ ent generate --idtype string ./ent/schema
 ```bash
 ent describe ./ent/schema
 ```
+
+## Reference
+
+* [Generate a fully-working Go gRPC server in two minutes with Ent](https://entgo.io/blog/2021/03/18/generating-a-grpc-server-with-ent/)
