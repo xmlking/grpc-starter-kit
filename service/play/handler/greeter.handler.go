@@ -1,17 +1,17 @@
 package handler
 
 import (
-    "context"
+	"context"
 
-    "github.com/rs/zerolog/log"
-    "go.opentelemetry.io/otel"
-    "go.opentelemetry.io/otel/attribute"
-    "go.opentelemetry.io/otel/baggage"
-    "go.opentelemetry.io/otel/metric"
-    metricglobal "go.opentelemetry.io/otel/metric/global"
-    "go.opentelemetry.io/otel/trace"
+	"github.com/rs/zerolog/log"
+	"go.opentelemetry.io/otel"
+	"go.opentelemetry.io/otel/attribute"
+	"go.opentelemetry.io/otel/baggage"
+	"go.opentelemetry.io/otel/metric"
+	metricglobal "go.opentelemetry.io/otel/metric/global"
+	"go.opentelemetry.io/otel/trace"
 
-    "github.com/xmlking/grpc-starter-kit/mkit/service/greeter/v1"
+	"github.com/xmlking/grpc-starter-kit/mkit/service/greeter/v1"
 )
 
 var (

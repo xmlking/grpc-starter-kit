@@ -1,16 +1,15 @@
 package main
 
 import (
+	_ "github.com/xmlking/toolkit/logger/auto"
+
 	"github.com/rs/zerolog/log"
-
-	"github.com/xmlking/toolkit/broker/cloudevents"
-	"github.com/xmlking/toolkit/service"
-
 	"github.com/xmlking/grpc-starter-kit/internal/config"
 	"github.com/xmlking/grpc-starter-kit/internal/constants"
-	_ "github.com/xmlking/grpc-starter-kit/internal/logger"
 	"github.com/xmlking/grpc-starter-kit/service/recorder/registry"
 	"github.com/xmlking/grpc-starter-kit/service/recorder/subscriber"
+	"github.com/xmlking/toolkit/broker/cloudevents"
+	"github.com/xmlking/toolkit/service"
 )
 
 func main() {

@@ -1,20 +1,20 @@
 package main
 
 import (
+	_ "github.com/xmlking/toolkit/logger/auto"
+
 	grpc_middleware "github.com/grpc-ecosystem/go-grpc-middleware"
 	grpc_validator "github.com/grpc-ecosystem/go-grpc-middleware/validator"
 	"github.com/rs/zerolog/log"
 	"github.com/sercand/kuberesolver"
+	"github.com/xmlking/grpc-starter-kit/internal/config"
+	"github.com/xmlking/grpc-starter-kit/internal/constants"
 	"github.com/xmlking/toolkit/middleware/rpclog"
 	"github.com/xmlking/toolkit/service"
 	"github.com/xmlking/toolkit/util/tls"
 	"go.opentelemetry.io/contrib/instrumentation/google.golang.org/grpc/otelgrpc"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials"
-
-	"github.com/xmlking/grpc-starter-kit/internal/config"
-	"github.com/xmlking/grpc-starter-kit/internal/constants"
-	_ "github.com/xmlking/grpc-starter-kit/internal/logger"
 	//"github.com/xmlking/grpc-starter-kit/internal/telemetry/metrics"
 	"github.com/xmlking/grpc-starter-kit/internal/telemetry/tracing"
 	"github.com/xmlking/grpc-starter-kit/mkit/service/greeter/v1"

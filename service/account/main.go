@@ -1,34 +1,27 @@
 package main
 
 import (
-	"github.com/rs/zerolog/log"
-	"github.com/sercand/kuberesolver"
-	broker "github.com/xmlking/toolkit/broker/cloudevents"
-	"google.golang.org/grpc"
-	"google.golang.org/grpc/credentials"
-
-	"github.com/xmlking/toolkit/middleware/rpclog"
-	"github.com/xmlking/toolkit/service"
-	"github.com/xmlking/toolkit/util/tls"
-
-	"github.com/xmlking/grpc-starter-kit/internal/middleware/translog"
-
-	_ "github.com/mattn/go-sqlite3"
-
-	profilev1 "github.com/xmlking/grpc-starter-kit/mkit/service/account/profile/v1"
-	userv1 "github.com/xmlking/grpc-starter-kit/mkit/service/account/user/v1"
+	_ "github.com/xmlking/toolkit/logger/auto"
 
 	grpc_middleware "github.com/grpc-ecosystem/go-grpc-middleware"
 	grpc_validator "github.com/grpc-ecosystem/go-grpc-middleware/validator"
-
-	"github.com/xmlking/grpc-starter-kit/service/account/registry"
-
-	appendTags "github.com/xmlking/toolkit/middleware/tags/append"
-	forwardTags "github.com/xmlking/toolkit/middleware/tags/forward"
-
+	_ "github.com/mattn/go-sqlite3"
+	"github.com/rs/zerolog/log"
+	"github.com/sercand/kuberesolver"
 	"github.com/xmlking/grpc-starter-kit/internal/config"
 	"github.com/xmlking/grpc-starter-kit/internal/constants"
-	_ "github.com/xmlking/grpc-starter-kit/internal/logger"
+	"github.com/xmlking/grpc-starter-kit/internal/middleware/translog"
+	profilev1 "github.com/xmlking/grpc-starter-kit/mkit/service/account/profile/v1"
+	userv1 "github.com/xmlking/grpc-starter-kit/mkit/service/account/user/v1"
+	"github.com/xmlking/grpc-starter-kit/service/account/registry"
+	broker "github.com/xmlking/toolkit/broker/cloudevents"
+	"github.com/xmlking/toolkit/middleware/rpclog"
+	appendTags "github.com/xmlking/toolkit/middleware/tags/append"
+	forwardTags "github.com/xmlking/toolkit/middleware/tags/forward"
+	"github.com/xmlking/toolkit/service"
+	"github.com/xmlking/toolkit/util/tls"
+	"google.golang.org/grpc"
+	"google.golang.org/grpc/credentials"
 )
 
 func main() {

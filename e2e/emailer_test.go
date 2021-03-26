@@ -6,14 +6,12 @@ import (
 	"testing"
 	"time"
 
-	broker "github.com/xmlking/toolkit/broker/cloudevents"
-
-	_ "github.com/xmlking/grpc-starter-kit/internal/logger"
+	_ "github.com/xmlking/toolkit/logger/auto"
 
 	cloudevents "github.com/cloudevents/sdk-go/v2"
+	broker "github.com/xmlking/toolkit/broker/cloudevents"
 	// cecontext "github.com/cloudevents/sdk-go/v2/context"
 	"github.com/rs/zerolog/log"
-
 	"github.com/xmlking/grpc-starter-kit/internal/config"
 	"github.com/xmlking/grpc-starter-kit/mkit/service/emailer/v1"
 )

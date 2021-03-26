@@ -6,13 +6,13 @@ import (
 	"testing"
 	"time"
 
+	_ "github.com/xmlking/toolkit/logger/auto"
+
 	"entgo.io/ent/dialect"
 	_ "github.com/mattn/go-sqlite3"
-
 	"github.com/xmlking/grpc-starter-kit/ent"
 	"github.com/xmlking/grpc-starter-kit/internal/config"
 	"github.com/xmlking/grpc-starter-kit/internal/database"
-	_ "github.com/xmlking/grpc-starter-kit/internal/logger"
 )
 
 /********************

@@ -3,26 +3,25 @@ package main
 import (
 	"net/http"
 
+	_ "github.com/xmlking/toolkit/logger/auto"
+
 	grpc_middleware "github.com/grpc-ecosystem/go-grpc-middleware"
 	grpc_validator "github.com/grpc-ecosystem/go-grpc-middleware/validator"
 	"github.com/rs/zerolog/log"
 	"github.com/soheilhy/cmux"
+	"github.com/xmlking/grpc-starter-kit/internal/config"
+	"github.com/xmlking/grpc-starter-kit/internal/constants"
+	"github.com/xmlking/grpc-starter-kit/mkit/service/greeter/v1"
+	"github.com/xmlking/grpc-starter-kit/service/greeter/handler"
+	"github.com/xmlking/toolkit/middleware/rpclog"
+	"github.com/xmlking/toolkit/service"
+	"github.com/xmlking/toolkit/util/endpoint"
+	"github.com/xmlking/toolkit/util/tls"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials"
 	"google.golang.org/grpc/health"
 	"google.golang.org/grpc/health/grpc_health_v1"
 	"google.golang.org/grpc/reflection"
-
-	"github.com/xmlking/toolkit/middleware/rpclog"
-	"github.com/xmlking/toolkit/service"
-	"github.com/xmlking/toolkit/util/endpoint"
-	"github.com/xmlking/toolkit/util/tls"
-
-	"github.com/xmlking/grpc-starter-kit/internal/config"
-	"github.com/xmlking/grpc-starter-kit/internal/constants"
-	_ "github.com/xmlking/grpc-starter-kit/internal/logger"
-	"github.com/xmlking/grpc-starter-kit/mkit/service/greeter/v1"
-	"github.com/xmlking/grpc-starter-kit/service/greeter/handler"
 )
 
 func main() {

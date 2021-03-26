@@ -6,16 +6,16 @@ import (
 	"regexp"
 	"testing"
 
+	_ "github.com/xmlking/toolkit/logger/auto"
+
 	"entgo.io/ent/dialect"
 	entsql "entgo.io/ent/dialect/sql"
 	"github.com/DATA-DOG/go-sqlmock"
 	"github.com/rs/zerolog/log"
 	"github.com/stretchr/testify/require"
 	"github.com/stretchr/testify/suite"
-
 	"github.com/xmlking/grpc-starter-kit/ent"
 	"github.com/xmlking/grpc-starter-kit/internal/config"
-	_ "github.com/xmlking/grpc-starter-kit/internal/logger"
 	"github.com/xmlking/grpc-starter-kit/service/account/repository"
 )
 

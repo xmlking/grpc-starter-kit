@@ -6,7 +6,7 @@ import (
 	"fmt"
 	"os"
 
-	_ "github.com/xmlking/grpc-starter-kit/internal/logger"
+	_ "github.com/xmlking/toolkit/logger/auto"
 
 	"github.com/golang/protobuf/ptypes/wrappers"
 	"github.com/rs/zerolog/log"
