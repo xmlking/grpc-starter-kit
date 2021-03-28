@@ -27,7 +27,7 @@ require (
 	github.com/rs/zerolog v1.21.0
 	github.com/sarulabs/di/v2 v2.4.2
 	github.com/sercand/kuberesolver v2.4.0+incompatible
-	github.com/soheilhy/cmux v0.1.4
+	github.com/soheilhy/cmux v0.1.5
 	github.com/srikrsna/protoc-gen-gotag v0.5.0
 	github.com/stretchr/testify v1.7.0
 	github.com/tcfw/go-grpc-k8s-resolver v0.0.0-20201027075059-d3a2d14aa08f
@@ -43,6 +43,5 @@ require (
 	go.opentelemetry.io/otel/sdk/metric v0.19.0
 	go.opentelemetry.io/otel/trace v0.19.0
 	google.golang.org/grpc v1.36.0
-	google.golang.org/grpc/examples v0.0.0-20210318230139-bce1cded4b05 // indirect
 	google.golang.org/protobuf v1.26.0
 )
