@@ -19,7 +19,7 @@ require (
 	github.com/GoogleCloudPlatform/opentelemetry-operations-go/exporter/trace v0.19.0
 	github.com/cloudevents/sdk-go/v2 v2.3.1
 	github.com/cockroachdb/errors v1.8.3
-	github.com/envoyproxy/protoc-gen-validate v0.5.0
+	github.com/envoyproxy/protoc-gen-validate v0.5.1
 	github.com/golang/protobuf v1.5.1
 	github.com/google/uuid v1.2.0
 	github.com/grpc-ecosystem/go-grpc-middleware v1.2.2
