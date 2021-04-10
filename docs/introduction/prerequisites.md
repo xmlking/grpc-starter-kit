@@ -55,23 +55,23 @@ yarn global add grpc-tools
 
 ```bash
 # go better build tool
-go install github.com/ahmetb/govvv
+go install github.com/ahmetb/govvv@latest
 # for static check/linter
-go install github.com/golangci/golangci-lint/cmd/golangci-lint
+go install github.com/golangci/golangci-lint/cmd/golangci-lint@latest
 # linter and tool for proto files
 # (if you use brew to install buf, skip next line)
-go install github.com/bufbuild/buf/cmd/buf
+go install github.com/bufbuild/buf/cmd/buf@latest
 # kind - kubernetes in docker (optional)
-go install sigs.k8s.io/kind
+go install sigs.k8s.io/kind@latest
 # go lang  build/publish/deploy tool (optional)
-go install github.com/google/ko/cmd/ko
+go install github.com/google/ko/cmd/ko@latest
 
 # fetch protoc plugins into $GOPATH
-go install google.golang.org/protobuf/cmd/protoc-gen-go
-go install google.golang.org/grpc/cmd/protoc-gen-go-grpc
+go install google.golang.org/protobuf/cmd/protoc-gen-go@latest
+go install google.golang.org/grpc/cmd/protoc-gen-go-grpc@latest
 
 # to add tags to go struct
-go install github.com/srikrsna/protoc-gen-gotag
+go install github.com/srikrsna/protoc-gen-gotag@latest
 
 # Installing PGV can currently only be done from source:
 # from user's home directory, run
@@ -83,6 +83,6 @@ make build
 # goup checks if there are any updates for imports in your module.
 # the main purpose is using it as a linter in continuous integration or in development process.
 # Usage: goup -v -m ./...
-go install github.com/rvflash/goup
+go install github.com/rvflash/goup@latest
 ```
 

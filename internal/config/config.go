@@ -25,7 +25,7 @@ import (
 )
 
 var (
-	efs        = xfs.FS(embed.StaticConfig)
+	efs        fs.FS
 	cfg        Configuration
 	configLock = new(sync.RWMutex)
 
@@ -57,7 +57,7 @@ git summary : %s
 `
 
 func init() {
-
+    efs        = xfs.FS(embed.StaticConfig)
 	configFiles, exists := os.LookupEnv("CONFY_FILES")
 	if !exists {
 		configFiles = "config/config.yml"

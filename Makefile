@@ -59,10 +59,10 @@ all: build
 
 tools:
 	@echo "==> Installing dev tools"
-	# go install github.com/ahmetb/govvv
-	# go install github.com/golangci/golangci-lint/cmd/golangci-lint
-	# go install github.com/bufbuild/buf/cmd/buf
-	# go install github.com/rvflash/goup
+	# go install github.com/ahmetb/govvv@latest
+	# go install github.com/golangci/golangci-lint/cmd/golangci-lint@latest
+	# go install github.com/bufbuild/buf/cmd/buf@latest
+	# go install github.com/rvflash/goup@latest
 
 check_dirty:
 ifdef GIT_DIRTY
@@ -176,7 +176,7 @@ format format-%:
 
 build build-%:
 ifndef HAS_GOVVV
-	$(error "No govvv in PATH". Please install via 'go install github.com/ahmetb/govvv'")
+	$(error "No govvv in PATH". Please install via 'go install github.com/ahmetb/govvv@latest'")
 endif
 	@if [ -z $(TARGET) ]; then \
 		for type in $(TYPES); do \

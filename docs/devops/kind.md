@@ -17,7 +17,7 @@ brew cask zap docker
 ## Install
 
 ```bash
-go install sigs.k8s.io/kind
+go install sigs.k8s.io/kind@latest
 ```
 
 ## Usage

@@ -11,7 +11,7 @@
 ```bash
 # buf: proto tool https://buf.build/docs/tour-1
 # or use `go install` to install Buf
-go install github.com/bufbuild/buf/cmd/buf
+go install github.com/bufbuild/buf/cmd/buf@latest
 ```
 
 ## Developer Workflow

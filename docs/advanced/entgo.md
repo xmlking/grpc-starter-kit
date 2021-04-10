@@ -5,7 +5,7 @@
 ## Installation
 
 ```bash
-go install entgo.io/ent/cmd/ent
+go install entgo.io/ent/cmd/ent@latest
 ```
 
 ## Commands 
