@@ -9,7 +9,7 @@ replace github.com/xmlking/grpc-starter-kit => ./
 //replace github.com/xmlking/toolkit => github.com/xmlking/toolkit v0.1.2-0.20210125025404-51fc2d71fb2d
 
 require (
-	entgo.io/ent v0.7.0
+	entgo.io/ent v0.8.0
 	github.com/DATA-DOG/go-sqlmock v1.5.0
 	github.com/GoogleCloudPlatform/opentelemetry-operations-go/exporter/metric v0.19.0
 	github.com/GoogleCloudPlatform/opentelemetry-operations-go/exporter/trace v0.19.0
