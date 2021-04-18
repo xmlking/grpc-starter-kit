@@ -14,7 +14,7 @@ require (
 	github.com/GoogleCloudPlatform/opentelemetry-operations-go/exporter/metric v0.19.0
 	github.com/GoogleCloudPlatform/opentelemetry-operations-go/exporter/trace v0.19.0
 	github.com/cloudevents/sdk-go/v2 v2.4.0
-	github.com/cockroachdb/errors v1.8.3
+	github.com/cockroachdb/errors v1.8.4
 	github.com/envoyproxy/protoc-gen-validate v0.5.1
 	github.com/golang/protobuf v1.5.2
 	github.com/google/uuid v1.2.0
