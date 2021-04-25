@@ -42,13 +42,13 @@ func (s *TransactionSubscriber) HandleSend(ctx context.Context, event cloudevent
 
 	switch from {
 	case constants.ACCOUNT_SERVICE:
-		log.Debug().Msgf("%s#%s, transaction: %#v", tranId, from, transaction)
+		log.Debug().Msgf("%s#%s, transaction: %#v", tranID, from, transaction)
 	case constants.EMAILER_SERVICE:
-		log.Debug().Msgf("%s#%s, transaction: %#v", tranId, from, transaction)
+		log.Debug().Msgf("%s#%s, transaction: %#v", tranID, from, transaction)
 	case constants.GREETER_SERVICE:
-		log.Debug().Msgf("%s#%s, transaction: %#v", tranId, from, transaction)
+		log.Debug().Msgf("%s#%s, transaction: %#v", tranID, from, transaction)
 	case constants.ACCOUNT_CLIENT:
-		log.Debug().Msgf("%s#%s, transaction: %#v", tranId, from, transaction)
+		log.Debug().Msgf("%s#%s, transaction: %#v", tranID, from, transaction)
 	default:
 		log.Error().Msgf("TransactionSubscriber: unknown  from: %s", from)
 		return fmt.Errorf("TransactionSubscriber: unknown  from: %s", from)
