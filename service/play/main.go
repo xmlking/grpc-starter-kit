@@ -58,8 +58,8 @@ func main() {
 		grpc.StreamInterceptor(grpc_middleware.ChainStreamServer(streamInterceptors...)),
 	}
 
-	if cfg.Features.Tls.Enabled {
-		tlsConf, err := tls.NewTLSConfig(efs, cfg.Features.Tls.CertFile, cfg.Features.Tls.KeyFile, cfg.Features.Tls.CaFile, cfg.Features.Tls.ServerName, cfg.Features.Tls.Password)
+	if cfg.Features.TLS.Enabled {
+		tlsConf, err := tls.NewTLSConfig(efs, cfg.Features.TLS.CertFile, cfg.Features.TLS.KeyFile, cfg.Features.TLS.CaFile, cfg.Features.TLS.ServerName, cfg.Features.TLS.Password)
 		if err != nil {
 			log.Fatal().Err(err).Msg("failed to create cert")
 		}

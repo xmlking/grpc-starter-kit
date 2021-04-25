@@ -23,7 +23,7 @@ func NewEmailSubscriber(emailService service.EmailService) *EmailSubscriber {
 	}
 }
 
-// Handle is a method to send emails
+// HandleSend is a method to send emails
 func (s *EmailSubscriber) HandleSend(ctx context.Context, event cloudevents.Event) cloudevents.Result {
 	log.Debug().Msgf("Event Context: %+v\n", event.Context)
 	log.Debug().Msgf("Event Source from Context: %+v\n", event.Context.AsV1().Source)
@@ -49,6 +49,7 @@ func (s *EmailSubscriber) HandleSend(ctx context.Context, event cloudevents.Even
 	}
 }
 
+// HandleRequest do
 func (s *EmailSubscriber) HandleRequest(ctx context.Context, event cloudevents.Event) (*cloudevents.Event, cloudevents.Result) {
 	log.Debug().Msgf("Event Context: %+v\n", event.Context)
 	log.Debug().Msgf("Event Source from Context: %+v\n", event.Context.AsV1().Source)

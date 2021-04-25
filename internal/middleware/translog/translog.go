@@ -32,8 +32,8 @@ func publish(ctx context.Context, publisher broker.Publisher, source string, req
 	event = cloudevents.NewEvent()
 	event.SetSource(source)
 	event.SetType("translog.transaction.event")
-	if traceId := metautils.ExtractIncoming(ctx).Get(constants.TraceIDKey); traceId != "" {
-		event.SetID(traceId)
+	if traceID := metautils.ExtractIncoming(ctx).Get(constants.TraceIDKey); traceID != "" {
+		event.SetID(traceID)
 	}
 
 	// err = event.SetData(cloudevents.ApplicationJSON, &transactionv1.TransactionEvent{Req:&structpb.Value{}, Rsp: &structpb.Value{}})

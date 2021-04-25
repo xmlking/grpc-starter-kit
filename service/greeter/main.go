@@ -37,13 +37,13 @@ func main() {
 		)),
 	}
 
-	if cfg.Features.Tls.Enabled {
-		tlsConf, err := tls.NewTLSConfig(efs, cfg.Features.Tls.CertFile, cfg.Features.Tls.KeyFile, cfg.Features.Tls.CaFile, cfg.Features.Tls.ServerName, cfg.Features.Tls.Password)
+	if cfg.Features.TLS.Enabled {
+		tlsConf, err := tls.NewTLSConfig(efs, cfg.Features.TLS.CertFile, cfg.Features.TLS.KeyFile, cfg.Features.TLS.CaFile, cfg.Features.TLS.ServerName, cfg.Features.TLS.Password)
 		if err != nil {
 			log.Fatal().Err(err).Msg("failed to create cert")
 		}
 		serverCert := credentials.NewTLS(tlsConf)
-		// serverCert, err := credentials.NewServerTLSFromFile(cfg.Features.Tls.CertFile, cfg.Features.Tls.KeyFile)
+		// serverCert, err := credentials.NewServerTLSFromFile(cfg.Features.TLS.CertFile, cfg.Features.TLS.KeyFile)
 		//if err != nil {
 		//    log.Fatal().Err(err).Msg("failed to create cert")
 		//}
@@ -100,7 +100,7 @@ func main_cmux() {
 
 	// Register http Handlers
 	httpS := &http.Server{
-		Handler: handler.NewHttpHandler(),
+		Handler: handler.NewHTTPHandler(),
 	}
 
 	// Add HealthChecks
@@ -119,6 +119,6 @@ func main_cmux() {
 	// Start server!
 	reflection.Register(grpcS)
 	println(config.GetBuildInfo())
-	log.Info().Msgf("Server (%s) started at: %s, secure: %t", serviceName, lis.Addr(), cfg.Features.Tls.Enabled)
+	log.Info().Msgf("Server (%s) started at: %s, secure: %t", serviceName, lis.Addr(), cfg.Features.TLS.Enabled)
 	mux.Serve()
 }

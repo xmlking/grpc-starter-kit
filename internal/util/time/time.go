@@ -9,7 +9,7 @@ import (
 	"github.com/rs/zerolog/log"
 )
 
-// GetCurrentTime
+// GetCurrentTime return Timestamp
 func GetCurrentTime() *timestamp.Timestamp {
 	now := time.Now()
 	return ToTimestamp(now)

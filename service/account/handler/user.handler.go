@@ -133,8 +133,8 @@ func (h *userHandler) Create(ctx context.Context, req *userv1.CreateRequest) (rs
 	event.SetSource("github.com/xmlking/grpc-starter-kit/service/emailer")
 	event.SetType("account.welcome.email")
 	_ = event.SetData(cloudevents.ApplicationJSON, &emailerv1.Message{Subject: "Sumo", To: model.Email})
-	if traceId := metautils.ExtractIncoming(ctx).Get(constants.TraceIDKey); traceId != "" {
-		event.SetID(traceId)
+	if traceID := metautils.ExtractIncoming(ctx).Get(constants.TraceIDKey); traceID != "" {
+		event.SetID(traceID)
 	}
 
 	if result := h.emailerPublisher.Publish(ctxWithRetries, event); cloudevents.IsUndelivered(result) {

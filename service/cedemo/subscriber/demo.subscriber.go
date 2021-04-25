@@ -8,6 +8,7 @@ import (
 	"github.com/rs/zerolog/log"
 )
 
+// Receiver struct
 type Receiver struct {
 	Client cloudevents.Client
 

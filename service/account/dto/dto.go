@@ -9,6 +9,7 @@ import (
 	account_entities "github.com/xmlking/grpc-starter-kit/mkit/service/account/entities/v1"
 )
 
+// ListMetadata struct
 type ListMetadata struct {
 	Count  int `json:"count"`
 	Offset int `json:"offset"`
@@ -16,16 +17,19 @@ type ListMetadata struct {
 	Total  int `json:"total"`
 }
 
+// ListResp struct
 type ListResp struct {
 	Metadata ListMetadata  `json:"metadata"`
 	Results  []interface{} `json:"results"`
 }
 
+// ListRequest struct
 type ListRequest struct {
 	Limit  int
 	Offset int
 }
 
+// UserToPB transform to PB
 func UserToPB(user *ent.User) (account_entities.User, error) {
 	to := account_entities.User{}
 	var err error
@@ -76,6 +80,7 @@ var (
 	}
 )
 
+// ProfileToPB transform to PB
 func ProfileToPB(profile *ent.Profile) (account_entities.Profile, error) {
 	to := account_entities.Profile{}
 	var err error

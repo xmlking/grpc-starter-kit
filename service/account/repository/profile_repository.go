@@ -18,7 +18,7 @@ type ProfileRepository interface {
 	Exist(ctx context.Context, model *ent.Profile) (bool, error)
 	List(ctx context.Context, limit, page int, sort string, model *ent.Profile) (total int, profiles []*ent.Profile, err error)
 	Get(ctx context.Context, id uuid.UUID) (*ent.Profile, error)
-	GetByUserID(ctx context.Context, userId uuid.UUID) (*ent.Profile, error)
+	GetByUserID(ctx context.Context, userID uuid.UUID) (*ent.Profile, error)
 	Create(ctx context.Context, model *ent.Profile) (*ent.Profile, error)
 }
 
@@ -108,10 +108,10 @@ func (repo *profileRepository) Get(ctx context.Context, id uuid.UUID) (*ent.Prof
 }
 
 // Find by UserID
-func (repo *profileRepository) GetByUserID(ctx context.Context, userId uuid.UUID) (*ent.Profile, error) {
+func (repo *profileRepository) GetByUserID(ctx context.Context, userID uuid.UUID) (*ent.Profile, error) {
 	return repo.dbClient.Profile.
 		Query().
-		Where(profile.HasUserWith(user.ID(userId))).
+		Where(profile.HasUserWith(user.ID(userID))).
 		Only(ctx)
 }
 

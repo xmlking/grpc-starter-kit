@@ -102,12 +102,12 @@ func (repo *profileRepository) Get(ctx context.Context, id uuid.UUID) (*ent.Prof
 }
 
 // Find by UserID
-func (repo *profileRepository) GetByUserID(ctx context.Context, userId uuid.UUID) (*ent.Profile, error) {
-	ret := repo.Called(ctx, userId)
+func (repo *profileRepository) GetByUserID(ctx context.Context, userID uuid.UUID) (*ent.Profile, error) {
+	ret := repo.Called(ctx, userID)
 
 	var r0 *ent.Profile
 	if rf, ok := ret.Get(0).(func(context.Context, uuid.UUID) *ent.Profile); ok {
-		r0 = rf(ctx, userId)
+		r0 = rf(ctx, userID)
 	} else {
 		if ret.Get(0) != nil {
 			r0 = ret.Get(0).(*ent.Profile)
@@ -116,7 +116,7 @@ func (repo *profileRepository) GetByUserID(ctx context.Context, userId uuid.UUID
 
 	var r1 error
 	if rf, ok := ret.Get(1).(func(context.Context, uuid.UUID) error); ok {
-		r1 = rf(ctx, userId)
+		r1 = rf(ctx, userID)
 	} else {
 		r1 = ret.Error(1)
 	}

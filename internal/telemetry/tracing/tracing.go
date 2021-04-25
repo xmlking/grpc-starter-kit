@@ -26,7 +26,7 @@ var (
 
 // expected GOOGLE_CLOUD_PROJECT & GOOGLE_APPLICATION_CREDENTIALS Environment Variable set
 
-// // before ending program, wait for all enqueued spans to be exported
+// InitTracing before ending program, wait for all enqueued spans to be exported
 func InitTracing(cfg *config.Features_Tracing) func() {
 	once.Do(func() {
 		log.Debug().Interface("TracingConfig", cfg).Msg("Initializing Tracing")

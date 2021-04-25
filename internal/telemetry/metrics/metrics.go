@@ -31,7 +31,7 @@ var (
 	exporter *controller.Controller
 )
 
-// expected GOOGLE_CLOUD_PROJECT & GOOGLE_APPLICATION_CREDENTIALS Environment Variable set
+// InitMetrics expected GOOGLE_CLOUD_PROJECT & GOOGLE_APPLICATION_CREDENTIALS Environment Variable set
 func InitMetrics(cfg *config.Features_Metrics) *controller.Controller {
 	once.Do(func() {
 		log.Debug().Interface("MetricConfig", cfg).Msg("Initializing Metrics")

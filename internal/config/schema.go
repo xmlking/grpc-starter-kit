@@ -7,6 +7,7 @@ import (
 	"entgo.io/ent/dialect"
 )
 
+// Service struct
 type Service struct {
 	Endpoint      string            `yaml:"endpoint" required:"true"`
 	Version       string            `yaml:",omitempty" default:"v0.1.0"`
@@ -15,6 +16,7 @@ type Service struct {
 	Authority     string            `yaml:",omitempty"`
 }
 
+// EmailConfiguration struct
 type EmailConfiguration struct {
 	Username    string `yaml:"username"`
 	Password    string `yaml:",omitempty"`
@@ -23,6 +25,7 @@ type EmailConfiguration struct {
 	From        string `yaml:",omitempty" valid:"email,optional"`
 }
 
+// DatabaseConfiguration struct
 type DatabaseConfiguration struct {
 	Dialect         string         `yaml:",omitempty" valid:"in(mysql|sqlite3|postgres|gremlin)" default:"sqlite3"`
 	Host            string         `yaml:",omitempty" valid:"host"`
@@ -59,21 +62,24 @@ func (d *DatabaseConfiguration) URL() (url string, err error) {
 	}
 }
 
+// Features struct
 type Features struct {
 	Metrics   *Features_Metrics   `yaml:"metrics,omitempty"`
 	Tracing   *Features_Tracing   `yaml:"tracing,omitempty"`
-	Tls       *Features_TLS       `yaml:"tls,omitempty"`
+	TLS       *Features_TLS       `yaml:"tls,omitempty"`
 	Validator *Features_Validator `yaml:"validator,omitempty"`
 	Rpclog    *Features_Rpclog    `yaml:"rpclog,omitempty"`
 	Translog  *Features_Translog  `yaml:"translog,omitempty"`
 }
 
+// Features_Metrics struct
 type Features_Metrics struct {
 	Enabled       bool   `yaml:",omitempty" default:"false"`
 	Address       string `yaml:"address,omitempty"`
 	FlushInterval uint64 `yaml:"flush_interval,omitempty" default:"10000000"`
 }
 
+// Features_Tracing struct
 type Features_Tracing struct {
 	Enabled       bool    `yaml:",omitempty" default:"false"`
 	Address       string  `yaml:"address,omitempty"`
@@ -81,6 +87,7 @@ type Features_Tracing struct {
 	FlushInterval uint64  `yaml:"flush_interval,omitempty" default:"10000000"`
 }
 
+// Features_TLS struct
 type Features_TLS struct {
 	Enabled    bool   `yaml:",omitempty" default:"false"`
 	CertFile   string `yaml:"cert_file" valid:"type(string),required"`
@@ -90,19 +97,23 @@ type Features_TLS struct {
 	ServerName string `yaml:"server_name,omitempty" default:"'*'"`
 }
 
+// Features_Validator struct
 type Features_Validator struct {
 	Enabled bool `yaml:",omitempty" default:"false"`
 }
 
+// Features_Rpclog struct
 type Features_Rpclog struct {
 	Enabled bool `yaml:",omitempty" default:"false"`
 }
 
+// Features_Translog struct
 type Features_Translog struct {
 	Enabled bool   `yaml:",omitempty" default:"false"`
 	Topic   string `yaml:",omitempty"`
 }
 
+// Services struct
 type Services struct {
 	Account  *Service `yaml:"account,omitempty"`
 	Greeter  *Service `yaml:"greeter,omitempty"`
@@ -111,6 +122,7 @@ type Services struct {
 	Play     *Service `yaml:"play,omitempty"`
 }
 
+// Configuration struct
 type Configuration struct {
 	Database *DatabaseConfiguration `yaml:"database,omitempty"`
 	Email    *EmailConfiguration    `yaml:"email,omitempty"`

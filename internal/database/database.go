@@ -14,8 +14,8 @@ import (
 	"github.com/xmlking/grpc-starter-kit/internal/config"
 )
 
+// InitDatabase database
 // https://github.com/reddydodda/magmatest/blob/master/orc8r/cloud/go/blobstore/ent/client.go
-// Initialize database
 func InitDatabase(dbConf config.DatabaseConfiguration) (client *ent.Client, err error) {
 
 	var url string

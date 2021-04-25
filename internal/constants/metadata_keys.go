@@ -6,5 +6,5 @@ const (
 	// gRPC recommended Key format: `lowercase alphanumeric characters and hyphen`
 	TraceIDKey     = "mkit-trace-id"
 	FromServiceKey = "mkit-from-service"
-	TenantIdKey    = "mkit-tenant-id"
+	TenantIDKey    = "mkit-tenant-id"
 )

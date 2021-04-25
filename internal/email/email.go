@@ -1,4 +1,4 @@
-// Singleton creational design pattern restricts the instantiation of a type to a single object.
+// Package email is Singleton creational design pattern restricts the instantiation of a type to a single object.
 // Singleton pattern represents a global state and most of the time reduces testability.
 // http://tmrts.com/go-patterns/creational/singleton.html
 package email

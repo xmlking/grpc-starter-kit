@@ -26,7 +26,7 @@ type greeterHandler struct {
 	tracer        trace.Tracer
 }
 
-// NewUserHandler returns an instance of `GreeterServiceServer`.
+// NewGreeterHandler returns an instance of `GreeterServiceServer`.
 func NewGreeterHandler() greeterv1.GreeterServiceServer {
 	visitsCounter := createIntCounter("visit-counter",
 		"A counter representing number of times a website is visited.")

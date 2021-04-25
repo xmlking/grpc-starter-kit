@@ -13,6 +13,7 @@ import (
 	"github.com/xmlking/grpc-starter-kit/internal/constants"
 )
 
+// TransactionSubscriber struct
 type TransactionSubscriber struct {
 }
 
@@ -21,13 +22,13 @@ func NewTransactionSubscriber() *TransactionSubscriber {
 	return &TransactionSubscriber{}
 }
 
-// Handle is a method to send emails
+// HandleSend is a method to send emails
 func (s *TransactionSubscriber) HandleSend(ctx context.Context, event cloudevents.Event) cloudevents.Result {
 	log.Debug().Msgf("Event Context: %+v\n", event.Context)
 
 	from := event.Source()
-	tranId := event.ID()
-	if len(tranId) == 0 {
+	tranID := event.ID()
+	if len(tranID) == 0 {
 		log.Error().Msg("TransactionSubscriber: missing  TranID")
 		return errors.New("TransactionSubscriber: missing  TranID")
 	}

@@ -11,7 +11,7 @@ import (
 type greeterHandler struct {
 }
 
-// NewUserHandler returns an instance of `GreeterServiceServer`.
+// NewGreeterHandler returns an instance of `GreeterServiceServer`.
 func NewGreeterHandler() greeterv1.GreeterServiceServer {
 	return &greeterHandler{}
 }

@@ -56,13 +56,13 @@ func main() {
 			rpclog.UnaryServerInterceptor(),
 			grpc_validator.UnaryServerInterceptor(),
 			appendTags.UnaryServerInterceptor(appendTags.WithPairs(constants.FromServiceKey, constants.ACCOUNT_SERVICE)),
-			forwardTags.UnaryServerInterceptor(forwardTags.WithForwardTags(constants.TraceIDKey, constants.TenantIdKey)),
+			forwardTags.UnaryServerInterceptor(forwardTags.WithForwardTags(constants.TraceIDKey, constants.TenantIDKey)),
 			translog.UnaryServerInterceptor(translogPublisher, serviceName),
 		)),
 	}
 
-	if cfg.Features.Tls.Enabled {
-		tlsConf, err := tls.NewTLSConfig(efs, cfg.Features.Tls.CertFile, cfg.Features.Tls.KeyFile, cfg.Features.Tls.CaFile, cfg.Features.Tls.ServerName, cfg.Features.Tls.Password)
+	if cfg.Features.TLS.Enabled {
+		tlsConf, err := tls.NewTLSConfig(efs, cfg.Features.TLS.CertFile, cfg.Features.TLS.KeyFile, cfg.Features.TLS.CaFile, cfg.Features.TLS.ServerName, cfg.Features.TLS.Password)
 		if err != nil {
 			log.Fatal().Err(err).Msg("failed to create cert")
 		}
@@ -74,9 +74,9 @@ func main() {
 	var dialOptions []grpc.DialOption
 	var ucInterceptors []grpc.UnaryClientInterceptor
 
-	tlsConf := cfg.Features.Tls
+	tlsConf := cfg.Features.TLS
 	if tlsConf.Enabled {
-		if creds, err := tls.NewTLSConfig(efs, tlsConf.CertFile, tlsConf.KeyFile, tlsConf.CaFile, tlsConf.ServerName, cfg.Features.Tls.Password); err != nil {
+		if creds, err := tls.NewTLSConfig(efs, tlsConf.CertFile, tlsConf.KeyFile, tlsConf.CaFile, tlsConf.ServerName, cfg.Features.TLS.Password); err != nil {
 			log.Fatal().Err(err).Msg("Failed to create tlsConf")
 		} else {
 			dialOptions = append(dialOptions, grpc.WithTransportCredentials(credentials.NewTLS(creds)))

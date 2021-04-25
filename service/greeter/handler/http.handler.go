@@ -6,8 +6,8 @@ import (
 
 type httpHandler struct{}
 
-// NewUserHandler returns an instance of `UserServiceHandler`.
-func NewHttpHandler() *httpHandler {
+// NewHTTPHandler returns an instance of `UserServiceHandler`.
+func NewHTTPHandler() *httpHandler {
 	return &httpHandler{}
 }
 

@@ -77,24 +77,24 @@ func (ph *profileHandler) Get(ctx context.Context, req *profilev1.GetRequest) (r
 	case *profilev1.GetRequest_UserId:
 		println("GetRequest_UserId")
 		println(req.GetId())
-		userId := id.UserId.GetValue()
-		if userId == "" {
+		userID := id.UserId.GetValue()
+		if userID == "" {
 			return nil, status.Errorf(codes.InvalidArgument, "validation error: Missing userId")
 		}
 		var userUUID uuid.UUID
-		if userUUID, err = uuid.Parse(userId); err != nil {
+		if userUUID, err = uuid.Parse(userID); err != nil {
 			return nil, status.Errorf(codes.InvalidArgument, "validation error: Parse userId %v", err)
 		}
 		profile, err = ph.profileRepository.GetByUserID(ctx, userUUID)
 	case *profilev1.GetRequest_ProfileId:
 		println("GetRequest_ProfileId")
 		println(req.GetId())
-		profileId := id.ProfileId.GetValue()
-		if profileId == "" {
+		profileID := id.ProfileId.GetValue()
+		if profileID == "" {
 			return nil, status.Errorf(codes.InvalidArgument, "validation error: Missing profileId")
 		}
 		var profileUUID uuid.UUID
-		if profileUUID, err = uuid.Parse(profileId); err != nil {
+		if profileUUID, err = uuid.Parse(profileID); err != nil {
 			return nil, status.Errorf(codes.InvalidArgument, "validation error: Parse profileId %v", err)
 		}
 		profile, err = ph.profileRepository.Get(ctx, profileUUID)
@@ -115,12 +115,12 @@ func (ph *profileHandler) Create(ctx context.Context, req *profilev1.CreateReque
 	ph.contextLogger.Debug().Msg("Received ProfileHandler.Create request")
 
 	model := &ent.Profile{}
-	userId := req.UserId.GetValue()
-	if userId == "" {
+	userID := req.UserId.GetValue()
+	if userID == "" {
 		return nil, status.Errorf(codes.InvalidArgument, "validation error: Missing userId")
 	}
 	var userUUID uuid.UUID
-	if userUUID, err = uuid.Parse(userId); err != nil {
+	if userUUID, err = uuid.Parse(userID); err != nil {
 		return nil, status.Errorf(codes.InvalidArgument, "validation error: Parse userId %v", err)
 	}
 	model.Edges.User.ID = userUUID

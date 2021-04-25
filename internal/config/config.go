@@ -57,7 +57,7 @@ git summary : %s
 `
 
 func init() {
-    efs        = xfs.FS(embed.StaticConfig)
+	efs = xfs.FS(embed.StaticConfig)
 	configFiles, exists := os.LookupEnv("CONFY_FILES")
 	if !exists {
 		configFiles = "config/config.yml"
@@ -78,33 +78,40 @@ func init() {
 /**
   Helper Functions
 */
+
+// GetFileSystem helper
 func GetFileSystem() fs.FS {
 	configLock.RLock()
 	defer configLock.RUnlock()
 	return efs
 }
 
+// GetBuildInfo helper
 func GetBuildInfo() string {
 	return fmt.Sprintf(versionMsg, Version, BuildDate, runtime.Version(), runtime.Compiler, runtime.GOOS, runtime.GOARCH,
 		GitCommit, GitBranch, GitState, GitSummary)
 }
 
+// GetConfig helper
 func GetConfig() Configuration { // FIXME: return a deep copy?
 	configLock.RLock()
 	defer configLock.RUnlock()
 	return cfg
 }
 
+// IsProduction helper
 func IsProduction() bool {
 	return confy.GetEnvironment() == "production"
 }
 
+// IsSecure helper
 func IsSecure() bool {
 	configLock.RLock()
 	defer configLock.RUnlock()
-	return cfg.Features.Tls.Enabled
+	return cfg.Features.TLS.Enabled
 }
 
+// GetClientConn helper
 func GetClientConn(service *Service, ucInterceptors []grpc.UnaryClientInterceptor) (clientConn *grpc.ClientConn, err error) {
 	configLock.RLock()
 	defer configLock.RUnlock()
@@ -112,7 +119,7 @@ func GetClientConn(service *Service, ucInterceptors []grpc.UnaryClientIntercepto
 	var dialOptions []grpc.DialOption
 	//var ucInterceptors []grpc.UnaryClientInterceptor
 
-	tlsConf := cfg.Features.Tls
+	tlsConf := cfg.Features.TLS
 	if tlsConf.Enabled {
 		if creds, err := tls.NewTLSConfig(efs, tlsConf.CertFile, tlsConf.KeyFile, tlsConf.CaFile, tlsConf.ServerName, tlsConf.Password); err != nil {
 			return nil, err
