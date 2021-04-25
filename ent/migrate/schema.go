@@ -29,9 +29,8 @@ var (
 		PrimaryKey: []*schema.Column{ProfilesColumns[0]},
 		ForeignKeys: []*schema.ForeignKey{
 			{
-				Symbol:  "profiles_users_profile",
-				Columns: []*schema.Column{ProfilesColumns[10]},
-
+				Symbol:     "profiles_users_profile",
+				Columns:    []*schema.Column{ProfilesColumns[10]},
 				RefColumns: []*schema.Column{UsersColumns[0]},
 				OnDelete:   schema.SetNull,
 			},

@@ -22,6 +22,7 @@ type ProfileQuery struct {
 	config
 	limit      *int
 	offset     *int
+	unique     *bool
 	order      []OrderFunc
 	fields     []string
 	predicates []predicate.Profile
@@ -48,6 +49,13 @@ func (pq *ProfileQuery) Limit(limit int) *ProfileQuery {
 // Offset adds an offset step to the query.
 func (pq *ProfileQuery) Offset(offset int) *ProfileQuery {
 	pq.offset = &offset
+	return pq
+}
+
+// Unique configures the query builder to filter duplicate records on query.
+// By default, unique is set to true, and can be disabled using this method.
+func (pq *ProfileQuery) Unique(unique bool) *ProfileQuery {
+	pq.unique = &unique
 	return pq
 }
 
@@ -378,10 +386,14 @@ func (pq *ProfileQuery) sqlAll(ctx context.Context) ([]*Profile, error) {
 		ids := make([]uuid.UUID, 0, len(nodes))
 		nodeids := make(map[uuid.UUID][]*Profile)
 		for i := range nodes {
-			if fk := nodes[i].user_profile; fk != nil {
-				ids = append(ids, *fk)
-				nodeids[*fk] = append(nodeids[*fk], nodes[i])
+			if nodes[i].user_profile == nil {
+				continue
 			}
+			fk := *nodes[i].user_profile
+			if _, ok := nodeids[fk]; !ok {
+				ids = append(ids, fk)
+			}
+			nodeids[fk] = append(nodeids[fk], nodes[i])
 		}
 		query.Where(user.IDIn(ids...))
 		neighbors, err := query.All(ctx)
@@ -410,7 +422,7 @@ func (pq *ProfileQuery) sqlCount(ctx context.Context) (int, error) {
 func (pq *ProfileQuery) sqlExist(ctx context.Context) (bool, error) {
 	n, err := pq.sqlCount(ctx)
 	if err != nil {
-		return false, fmt.Errorf("ent: check existence: %v", err)
+		return false, fmt.Errorf("ent: check existence: %w", err)
 	}
 	return n > 0, nil
 }
@@ -427,6 +439,9 @@ func (pq *ProfileQuery) querySpec() *sqlgraph.QuerySpec {
 		},
 		From:   pq.sql,
 		Unique: true,
+	}
+	if unique := pq.unique; unique != nil {
+		_spec.Unique = *unique
 	}
 	if fields := pq.fields; len(fields) > 0 {
 		_spec.Node.Columns = make([]string, 0, len(fields))
@@ -453,7 +468,7 @@ func (pq *ProfileQuery) querySpec() *sqlgraph.QuerySpec {
 	if ps := pq.order; len(ps) > 0 {
 		_spec.Order = func(selector *sql.Selector) {
 			for i := range ps {
-				ps[i](selector, profile.ValidColumn)
+				ps[i](selector)
 			}
 		}
 	}
@@ -472,7 +487,7 @@ func (pq *ProfileQuery) sqlQuery(ctx context.Context) *sql.Selector {
 		p(selector)
 	}
 	for _, p := range pq.order {
-		p(selector, profile.ValidColumn)
+		p(selector)
 	}
 	if offset := pq.offset; offset != nil {
 		// limit is mandatory for offset clause. We start
@@ -738,7 +753,7 @@ func (pgb *ProfileGroupBy) sqlQuery() *sql.Selector {
 	columns := make([]string, 0, len(pgb.fields)+len(pgb.fns))
 	columns = append(columns, pgb.fields...)
 	for _, fn := range pgb.fns {
-		columns = append(columns, fn(selector, profile.ValidColumn))
+		columns = append(columns, fn(selector))
 	}
 	return selector.Select(columns...).GroupBy(pgb.fields...)
 }

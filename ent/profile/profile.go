@@ -32,10 +32,8 @@ const (
 	FieldGender = "gender"
 	// FieldPreferredTheme holds the string denoting the preferred_theme field in the database.
 	FieldPreferredTheme = "preferred_theme"
-
 	// EdgeUser holds the string denoting the user edge name in mutations.
 	EdgeUser = "user"
-
 	// Table holds the table name of the profile in the database.
 	Table = "profiles"
 	// UserTable is the table the holds the user relation/edge.
@@ -61,7 +59,8 @@ var Columns = []string{
 	FieldPreferredTheme,
 }
 
-// ForeignKeys holds the SQL foreign-keys that are owned by the Profile type.
+// ForeignKeys holds the SQL foreign-keys that are owned by the "profiles"
+// table and are not defined as standalone fields in the schema.
 var ForeignKeys = []string{
 	"user_profile",
 }

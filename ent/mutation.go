@@ -558,7 +558,7 @@ func (m *ProfileMutation) ClearUser() {
 	m.cleareduser = true
 }
 
-// UserCleared returns if the "user" edge to the User entity was cleared.
+// UserCleared reports if the "user" edge to the User entity was cleared.
 func (m *ProfileMutation) UserCleared() bool {
 	return m.cleareduser
 }
@@ -1376,7 +1376,7 @@ func (m *UserMutation) ClearProfile() {
 	m.clearedprofile = true
 }
 
-// ProfileCleared returns if the "profile" edge to the Profile entity was cleared.
+// ProfileCleared reports if the "profile" edge to the Profile entity was cleared.
 func (m *UserMutation) ProfileCleared() bool {
 	return m.clearedprofile
 }

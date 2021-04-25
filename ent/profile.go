@@ -73,17 +73,17 @@ func (*Profile) scanValues(columns []string) ([]interface{}, error) {
 	for i := range columns {
 		switch columns[i] {
 		case profile.FieldAvatar:
-			values[i] = &[]byte{}
+			values[i] = new([]byte)
 		case profile.FieldAge:
-			values[i] = &sql.NullInt64{}
+			values[i] = new(sql.NullInt64)
 		case profile.FieldTz, profile.FieldGender, profile.FieldPreferredTheme:
-			values[i] = &sql.NullString{}
+			values[i] = new(sql.NullString)
 		case profile.FieldCreateTime, profile.FieldUpdateTime, profile.FieldDeleteTime, profile.FieldBirthday:
-			values[i] = &sql.NullTime{}
+			values[i] = new(sql.NullTime)
 		case profile.FieldID:
-			values[i] = &uuid.UUID{}
+			values[i] = new(uuid.UUID)
 		case profile.ForeignKeys[0]: // user_profile
-			values[i] = &uuid.UUID{}
+			values[i] = new(uuid.UUID)
 		default:
 			return nil, fmt.Errorf("unexpected column %q for type Profile", columns[i])
 		}
@@ -142,7 +142,7 @@ func (pr *Profile) assignValues(columns []string, values []interface{}) error {
 				return fmt.Errorf("unexpected type %T for field avatar", values[i])
 			} else if value != nil && len(*value) > 0 {
 				if err := json.Unmarshal(*value, &pr.Avatar); err != nil {
-					return fmt.Errorf("unmarshal field avatar: %v", err)
+					return fmt.Errorf("unmarshal field avatar: %w", err)
 				}
 			}
 		case profile.FieldBirthday:

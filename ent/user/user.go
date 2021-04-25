@@ -29,10 +29,8 @@ const (
 	FieldEmail = "email"
 	// FieldTenant holds the string denoting the tenant field in the database.
 	FieldTenant = "organization"
-
 	// EdgeProfile holds the string denoting the profile edge name in mutations.
 	EdgeProfile = "profile"
-
 	// Table holds the table name of the user in the database.
 	Table = "users"
 	// ProfileTable is the table the holds the profile relation/edge.
