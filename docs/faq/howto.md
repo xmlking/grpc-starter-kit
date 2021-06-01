@@ -49,6 +49,18 @@ go mod download
   go list -m all
   ```
 
+- Why do we need to register reflection service on gRPC server?
+
+    This is a special instruction which exposes all the publicly accessible gRPC services on a gRPC server.<br/>
+    What this means essentially is that anyone can request your gRPC server to emit out details of the RPC service methods, request-response structures.
+    
+    This is used at places where you want to. dynamically call gRPC APIs. By dynamically I mean, the client does not need to hold the proto data-structures and register the RPC client stub.
+    
+    [grpCurl](https://github.com/fullstorydev/grpcurl) - curl gRPC services
+    [gRPC transcoding](https://cloud.google.com/endpoints/docs/grpc/transcoding) - exposing json APIs on gRPC servers
+    
+    More info [gRPC Server Reflection Tutorial](https://github.com/grpc/grpc-go/blob/master/Documentation/server-reflection-tutorial.md)
+
 - How to get _commitizen_ and _cz-conventional-changelog_ work for `non-node-git-repo`?
 
   You can  get _commitizen_ and _cz-conventional-changelog_ work for `non-node-git-repo` with global installation.

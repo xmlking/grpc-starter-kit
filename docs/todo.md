@@ -28,3 +28,4 @@
 - [ ] Switch to [Bazel Build](https://bazel.build/)
 - [ ] Graceful / zero downtime upgrades [tableflip](https://github.com/cloudflare/tableflip)
 - [ ] Truly cross-platform Task Runner [Taskfile](https://taskfile.dev/#/), [proxyless-grpc-lb](https://github.com/asishrs/proxyless-grpc-lb/blob/master/Taskfile.yml)
+- [ ] Transcoding HTTP/JSON to gRPC with [envoy transcoding](https://cloud.google.com/endpoints/docs/grpc/transcoding)

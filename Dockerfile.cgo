@@ -45,8 +45,11 @@ FROM scratch AS final
 # copy 1 MiB busybox executable
 COPY --from=busybox:1.32.1 /bin/busybox /bin/busybox
 
-# copy grpc-health-probe to use with readiness and liveness probes
+# copy grpc-health-probe to use with readinessProbe
 COPY --from=builder /bin/grpc_health_probe /bin/grpc_health_probe
+
+# copygrpcurl to use with livenessProbe
+COPY --from=builder /bin/grpcurl /bin/grpcurl
 
 # copy dumb-ini from base
 COPY --from=builder /usr/bin/dumb-init /usr/bin/dumb-init
