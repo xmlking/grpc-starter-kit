@@ -5,14 +5,14 @@ import (
 
 	cloudevents "github.com/cloudevents/sdk-go/v2"
 	"github.com/rs/zerolog/log"
-
 	"github.com/xmlking/grpc-starter-kit/internal/config"
 	"github.com/xmlking/grpc-starter-kit/service/cedemo/subscriber"
+	_ "github.com/xmlking/toolkit/logger/auto"
 )
 
 func main() {
 
-	ceClient, err := cloudevents.NewDefaultClient()
+	ceClient, err := cloudevents.NewClientHTTP()
 	if err != nil {
 		log.Fatal().Err(err).Send()
 	}

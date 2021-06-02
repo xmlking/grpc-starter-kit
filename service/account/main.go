@@ -1,7 +1,11 @@
 package main
 
 import (
-	_ "github.com/xmlking/toolkit/logger/auto"
+	"context"
+	"os"
+	"os/signal"
+	"syscall"
+	"time"
 
 	grpc_middleware "github.com/grpc-ecosystem/go-grpc-middleware"
 	grpc_validator "github.com/grpc-ecosystem/go-grpc-middleware/validator"
@@ -15,12 +19,16 @@ import (
 	userv1 "github.com/xmlking/grpc-starter-kit/mkit/service/account/user/v1"
 	"github.com/xmlking/grpc-starter-kit/service/account/registry"
 	broker "github.com/xmlking/toolkit/broker/cloudevents"
+	_ "github.com/xmlking/toolkit/logger/auto"
 	"github.com/xmlking/toolkit/middleware/rpclog"
 	appendTags "github.com/xmlking/toolkit/middleware/tags/append"
 	forwardTags "github.com/xmlking/toolkit/middleware/tags/forward"
-	"github.com/xmlking/toolkit/service"
+	"github.com/xmlking/toolkit/server"
+	"github.com/xmlking/toolkit/util/endpoint"
 	"github.com/xmlking/toolkit/util/tls"
+	"golang.org/x/sync/errgroup"
 	"google.golang.org/grpc"
+	"google.golang.org/grpc/backoff"
 	"google.golang.org/grpc/credentials"
 )
 
@@ -29,6 +37,11 @@ func main() {
 	cfg := config.GetConfig()
 	efs := config.GetFileSystem()
 
+	appCtx, stop := signal.NotifyContext(context.Background(), syscall.SIGHUP, syscall.SIGTERM, syscall.SIGINT, os.Interrupt)
+	defer stop()
+
+	g, ctx := errgroup.WithContext(appCtx)
+
 	// Register kuberesolver to grpc.
 	// This line should be before calling registry.NewContainer(cfg)
 	if config.IsProduction() {
@@ -36,14 +49,12 @@ func main() {
 	}
 
 	// Initialize DI Container
-	ctn, err := registry.NewContainer(cfg)
+	ctn, err := registry.NewContainer(appCtx, cfg)
 	defer ctn.Clean()
 	if err != nil {
 		log.Fatal().Msgf("failed to build container: %v", err)
 	}
-
 	translogPublisher := ctn.Resolve("translog-publisher").(broker.Publisher)
-
 	// Handlers
 	userHandler := ctn.Resolve("user-handler").(userv1.UserServiceServer)
 	profileHandler := ctn.Resolve("profile-handler").(profilev1.ProfileServiceServer)
@@ -71,7 +82,11 @@ func main() {
 	}
 
 	// DialOptions
-	var dialOptions []grpc.DialOption
+	// var dialOptions []grpc.DialOption
+	dialOptions := []grpc.DialOption{
+		grpc.WithAuthority(cfg.Services.Greeter.Authority),
+		grpc.WithConnectParams(grpc.ConnectParams{Backoff: backoff.Config{BaseDelay: 5 * time.Second}, MinConnectTimeout: 5 * time.Second}),
+	}
 	var ucInterceptors []grpc.UnaryClientInterceptor
 
 	tlsConf := cfg.Features.TLS
@@ -93,26 +108,57 @@ func main() {
 		dialOptions = append(dialOptions, grpc.WithUnaryInterceptor(grpc_middleware.ChainUnaryClient(ucInterceptors...)))
 	}
 
-	srv := service.NewService(
-		service.Name(serviceName),
-		service.Version(cfg.Services.Account.Version),
-		service.WithGrpcEndpoint(cfg.Services.Account.Endpoint),
-		service.WithGrpcOptions(grpcOps...),
-		service.WithDialOptions(dialOptions...),
-		// service.WithBrokerOptions(...),
-	)
-
-	// create a gRPC server object
-	grpcServer := srv.Server()
-	// greeterClientCon, err := srv.Client(service.Remote{ Endpoint: cfg.Services.Greeter.Endpoint, ServiceConfig: cfg.Services.Greeter.ServiceConfig } )
-
-	// Register Handlers
-	userv1.RegisterUserServiceServer(grpcServer, userHandler)
-	profilev1.RegisterProfileServiceServer(grpcServer, profileHandler)
-
-	// start the server
-	log.Info().Msg(config.GetBuildInfo())
-	if err := srv.Start(); err != nil {
-		log.Fatal().Err(err).Send()
+	listener, err := endpoint.GetListener(cfg.Services.Account.Endpoint)
+	if err != nil {
+		log.Fatal().Stack().Err(err).Msg("error creating listener")
 	}
+	srv := server.NewServer(appCtx, server.ServerName(serviceName), server.WithListener(listener), server.WithServerOptions(grpcOps...))
+
+	// greeterClientCon, err := srv.Client(cfg.Services.Greeter.Endpoint, server.ClientName(constants.GREETER_SERVICE), server.WithDialOptions(dialOptions...))
+
+	gSrv := srv.Server()
+	// Register Handlers
+	userv1.RegisterUserServiceServer(gSrv, userHandler)
+	profilev1.RegisterProfileServiceServer(gSrv, profileHandler)
+
+	// Start broker/gRPC daemon services
+	log.Info().Msg(config.GetBuildInfo())
+	log.Info().Msgf("Server(%s) starting at: %s, secure: %t, pid: %d", serviceName, listener.Addr(), cfg.Features.TLS.Enabled, os.Getpid())
+
+	g.Go(func() error {
+		return srv.Start()
+	})
+
+	go func() {
+		if err := g.Wait(); err != nil {
+			log.Fatal().Stack().Err(err).Msgf("Unexpected error for service: %s", cfg.Services.Emailer.Endpoint)
+		}
+		log.Info().Msg("Goodbye.....")
+		os.Exit(0)
+	}()
+
+	// Listen for the interrupt signal.
+	<-appCtx.Done()
+
+	// notify user of shutdown
+	switch ctx.Err() {
+	case context.DeadlineExceeded:
+		log.Info().Str("cause", "timeout").Msg("Shutting down gracefully, press Ctrl+C again to force")
+	case context.Canceled:
+		log.Info().Str("cause", "interrupt").Msg("Shutting down gracefully, press Ctrl+C again to force")
+	}
+
+	// Restore default behavior on the interrupt signal.
+	stop()
+
+	// Perform application shutdown with a maximum timeout of 1 minute.
+	timeoutCtx, cancel := context.WithTimeout(context.Background(), constants.DefaultShutdownTimeout)
+	defer cancel()
+
+	// force termination after shutdown timeout
+	<-timeoutCtx.Done()
+	log.Error().Msg("Shutdown grace period elapsed. force exit")
+	// force stop any daemon services here:
+	srv.Stop()
+	os.Exit(1)
 }

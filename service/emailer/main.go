@@ -1,33 +1,33 @@
 package main
 
 import (
-    "context"
-    "os"
-    "os/signal"
-    "syscall"
+	"context"
+	"os"
+	"os/signal"
+	"syscall"
 
-    "github.com/xmlking/toolkit/grpc"
-    _ "github.com/xmlking/toolkit/logger/auto"
-    "golang.org/x/sync/errgroup"
-
-    "github.com/rs/zerolog/log"
-    "github.com/xmlking/grpc-starter-kit/internal/config"
-    "github.com/xmlking/grpc-starter-kit/internal/constants"
-    "github.com/xmlking/grpc-starter-kit/service/emailer/registry"
-    "github.com/xmlking/grpc-starter-kit/service/emailer/subscriber"
-    "github.com/xmlking/toolkit/broker/cloudevents"
+	"github.com/rs/zerolog/log"
+	"github.com/xmlking/grpc-starter-kit/internal/config"
+	"github.com/xmlking/grpc-starter-kit/internal/constants"
+	"github.com/xmlking/grpc-starter-kit/service/emailer/registry"
+	"github.com/xmlking/grpc-starter-kit/service/emailer/subscriber"
+	"github.com/xmlking/toolkit/broker/cloudevents"
+	_ "github.com/xmlking/toolkit/logger/auto"
+	"github.com/xmlking/toolkit/server"
+	"github.com/xmlking/toolkit/util/endpoint"
+	"golang.org/x/sync/errgroup"
 )
 
 func main() {
-    // println(os.Getpid())
-    appCtx, stop := signal.NotifyContext(context.Background(), syscall.SIGHUP, syscall.SIGTERM, syscall.SIGINT, os.Interrupt)
-    defer stop()
-
-    g, ctx := errgroup.WithContext(appCtx)
-
-    broker.DefaultBroker = broker.NewBroker(ctx)
-
+	serviceName := constants.EMAILER_SERVICE
 	cfg := config.GetConfig()
+
+	appCtx, stop := signal.NotifyContext(context.Background(), syscall.SIGHUP, syscall.SIGTERM, syscall.SIGINT, os.Interrupt)
+	defer stop()
+
+	g, ctx := errgroup.WithContext(appCtx)
+
+	broker.DefaultBroker = broker.NewBroker(ctx, broker.Name(serviceName))
 
 	// Initialize DI Container
 	ctn, err := registry.NewContainer(cfg)
@@ -37,53 +37,58 @@ func main() {
 	}
 	emailSubscriber := ctn.Resolve("emailer-subscriber").(*subscriber.EmailSubscriber)
 
-    if err := broker.AddSubscriber(cfg.Services.Emailer.Endpoint,  emailSubscriber.HandleSend); err != nil {
-        log.Fatal().Err(err).Msgf("Failed subscribing to Topi %s", cfg.Services.Emailer.Endpoint)
-    }
+	if err := broker.AddSubscriber(cfg.Services.Emailer.Endpoint, emailSubscriber.HandleSend); err != nil {
+		log.Fatal().Err(err).Msgf("Failed subscribing to Topi %s", cfg.Services.Emailer.Endpoint)
+	}
 
-    // gSrv := grpc.NewServer(appCtx, grpc.WithGrpcEndpoint(cfg.Services.Emailer.Endpoint));
-    gSrv := grpc.NewServer(appCtx);
+	listener, err := endpoint.GetListener("tcp:///:0" /*cfg.Services.Emailer.Endpoint*/)
+	if err != nil {
+		log.Fatal().Stack().Err(err).Msg("error creating listener")
+	}
+	srv := server.NewServer(appCtx, server.ServerName(serviceName), server.WithListener(listener))
 
-    g.Go(func() error {
-        return broker.Start()
-    })
-
-    g.Go(func() error {
-        return gSrv.Start()
-    })
-
-
-	// Start server! constants.EMAILER_SERVICE
+	// Start broker/gRPC daemon services
 	log.Info().Msg(config.GetBuildInfo())
-    go func() {
-        if err := g.Wait(); err != nil {
-            log.Fatal().Stack().Err(err).Msgf("Unexpected error for service: %s",  cfg.Services.Emailer.Endpoint)
-        }
-        log.Info().Msg("Goodbye.....")
-        os.Exit(0)
-    }()
+	log.Info().Msgf("Server(%s) starting at: %s, secure: %t, pid: %d", serviceName, listener.Addr(), cfg.Features.TLS.Enabled, os.Getpid())
 
-    // Listen for the interrupt signal.
-    <-appCtx.Done()
+	g.Go(func() error {
+		return broker.Start()
+	})
 
-    // notify user of shutdown
-    switch ctx.Err() {
-    case context.DeadlineExceeded:
-        log.Info().Str("cause", "timeout").Msg("Shutting down gracefully, press Ctrl+C again to force")
-    case context.Canceled:
-        log.Info().Str("cause", "interrupt").Msg("Shutting down gracefully, press Ctrl+C again to force")
-    }
+	g.Go(func() error {
+		return srv.Start()
+	})
 
-    // Restore default behavior on the interrupt signal.
-    stop()
+	go func() {
+		if err := g.Wait(); err != nil {
+			log.Fatal().Stack().Err(err).Msgf("Unexpected error for service: %s", cfg.Services.Emailer.Endpoint)
+		}
+		log.Info().Msg("Goodbye.....")
+		os.Exit(0)
+	}()
 
-    // Perform application shutdown with a maximum timeout of 1 minute.
-    timeoutCtx, cancel := context.WithTimeout(context.Background(), constants.DefaultShutdownTimeout)
-    defer cancel()
+	// Listen for the interrupt signal.
+	<-appCtx.Done()
 
-    // force termination after shutdown timeout
-    <-timeoutCtx.Done()
-    log.Error().Msg("Shutdown grace period elapsed. force exit")
-    gSrv.Stop()
-    os.Exit(1)
+	// notify user of shutdown
+	switch ctx.Err() {
+	case context.DeadlineExceeded:
+		log.Info().Str("cause", "timeout").Msg("Shutting down gracefully, press Ctrl+C again to force")
+	case context.Canceled:
+		log.Info().Str("cause", "interrupt").Msg("Shutting down gracefully, press Ctrl+C again to force")
+	}
+
+	// Restore default behavior on the interrupt signal.
+	stop()
+
+	// Perform application shutdown with a maximum timeout of 1 minute.
+	timeoutCtx, cancel := context.WithTimeout(context.Background(), constants.DefaultShutdownTimeout)
+	defer cancel()
+
+	// force termination after shutdown timeout
+	<-timeoutCtx.Done()
+	log.Error().Msg("Shutdown grace period elapsed. force exit")
+	// force stop any daemon services here:
+	srv.Stop()
+	os.Exit(1)
 }

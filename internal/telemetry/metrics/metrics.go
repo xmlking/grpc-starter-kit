@@ -8,9 +8,8 @@ import (
 	"time"
 
 	"github.com/rs/zerolog/log"
-	controller "go.opentelemetry.io/otel/sdk/metric/controller/basic"
-
 	smetrics "go.opentelemetry.io/otel/exporters/stdout"
+	controller "go.opentelemetry.io/otel/sdk/metric/controller/basic"
 	//pmetrics "go.opentelemetry.io/otel/exporters/metric/prometheus"
 	gmetrics "github.com/GoogleCloudPlatform/opentelemetry-operations-go/exporter/metric"
 
@@ -47,7 +46,7 @@ func InitMetrics(cfg *config.Features_Metrics) *controller.Controller {
 			opts := []smetrics.Option{
 				smetrics.WithPrettyPrint(),
 			}
-			exporter, err = smetrics.InstallNewPipeline(opts, pushOpts)
+			_, exporter, err = smetrics.InstallNewPipeline(opts, pushOpts)
 		}
 		if err != nil {
 			log.Fatal().Err(err).Msg("failed to initialize metrics exporter")

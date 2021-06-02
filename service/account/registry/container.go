@@ -1,6 +1,8 @@
 package registry
 
 import (
+	"context"
+
 	"github.com/rs/zerolog/log"
 	"github.com/sarulabs/di/v2"
 	broker "github.com/xmlking/toolkit/broker/cloudevents"
@@ -20,7 +22,7 @@ type Container struct {
 }
 
 // NewContainer - create new Container
-func NewContainer(cfg config.Configuration) (*Container, error) {
+func NewContainer(appCtx context.Context, cfg config.Configuration) (*Container, error) {
 	builder, err := di.NewBuilder()
 	if err != nil {
 		log.Fatal().Err(err).Msg("")
@@ -49,7 +51,7 @@ func NewContainer(cfg config.Configuration) (*Container, error) {
 			Name:  "translog-publisher",
 			Scope: di.App,
 			Build: func(ctn di.Container) (interface{}, error) {
-				bkr := broker.NewBroker()
+				bkr := broker.NewBroker(appCtx)
 				return bkr.NewPublisher(cfg.Services.Recorder.Endpoint)
 			},
 		},
@@ -57,7 +59,7 @@ func NewContainer(cfg config.Configuration) (*Container, error) {
 			Name:  "email-publisher",
 			Scope: di.App,
 			Build: func(ctn di.Container) (interface{}, error) {
-				bkr := broker.NewBroker()
+				bkr := broker.NewBroker(appCtx)
 				return bkr.NewPublisher(cfg.Services.Emailer.Endpoint)
 			},
 		},

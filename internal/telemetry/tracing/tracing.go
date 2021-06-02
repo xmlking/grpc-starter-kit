@@ -31,14 +31,12 @@ func InitTracing(cfg *config.Features_Tracing) func() {
 	once.Do(func() {
 		log.Debug().Interface("TracingConfig", cfg).Msg("Initializing Tracing")
 		if config.IsProduction() {
-			sampling := cfg.Sampling
 			projectID := os.Getenv("GOOGLE_CLOUD_PROJECT")
 			_, flush, err := gtrace.InstallNewPipeline(
 				[]gtrace.Option{gtrace.WithProjectID(projectID)},
 				// For this example code we use sdktrace.AlwaysSample sampler to sample all traces.
 				// In a production application, use sdktrace.ProbabilitySampler with a desired probability.
-				// sdktrace.WithConfig(sdktrace.Config{DefaultSampler: sdktrace.AlwaysSample()}),
-				sdktrace.WithConfig(sdktrace.Config{DefaultSampler: sdktrace.TraceIDRatioBased(sampling)}),
+				sdktrace.WithSampler(sdktrace.AlwaysSample()),
 			)
 			if err != nil {
 				log.Fatal().Err(err).Msg("failed to initialize google tracing exporter")
@@ -54,12 +52,13 @@ func InitTracing(cfg *config.Features_Tracing) func() {
 				controller.WithCollectPeriod(time.Second * 10),
 			}
 			// Registers both a trace and meter Provider globally.
-			pipeline, err := strace.InstallNewPipeline(opts, pushOpts)
+			tracer, exporter, err := strace.InstallNewPipeline(opts, pushOpts)
 			if err != nil {
 				log.Fatal().Err(err).Msg("failed to initialize stdout tracing exporter")
 			}
 			closeFunc = func() {
-				pipeline.Stop(context.TODO())
+				tracer.Shutdown(context.TODO())
+				exporter.Stop(context.TODO())
 			}
 		}
 	})

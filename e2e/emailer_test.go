@@ -23,7 +23,7 @@ func TestEmailSubscriber_Handle_Send_E2E(t *testing.T) {
 
 	cfg := config.GetConfig()
 	topic := cfg.Services.Emailer.Endpoint
-	bkr := broker.NewBroker()
+	bkr := broker.NewBroker(context.Background())
 	client, _ := bkr.NewPublisher(topic)
 
 	// Create an Event.
@@ -56,7 +56,7 @@ func TestEmailSubscriber_Handle_Request_E2E(t *testing.T) {
 
 	cfg := config.GetConfig()
 	topic := cfg.Services.Emailer.Endpoint
-	bkr := broker.NewBroker()
+	bkr := broker.NewBroker(context.Background())
 	client, _ := bkr.NewPublisher(topic)
 
 	// Create an Event.

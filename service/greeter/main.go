@@ -1,9 +1,11 @@
 package main
 
 import (
+	"context"
 	"net/http"
-
-	_ "github.com/xmlking/toolkit/logger/auto"
+	"os"
+	"os/signal"
+	"syscall"
 
 	grpc_middleware "github.com/grpc-ecosystem/go-grpc-middleware"
 	grpc_validator "github.com/grpc-ecosystem/go-grpc-middleware/validator"
@@ -13,10 +15,12 @@ import (
 	"github.com/xmlking/grpc-starter-kit/internal/constants"
 	"github.com/xmlking/grpc-starter-kit/mkit/service/greeter/v1"
 	"github.com/xmlking/grpc-starter-kit/service/greeter/handler"
+	_ "github.com/xmlking/toolkit/logger/auto"
 	"github.com/xmlking/toolkit/middleware/rpclog"
-	"github.com/xmlking/toolkit/service"
+	"github.com/xmlking/toolkit/server"
 	"github.com/xmlking/toolkit/util/endpoint"
 	"github.com/xmlking/toolkit/util/tls"
+	"golang.org/x/sync/errgroup"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials"
 	"google.golang.org/grpc/health"
@@ -29,6 +33,12 @@ func main() {
 	cfg := config.GetConfig()
 	efs := config.GetFileSystem()
 
+	appCtx, stop := signal.NotifyContext(context.Background(), syscall.SIGHUP, syscall.SIGTERM, syscall.SIGINT, os.Interrupt)
+	defer stop()
+
+	g, ctx := errgroup.WithContext(appCtx)
+
+	// ServerOption
 	grpcOps := []grpc.ServerOption{
 		grpc.UnaryInterceptor(grpc_middleware.ChainUnaryServer(
 			grpc_validator.UnaryServerInterceptor(),
@@ -50,27 +60,58 @@ func main() {
 		grpcOps = append(grpcOps, grpc.Creds(serverCert))
 	}
 
-	srv := service.NewService(
-		service.Name(serviceName),
-		service.Version(cfg.Services.Greeter.Version),
-		service.WithGrpcEndpoint(cfg.Services.Greeter.Endpoint),
-		service.WithGrpcOptions(grpcOps...),
-		// service.WithBrokerOptions(...),
-	)
-	// create a gRPC server object
-	grpcServer := srv.Server()
-
-	// create a server instance
-	greeterHandler := handler.NewGreeterHandler()
-
-	// attach the Greeter service to the server
-	greeterv1.RegisterGreeterServiceServer(grpcServer, greeterHandler)
-
-	// start the server
-	log.Info().Msg(config.GetBuildInfo())
-	if err := srv.Start(); err != nil {
-		log.Fatal().Err(err).Send()
+	listener, err := endpoint.GetListener(cfg.Services.Greeter.Endpoint)
+	if err != nil {
+		log.Fatal().Stack().Err(err).Msg("error creating listener")
 	}
+	srv := server.NewServer(appCtx, server.ServerName(serviceName), server.WithListener(listener), server.WithServerOptions(grpcOps...))
+
+	gSrv := srv.Server()
+
+	greeterHandler := handler.NewGreeterHandler()
+	// attach the Greeter service to the server
+	greeterv1.RegisterGreeterServiceServer(gSrv, greeterHandler)
+
+	// Start broker/gRPC daemon services
+	log.Info().Msg(config.GetBuildInfo())
+	log.Info().Msgf("Server(%s) starting at: %s, secure: %t, pid: %d", serviceName, listener.Addr(), cfg.Features.TLS.Enabled, os.Getpid())
+
+	g.Go(func() error {
+		return srv.Start()
+	})
+
+	go func() {
+		if err := g.Wait(); err != nil {
+			log.Fatal().Stack().Err(err).Msgf("Unexpected error for service: %s", cfg.Services.Emailer.Endpoint)
+		}
+		log.Info().Msg("Goodbye.....")
+		os.Exit(0)
+	}()
+
+	// Listen for the interrupt signal.
+	<-appCtx.Done()
+
+	// notify user of shutdown
+	switch ctx.Err() {
+	case context.DeadlineExceeded:
+		log.Info().Str("cause", "timeout").Msg("Shutting down gracefully, press Ctrl+C again to force")
+	case context.Canceled:
+		log.Info().Str("cause", "interrupt").Msg("Shutting down gracefully, press Ctrl+C again to force")
+	}
+
+	// Restore default behavior on the interrupt signal.
+	stop()
+
+	// Perform application shutdown with a maximum timeout of 1 minute.
+	timeoutCtx, cancel := context.WithTimeout(context.Background(), constants.DefaultShutdownTimeout)
+	defer cancel()
+
+	// force termination after shutdown timeout
+	<-timeoutCtx.Done()
+	log.Error().Msg("Shutdown grace period elapsed. force exit")
+	// force stop any daemon services here:
+	srv.Stop()
+	os.Exit(1)
 }
 
 // cmux example

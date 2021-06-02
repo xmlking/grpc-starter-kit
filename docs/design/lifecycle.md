@@ -6,6 +6,7 @@ KMG(Kill Me Gently) is a library that aids in graceful shutdown of a process/app
 
 - [ ] Graceful Shutdown
 - [ ] Shutdown Timeout
+- [ ] Health Check for liveness Probe
 - [ ] workers listen for the cancellation event and cancel any in-progress translations/ NACK PubSub messages and release any resources. 
 ## References
 
@@ -17,3 +18,8 @@ KMG(Kill Me Gently) is a library that aids in graceful shutdown of a process/app
 - https://www.sohamkamani.com/golang/2018-06-17-golang-using-context-cancellation/
 - https://millhouse.dev/posts/graceful-shutdowns-in-golang-with-signal-notify-context
 - [livenessProbe for gRPC](https://codeburst.io/kubernetes-grpc-services-and-probes-by-example-1cb611da45ab)
+- Advanced Health Check Patterns in Kubernetes [link](https://ahmet.im/blog/advanced-kubernetes-health-checks/)
+
+
+readiness: I'm ready to receive traffic from the load balancer
+liveness: I'm alive and doing work, please do not kill me

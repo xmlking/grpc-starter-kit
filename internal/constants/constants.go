@@ -3,5 +3,5 @@ package constants
 import "time"
 
 const (
-    DefaultShutdownTimeout = time.Minute * 1
+	DefaultShutdownTimeout = time.Minute * 1
 )
