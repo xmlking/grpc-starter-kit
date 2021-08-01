@@ -47,12 +47,12 @@ grpcurl -plaintext -proto proto/mkit/service/greeter/v1/greeter.proto describe
 grpcurl -plaintext -proto proto/mkit/service/greeter/v1/greeter.proto -d '{"name": "sumo"}' localhost:8081  mkit.service.greeter.v1.GreeterService/Hello
 # OR
 grpcurl -plaintext \
--protoset <(buf image build -o -) \
+-protoset <(buf build -o -) \
 -d '{"name": "sumo"}' 0.0.0.0:8081 mkit.service.greeter.v1.GreeterService/Hello
 
 ### TLS ###
 grpcurl -insecure \
--protoset <(buf image build -o -) \
+-protoset <(buf build -o -) \
 -d '{"name": "sumo"}' 0.0.0.0:8081 mkit.service.greeter.v1.GreeterService/Hello
 ```
 #### test API via envoy
@@ -60,12 +60,12 @@ grpcurl -insecure \
 ### plaintext ###
 # with `docker-compose up envoy_http`
 grpcurl -plaintext  \
--protoset <(buf image build -o -) \
+-protoset <(buf build -o -) \
 -d '{"name": "sumo"}' 0.0.0.0:9090 mkit.service.greeter.v1.GreeterService/Hello
 
 ### TLS ###
 grpcurl -cacert=config/certs/ca-cert.pem \
--protoset <(buf image build -o -) \
+-protoset <(buf build -o -) \
 -d '{"name": "sumo"}' localhost:9444 mkit.service.greeter.v1.GreeterService/Hello
 ```
 

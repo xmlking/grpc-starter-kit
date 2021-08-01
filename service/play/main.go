@@ -12,6 +12,8 @@ import (
 	"github.com/sercand/kuberesolver"
 	"github.com/xmlking/grpc-starter-kit/internal/config"
 	"github.com/xmlking/grpc-starter-kit/internal/constants"
+	"github.com/xmlking/grpc-starter-kit/internal/telemetry/metrics"
+	"github.com/xmlking/grpc-starter-kit/internal/telemetry/tracing"
 	_ "github.com/xmlking/toolkit/logger/auto"
 	"github.com/xmlking/toolkit/middleware/rpclog"
 	"github.com/xmlking/toolkit/server"
@@ -21,8 +23,7 @@ import (
 	"golang.org/x/sync/errgroup"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials"
-	//"github.com/xmlking/grpc-starter-kit/internal/telemetry/metrics"
-	"github.com/xmlking/grpc-starter-kit/internal/telemetry/tracing"
+
 	"github.com/xmlking/grpc-starter-kit/mkit/service/greeter/v1"
 	"github.com/xmlking/grpc-starter-kit/service/play/handler"
 )
@@ -44,14 +45,14 @@ func main() {
 	}
 
 	if cfg.Features.Tracing.Enabled {
-		closeFn := tracing.InitTracing(cfg.Features.Tracing)
+		closeFn := tracing.InitTracing(ctx, cfg.Features.Tracing)
 		defer closeFn()
 	}
 
-	//if cfg.Features.Metrics.Enabled {
-	//	exporter := metrics.InitMetrics(cfg.Features.Metrics)
-	//	defer exporter.Stop()
-	//}
+	if cfg.Features.Metrics.Enabled {
+		closeFn := metrics.InitMetrics(ctx, cfg.Features.Metrics)
+		defer closeFn()
+	}
 
 	var unaryInterceptors = []grpc.UnaryServerInterceptor{grpc_validator.UnaryServerInterceptor()}
 	var streamInterceptors = []grpc.StreamServerInterceptor{grpc_validator.StreamServerInterceptor()}

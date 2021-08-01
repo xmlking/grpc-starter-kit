@@ -36,23 +36,23 @@ make docker TARGET=account TYPE=service VERSION=v0.1.1
 ### Test the service
 
 ```bash
-grpcurl -plaintext -protoset <(buf image build -o -) list
-grpcurl -plaintext -protoset <(buf image build -o -) describe mkit.service.account.user.v1.UserService
+grpcurl -plaintext -protoset <(buf build -o -) list
+grpcurl -plaintext -protoset <(buf build -o -) describe mkit.service.account.user.v1.UserService
 
 # test Create API directly
 grpcurl -plaintext \
--protoset <(buf image build -o -) \
+-protoset <(buf build -o -) \
 -d '{"username": "sumo", "firstName": "sumo", "lastName": "demo", "email": "sumo@demo.com"}' \
  0.0.0.0:8080 mkit.service.account.user.v1.UserService/Create
 
 # test Create API directly with TLS
 grpcurl -insecure \
--protoset <(buf image build -o -) \
+-protoset <(buf build -o -) \
 -d '{"username": "sumo1", "firstName": "sumo1", "lastName": "demo1", "email": "sumo1@demo.com"}' \
  0.0.0.0:8080 mkit.service.account.user.v1.UserService/Create
 
 # test List API directly
 grpcurl -plaintext \
--protoset <(buf image build -o -) \
+-protoset <(buf build -o -) \
 -d '{}' 0.0.0.0:8080 mkit.service.account.user.v1.UserService/List
 ```

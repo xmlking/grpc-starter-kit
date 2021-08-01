@@ -72,14 +72,14 @@ prototool format -w proto;
 
 ```bash
 # To use Buf-produced FileDescriptorSets with grpcurl on the fly:
-grpcurl -protoset <(buf image build -o -) ...
+grpcurl -protoset <(buf build -o -) ...
 ```
 
 ### ghz
 
 ```bash
 # To use Buf-produced FileDescriptorSets with ghz on the fly:
-ghz --protoset <(buf image build -o -) ...
+ghz --protoset <(buf build -o -) ...
 ```
 
 ## Reference

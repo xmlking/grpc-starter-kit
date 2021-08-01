@@ -8,95 +8,67 @@ import (
 	"context"
 	"os"
 	"sync"
-	"time"
 
-	gtrace "github.com/GoogleCloudPlatform/opentelemetry-operations-go/exporter/trace"
+	cloudtrace "github.com/GoogleCloudPlatform/opentelemetry-operations-go/exporter/trace"
 	"github.com/rs/zerolog/log"
-	strace "go.opentelemetry.io/otel/exporters/stdout"
-	controller "go.opentelemetry.io/otel/sdk/metric/controller/basic"
-	sdktrace "go.opentelemetry.io/otel/sdk/trace"
-
 	"github.com/xmlking/grpc-starter-kit/internal/config"
+	"go.opentelemetry.io/otel"
+	"go.opentelemetry.io/otel/exporters/stdout/stdouttrace"
+	"go.opentelemetry.io/otel/sdk/trace"
+	sdktrace "go.opentelemetry.io/otel/sdk/trace"
 )
 
 var (
 	once      sync.Once
+	tp        *trace.TracerProvider
 	closeFunc func()
 )
 
 // expected GOOGLE_CLOUD_PROJECT & GOOGLE_APPLICATION_CREDENTIALS Environment Variable set
 
 // InitTracing before ending program, wait for all enqueued spans to be exported
-func InitTracing(cfg *config.Features_Tracing) func() {
+func InitTracing(ctx context.Context, cfg *config.Features_Tracing) func() {
 	once.Do(func() {
 		log.Debug().Interface("TracingConfig", cfg).Msg("Initializing Tracing")
 		if config.IsProduction() {
+			println("---------")
 			projectID := os.Getenv("GOOGLE_CLOUD_PROJECT")
-			_, flush, err := gtrace.InstallNewPipeline(
-				[]gtrace.Option{gtrace.WithProjectID(projectID)},
-				// For this example code we use sdktrace.AlwaysSample sampler to sample all traces.
-				// In a production application, use sdktrace.ProbabilitySampler with a desired probability.
-				sdktrace.WithSampler(sdktrace.AlwaysSample()),
-			)
+			exporter, err := cloudtrace.New(cloudtrace.WithProjectID(projectID))
 			if err != nil {
 				log.Fatal().Err(err).Msg("failed to initialize google tracing exporter")
 			}
+			tp = sdktrace.NewTracerProvider(
+				// For this example code we use sdktrace.AlwaysSample sampler to sample all traces.
+				// In a production application, use sdktrace.ProbabilitySampler with a desired probability.
+				sdktrace.WithSampler(sdktrace.AlwaysSample()),
+				sdktrace.WithBatcher(exporter),
+			)
+
 			closeFunc = func() {
-				flush()
+				exporter.Shutdown(ctx)
+				tp.Shutdown(ctx)
 			}
 		} else {
-			opts := []strace.Option{
-				strace.WithPrettyPrint(),
+			opts := []stdouttrace.Option{
+				stdouttrace.WithPrettyPrint(),
 			}
-			pushOpts := []controller.Option{
-				controller.WithCollectPeriod(time.Second * 10),
-			}
-			// Registers both a trace and meter Provider globally.
-			tracer, exporter, err := strace.InstallNewPipeline(opts, pushOpts)
+			exporter, err := stdouttrace.New(opts...)
 			if err != nil {
 				log.Fatal().Err(err).Msg("failed to initialize stdout tracing exporter")
 			}
+			bsp := sdktrace.NewBatchSpanProcessor(exporter)
+			tp = sdktrace.NewTracerProvider(sdktrace.WithSpanProcessor(bsp))
+
 			closeFunc = func() {
-				tracer.Shutdown(context.TODO())
-				exporter.Stop(context.TODO())
+				exporter.Shutdown(ctx)
+				tp.Shutdown(ctx)
 			}
 		}
 	})
+
+	// Registers trace Provider globally.
+	otel.SetTracerProvider(tp)
+	//propagator := propagation.NewCompositeTextMapPropagator(propagation.Baggage{}, propagation.TraceContext{})
+	//otel.SetTextMapPropagator(propagator)
 	return closeFunc
 }
-
-//func InitTracing_old(cfg *config.Features_Tracing) {
-//    once.Do(func() {
-//        log.Debug().Interface("TracingConfig", cfg).Msg("Initializing Tracing")
-//        var exporter trace.SpanSyncer
-//        var err error
-//        if config.IsProduction() {
-//            projectID := os.Getenv("GOOGLE_CLOUD_PROJECT")
-//            exporter, err = gtrace.NewExporter(gtrace.WithProjectID(projectID))
-//            if err != nil {
-//                log.Fatal().Err(err).Msg("failed to initialize google tracing exporter")
-//            }
-//        } else {
-//            exporter, err = strace.NewExporter(strace.WithPrettyPrint())
-//            if err != nil {
-//                log.Fatal().Err(err).Msg("failed to initialize stdout tracing exporter")
-//            }
-//        }
-//
-//        // Create trace provider with the exporter.
-//        //
-//        // By default it uses AlwaysSample() which samples all traces.
-//        // In a production environment or high QPS setup please use
-//        // ProbabilitySampler set at the desired probability.
-//        sampling := cfg.Sampling
-//        tp, err := sdktrace.NewProvider(
-//            // sdktrace.WithConfig(sdktrace.Config{DefaultSampler: sdktrace.AlwaysSample()}),
-//            sdktrace.WithConfig(sdktrace.Config{DefaultSampler: sdktrace.ProbabilitySampler(sampling)}),
-//            sdktrace.WithSyncer(exporter),
-//        )
-//        if err != nil {
-//            log.Fatal().Err(err).Send()
-//        }
-//        global.SetTraceProvider(tp)
-//    })
-//}

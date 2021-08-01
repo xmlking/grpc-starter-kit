@@ -3,15 +3,21 @@ package metrics
 // https://github.com/GoogleCloudPlatform/opentelemetry-operations-go/blob/master/example/metric/example.go
 // https://github.com/liiling/kernel_metrics_agent/blob/master/otel-pipeline/main.go
 import (
+	"context"
 	"os"
 	"sync"
 	"time"
 
 	"github.com/rs/zerolog/log"
-	smetrics "go.opentelemetry.io/otel/exporters/stdout"
+	"go.opentelemetry.io/otel"
+	"go.opentelemetry.io/otel/exporters/stdout/stdoutmetric"
+	"go.opentelemetry.io/otel/metric/global"
+	"go.opentelemetry.io/otel/propagation"
 	controller "go.opentelemetry.io/otel/sdk/metric/controller/basic"
+	"go.opentelemetry.io/otel/sdk/metric/selector/simple"
 	//pmetrics "go.opentelemetry.io/otel/exporters/metric/prometheus"
 	gmetrics "github.com/GoogleCloudPlatform/opentelemetry-operations-go/exporter/metric"
+	processor "go.opentelemetry.io/otel/sdk/metric/processor/basic"
 
 	"github.com/xmlking/grpc-starter-kit/internal/config"
 )
@@ -31,31 +37,60 @@ var (
 )
 
 // InitMetrics expected GOOGLE_CLOUD_PROJECT & GOOGLE_APPLICATION_CREDENTIALS Environment Variable set
-func InitMetrics(cfg *config.Features_Metrics) *controller.Controller {
+func InitMetrics(ctx context.Context, cfg *config.Features_Metrics) func() {
 	once.Do(func() {
 		log.Debug().Interface("MetricConfig", cfg).Msg("Initializing Metrics")
 		var err error
-		pushOpts := []controller.Option{
-			controller.WithCollectPeriod(time.Second * 10),
-		}
 		if config.IsProduction() {
 			projectID := os.Getenv("GOOGLE_CLOUD_PROJECT")
 			opts := []gmetrics.Option{gmetrics.WithProjectID(projectID)}
-			exporter, err = gmetrics.InstallNewPipeline(opts, pushOpts...)
-		} else {
-			opts := []smetrics.Option{
-				smetrics.WithPrettyPrint(),
+			pushOpts := []controller.Option{
+				controller.WithCollectPeriod(time.Second * 10),
 			}
-			_, exporter, err = smetrics.InstallNewPipeline(opts, pushOpts)
+			//resOpt := basic.WithResource(resource.NewWithAttributes(
+			//    semconv.SchemaURL,
+			//    attribute.String("instance_id", "abc123"),
+			//    attribute.String("application", "example-app"),
+			//))
+			exporter, err = gmetrics.InstallNewPipeline(opts, pushOpts...)
+			if err != nil {
+				log.Fatal().Err(err).Msg("failed to initialize metrics exporter")
+			}
+		} else {
+			opts := []stdoutmetric.Option{
+				stdoutmetric.WithPrettyPrint(),
+			}
+			var metricExporter *stdoutmetric.Exporter
+			metricExporter, err = stdoutmetric.New(opts...)
+			if err != nil {
+				log.Fatal().Err(err).Msg("failed to initialize metrics exporter")
+			}
+			exporter = controller.New(
+				processor.New(
+					simple.NewWithExactDistribution(),
+					metricExporter,
+				),
+				controller.WithExporter(metricExporter),
+				controller.WithCollectPeriod(5*time.Second),
+			)
+			err = exporter.Start(ctx)
+			if err != nil {
+				log.Fatal().Err(err).Msg("failed to initialize metrics controller")
+			}
 		}
-		if err != nil {
-			log.Fatal().Err(err).Msg("failed to initialize metrics exporter")
-		}
+
 	})
-	return exporter
+	// Registers metrics Provider globally.
+	global.SetMeterProvider(exporter.MeterProvider())
+	propagator := propagation.NewCompositeTextMapPropagator(propagation.Baggage{}, propagation.TraceContext{})
+	otel.SetTextMapPropagator(propagator)
+
+	return func() {
+		exporter.Stop(ctx)
+	}
 }
 
-//func initPrometheusMetrics() {
+//func initPrometheusMetrics(ctx context.Context, cfg *config.Features_Metrics) func() {
 //	once.Do(func() {
 //		exporter, err := pmetrics.InstallNewPipeline(
 //			pmetrics.Config{

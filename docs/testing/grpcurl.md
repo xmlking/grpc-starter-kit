@@ -20,24 +20,24 @@ grpcurl -plaintext -proto proto/mkit/service/greeter/v1/greeter.proto describe
 grpcurl -plaintext -proto proto/mkit/service/greeter/v1/greeter.proto -d '{"name": "sumo"}' localhost:8081  mkit.service.greeter.v1.GreeterService/Hello
 # OR 
 grpcurl -plaintext \
--protoset <(buf image build -o -) \
+-protoset <(buf build -o -) \
 -d '{"name": "sumo"}' 0.0.0.0:8081 mkit.service.greeter.v1.GreeterService/Hello
 
 ### TLS ###
 grpcurl -insecure \
--protoset <(buf image build -o -) \
+-protoset <(buf build -o -) \
 -d '{"name": "sumo"}' 0.0.0.0:8081 mkit.service.greeter.v1.GreeterService/Hello
 ```
 ### Test API via envoy
 ```bash
 ### plaintext ###
 grpcurl -plaintext  \
--protoset <(buf image build -o -) \
+-protoset <(buf build -o -) \
 -d '{"name": "sumo"}' 0.0.0.0:9090 mkit.service.greeter.v1.GreeterService/Hello
 
 ### TLS ###
 grpcurl -cacert=config/certs/ca-cert.pem \
--protoset <(buf image build -o -) \
+-protoset <(buf build -o -) \
 -d '{"name": "sumo"}' localhost:9444 mkit.service.greeter.v1.GreeterService/Hello
 ```
 
@@ -53,19 +53,19 @@ grpcurl -cacert=config/certs/ca-cert.pem \
 grpcurl -cacert=config/certs/ca-cert.pem \
 -cert=config/certs/client-cert.pem \
 -key=config/certs/client-key.pem \
--protoset <(buf image build -o -) \
+-protoset <(buf build -o -) \
 -d '{"name": "sumo"}' localhost:9444 mkit.service.greeter.v1.GreeterService/Hello
 
 # test with wrong client cert. This will fail! You will see `TLS error:` in envoy logs
 grpcurl -cacert=config/certs/ca-cert.pem \
 -cert=config/certs/upstream-cert.pem \
 -key=config/certs/upstream-key.pem \
--protoset <(buf image build -o -) \
+-protoset <(buf build -o -) \
 -d '{"name": "sumo"}' localhost:9444 mkit.service.greeter.v1.GreeterService/Hello
 
 # testing with request data from file.
 grpcurl -cacert=config/certs/ca-cert.pem \
--protoset <(buf image build -o -) \
+-protoset <(buf build -o -) \
 -v -H trans_id=abc123 \
 -d @ localhost:9444 mkit.service.greeter.v1.GreeterService/Hello <test/echo-request.json
 ```

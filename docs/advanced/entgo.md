@@ -6,6 +6,8 @@
 
 ```bash
 go install entgo.io/ent/cmd/ent@latest
+# project repo, run:
+go get -u github.com/masseelch/elk
 ```
 
 ## Commands 
@@ -14,6 +16,8 @@ go install entgo.io/ent/cmd/ent@latest
 
 ```bash
 ent init User Profile
+# or
+go run -mod=mod entgo.io/ent/cmd/ent init User Profile
 ```
 
 Edit **schema** in `ent/schema` then:
@@ -36,3 +40,4 @@ ent describe ./ent/schema
 ## Reference
 
 * [Generate a fully-working Go gRPC server in two minutes with Ent](https://entgo.io/blog/2021/03/18/generating-a-grpc-server-with-ent/)
+* [Generate a fully-working Go CRUD HTTP API with Ent](https://entgo.io/blog/2021/07/29/generate-a-fully-working-go-crud-http-api-with-ent/)
