@@ -14,7 +14,7 @@ go run service/play/main.go
 
 # run with `production` mode (using GCP as telemetry backend)
 export CONFY_ENV=production
-export GOOGLE_APPLICATION_CREDENTIALS=/Users/schintha/Developer/Apps/micro-starter-kit.json
+export GOOGLE_APPLICATION_CREDENTIALS=../../../Apps/micro-starter-kit.json
 make run-play
 ```
 
@@ -26,7 +26,7 @@ grpcurl -insecure \
 -protoset <(buf build -o -) \
 -d '{"name": "sumo"}' 0.0.0.0:8084 mkit.service.greeter.v1.GreeterService/Hello
 
-# when run with `production` mode
+# when server running in `production` mode
 grpcurl -insecure \
 -protoset <(buf build -o -) \
 -d '{"name": "sumo"}' 0.0.0.0:8080 mkit.service.greeter.v1.GreeterService/Hello

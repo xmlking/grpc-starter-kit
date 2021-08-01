@@ -23,6 +23,10 @@ https://github.com/open-telemetry/opentelemetry-go/blob/master/example/grpc/serv
 
 https://github.com/open-telemetry/opentelemetry-go/blob/master/exporters/stdout/example_test.go
 
+```bash
+export OTEL_RESOURCE_ATTRIBUTES=key=value,rk5=7
+export OTEL_SERVICE_NAME=play-service
+```
 ```go
 import (
 	"go.opentelemetry.io/otel/api/global"

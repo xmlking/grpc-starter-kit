@@ -50,6 +50,7 @@ func main() {
 	}
 
 	if cfg.Features.Metrics.Enabled {
+		// closeFn := metrics.InitPrometheusMetrics(ctx, cfg.Features.Metrics)
 		closeFn := metrics.InitMetrics(ctx, cfg.Features.Metrics)
 		defer closeFn()
 	}

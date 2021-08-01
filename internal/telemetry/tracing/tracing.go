@@ -13,7 +13,9 @@ import (
 	"github.com/rs/zerolog/log"
 	"github.com/xmlking/grpc-starter-kit/internal/config"
 	"go.opentelemetry.io/otel"
+	"go.opentelemetry.io/otel/attribute"
 	"go.opentelemetry.io/otel/exporters/stdout/stdouttrace"
+	"go.opentelemetry.io/otel/sdk/resource"
 	"go.opentelemetry.io/otel/sdk/trace"
 	sdktrace "go.opentelemetry.io/otel/sdk/trace"
 )
@@ -30,6 +32,17 @@ var (
 func InitTracing(ctx context.Context, cfg *config.Features_Tracing) func() {
 	once.Do(func() {
 		log.Debug().Interface("TracingConfig", cfg).Msg("Initializing Tracing")
+
+		resources, err := resource.New(ctx,
+			// Builtin detectors provide default values and support
+			// OTEL_RESOURCE_ATTRIBUTES and OTEL_SERVICE_NAME environment variables
+			resource.WithProcess(),                                  // This option configures a set of Detectors that discover process information
+			resource.WithAttributes(attribute.String("foo", "bar")), // Or specify resource attributes directly
+		)
+		if err != nil {
+			log.Fatal().Err(err).Msg("failed to initialize resources for tracing exporter")
+		}
+
 		if config.IsProduction() {
 			println("---------")
 			projectID := os.Getenv("GOOGLE_CLOUD_PROJECT")
@@ -39,8 +52,9 @@ func InitTracing(ctx context.Context, cfg *config.Features_Tracing) func() {
 			}
 			tp = sdktrace.NewTracerProvider(
 				// For this example code we use sdktrace.AlwaysSample sampler to sample all traces.
-				// In a production application, use sdktrace.ProbabilitySampler with a desired probability.
+				// In a production application, use sdktrace.TraceIDRatioBased/ParentBased/NeverSample with a desired probability.
 				sdktrace.WithSampler(sdktrace.AlwaysSample()),
+				sdktrace.WithResource(resources),
 				sdktrace.WithBatcher(exporter),
 			)
 
@@ -57,7 +71,13 @@ func InitTracing(ctx context.Context, cfg *config.Features_Tracing) func() {
 				log.Fatal().Err(err).Msg("failed to initialize stdout tracing exporter")
 			}
 			bsp := sdktrace.NewBatchSpanProcessor(exporter)
-			tp = sdktrace.NewTracerProvider(sdktrace.WithSpanProcessor(bsp))
+			tp = sdktrace.NewTracerProvider(
+				// For this example code we use sdktrace.AlwaysSample sampler to sample all traces.
+				// In a production application, use sdktrace.TraceIDRatioBased/ParentBased/NeverSample with a desired probability.
+				sdktrace.WithSampler(sdktrace.AlwaysSample()),
+				sdktrace.WithResource(resources),
+				sdktrace.WithSpanProcessor(bsp),
+			)
 
 			closeFunc = func() {
 				exporter.Shutdown(ctx)
@@ -68,7 +88,5 @@ func InitTracing(ctx context.Context, cfg *config.Features_Tracing) func() {
 
 	// Registers trace Provider globally.
 	otel.SetTracerProvider(tp)
-	//propagator := propagation.NewCompositeTextMapPropagator(propagation.Baggage{}, propagation.TraceContext{})
-	//otel.SetTextMapPropagator(propagator)
 	return closeFunc
 }

@@ -4,31 +4,27 @@ package metrics
 // https://github.com/liiling/kernel_metrics_agent/blob/master/otel-pipeline/main.go
 import (
 	"context"
+	"fmt"
+	"net/http"
 	"os"
 	"sync"
 	"time"
 
+	gmetrics "github.com/GoogleCloudPlatform/opentelemetry-operations-go/exporter/metric"
 	"github.com/rs/zerolog/log"
+	"github.com/xmlking/grpc-starter-kit/internal/config"
 	"go.opentelemetry.io/otel"
+	"go.opentelemetry.io/otel/exporters/prometheus"
 	"go.opentelemetry.io/otel/exporters/stdout/stdoutmetric"
 	"go.opentelemetry.io/otel/metric/global"
 	"go.opentelemetry.io/otel/propagation"
+	export "go.opentelemetry.io/otel/sdk/export/metric"
+	"go.opentelemetry.io/otel/sdk/metric/aggregator/histogram"
 	controller "go.opentelemetry.io/otel/sdk/metric/controller/basic"
-	"go.opentelemetry.io/otel/sdk/metric/selector/simple"
-	//pmetrics "go.opentelemetry.io/otel/exporters/metric/prometheus"
-	gmetrics "github.com/GoogleCloudPlatform/opentelemetry-operations-go/exporter/metric"
 	processor "go.opentelemetry.io/otel/sdk/metric/processor/basic"
-
-	"github.com/xmlking/grpc-starter-kit/internal/config"
+	"go.opentelemetry.io/otel/sdk/metric/selector/simple"
+	"go.opentelemetry.io/otel/sdk/resource"
 )
-
-// https://github.com/cds-snc/covid-alert-server/blob/master/pkg/telemetry/telemetry.go
-// https://github.com/liiling/kernel_metrics_agent/blob/master/otel-pipeline/main.go
-// https://github.com/CovidShield/server/blob/master/pkg/telemetry/telemetry.go
-// https://github.com/liiling/kernel_metrics_agent/blob/master/otel-pipeline/main.go
-
-//exporter := metrics.InitMetrics(cfg.Features.Metrics)
-//defer exporter.Stop()
 
 var (
 	once sync.Once
@@ -79,32 +75,64 @@ func InitMetrics(ctx context.Context, cfg *config.Features_Metrics) func() {
 			}
 		}
 
+		// Registers metrics Provider globally.
+		global.SetMeterProvider(exporter.MeterProvider())
+		propagator := propagation.NewCompositeTextMapPropagator(propagation.Baggage{}, propagation.TraceContext{})
+		otel.SetTextMapPropagator(propagator)
 	})
-	// Registers metrics Provider globally.
-	global.SetMeterProvider(exporter.MeterProvider())
-	propagator := propagation.NewCompositeTextMapPropagator(propagation.Baggage{}, propagation.TraceContext{})
-	otel.SetTextMapPropagator(propagator)
 
 	return func() {
 		exporter.Stop(ctx)
 	}
 }
 
-//func initPrometheusMetrics(ctx context.Context, cfg *config.Features_Metrics) func() {
-//	once.Do(func() {
-//		exporter, err := pmetrics.InstallNewPipeline(
-//			pmetrics.Config{
-//				DefaultHistogramBoundaries: []float64{-0.5, 1},
-//			},
-//			pull.WithCachePeriod(time.Second*10),
-//		)
-//		if err != nil {
-//			log.Fatal().Err(err).Msgf("failed to initialize prometheus exporter")
-//		}
-//
-//		port := 2112
-//		http.HandleFunc("/metrics", exporter.ServeHTTP)
-//		go http.ListenAndServe(fmt.Sprintf(":%d", port), nil)
-//		log.Info().Msgf("Prometheus server running on :%d\n", port)
-//	})
-//}
+func InitPrometheusMetrics(ctx context.Context, cfg *config.Features_Metrics) func() {
+	port := 2112
+	pSrv := &http.Server{Addr: fmt.Sprintf(":%d", port)}
+	once.Do(func() {
+		exporter, err := newPipeline(
+			prometheus.Config{},
+			controller.WithCollectPeriod(0),
+			controller.WithResource(resource.Empty()),
+		)
+		if err != nil {
+			log.Fatal().Err(err).Msgf("failed to initialize prometheus exporter")
+		}
+
+		http.HandleFunc("/metrics", exporter.ServeHTTP)
+
+		go func() {
+			if err := pSrv.ListenAndServe(); err != http.ErrServerClosed {
+				log.Fatal().Err(err).Msgf("failed to initialize prometheus server")
+			}
+		}()
+
+		log.Info().Msgf("Prometheus server running on :%d\n", port)
+
+		// Registers metrics Provider globally.
+		global.SetMeterProvider(exporter.MeterProvider())
+		propagator := propagation.NewCompositeTextMapPropagator(propagation.Baggage{}, propagation.TraceContext{})
+		otel.SetTextMapPropagator(propagator)
+	})
+
+	return func() {
+		exporter.Stop(ctx)
+		log.Info().Msgf("Stopping prometheus metrics server...")
+		pSrv.Shutdown(ctx)
+	}
+
+}
+
+func newPipeline(config prometheus.Config, options ...controller.Option) (*prometheus.Exporter, error) {
+	c := controller.New(
+		processor.New(
+			simple.NewWithHistogramDistribution(
+				histogram.WithExplicitBoundaries(config.DefaultHistogramBoundaries),
+			),
+			export.CumulativeExportKindSelector(),
+			processor.WithMemory(true),
+		),
+		options...,
+	)
+	return prometheus.New(config, c)
+}

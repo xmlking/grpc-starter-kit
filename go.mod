@@ -38,10 +38,12 @@ require (
 	github.com/xmlking/toolkit/logger v0.1.7-0.20210602041816-47cebf71982e
 	go.opentelemetry.io/contrib/instrumentation/google.golang.org/grpc/otelgrpc v0.22.0
 	go.opentelemetry.io/otel v1.0.0-RC2
+	go.opentelemetry.io/otel/exporters/prometheus v0.22.0
 	go.opentelemetry.io/otel/exporters/stdout/stdoutmetric v0.22.0
 	go.opentelemetry.io/otel/exporters/stdout/stdouttrace v1.0.0-RC2
 	go.opentelemetry.io/otel/metric v0.22.0
 	go.opentelemetry.io/otel/sdk v1.0.0-RC2
+	go.opentelemetry.io/otel/sdk/export/metric v0.22.0
 	go.opentelemetry.io/otel/sdk/metric v0.22.0
 	go.opentelemetry.io/otel/trace v1.0.0-RC2
 	golang.org/x/sync v0.0.0-20210220032951-036812b2e83c
