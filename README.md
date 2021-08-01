@@ -123,7 +123,7 @@ make run TARGET=demo TYPE=cmd
 go run cmd/demo/main.go --help
 go run cmd/demo/main.go --database_host=1.1.1.1 --database_port=7777
 
-export APP_ENV=production
+export CONFY_ENV=production
 go run cmd/demo/main.go
 ```
 

@@ -11,6 +11,11 @@ Experimenting with [OpenTelemetry](https://opentelemetry.io/) using [Google Clou
 make run-play
 # or
 go run service/play/main.go
+
+# run with `production` mode (using GCP as telemetry backend)
+export CONFY_ENV=production
+export GOOGLE_APPLICATION_CREDENTIALS=/Users/schintha/Developer/Apps/micro-starter-kit.json
+make run-play
 ```
 
 ### Test
@@ -20,6 +25,11 @@ go run service/play/main.go
 grpcurl -insecure \
 -protoset <(buf build -o -) \
 -d '{"name": "sumo"}' 0.0.0.0:8084 mkit.service.greeter.v1.GreeterService/Hello
+
+# when run with `production` mode
+grpcurl -insecure \
+-protoset <(buf build -o -) \
+-d '{"name": "sumo"}' 0.0.0.0:8080 mkit.service.greeter.v1.GreeterService/Hello
 ```
 
 ### Reference 
