@@ -86,53 +86,43 @@ func InitMetrics(ctx context.Context, cfg *config.Features_Metrics) func() {
 	}
 }
 
+// InitPrometheusMetrics Initialize Prometheus Metrics
+// Usage: https://github.com/open-telemetry/opentelemetry-go/blob/main/example/prometheus/main.go
 func InitPrometheusMetrics(ctx context.Context, cfg *config.Features_Metrics) func() {
-	port := 2112
-	pSrv := &http.Server{Addr: fmt.Sprintf(":%d", port)}
-	once.Do(func() {
-		exporter, err := newPipeline(
-			prometheus.Config{},
-			controller.WithCollectPeriod(0),
-			controller.WithResource(resource.Empty()),
-		)
-		if err != nil {
-			log.Fatal().Err(err).Msgf("failed to initialize prometheus exporter")
-		}
-
-		http.HandleFunc("/metrics", exporter.ServeHTTP)
-
-		go func() {
-			if err := pSrv.ListenAndServe(); err != http.ErrServerClosed {
-				log.Fatal().Err(err).Msgf("failed to initialize prometheus server")
-			}
-		}()
-
-		log.Info().Msgf("Prometheus server running on :%d\n", port)
-
-		// Registers metrics Provider globally.
-		global.SetMeterProvider(exporter.MeterProvider())
-		propagator := propagation.NewCompositeTextMapPropagator(propagation.Baggage{}, propagation.TraceContext{})
-		otel.SetTextMapPropagator(propagator)
-	})
-
-	return func() {
-		exporter.Stop(ctx)
-		log.Info().Msgf("Stopping prometheus metrics server...")
-		pSrv.Shutdown(ctx)
-	}
-
-}
-
-func newPipeline(config prometheus.Config, options ...controller.Option) (*prometheus.Exporter, error) {
-	c := controller.New(
+	pConfig := prometheus.Config{}
+	pController := controller.New(
 		processor.New(
 			simple.NewWithHistogramDistribution(
-				histogram.WithExplicitBoundaries(config.DefaultHistogramBoundaries),
+				histogram.WithExplicitBoundaries(pConfig.DefaultHistogramBoundaries),
 			),
 			export.CumulativeExportKindSelector(),
 			processor.WithMemory(true),
 		),
-		options...,
+		controller.WithCollectPeriod(0),
+		controller.WithResource(resource.Empty()),
 	)
-	return prometheus.New(config, c)
+
+	exporter, err := prometheus.New(pConfig, pController)
+
+	if err != nil {
+		log.Fatal().Err(err).Msgf("failed to initialize prometheus exporter")
+	}
+
+	// Registers metrics Provider globally.
+	global.SetMeterProvider(exporter.MeterProvider())
+	propagator := propagation.NewCompositeTextMapPropagator(propagation.Baggage{}, propagation.TraceContext{})
+	otel.SetTextMapPropagator(propagator)
+
+	http.HandleFunc("/metrics", exporter.ServeHTTP)
+
+	port := 2222
+	pSrv := &http.Server{Addr: fmt.Sprintf(":%d", port)}
+	go pSrv.ListenAndServe()
+
+	log.Info().Msgf("Prometheus server running on :%d\n", port)
+
+	return func() {
+		log.Info().Msgf("Stopping prometheus metrics server...")
+		pSrv.Shutdown(ctx)
+	}
 }

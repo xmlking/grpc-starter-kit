@@ -67,7 +67,12 @@ func (s *greeterHandler) Hello(ctx context.Context, req *greeterv1.HelloRequest)
 		span.AddEvent("Nice operation!", trace.WithAttributes(attribute.Int("bogons", 100)))
 		span.SetAttributes(anotherKey.String("yes"))
 
-		commonAttributes := []attribute.KeyValue{lemonsKey.Int(10), attribute.String("A", "1"), attribute.String("B", "2"), attribute.String("C", "3")}
+		commonAttributes := []attribute.KeyValue{
+			lemonsKey.Int(10),
+			attribute.String("A", "1"),
+			attribute.String("B", "2"),
+			attribute.String("C", "3"),
+		}
 		valueRecorder := metric.Must(s.meter).NewFloat64ValueRecorder("ex.com.two")
 		boundRecorder := valueRecorder.Bind(commonAttributes...)
 
