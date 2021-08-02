@@ -20,16 +20,14 @@ import (
 	sdktrace "go.opentelemetry.io/otel/sdk/trace"
 )
 
-var (
-	once      sync.Once
-	tp        *trace.TracerProvider
-	closeFunc func()
-)
-
-// expected GOOGLE_CLOUD_PROJECT & GOOGLE_APPLICATION_CREDENTIALS Environment Variable set
+var once sync.Once
 
 // InitTracing before ending program, wait for all enqueued spans to be exported
+// expected GOOGLE_CLOUD_PROJECT & GOOGLE_APPLICATION_CREDENTIALS Environment Variable set
 func InitTracing(ctx context.Context, cfg *config.Features_Tracing) func() {
+	var tp *trace.TracerProvider
+	var exporter sdktrace.SpanExporter
+
 	once.Do(func() {
 		log.Debug().Interface("TracingConfig", cfg).Msg("Initializing Tracing")
 
@@ -43,30 +41,32 @@ func InitTracing(ctx context.Context, cfg *config.Features_Tracing) func() {
 			log.Fatal().Err(err).Msg("failed to initialize resources for tracing exporter")
 		}
 
-		if config.IsProduction() {
-			println("---------")
+		target, err := config.ParseTarget(cfg.Target)
+		if err != nil {
+			log.Fatal().Err(err).Msg("telemetry.tracing config error:")
+		}
+
+		switch target {
+		case config.GCP:
 			projectID := os.Getenv("GOOGLE_CLOUD_PROJECT")
-			exporter, err := cloudtrace.New(cloudtrace.WithProjectID(projectID))
+			exporter, err = cloudtrace.New(cloudtrace.WithProjectID(projectID))
 			if err != nil {
 				log.Fatal().Err(err).Msg("failed to initialize google tracing exporter")
 			}
 			tp = sdktrace.NewTracerProvider(
 				// For this example code we use sdktrace.AlwaysSample sampler to sample all traces.
 				// In a production application, use sdktrace.TraceIDRatioBased/ParentBased/NeverSample with a desired probability.
-				sdktrace.WithSampler(sdktrace.AlwaysSample()),
+				// fraction >= 1 means AlwaysSample()
+				sdktrace.WithSampler(sdktrace.TraceIDRatioBased(cfg.SamplingFraction)),
 				sdktrace.WithResource(resources),
 				sdktrace.WithBatcher(exporter),
 			)
 
-			closeFunc = func() {
-				exporter.Shutdown(ctx)
-				tp.Shutdown(ctx)
-			}
-		} else {
+		case config.STDOUT:
 			opts := []stdouttrace.Option{
 				stdouttrace.WithPrettyPrint(),
 			}
-			exporter, err := stdouttrace.New(opts...)
+			exporter, err = stdouttrace.New(opts...)
 			if err != nil {
 				log.Fatal().Err(err).Msg("failed to initialize stdout tracing exporter")
 			}
@@ -74,19 +74,22 @@ func InitTracing(ctx context.Context, cfg *config.Features_Tracing) func() {
 			tp = sdktrace.NewTracerProvider(
 				// For this example code we use sdktrace.AlwaysSample sampler to sample all traces.
 				// In a production application, use sdktrace.TraceIDRatioBased/ParentBased/NeverSample with a desired probability.
-				sdktrace.WithSampler(sdktrace.AlwaysSample()),
+				// fraction >= 1 means AlwaysSample()
+				sdktrace.WithSampler(sdktrace.TraceIDRatioBased(cfg.SamplingFraction)),
 				sdktrace.WithResource(resources),
 				sdktrace.WithSpanProcessor(bsp),
 			)
 
-			closeFunc = func() {
-				exporter.Shutdown(ctx)
-				tp.Shutdown(ctx)
-			}
+		default:
+			log.Fatal().Msgf("unsupported tracing Target: '%s'", target)
 		}
+
+		// Registers trace Provider globally.
+		otel.SetTracerProvider(tp)
 	})
 
-	// Registers trace Provider globally.
-	otel.SetTracerProvider(tp)
-	return closeFunc
+	return func() {
+		exporter.Shutdown(ctx)
+		tp.Shutdown(ctx)
+	}
 }

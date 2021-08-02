@@ -12,9 +12,16 @@ make run-play
 # or
 go run service/play/main.go
 
-# run with `production` mode (using GCP as telemetry backend)
-export CONFY_ENV=production
+# enable metrics and tracking
+export CONFY_FEATURES_METRICS_ENABLED=true
+export CONFY_FEATURES_TRACING_ENABLED=true
+# enable metrics target: `prometheus` and tracing target: `stdout`
+export CONFY_FEATURES_METRICS_TARGET=prometheus
+export CONFY_FEATURES_TRACING_TARGET=stdout
+# when using with target: `gcp`
+export GOOGLE_CLOUD_PROJECT=xyz
 export GOOGLE_APPLICATION_CREDENTIALS=../../../Apps/micro-starter-kit.json
+
 make run-play
 ```
 
@@ -25,11 +32,6 @@ make run-play
 grpcurl -insecure \
 -protoset <(buf build -o -) \
 -d '{"name": "sumo"}' 0.0.0.0:8084 mkit.service.greeter.v1.GreeterService/Hello
-
-# when server running in `production` mode
-grpcurl -insecure \
--protoset <(buf build -o -) \
--d '{"name": "sumo"}' 0.0.0.0:8080 mkit.service.greeter.v1.GreeterService/Hello
 ```
 
 ### Reference 

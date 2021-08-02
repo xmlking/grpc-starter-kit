@@ -16,3 +16,11 @@ features:
     cert_file: config/certs/upstream-cert.pem
     key_file: config/certs/upstream-key.pem
     server_name: "*"
+
+  metrics:
+    target: gcp
+    sampling_fraction: 0.0001
+
+  tracing:
+    target: gcp
+    sampling_fraction: 0.0001

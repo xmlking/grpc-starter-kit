@@ -72,19 +72,44 @@ type Features struct {
 	Translog  *Features_Translog  `yaml:"translog,omitempty"`
 }
 
+// Target telemetry target enum.
+type Target string
+
+const (
+	GCP        Target = "gcp"
+	PROMETHEUS Target = "prometheus"
+	STDOUT     Target = "stdout"
+)
+
+func ParseTarget(formatStr string) (Target, error) {
+	switch formatStr {
+	case "gcp":
+		return GCP, nil
+	case "prometheus":
+		return PROMETHEUS, nil
+	case "stdout":
+		return STDOUT, nil
+	}
+	return STDOUT, fmt.Errorf("unsupported metrics Target: '%s', defaulting to STDOUT", formatStr)
+}
+
 // Features_Metrics struct
 type Features_Metrics struct {
-	Enabled       bool   `yaml:",omitempty" default:"false"`
-	Address       string `yaml:"address,omitempty"`
-	FlushInterval uint64 `yaml:"flush_interval,omitempty" default:"10000000"`
+	Enabled  bool   `yaml:",omitempty" default:"false"`
+	Target   string `yaml:",omitempty" default:"stdout"`
+	Endpoint string `yaml:"endpoint,omitempty"`
+	// SamplingFraction >= 1 will always sample. SamplingFraction < 0 are treated as zero.
+	SamplingFraction float64       `yaml:"sampling_fraction,omitempty" default:"1.0"`
+	CollectPeriod    time.Duration `yaml:"collect_period,omitempty" default:"10s"`
 }
 
 // Features_Tracing struct
 type Features_Tracing struct {
-	Enabled       bool    `yaml:",omitempty" default:"false"`
-	Address       string  `yaml:"address,omitempty"`
-	Sampling      float64 `yaml:"sampling,omitempty" default:"0.5"`
-	FlushInterval uint64  `yaml:"flush_interval,omitempty" default:"10000000"`
+	Enabled  bool   `yaml:",omitempty" default:"false"`
+	Target   string `yaml:",omitempty" default:"stdout"`
+	Endpoint string `yaml:"endpoint,omitempty"`
+	// SamplingFraction >= 1 will always sample. SamplingFraction < 0 are treated as zero.
+	SamplingFraction float64 `yaml:"sampling_fraction,omitempty" default:"1.0"`
 }
 
 // Features_TLS struct
