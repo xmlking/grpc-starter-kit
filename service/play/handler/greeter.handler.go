@@ -61,7 +61,7 @@ func (s *greeterHandler) Hello(ctx context.Context, req *greeterv1.HelloRequest)
 
 	_ = func(ctx context.Context) error {
 		var span trace.Span
-		ctx, span = s.tracer.Start(ctx, "operation")
+		ctx, span = s.tracer.Start(ctx, "grpc-starter-kit/play")
 		defer span.End()
 
 		span.AddEvent("Nice operation!", trace.WithAttributes(attribute.Int("bogons", 100)))

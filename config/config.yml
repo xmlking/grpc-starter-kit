@@ -27,7 +27,7 @@ services:
     authority: "greeter-service"
     version: v0.1.0
     endpoint: dns:///localhost:8081
-#    endpoint: unix:///tmp/greeter.sock
+    #    endpoint: unix:///tmp/greeter.sock
     service_config: |
       {
         "loadBalancingPolicy": "round_robin",
@@ -73,15 +73,17 @@ services:
 features:
   metrics:
     enabled: false
-    target: stdout
-    endpoint: ":2222"
+    backend: prometheus # stdout, prometheus, gcp
+    # :0 indicate you're not specifying an exact port, but you want a free, available port selected by the system.
+    # In config.production.yml, we use fixed :9213 address
+    endpoint: ":0"
     sampling_fraction: 1.0
     collect_period: 10s
   tracing:
     enabled: false
-    target: stdout
+    backend: stdout
     endpoint: "jaeger:6831"
-    sampling_fraction:  1.0
+    sampling_fraction: 1.0
   tls:
     cert_file: config/certs/upstream-localhost-cert.pem
     key_file: config/certs/upstream-localhost-key.pem

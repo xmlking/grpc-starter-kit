@@ -25,6 +25,10 @@ export GOOGLE_APPLICATION_CREDENTIALS=../../../Apps/micro-starter-kit.json
 make run-play
 ```
 
+#### prometheus exporter 
+
+http://localhost:9213/metrics 
+
 ### Test
 
 ```bash

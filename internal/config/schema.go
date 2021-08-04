@@ -5,6 +5,8 @@ import (
 	"time"
 
 	"entgo.io/ent/dialect"
+
+	"github.com/xmlking/toolkit/telemetry"
 )
 
 // Service struct
@@ -21,18 +23,18 @@ type EmailConfiguration struct {
 	Username    string `yaml:"username"`
 	Password    string `yaml:",omitempty"`
 	EmailServer string `yaml:"email_server,omitempty"`
-	Port        uint32 `yaml:",omitempty" default:"587" valid:"port"`
-	From        string `yaml:",omitempty" valid:"email,optional"`
+	Port        uint32 `yaml:",omitempty" default:"587"`
+	From        string `yaml:",omitempty" validate:"email"`
 }
 
 // DatabaseConfiguration struct
 type DatabaseConfiguration struct {
-	Dialect         string         `yaml:",omitempty" valid:"in(mysql|sqlite3|postgres|gremlin)" default:"sqlite3"`
-	Host            string         `yaml:",omitempty" valid:"host"`
-	Port            uint32         `yaml:",omitempty" default:"5432" valid:"port"`
-	Username        string         `yaml:"username,omitempty" valid:"alphanum,required"`
-	Password        string         `yaml:"password,omitempty" valid:"alphanum,required"`
-	Database        string         `yaml:"database,omitempty" valid:"type(string),required"`
+	Dialect         string         `yaml:",omitempty" validate:"oneof=mysql sqlite3 postgres gremlin" default:"sqlite3"`
+	Host            string         `yaml:",omitempty" validate:"required"`
+	Port            uint32         `yaml:",omitempty" default:"5432" validate:"number"`
+	Username        string         `yaml:"username,omitempty" validate:"alphanum,required"`
+	Password        string         `yaml:"password,omitempty" validate:"alphanum,required"`
+	Database        string         `yaml:"database,omitempty" validate:"required"`
 	Charset         string         `yaml:",omitempty" default:"utf8"`
 	Utc             bool           `yaml:",omitempty" default:"true"`
 	Logging         bool           `yaml:",omitempty" default:"false"`
@@ -64,39 +66,18 @@ func (d *DatabaseConfiguration) URL() (url string, err error) {
 
 // Features struct
 type Features struct {
-	Metrics   *Features_Metrics   `yaml:"metrics,omitempty"`
-	Tracing   *Features_Tracing   `yaml:"tracing,omitempty"`
-	TLS       *Features_TLS       `yaml:"tls,omitempty"`
-	Validator *Features_Validator `yaml:"validator,omitempty"`
-	Rpclog    *Features_Rpclog    `yaml:"rpclog,omitempty"`
-	Translog  *Features_Translog  `yaml:"translog,omitempty"`
-}
-
-// Target telemetry target enum.
-type Target string
-
-const (
-	GCP        Target = "gcp"
-	PROMETHEUS Target = "prometheus"
-	STDOUT     Target = "stdout"
-)
-
-func ParseTarget(formatStr string) (Target, error) {
-	switch formatStr {
-	case "gcp":
-		return GCP, nil
-	case "prometheus":
-		return PROMETHEUS, nil
-	case "stdout":
-		return STDOUT, nil
-	}
-	return STDOUT, fmt.Errorf("unsupported metrics Target: '%s', defaulting to STDOUT", formatStr)
+	Metrics   *telemetry.MetricsConfig `yaml:"metrics,omitempty"`
+	Tracing   *telemetry.TracingConfig `yaml:"tracing,omitempty"`
+	TLS       *Features_TLS            `yaml:"tls,omitempty"`
+	Validator *Features_Validator      `yaml:"validator,omitempty"`
+	Rpclog    *Features_Rpclog         `yaml:"rpclog,omitempty"`
+	Translog  *Features_Translog       `yaml:"translog,omitempty"`
 }
 
 // Features_Metrics struct
 type Features_Metrics struct {
 	Enabled  bool   `yaml:",omitempty" default:"false"`
-	Target   string `yaml:",omitempty" default:"stdout"`
+	Backend  string `yaml:",omitempty" validate:"oneof=gcp prometheus stdout" default:"stdout"`
 	Endpoint string `yaml:"endpoint,omitempty"`
 	// SamplingFraction >= 1 will always sample. SamplingFraction < 0 are treated as zero.
 	SamplingFraction float64       `yaml:"sampling_fraction,omitempty" default:"1.0"`
@@ -106,7 +87,7 @@ type Features_Metrics struct {
 // Features_Tracing struct
 type Features_Tracing struct {
 	Enabled  bool   `yaml:",omitempty" default:"false"`
-	Target   string `yaml:",omitempty" default:"stdout"`
+	Backend  string `yaml:",omitempty" validate:"oneof=gcp stdout" default:"stdout"`
 	Endpoint string `yaml:"endpoint,omitempty"`
 	// SamplingFraction >= 1 will always sample. SamplingFraction < 0 are treated as zero.
 	SamplingFraction float64 `yaml:"sampling_fraction,omitempty" default:"1.0"`
@@ -115,9 +96,9 @@ type Features_Tracing struct {
 // Features_TLS struct
 type Features_TLS struct {
 	Enabled    bool   `yaml:",omitempty" default:"false"`
-	CertFile   string `yaml:"cert_file" valid:"type(string),required"`
-	KeyFile    string `yaml:"key_file" valid:"type(string),required"`
-	CaFile     string `yaml:"ca_file" valid:"type(string),required"`
+	CertFile   string `yaml:"cert_file" validate:"file,required"`
+	KeyFile    string `yaml:"key_file" validate:"file,required"`
+	CaFile     string `yaml:"ca_file" validate:"file,required"`
 	Password   string `yaml:"password,omitempty"`
 	ServerName string `yaml:"server_name,omitempty" default:"'*'"`
 }
