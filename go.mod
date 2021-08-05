@@ -13,8 +13,8 @@ replace github.com/xmlking/grpc-starter-kit => ./
 //replace github.com/xmlking/toolkit => github.com/xmlking/toolkit v0.1.2-0.20210125025404-51fc2d71fb2d
 
 require (
-	entgo.io/contrib v0.0.0-20210422070405-6ca335ec4de1
-	entgo.io/ent v0.8.1-0.20210720072308-756517e559eb
+	entgo.io/contrib v0.0.0-20210726113942-478c3f3c33cb
+	entgo.io/ent v0.9.0
 	github.com/DATA-DOG/go-sqlmock v1.5.0
 	github.com/cloudevents/sdk-go/v2 v2.4.1
 	github.com/cockroachdb/errors v1.8.6
@@ -31,11 +31,11 @@ require (
 	github.com/stretchr/testify v1.7.0
 	github.com/tcfw/go-grpc-k8s-resolver v0.0.1
 	github.com/thoas/go-funk v0.9.0
-	github.com/xmlking/toolkit v0.2.1-0.20210805183912-9e0323160113
-	github.com/xmlking/toolkit/broker/cloudevents v0.0.0-20210805183912-9e0323160113
-	github.com/xmlking/toolkit/confy v0.2.1-0.20210805183912-9e0323160113
-	github.com/xmlking/toolkit/logger v0.2.1-0.20210805183912-9e0323160113
-	github.com/xmlking/toolkit/telemetry v0.0.0-20210805183912-9e0323160113
+	github.com/xmlking/toolkit v0.2.1
+	github.com/xmlking/toolkit/broker/cloudevents v0.2.1
+	github.com/xmlking/toolkit/confy v0.2.1
+	github.com/xmlking/toolkit/logger v0.2.1
+	github.com/xmlking/toolkit/telemetry v0.2.1
 	go.opentelemetry.io/contrib/instrumentation/google.golang.org/grpc/otelgrpc v0.22.0
 	go.opentelemetry.io/otel v1.0.0-RC2
 	go.opentelemetry.io/otel/metric v0.22.0
