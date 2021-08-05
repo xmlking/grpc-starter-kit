@@ -53,10 +53,6 @@ func main() {
 			log.Fatal().Err(err).Msg("failed to create cert")
 		}
 		serverCert := credentials.NewTLS(tlsConf)
-		// serverCert, err := credentials.NewServerTLSFromFile(cfg.Features.TLS.CertFile, cfg.Features.TLS.KeyFile)
-		//if err != nil {
-		//    log.Fatal().Err(err).Msg("failed to create cert")
-		//}
 		grpcOps = append(grpcOps, grpc.Creds(serverCert))
 	}
 

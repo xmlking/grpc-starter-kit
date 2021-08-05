@@ -51,11 +51,16 @@ Microservices starter kit for **Golang**, aims to be developer friendly.
 - [x] Kubernetes _Matrix Deployment_ with [Kustomize](https://kustomize.io/)
 - [ ] Add k8s [healthchecks](https://github.com/heptiolabs/healthcheck) with [cmux](https://medium.com/@drgarcia1986/listen-grpc-and-http-requests-on-the-same-port-263c40cb45ff)
 - [x] Feature Flags (enable/disable with zero cost)
-- [ ] Observability via [OpenTelemetry](https://github.com/open-telemetry/opentelemetry-go)
+- [x] Observability via [OpenTelemetry](https://github.com/open-telemetry/opentelemetry-go)
 - [ ] Service Mesh with [Istio](https://istio.io/)
 - [ ] GraphQL Gateway with [gqlgen](https://gqlgen.com/), [rejoiner](https://github.com/google/rejoiner),[gqlgen](https://github.com/Shpota/skmz)
 - [ ] Switch to [Bazel Build](https://bazel.build/)
 - [ ] Graceful / zero downtime upgrades [tableflip](https://github.com/cloudflare/tableflip)
+- [ ] Cache — Ephemeral key-value storage with TTLs
+- [ ] Secondary Index  — Ephemeral Index with Redis Search
+- [ ] Crypto — App-level data encryption/decryption with Key Management
+- [ ] Auth — API Authentication with OpenID Connect, JWT, WebAuthN
+
 
 ## Getting Started
 

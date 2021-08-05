@@ -31,10 +31,11 @@ require (
 	github.com/stretchr/testify v1.7.0
 	github.com/tcfw/go-grpc-k8s-resolver v0.0.1
 	github.com/thoas/go-funk v0.9.0
-	github.com/xmlking/toolkit v0.2.1-0.20210804065244-2056bde09290
-	github.com/xmlking/toolkit/confy v0.2.1-0.20210804065244-2056bde09290
-	github.com/xmlking/toolkit/logger v0.2.1-0.20210804065244-2056bde09290
-	github.com/xmlking/toolkit/telemetry v0.0.0-20210804065244-2056bde09290
+	github.com/xmlking/toolkit v0.2.1-0.20210805183912-9e0323160113
+	github.com/xmlking/toolkit/broker/cloudevents v0.0.0-20210805183912-9e0323160113
+	github.com/xmlking/toolkit/confy v0.2.1-0.20210805183912-9e0323160113
+	github.com/xmlking/toolkit/logger v0.2.1-0.20210805183912-9e0323160113
+	github.com/xmlking/toolkit/telemetry v0.0.0-20210805183912-9e0323160113
 	go.opentelemetry.io/contrib/instrumentation/google.golang.org/grpc/otelgrpc v0.22.0
 	go.opentelemetry.io/otel v1.0.0-RC2
 	go.opentelemetry.io/otel/metric v0.22.0
