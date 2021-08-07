@@ -10,6 +10,8 @@ replace github.com/xmlking/grpc-starter-kit => ./
 
 //replace github.com/xmlking/toolkit/logger => ../toolkit/logger
 
+//replace github.com/xmlking/toolkit/telemetry => ../toolkit/telemetry
+
 //replace github.com/xmlking/toolkit => github.com/xmlking/toolkit v0.1.2-0.20210125025404-51fc2d71fb2d
 
 require (
@@ -35,7 +37,7 @@ require (
 	github.com/xmlking/toolkit/broker/cloudevents v0.2.1
 	github.com/xmlking/toolkit/confy v0.2.1
 	github.com/xmlking/toolkit/logger v0.2.1
-	github.com/xmlking/toolkit/telemetry v0.2.1
+	github.com/xmlking/toolkit/telemetry v0.2.2-0.20210807070629-098bbac6595c
 	go.opentelemetry.io/contrib/instrumentation/google.golang.org/grpc/otelgrpc v0.22.0
 	go.opentelemetry.io/otel v1.0.0-RC2
 	go.opentelemetry.io/otel/metric v0.22.0

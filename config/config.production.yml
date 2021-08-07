@@ -19,10 +19,9 @@ features:
 
   metrics:
     target: gcp
-    endpoint: ":9213"
+    endpoint: ":9213" # using Custom Exporter port as default from: https://github.com/prometheus/prometheus/wiki/Default-port-allocations
     sampling_fraction: 0.0001
 
   tracing:
     target: gcp
-    endpoint: ":9213"
     sampling_fraction: 0.0001

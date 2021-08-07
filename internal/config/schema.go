@@ -74,25 +74,6 @@ type Features struct {
 	Translog  *Features_Translog       `yaml:"translog,omitempty"`
 }
 
-// Features_Metrics struct
-type Features_Metrics struct {
-	Enabled  bool   `yaml:",omitempty" default:"false"`
-	Backend  string `yaml:",omitempty" validate:"oneof=gcp prometheus stdout" default:"stdout"`
-	Endpoint string `yaml:"endpoint,omitempty"`
-	// SamplingFraction >= 1 will always sample. SamplingFraction < 0 are treated as zero.
-	SamplingFraction float64       `yaml:"sampling_fraction,omitempty" default:"1.0"`
-	CollectPeriod    time.Duration `yaml:"collect_period,omitempty" default:"10s"`
-}
-
-// Features_Tracing struct
-type Features_Tracing struct {
-	Enabled  bool   `yaml:",omitempty" default:"false"`
-	Backend  string `yaml:",omitempty" validate:"oneof=gcp stdout" default:"stdout"`
-	Endpoint string `yaml:"endpoint,omitempty"`
-	// SamplingFraction >= 1 will always sample. SamplingFraction < 0 are treated as zero.
-	SamplingFraction float64 `yaml:"sampling_fraction,omitempty" default:"1.0"`
-}
-
 // Features_TLS struct
 type Features_TLS struct {
 	Enabled    bool   `yaml:",omitempty" default:"false"`

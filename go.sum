@@ -627,8 +627,8 @@ github.com/xmlking/toolkit/confy v0.2.1 h1:ibgDZRsWGSxoLBqNfGkooUszoew1QsnETuMBy
 github.com/xmlking/toolkit/confy v0.2.1/go.mod h1:+kiAzggAehxbARiXxzD0zIzYDnZW4WmI3u1mxhq5QM0=
 github.com/xmlking/toolkit/logger v0.2.1 h1:6szYX1oQEOdms6zfWe8WPKOLbZtm7Ma9pJpeBxUANIE=
 github.com/xmlking/toolkit/logger v0.2.1/go.mod h1:9I+copkbirFrYQBDsXVZ3OnrDzPHp+HWk6Y2FxfkGrA=
-github.com/xmlking/toolkit/telemetry v0.2.1 h1:oQQUk+hLPn9ewGcxM7ffJFmjwrMTKfLe4o1DTVbKzJw=
-github.com/xmlking/toolkit/telemetry v0.2.1/go.mod h1:PYbKit3k+UjvA3Qffh+KhE/0ByNS6X2dTRUU+cncNp8=
+github.com/xmlking/toolkit/telemetry v0.2.2-0.20210807070629-098bbac6595c h1:BXXtTJ1zayPbRQCasFzr+rrVZqsBw0yrjQjDtzQDOtk=
+github.com/xmlking/toolkit/telemetry v0.2.2-0.20210807070629-098bbac6595c/go.mod h1:AGWKP5cgDpEC4M/WqJDzA7IYSpAScb9PECY8bkFRj40=
 github.com/xordataexchange/crypt v0.0.3-0.20170626215501-b2862e3d0a77/go.mod h1:aYKd//L2LvnjZzWKhF00oedf4jCCReLcmhLdhm1A27Q=
 github.com/yalp/jsonpath v0.0.0-20180802001716-5cc68e5049a0/go.mod h1:/LWChgwKmvncFJFHJ7Gvn9wZArjbV5/FppcK2fKk/tI=
 github.com/yudai/gojsondiff v1.0.0/go.mod h1:AY32+k2cwILAkW1fbgxQ5mUmMiZFgLIV+FBNExI05xg=

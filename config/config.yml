@@ -79,6 +79,7 @@ features:
     endpoint: ":0"
     sampling_fraction: 1.0
     collect_period: 10s
+    # histogram_distribution: [.005, .01, .025, .05, .1, .25, .5, 1, 2.5, 5, 10]
   tracing:
     enabled: false
     backend: stdout

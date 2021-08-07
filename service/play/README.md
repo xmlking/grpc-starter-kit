@@ -18,6 +18,8 @@ export CONFY_FEATURES_TRACING_ENABLED=true
 # enable metrics target: `prometheus` and tracing target: `stdout`
 export CONFY_FEATURES_METRICS_TARGET=prometheus
 export CONFY_FEATURES_TRACING_TARGET=stdout
+# lock  `prometheus` exporter port
+export CONFY_FEATURES_METRICS_ENDPOINT=":9213"
 # when using with target: `gcp`
 export GOOGLE_CLOUD_PROJECT=xyz
 export GOOGLE_APPLICATION_CREDENTIALS=../../../Apps/micro-starter-kit.json
