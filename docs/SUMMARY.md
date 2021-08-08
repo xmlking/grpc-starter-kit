@@ -12,6 +12,16 @@
   - [Configuration](concepts/actions.md)
   - [State](concepts/state.md)
   - [Select](concepts/select.md)
+- Components
+  - [Overview](components/overview.md)
+  - [Broker](components/broker.md)
+  - [Config](components/config.md)
+  - [Errors](components/errors.md)
+  - [Logging](components/logging.md)
+  - [Middleware](components/middleware/overview.md)
+    - [Recovery](components/middleware/recovery.md)
+    - [Validate](components/middleware/validate.md)
+    - [Tracing](components/middleware/tracing.md)
 - Advanced
   - [Dependency Injection](advanced/dependency-injection.md)
   - [Logging](advanced/logging.md)
@@ -58,6 +68,7 @@
 - Community
   - [Resources](community/awesome.md)
   - [Contributors](community/contributors.md)
-  - [Contributing](community/contributing.md)
+  - [Contributing](community/contribution.md)
+  - [Documentation](community/documentation.md)
 - [Change Log](../CHANGELOG.md)
 - [FAQ](faq/howto.md)
