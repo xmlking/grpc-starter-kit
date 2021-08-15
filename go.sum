@@ -627,8 +627,8 @@ github.com/xmlking/toolkit v0.2.2 h1:z/pK5xJWlO6AsRlxGyi0v1FMGo0VUn6/n7EHG4WaETA
 github.com/xmlking/toolkit v0.2.2/go.mod h1:9zpp+d/vUaDYMGxmp6GmgrnRTBZxTqY3cxh6W1TTGMs=
 github.com/xmlking/toolkit/broker/cloudevents v0.2.2 h1:5b5yKvs1WJq4WKXiBZq4h7ruBV5j/zG0xC9kOWGrlkk=
 github.com/xmlking/toolkit/broker/cloudevents v0.2.2/go.mod h1:Cj9NqVO6rdhA0ysH+y6vpxm6tQcyuYcyyYk/dwREAqc=
-github.com/xmlking/toolkit/confy v0.2.2 h1:CK5NUO1OJGZK3wBqN7vzCpjX+PMT2ruF3eRCfQD19AM=
-github.com/xmlking/toolkit/confy v0.2.2/go.mod h1:bO+UQJM4vvBM3V9T+Q2B4Px1yjLWFEEfDIIuGhjJlns=
+github.com/xmlking/toolkit/confy v0.2.3 h1:QBsmj0kHOlbNGdHs5r/MiIgAcGsQN854CbaRmlAC/fQ=
+github.com/xmlking/toolkit/confy v0.2.3/go.mod h1:pARx9aj+EqVJUO2wBSHtWNZTO1I0SusHecahkRPC0yo=
 github.com/xmlking/toolkit/logger v0.2.2 h1:tqx/hFN6UkU34vE87NiRhQZNCV87TOweclpf5anL+Xg=
 github.com/xmlking/toolkit/logger v0.2.2/go.mod h1:7PkaeC/MM8G4k62/m5XGq7kCP6mXYwhcTA+CSROulv4=
 github.com/xmlking/toolkit/telemetry v0.2.2 h1:dSNF76WusY7bLq4AvJxsD70r7kjOFe/KoScPyuCUo5Q=

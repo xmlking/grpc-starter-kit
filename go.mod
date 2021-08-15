@@ -35,7 +35,7 @@ require (
 	github.com/thoas/go-funk v0.9.0
 	github.com/xmlking/toolkit v0.2.2
 	github.com/xmlking/toolkit/broker/cloudevents v0.2.2
-	github.com/xmlking/toolkit/confy v0.2.2
+	github.com/xmlking/toolkit/confy v0.2.3
 	github.com/xmlking/toolkit/logger v0.2.2
 	github.com/xmlking/toolkit/telemetry v0.2.2
 	go.opentelemetry.io/contrib/instrumentation/google.golang.org/grpc/otelgrpc v0.22.0
