@@ -76,6 +76,17 @@ task go:test-race
 task go:test-cover
 ```
 
+### go-mod
+
+```bash
+task mod:default
+task mod:sync
+task mod:verify
+task mod:outdated
+task mod:release
+```
+
+
 ### run
 
 ### GitHub Actions

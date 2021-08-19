@@ -46,8 +46,8 @@ dmitri.shuralyov.com/gpu/mtl v0.0.0-20190408044501-666a987793e9/go.mod h1:H6x//7
 entgo.io/contrib v0.0.0-20210726113942-478c3f3c33cb h1:fzvwtC8MQzdGCcqVguZysvS44MbbzsCcqcH3WlzuDl8=
 entgo.io/contrib v0.0.0-20210726113942-478c3f3c33cb/go.mod h1:KyosEYfmDUOgMHnVDwoGTTKdhgpCHdRCyiCABk99LOE=
 entgo.io/ent v0.8.1-0.20210630104730-a19a89a141cf/go.mod h1:sP6mGLcM9h6HvJWMb2G+g5eQ8oGklKhOa/0z0Pt/0WI=
-entgo.io/ent v0.9.0 h1:2S1zfpMMW6p+wctj6kcYUprNPNjLWFW06T5MdyAfmWc=
-entgo.io/ent v0.9.0/go.mod h1:6NUeTfUN5mp5YN+5tgoH1SlakSvYPTBOYotSOvaI4ak=
+entgo.io/ent v0.9.1 h1:IG8andyeD79GG24U8Q+1Y45hQXj6gY5evSBcva5gtBk=
+entgo.io/ent v0.9.1/go.mod h1:6NUeTfUN5mp5YN+5tgoH1SlakSvYPTBOYotSOvaI4ak=
 github.com/99designs/gqlgen v0.13.0/go.mod h1:NV130r6f4tpRWuAI+zsrSdooO/eWUv+Gyyoi3rEfXIk=
 github.com/AlekSi/pointer v1.1.0/go.mod h1:y7BvfRI3wXPWKXEBhU71nbnIEEZX0QTSB2Bj48UJIZE=
 github.com/AndreasBriese/bbloom v0.0.0-20190306092124-e2d15f34fcf9/go.mod h1:bOvUY6CB00SOBii9/FifXqc0awNKxLFCL/+pkDPuyl8=

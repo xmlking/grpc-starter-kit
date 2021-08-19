@@ -7,9 +7,9 @@ version: '3'
 
 tasks:
   default:
-    desc: "mod default is to run 'download' task"
+    desc: "mod default is to run 'verify' task"
     cmds:
-      - task: download
+      - task: verify
 
   sync:
     desc: Delete go.sum, sync Go modules

@@ -16,7 +16,7 @@ replace github.com/xmlking/grpc-starter-kit => ./
 
 require (
 	entgo.io/contrib v0.0.0-20210726113942-478c3f3c33cb
-	entgo.io/ent v0.9.0
+	entgo.io/ent v0.9.1
 	github.com/DATA-DOG/go-sqlmock v1.5.0
 	github.com/cloudevents/sdk-go/v2 v2.5.0
 	github.com/cockroachdb/errors v1.8.6
