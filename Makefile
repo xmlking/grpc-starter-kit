@@ -40,9 +40,9 @@ BUILD_FLAGS = $(shell govvv -flags -version $(VERSION) -pkg $(VERSION_PACKAGE))
 # $(warning VERSION = $(VERSION), HAS_GOVVV = $(HAS_GOVVV), HAS_KO = $(HAS_KO))
 # $(warning VERSION_PACKAGE = $(VERSION_PACKAGE), BUILD_FLAGS = $(BUILD_FLAGS))
 
-.PHONY: all tools check_dirty clean update_dep
+.PHONY: all tools check_dirty clean sync
 .PHONY: proto proto_lint proto_breaking proto_format proto_generate proto_shared
-.PHONY: lint lint-% upgrade_deps
+.PHONY: lint lint-% outdated
 .PHONY: format format-%
 .PHONY: build build-%
 .PHONY: run run-%
@@ -83,23 +83,28 @@ clean:
 # Target: go-mod                                                               #
 ################################################################################
 
-update_deps:
+sync:
+	@echo Removing all go.sum files and download sync deps....
 	@for d in `find * -name 'go.mod'`; do \
 		pushd `dirname $$d` >/dev/null; \
+	    echo delete and sync $$d; \
+	    rm -f go.sum; \
+	    go mod download; \
+	    go mod tidy; \
+		popd >/dev/null; \
+	done
+
+verify:
+	@echo Go mod verify and tidy....
+	@for d in `find * -name 'go.mod'`; do \
+		pushd `dirname $$d` >/dev/null; \
+		echo verifying $$d; \
 		go mod verify; \
 		go mod tidy; \
 		popd >/dev/null; \
 	done
 
-download_deps:
-	@for d in `find * -name 'go.mod'`; do \
-		pushd `dirname $$d` >/dev/null; \
-		rm -f go.sum; \
-		go mod download; \
-		popd >/dev/null; \
-	done
-
-upgrade_deps:
+outdated:
 	@goup -v -m ./...
 
 ################################################################################
@@ -230,7 +235,7 @@ run run-%:
 # Target: release                                                              #
 ################################################################################
 
-release: download_deps
+release: verify
 	@if [ -z $(TAG) ]; then \
 		echo "no  TAG. Usage: make release TAG=v0.1.1"; \
 	else \

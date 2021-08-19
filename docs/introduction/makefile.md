@@ -89,7 +89,7 @@ make lint-account
 make lint-account-service
 # goup checks if there are any updates for imports in your module.
 # the main purpose is using it as a linter in continuous integration or in development process.
-make upgrade_deps
+make sync
 ```
 
 ### build
