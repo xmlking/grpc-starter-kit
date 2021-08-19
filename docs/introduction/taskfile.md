@@ -54,8 +54,27 @@ task proto:clean
 task proto:generate
 ```
 
-### test
+### go
 
+```bash
+task go:cli-deps
+task go:clean
+task go:format
+task go:lint
+task go:ci
+task go:packages
+task go:ent
+```
+#### test
+
+```bash
+task go:test
+task go:test-unit
+task go:test-inte
+task go:test-e2e
+task go:test-race
+task go:test-cover
+```
 
 ### run
 

@@ -11,33 +11,36 @@ tasks:
     cmds:
       - task: download
 
-  download:
-    desc: Downloads and tidy Go modules
+  sync:
+    desc: Delete go.sum, sync Go modules
     cmds:
-      - echo "Removeing go.sum and downloading deps...."
+      - echo "Removeing all go.sum files and download sync deps...."
       - |
         for d in `find * -name 'go.mod'`; do
           pushd `dirname $d` >/dev/null
+          echo delete and sync $d
           rm -f go.sum
           go mod download
+          go mod tidy
           popd >/dev/null
         done
     silent: true
 
-  update:
-    desc: Go mod verify and tidy.
+  verify:
+    desc: Verify and tidy Go modules
     cmds:
       - echo "Go mod verify and tidy...."
       - |
         for d in `find * -name 'go.mod'`; do
           pushd `dirname $d` >/dev/null
+          echo verifying $d
           go mod verify
           go mod tidy
           popd >/dev/null
         done
     silent: true
 
-  upgrade:
+  outdated:
     desc: Show outdated dependencies
     cmds:
       - cmd: goup -v -m ./...
@@ -48,10 +51,10 @@ tasks:
     cmds:
       - echo "Go mod tag and release...."
       - |
-        for d in {{.ALL_GO_MOD_DIRS}}; do
-          pushd `dirname $d` >/dev/null
-          hub release create -m "$d/{{.TAG}} release" $d/{{.TAG}}
-          popd >/dev/null
+        find * -name 'go.mod' -mindepth 1 -exec dirname {} \; | sort | while read dir; do
+        pushd $dir >/dev/null
+        hub release create -m "$dir/{{.TAG}} release" $dir/{{.TAG}}
+        popd >/dev/null
         done
         hub release create -m "{{.TAG}} release" {{.TAG}}
     preconditions:

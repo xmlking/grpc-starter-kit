@@ -3,11 +3,25 @@ package email
 import (
 	"fmt"
 	"net/smtp"
+	"os"
 	"strconv"
 	"testing"
 
+	"github.com/rs/zerolog/log"
 	"github.com/xmlking/grpc-starter-kit/internal/config"
 )
+
+func TestMain(m *testing.M) {
+	// HINT: CertFile etc., Our schema has `file` path validation, which is relative to project root.
+	if err := os.Chdir("../.."); err != nil {
+		log.Fatal().Err(err).Send()
+	}
+	wd, _ := os.Getwd()
+	log.Debug().Msgf("Setup: changing working directory to: %s", wd)
+
+	code := m.Run()
+	os.Exit(code)
+}
 
 func TestSendEmail_Send(t *testing.T) {
 	var emailConf = config.GetConfig().Email

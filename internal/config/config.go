@@ -25,6 +25,7 @@ import (
 )
 
 var (
+	once       sync.Once
 	efs        fs.FS
 	cfg        Configuration
 	configLock = new(sync.RWMutex)
@@ -56,23 +57,26 @@ git state   : %s
 git summary : %s
 `
 
-func init() {
-	efs = xfs.FS(embed.StaticConfig)
-	configFiles, exists := os.LookupEnv("CONFY_FILES")
-	if !exists {
-		configFiles = "config/config.yml"
-	}
-
-	confy.DefaultConfy = confy.NewConfy(confy.WithFS(efs), confy.WithErrorOnUnmatchedKeys())
-
-	log.Info().Msgf("loading config files: %s", configFiles)
-	if err := confy.Load(&cfg, strings.Split(configFiles, ",")...); err != nil {
-		if strings.Contains(err.Error(), "no such file") {
-			log.Panic().Err(err).Msgf("missing config file at %s", configFiles)
-		} else {
-			log.Fatal().Err(err).Send()
+// Init you can call `Init()` explicitly one-time when app start, or `GetConfig()` implicitly initialize it.
+func Init() {
+	once.Do(func() { // <-- atomic, does not allow repeating
+		efs = xfs.FS(embed.StaticConfig)
+		configFiles, exists := os.LookupEnv("CONFY_FILES")
+		if !exists {
+			configFiles = "config/config.yml"
 		}
-	}
+
+		confy.DefaultConfy = confy.NewConfy(confy.WithFS(efs), confy.WithErrorOnUnmatchedKeys())
+
+		log.Info().Msgf("loading config files: %s", configFiles)
+		if err := confy.Load(&cfg, strings.Split(configFiles, ",")...); err != nil {
+			if strings.Contains(err.Error(), "no such file") {
+				log.Panic().Err(err).Msgf("missing config file at %s", configFiles)
+			} else {
+				log.Fatal().Err(err).Send()
+			}
+		}
+	})
 }
 
 /**
@@ -96,6 +100,10 @@ func GetBuildInfo() string {
 func GetConfig() Configuration { // FIXME: return a deep copy?
 	configLock.RLock()
 	defer configLock.RUnlock()
+	// HINT: initialize for the first time
+	if confy.DefaultConfy == nil {
+		Init()
+	}
 	return cfg
 }
 

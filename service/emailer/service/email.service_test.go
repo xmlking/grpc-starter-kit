@@ -1,8 +1,10 @@
 package service
 
 import (
+	"os"
 	"testing"
 
+	"github.com/rs/zerolog/log"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/mock"
 
@@ -18,6 +20,19 @@ func (mock *FakeEmailSender) Send(subject, body string, to []string) error {
 	args := mock.Called(subject, body, to)
 	return args.Error(0)
 }
+
+func TestMain(m *testing.M) {
+	// HINT: CertFile etc., Our schema has `file` path validation, which is relative to project root.
+	if err := os.Chdir("../../.."); err != nil {
+		log.Fatal().Err(err).Send()
+	}
+	wd, _ := os.Getwd()
+	log.Debug().Msgf("Setup: changing working directory to: %s", wd)
+
+	code := m.Run()
+	os.Exit(code)
+}
+
 func TestEmailService_Welcome(t *testing.T) {
 	emailer := &FakeEmailSender{}
 	emailer.On("Send",

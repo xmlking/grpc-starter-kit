@@ -40,7 +40,7 @@ Once `config` is initialized, then you can use `github.com/xmlking/grpc-starter-
 
 ```go
 import (
-    _ "github.com/xmlking/grpc-starter-kit/internal/config"
+    "github.com/xmlking/grpc-starter-kit/internal/config"
 )
 
 func ExampleGetConfig_check_defaults() {
@@ -67,9 +67,9 @@ func TestOverwriteConfigurationWithEnvironmentWithDefaultPrefix(t *testing.T) {
 	defer os.Setenv("CONFY_SERVICES_ACCOUNT_ENDPOINT", "")
 
 	var cfg config.Configuration
-	config.Configor.Load(&cfg, "/config/config.yml")
+	config.Load(&cfg, "/config/config.yml")
 
-	t.Logf("Environment: %s", config.Configor.GetEnvironment())
+	t.Logf("Environment: %s", config.GetEnvironment())
 	t.Log(cfg.Services.Account)
 	if cfg.Services.Account.Endpoint != "dns:///localhost:8088" {
 		t.Errorf("Account Endpoint is %s, want %s", cfg.Services.Account.Endpoint, "dns:///localhost:8088")

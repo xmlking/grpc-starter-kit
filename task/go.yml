@@ -13,7 +13,9 @@ vars:
   VERSION:
     sh: git rev-parse --short HEAD
   GO_PACKAGES:
-    sh: go list ./...
+    sh: go mod tidy && go list ./...
+  TIMEOUT: 60s
+  CODECOV_FILE: build/coverage.txt
 
 tasks:
   default:
@@ -32,7 +34,7 @@ tasks:
       - ./config/config.yml
 
   install:
-    desc: Installs Task
+    desc: Install Task
     cmds:
       - go install -v -ldflags="-w -s -X main.version={{.GIT_COMMIT}}" ./cmd/task
     env:
@@ -67,9 +69,35 @@ tasks:
 
   test:
     desc: Runs test suite
-    deps: [install]
+    vars:
+      ARGS: '{{default "-short" .ARGS}}'
     cmds:
-      - go test {{catLines .GO_PACKAGES}}
+      - go test -timeout {{.TIMEOUT}} {{.ARGS}} {{catLines .GO_PACKAGES}}
+    silent: true
+  ## Run only unit tests
+  test-unit:
+    - task: test
+      vars: {ARGS: -short}
+  ## Run only integration tests
+  test-inte:
+    - task: test
+      vars: {ARGS: -run Integration}
+  ## Run only E2E tests
+  test-e2e:
+    - task: test
+      vars: {ARGS: -run E2E}
+  ## Run tests with race detector
+  test-race:
+    - task: test
+      vars: {ARGS: -race }
+  ## Run tests in verbose mode with coverage reporting
+  test-cover:
+    - task: test
+      vars: {ARGS: "-cover -short -coverprofile={{.CODECOV_FILE}} -covermode=atomic"}
+  ## Run benchmarks
+  test-bench:
+    - task: test
+      vars: {ARGS: -run=__absolutelynothing__ -bench=.}
 
   ci:
     - task: go-install

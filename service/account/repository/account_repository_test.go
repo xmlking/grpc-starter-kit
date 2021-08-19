@@ -3,6 +3,7 @@ package repository_test
 import (
 	"context"
 	"database/sql"
+	"os"
 	"regexp"
 	"testing"
 
@@ -30,6 +31,13 @@ type accountRepositorySuite struct {
 
 // SetupSuite
 func (s *accountRepositorySuite) SetupSuite() {
+	// HINT: CertFile etc., Our schema has `file` path validation, which is relative to project root.
+	if err := os.Chdir("../../.."); err != nil {
+		log.Fatal().Err(err).Send()
+	}
+	wd, _ := os.Getwd()
+	log.Debug().Msgf("Changing working directory to: %s", wd)
+
 	dbConf := config.GetConfig().Database
 	s.T().Logf("in SetupSuite: %v", dbConf)
 

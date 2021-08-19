@@ -6,18 +6,41 @@ import (
 	"testing"
 	"time"
 
-	"github.com/xmlking/toolkit/confy"
-
+	"github.com/rs/zerolog/log"
 	"github.com/stretchr/testify/assert"
-
 	"github.com/xmlking/grpc-starter-kit/internal/config"
+	"github.com/xmlking/toolkit/confy"
+	_ "github.com/xmlking/toolkit/logger/auto"
 )
 
 // CONFY_DEBUG_MODE=true go test -v ./internal/config/... -count=1
 
+func setup() {
+	// HINT: CertFile etc., Our schema has `file` path validation, which is relative to project root.
+	if err := os.Chdir("../.."); err != nil {
+		log.Fatal().Err(err).Send()
+	}
+	wd, _ := os.Getwd()
+	log.Debug().Msgf("Setup: changing working directory to: %s", wd)
+	log.Debug().Msg("Setup completed")
+}
+
+func teardown() {
+	// Do something here.
+	//confy.DefaultConfy = nil
+	fmt.Println("Teardown completed")
+}
+
+func TestMain(m *testing.M) {
+	setup()
+	code := m.Run()
+	teardown()
+	os.Exit(code)
+}
+
 func TestNestedConfig(t *testing.T) {
-	t.Logf("Environment: %s", confy.GetEnvironment())
 	t.Log(config.GetConfig().Database)
+	t.Logf("Environment: %s", confy.GetEnvironment())
 	connMaxLifetime := config.GetConfig().Database.ConnMaxLifetime
 	if *connMaxLifetime != time.Duration(time.Hour*2) {
 		t.Fatalf("Expected %s got %s", "2h0m0s", connMaxLifetime)
@@ -25,8 +48,8 @@ func TestNestedConfig(t *testing.T) {
 }
 
 func TestDefaultValues(t *testing.T) {
-	t.Logf("Environment: %s", confy.GetEnvironment())
 	t.Log(config.GetConfig().Database)
+	t.Logf("Environment: %s", confy.GetEnvironment())
 	connMaxLifetime := config.GetConfig().Database.ConnMaxLifetime
 	if *connMaxLifetime != time.Duration(time.Hour*2) {
 		t.Fatalf("Expected %s got %s", "2h0m0s", connMaxLifetime)

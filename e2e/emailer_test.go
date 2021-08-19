@@ -3,6 +3,7 @@ package e2e
 
 import (
 	"context"
+	"os"
 	"testing"
 	"time"
 
@@ -15,6 +16,18 @@ import (
 	"github.com/xmlking/grpc-starter-kit/internal/config"
 	"github.com/xmlking/grpc-starter-kit/mkit/service/emailer/v1"
 )
+
+func TestMain(m *testing.M) {
+	// HINT: CertFile etc., Our schema has `file` path validation, which is relative to project root.
+	if err := os.Chdir(".."); err != nil {
+		log.Fatal().Err(err).Send()
+	}
+	wd, _ := os.Getwd()
+	log.Debug().Msgf("Changing working directory to: %s", wd)
+
+	code := m.Run()
+	os.Exit(code)
+}
 
 func TestEmailSubscriber_Handle_Send_E2E(t *testing.T) {
 	if testing.Short() {

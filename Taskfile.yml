@@ -21,6 +21,8 @@ vars:
 env:
   FOO: foo
 
+dotenv: ['.env', '{{.ENV}}/.env.', '{{.HOME}}/.env']
+
 includes:
   config:     ./config
   proto:      task/proto.yml
@@ -41,3 +43,7 @@ tasks:
       - task: proto:default
       - task: build:build
       - task: config:deploy
+
+  play:
+    cmds:
+      - echo {{.VAR_IN_DOTENV}}
