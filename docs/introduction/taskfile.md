@@ -86,6 +86,15 @@ task mod:outdated
 task mod:release
 ```
 
+### k3d
+
+```bash
+task k3d:create # create cluster
+task k3d:delete # delete cluster
+task k3d:list # list clusters
+task k3d:start # start cluster
+task k3d:stop # stop cluster
+```
 
 ### run
 

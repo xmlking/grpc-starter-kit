@@ -3,11 +3,11 @@
 version: '3'
 
 vars:
-  PROTO_IN:           proto/mkit
-  PROTO_OUT:          mkit
-  GITHUB_REPO_OWNER:  xmlking
-  GITHUB_REPO_NAME:   grpc-starter-kit
-  GITHUB_REPO_URL:    https://github.com/{{.GITHUB_REPO_OWNER}}/{{.GITHUB_REPO_NAME}}.git
+  PROTO_IN: proto/mkit
+  PROTO_OUT: mkit
+  GITHUB_REPO_OWNER: xmlking
+  GITHUB_REPO_NAME: grpc-starter-kit
+  GITHUB_REPO_URL: https://github.com/{{.GITHUB_REPO_OWNER}}/{{.GITHUB_REPO_NAME}}.git
   GOPATH:
     sh: go env GOPATH
   GIT_COMMIT:
@@ -15,21 +15,22 @@ vars:
   GIT_DIRTY:
     sh: git status --porcelain 2> /dev/null
   ALL_GO_MOD_DIRS:
-#    sh: find . -type f -name 'go.mod' -exec dirname {} \;  | sort
+    #    sh: find . -type f -name 'go.mod' -exec dirname {} \;  | sort
     sh: find * -name 'go.mod' -mindepth 1 -exec dirname {} \; | sort
 
 env:
   FOO: foo
 
-dotenv: ['.env', '{{.ENV}}/.env.', '{{.HOME}}/.env']
+dotenv: [ '.env', '{{.ENV}}/.env.', '{{.HOME}}/.env' ]
 
 includes:
-  config:     ./config
-  proto:      task/proto.yml
-  go:         task/go.yml
-  mod:        task/mod.yml
-  install:    task/install.{{OS}}.yml
-  build:      task/build.{{OS}}.yml
+  config: ./config
+  proto: task/proto.yml
+  go: task/go.yml
+  mod: task/mod.yml
+  k3d: task/k3dt.yml
+  install: task/install.{{OS}}.yml
+  build: task/build.{{OS}}.yml
 
 tasks:
   proto:

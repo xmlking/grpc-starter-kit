@@ -1,0 +1,36 @@
+# https://taskfile.dev
+################################################################################
+# Target: k3d                                                                  #
+################################################################################
+
+version: '3'
+
+vars:
+  cluster_name: k3s-default
+
+tasks:
+
+  list:
+    desc: list clusters
+    cmds:
+      - k3d cluster list
+
+  start:
+    desc: start cluster
+    cmds:
+      - k3d cluster start {{.cluster_name}}
+
+  stop:
+    desc: stop cluster
+    cmds:
+      - k3d cluster stop {{.cluster_name}}
+
+  delete:
+    desc: delete cluster
+    cmds:
+      - k3d cluster delete {{.cluster_name}}
+
+  create:
+    desc: create cluster
+    cmds:
+      - k3d cluster create --config config/k3d.yml
