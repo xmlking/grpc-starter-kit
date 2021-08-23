@@ -10,6 +10,8 @@ services:
   play:
     # endpoint: dns://recorder:8080
     endpoint: kubernetes:///greeter:8080
+  xds:
+    endpoint: dns://recorder:8080
 
 features:
   tls:

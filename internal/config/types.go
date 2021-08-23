@@ -5,8 +5,8 @@ import (
 	"time"
 
 	"entgo.io/ent/dialect"
-
 	"github.com/xmlking/toolkit/telemetry"
+	"github.com/xmlking/toolkit/xds"
 )
 
 // Service struct
@@ -107,6 +107,7 @@ type Services struct {
 	Emailer  *Service `yaml:"emailer,omitempty"`
 	Recorder *Service `yaml:"recorder,omitempty"`
 	Play     *Service `yaml:"play,omitempty"`
+	Xds      *Service `yaml:"xds,omitempty"`
 }
 
 // Configuration struct
@@ -115,4 +116,5 @@ type Configuration struct {
 	Email    *EmailConfiguration    `yaml:"email,omitempty"`
 	Features *Features              `yaml:"features,omitempty"`
 	Services *Services              `yaml:"services,omitempty"`
+	Xds      *xds.Configuration     `yaml:"xds,omitempty"`
 }

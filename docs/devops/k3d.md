@@ -43,16 +43,17 @@ k3d cluster create \
 k3d cluster create --config config/k3d.yml
 ```
 
-Verify a cluster
+Verify cluster
 
 ```bash
 k3d cluster list
 k3d registry list
+k3d node list
 ```
 
 And voila that is it!
 
-Delete a cluster
+Delete cluster
 
 ```bash
 k3d cluster delete
@@ -77,6 +78,7 @@ k3d image import entity-service:1.6.5-SNAPSHOT
 ### Verify
 
 ```bash
+kubectl cluster-info
 kubectl get nodes,all
 kubectl top node
 

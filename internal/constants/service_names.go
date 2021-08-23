@@ -7,4 +7,5 @@ const (
 	EMAILER_SERVICE  = "mkit.service.emailer"
 	RECORDER_SERVICE = "mkit.service.recorder"
 	PLAY_SERVICE     = "mkit.service.play"
+	XDS_SERVICE      = "mkit.service.xds"
 )

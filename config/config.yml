@@ -69,6 +69,16 @@ services:
     authority: "play-service"
     version: v0.1.0
     endpoint: http://localhost:8084
+  xds:
+    authority: "xds-service"
+    version: v0.1.0
+    endpoint: http://localhost:8085
+
+xds:
+  max_concurrent_streams: 1000
+  source_type: static
+  node_id: '25386353-c3e2-42f5-ad65-2b003c3386f5'
+  refresh_interval: 30s
 
 features:
   metrics:
