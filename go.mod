@@ -41,9 +41,9 @@ require (
 	github.com/xmlking/toolkit/telemetry v0.2.3
 	github.com/xmlking/toolkit/xds v0.0.0-20210823043655-8a4e2f5cb6cc
 	go.opentelemetry.io/contrib/instrumentation/google.golang.org/grpc/otelgrpc v0.22.0
-	go.opentelemetry.io/otel v1.0.0-RC2
-	go.opentelemetry.io/otel/metric v0.22.0
-	go.opentelemetry.io/otel/trace v1.0.0-RC2
+	go.opentelemetry.io/otel v1.0.1
+	go.opentelemetry.io/otel/metric v0.24.0
+	go.opentelemetry.io/otel/trace v1.0.1
 	golang.org/x/sync v0.0.0-20210220032951-036812b2e83c
 	google.golang.org/grpc v1.40.0
 	google.golang.org/protobuf v1.27.1
