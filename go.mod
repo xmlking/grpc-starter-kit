@@ -26,7 +26,7 @@ require (
 	github.com/google/uuid v1.3.0
 	github.com/grpc-ecosystem/go-grpc-middleware v1.3.0
 	github.com/mattn/go-sqlite3 v1.14.8
-	github.com/rs/zerolog v1.23.0
+	github.com/rs/zerolog v1.26.0
 	github.com/sarulabs/di/v2 v2.4.2
 	github.com/sercand/kuberesolver v2.4.0+incompatible
 	github.com/soheilhy/cmux v0.1.5
