@@ -1,0 +1,46 @@
+syntax = "proto3";
+
+package dkit.bigquery.v1;
+
+//option go_package = "github.com/xmlking/grpc-starter-kit/dkit/bigquery/v1;bigqueryv1";
+option java_multiple_files = true;
+option java_package = "dkit.bigquery.v1";
+
+import "google/protobuf/descriptor.proto";
+
+extend google.protobuf.MessageOptions {
+  string BigQueryTableReference = 66666667;
+  string BigQueryTableDescription = 66666668;
+}
+
+extend google.protobuf.FieldOptions {
+  // [DescriptionString] Example: "A timestamp."
+  string BigQueryFieldDescription = 66666667;
+
+  // [PolicyTag1, PolicyTag2,...] Example:
+  string BigQueryFieldCategories = 66666668;
+
+  // [BigQueryDataType] Example: "TIMESTAMP"
+  string BigQueryFieldType = 66666669;
+
+  // [NewFieldName] Example: "LocalDateTime"
+  string BigQueryFieldRename = 66666670;
+
+  // [AppendString] Example: "Europe/Stockholm"
+  string BigQueryFieldAppend = 66666671;
+
+  // [RegexPattern] Example "[0-9]{4}-(0[1-9]|1[0-2])-(0[1-9]|[1-2][0-9]|3[0-1])(T| )(2[0-3]|[01][0-9]):[0-5][0-9]:[0-5][0-9]"
+  string BigQueryFieldRegexExtract = 66666672;
+
+  // [RegexPattern, ReplacementString] Example: "(\\+(2[0-3]|[01][0-9]):[0-5][0-9]),Europe/Stockholm"
+  string BigQueryFieldRegexReplace = 66666673;
+
+  // [LocalTimezone, LocalPattern, UtcPattern ] Example: "Europe/Stockholm, yyyy-MM-dd'T'HH:mm:ss, yyyy-MM-dd'T'HH:mm:ssXXX"
+  string BigQueryFieldLocalToUtc = 66666674;
+
+  //[Hidden] Example: "true"
+  string BigQueryFieldHidden = 66666675;
+
+  //[Hidden] Example: "false"
+  string BigQueryFieldUseDefaultValue = 66666676;
+}

@@ -1,0 +1,32 @@
+syntax = "proto3";
+
+package mkit.service.transaction.v1;
+
+//option go_package = "github.com/xmlking/grpc-starter-kit/mkit/service/transaction/v1;transactionv1";
+option java_multiple_files = true;
+option java_package = "mkit.service.transaction.v1";
+
+import "google/protobuf/empty.proto";
+
+import "mkit/schema/transaction/v1/transaction.proto";
+
+
+service TransactionService {
+  rpc Read(ReadRequest) returns (ReadResponse);
+  rpc Write(WriteRequest) returns (google.protobuf.Empty);
+}
+
+message ReadRequest {
+  string key = 1;
+}
+
+message ReadResponse {
+  string key = 1;
+  mkit.schema.transaction.v1.TransactionEvent event = 2;
+}
+
+message WriteRequest {
+  string key = 1;
+  mkit.schema.transaction.v1.TransactionEvent event = 2;
+}
+

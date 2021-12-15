@@ -1,0 +1,16 @@
+syntax = "proto3";
+
+package mkit.schema.email.v1;
+
+//option go_package = "github.com/xmlking/grpc-starter-kit/mkit/schema/email/v1;emailv1";
+option java_multiple_files = true;
+option java_package = "mkit.schema.email.v1";
+
+// import "third_party/proto/validate/validate.proto";
+
+message Message {
+  string to = 1;
+  string from = 2;
+  string subject = 3;
+  string body = 4;
+}

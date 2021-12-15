@@ -1,0 +1,21 @@
+syntax = "proto3";
+
+package mkit.schema.transaction.v1alpha1;
+
+//option go_package = "github.com/xmlking/grpc-starter-kit/mkit/schema/transaction/v1alpha1;transactionv1alpha1";
+option java_multiple_files = true;
+option java_package = "mkit.schema.transaction.v1alpha1";
+
+import "google/protobuf/struct.proto";
+
+// Transaction Event
+message TransactionEvent1 {
+  // request
+  google.protobuf.Value req = 1;
+  // response
+  google.protobuf.Value rsp = 2;
+}
+
+// google.protobuf.Value used on typescript
+// https://github.com/CatsMiaow/node-grpc-typescript/tree/master
+// https://github.com/CatsMiaow/node-grpc-typescript/blob/master/src/client.ts#L65

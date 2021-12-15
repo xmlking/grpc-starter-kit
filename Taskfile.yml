@@ -3,8 +3,6 @@
 version: '3'
 
 vars:
-  PROTO_IN: proto/mkit
-  PROTO_OUT: mkit
   GITHUB_REPO_OWNER: xmlking
   GITHUB_REPO_NAME: grpc-starter-kit
   GITHUB_REPO_URL: https://github.com/{{.GITHUB_REPO_OWNER}}/{{.GITHUB_REPO_NAME}}.git

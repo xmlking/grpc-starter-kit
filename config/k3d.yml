@@ -1,5 +1,5 @@
 # k3d configuration file, saved as e.g. /home/me/k3d.yaml
-apiVersion: k3d.io/v1alpha2 # this will change in the future as we make everything more stable
+apiVersion: k3d.io/v1alpha3 # this will change in the future as we make everything more stable
 kind: Simple # internally, we also have a Cluster config, which is not yet available externally
 name: k3s-default # name that you want to give to your cluster (will still be prefixed with `k3d-`)
 servers: 1 # same as `--servers 1`
@@ -13,6 +13,8 @@ agents: 3 # same as `--agents 3`
 image: rancher/k3s:latest # same as `--image rancher/k3s:v1.20.10-k3s1`
 
 #network: my-custom-net # same as `--network my-custom-net`
+#subnet: ""
+#clusterToken: ""
 #token: superSecretToken # same as `--token superSecretToken`
 
 #volumes: # repeatable flags are represented as YAML lists
@@ -54,7 +56,7 @@ image: rancher/k3s:latest # same as `--image rancher/k3s:v1.20.10-k3s1`
 options:
   k3d: # k3d runtime settings
     wait: true # wait for cluster to be usable before returining; same as `--wait` (default: true)
-    timeout: "360s" # wait timeout before aborting; same as `--timeout 360s`  # should be pretty high for multi-server clusters to allow for a proper startup routine
+    timeout: 6m0s # wait timeout before aborting; same as `--timeout 360s`  # should be pretty high for multi-server clusters to allow for a proper startup routine
 #    disableLoadbalancer: false # same as `--no-lb`
 #    disableImageVolume: false # same as `--no-image-volume`
 #    disableRollback: false # same as `--no-Rollback`
@@ -64,9 +66,16 @@ options:
 #    extraServerArgs: # additional arguments passed to the `k3s server` command; same as `--k3s-server-arg`
 #      - --tls-san=my.host.domain
 #    extraAgentArgs: [] # addditional arguments passed to the `k3s agent` command; same as `--k3s-agent-arg`
+#    extraArgs: []
+#    nodeLabels: []
 
 #  kubeconfig:
 #    updateDefaultKubeconfig: true # add new cluster to your default Kubeconfig; same as `--kubeconfig-update-default` (default: true)
 #    switchCurrentContext: true # also set current-context to the new cluster's context; same as `--kubeconfig-switch-context` (default: true)
 #  runtime: # runtime (docker) specific options
 #    gpuRequest: all # same as `--gpus all`
+#    serversMemory: ""
+#    agentsMemory: ""
+#    labels: []
+
+env: []

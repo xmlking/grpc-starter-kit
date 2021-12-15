@@ -4,10 +4,10 @@ package transactionv1
 
 import (
 	context "context"
-	empty "github.com/golang/protobuf/ptypes/empty"
 	grpc "google.golang.org/grpc"
 	codes "google.golang.org/grpc/codes"
 	status "google.golang.org/grpc/status"
+	emptypb "google.golang.org/protobuf/types/known/emptypb"
 )
 
 // This is a compile-time assertion to ensure that this generated file
@@ -20,7 +20,7 @@ const _ = grpc.SupportPackageIsVersion7
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type TransactionServiceClient interface {
 	Read(ctx context.Context, in *ReadRequest, opts ...grpc.CallOption) (*ReadResponse, error)
-	Write(ctx context.Context, in *WriteRequest, opts ...grpc.CallOption) (*empty.Empty, error)
+	Write(ctx context.Context, in *WriteRequest, opts ...grpc.CallOption) (*emptypb.Empty, error)
 }
 
 type transactionServiceClient struct {
@@ -40,8 +40,8 @@ func (c *transactionServiceClient) Read(ctx context.Context, in *ReadRequest, op
 	return out, nil
 }
 
-func (c *transactionServiceClient) Write(ctx context.Context, in *WriteRequest, opts ...grpc.CallOption) (*empty.Empty, error) {
-	out := new(empty.Empty)
+func (c *transactionServiceClient) Write(ctx context.Context, in *WriteRequest, opts ...grpc.CallOption) (*emptypb.Empty, error) {
+	out := new(emptypb.Empty)
 	err := c.cc.Invoke(ctx, "/mkit.service.transaction.v1.TransactionService/Write", in, out, opts...)
 	if err != nil {
 		return nil, err
@@ -54,7 +54,7 @@ func (c *transactionServiceClient) Write(ctx context.Context, in *WriteRequest, 
 // for forward compatibility
 type TransactionServiceServer interface {
 	Read(context.Context, *ReadRequest) (*ReadResponse, error)
-	Write(context.Context, *WriteRequest) (*empty.Empty, error)
+	Write(context.Context, *WriteRequest) (*emptypb.Empty, error)
 }
 
 // UnimplementedTransactionServiceServer should be embedded to have forward compatible implementations.
@@ -64,7 +64,7 @@ type UnimplementedTransactionServiceServer struct {
 func (UnimplementedTransactionServiceServer) Read(context.Context, *ReadRequest) (*ReadResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Read not implemented")
 }
-func (UnimplementedTransactionServiceServer) Write(context.Context, *WriteRequest) (*empty.Empty, error) {
+func (UnimplementedTransactionServiceServer) Write(context.Context, *WriteRequest) (*emptypb.Empty, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Write not implemented")
 }
 

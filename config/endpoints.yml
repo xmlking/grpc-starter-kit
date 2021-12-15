@@ -1,0 +1,5 @@
+endpoints:
+  - name: greeter
+    serviceAccount: greeter@my-project.iam.gserviceaccount.com
+  - name: emailer
+    serviceAccount: emailer@my-project.iam.gserviceaccount.com

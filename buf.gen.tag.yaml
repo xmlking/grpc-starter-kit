@@ -1,0 +1,7 @@
+version: v1
+# FIXME: https://github.com/srikrsna/protoc-gen-gotag/issues/26
+plugins:
+  - name: gotag
+    out: .
+    opt:
+      - paths=source_relative

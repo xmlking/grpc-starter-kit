@@ -263,3 +263,5 @@ go test -v -run Integration ./service/emailer/service
 
 - [separating-tests-in-go](https://filipnikolovski.com/separating-tests-in-go/)
 - [advanced testing tips & tricks](https://medium.com/@povilasve/go-advanced-tips-tricks-a872503ac859)
+- [Using FieldMask with gRPC/Protobuf to emulate GraphQL](https://netflixtechblog.com/practical-api-design-at-netflix-part-1-using-protobuf-fieldmask-35cfdc606518)
+  - [Protobuf Field Masks](https://pinkiepractices.com/posts/protobuf-field-masks/)

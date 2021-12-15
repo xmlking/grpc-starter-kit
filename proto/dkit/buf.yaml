@@ -1,0 +1,4 @@
+version: v1
+name: buf.build/chintha/dkit
+deps:
+  - buf.build/googleapis/googleapis

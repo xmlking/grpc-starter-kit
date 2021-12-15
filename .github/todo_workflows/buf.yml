@@ -1,0 +1,51 @@
+name: buf
+on:
+  push:
+    paths:
+      - 'proto/**'
+jobs:
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: bufbuild/buf-setup-action@v0.7.0
+        if: success()
+        with:
+          version: 'latest'
+      - uses: bufbuild/buf-lint-action@v1.0.0
+        if: success()
+        with:
+          buf_token: ${{ secrets.BUF_TOKEN }}
+  breaking:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: bufbuild/buf-setup-action@v0.7.0
+        if: success()
+        with:
+          version: 'latest'
+      - uses: bufbuild/buf-breaking-action@v1.0.0
+        if: success()
+        with:
+          # against: buf.build/xmlking/grpc-starter-kit # check against registry
+          # https://github.com/marketplace/actions/buf-breaking
+          # against: 'https://github.com/$GITHUB_REPOSITORY.git#branch=main' # for pull_request
+          against: 'https://github.com/$GITHUB_REPOSITORY.git#branch=main,ref=HEAD~1' # for Push
+          buf_token: ${{ secrets.BUF_TOKEN }}
+  push:
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/main'
+    needs:
+      - lint
+      - breaking
+    steps:
+      - uses: actions/checkout@v2
+      - uses: bufbuild/buf-setup-action@v0.7.0
+        if: success()
+        with:
+          version: 'latest'
+      - uses: bufbuild/buf-push-action@v1.0.0
+        if: success()
+        with:
+          input: 'proto'
+          buf_token: ${{ secrets.BUF_TOKEN }}

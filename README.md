@@ -59,8 +59,12 @@ Microservices starter kit for **Golang**, aims to be developer friendly.
 - [ ] Cache — Ephemeral key-value storage with TTLs
 - [ ] Secondary Index  — Ephemeral Index with Redis Search
 - [ ] Crypto — App-level data encryption/decryption with Key Management
-- [ ] Auth — API Authentication with OpenID Connect, JWT, WebAuthN
-
+- [ ] Auth — API Authentication with OpenID Connect, JWT, WebAuthN/[Passwordless](https://github.com/teamhanko/apple-wwdc21-webauthn-example) Login
+- [ ] [Zero Trust](https://smallstep.com/docs/practical-zero-trust) or [BeyondProd](https://cloud.google.com/security/beyondprod) style e2e Security
+- [ ] **mTLS**
+  - [ ] _Option 1 (noCert)_: With **Application LayerTransport Security** [(ALTS)](https://github.com/salrashid123/grpc_alts)
+  - [ ] _Option 2 (autoCert)_: With [AutoCert](https://github.com/smallstep/autocert/tree/master/examples/hello-mtls/go-grpc)
+  - [ ] _Option 3 (Step xDS)_: With Smallstep's Secret Discovery Service [SDS](https://github.com/smallstep/step-sds)
 
 ## Getting Started
 
@@ -191,6 +195,7 @@ kubectl delete -f build/kubernetes.yaml
 1. [grpc template](https://github.com/vtolstov/micro-template-grpc)
 1. [Simple API backed by PostgresQL, Golang and gRPC](https://medium.com/@vptech/complexity-is-the-bane-of-every-software-engineer-e2878d0ad45a)
 1. [securing gRPC connections with TLS](https://itnext.io/practical-guide-to-securing-grpc-connections-with-go-and-tls-part-2-994ef93b8ea9) via [certify](https://github.com/johanbrandhorst/certify)
+
 ## 🔗 Credits
 - [atlas-app-toolkit](https://github.com/infobloxopen/atlas-app-toolkit)
 - [dapr](https://github.com/dapr/dapr)

@@ -12,6 +12,10 @@ A curated list of awesome golang/gRPC resources and FAQ
     - [Examining Load Balancing Algorithms with Envoy](https://blog.envoyproxy.io/examining-load-balancing-algorithms-with-envoy-1be643ea121c)
     - [Balancing gRPC Traffic in K8S Without a Service Mesh](https://medium.com/swlh/balancing-grpc-traffic-in-k8s-without-a-service-mesh-7005be902ef3)
 
+- gRPC Client Reliability
+    - [Building a gRPC Client Standard with Open Source to Boost Reliability and Velocity](https://doordash.engineering/2021/01/12/building-a-grpc-client-standard-with-open-source/)
+
+
 - Deployment
     - [Deploy Kubernetes gRPC Workloads with Zero Downtime](https://medium.com/@jwenz723/deploy-kubernetes-grpc-workloads-with-zero-down-time-3585c146f74f)
 
