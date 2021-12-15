@@ -40,7 +40,7 @@ require (
 	github.com/xmlking/toolkit/xds v0.0.0-20210823043655-8a4e2f5cb6cc
 	go.opentelemetry.io/contrib/instrumentation/google.golang.org/grpc/otelgrpc v0.24.0
 	go.opentelemetry.io/otel v1.3.0
-	go.opentelemetry.io/otel/metric v0.22.0
+	go.opentelemetry.io/otel/metric v0.26.0
 	go.opentelemetry.io/otel/trace v1.3.0
 	golang.org/x/sync v0.0.0-20210220032951-036812b2e83c
 	google.golang.org/grpc v1.40.0
@@ -95,7 +95,7 @@ require (
 	go.opentelemetry.io/otel/exporters/prometheus v0.22.0 // indirect
 	go.opentelemetry.io/otel/exporters/stdout/stdoutmetric v0.22.0 // indirect
 	go.opentelemetry.io/otel/exporters/stdout/stdouttrace v1.0.0-RC2 // indirect
-	go.opentelemetry.io/otel/internal/metric v0.22.0 // indirect
+	go.opentelemetry.io/otel/internal/metric v0.26.0 // indirect
 	go.opentelemetry.io/otel/sdk v1.0.0-RC2 // indirect
 	go.opentelemetry.io/otel/sdk/export/metric v0.22.0 // indirect
 	go.opentelemetry.io/otel/sdk/metric v0.22.0 // indirect
