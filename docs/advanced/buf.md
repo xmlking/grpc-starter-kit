@@ -105,6 +105,8 @@ This will pull deps into `$HOME/.cache/buf`
 ```bash
 buf beta registry repository create buf.build/chintha/dkit --visibility private
 buf beta registry repository create buf.build/chintha/dkit --visibility public
+
+buf beta registry repository create buf.build/chintha/mkit --visibility private
 ```
 
 #### List Modules
@@ -115,6 +117,9 @@ buf beta registry repository get    buf.build/googleapis/googleapis
 
 #### Push the Module
 ```bash
+cd proto/dkit
+buf push
+cd proto/mkit
 buf push
 ```
 

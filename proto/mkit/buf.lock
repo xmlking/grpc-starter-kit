@@ -2,6 +2,13 @@
 version: v1
 deps:
   - remote: buf.build
+    owner: chintha
+    repository: dkit
+    branch: main
+    commit: feafbba1b9344d7fb671a8183269ae04
+    digest: b1-07PLiVtNNj0XcToL7wVvTys0ckWDi-2db5QfktvgrwM=
+    create_time: 2021-12-15T03:36:22.046052Z
+  - remote: buf.build
     owner: envoyproxy
     repository: protoc-gen-validate
     branch: main

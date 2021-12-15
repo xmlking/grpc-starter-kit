@@ -1,6 +1,6 @@
 # mKit
 
-**Microservices Kit (µKit)** contains _schema_ and _service_ definitions for this sample app
+**Micro Services Kit (µKit)** contains _schema_ and _service_ definitions for this sample app
 
 ## Schema
 
