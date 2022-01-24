@@ -11,6 +11,7 @@ import (
 	"github.com/rs/zerolog/log"
 	"github.com/xmlking/grpc-starter-kit/internal/config"
 	"github.com/xmlking/grpc-starter-kit/internal/constants"
+	"github.com/xmlking/grpc-starter-kit/internal/version"
 	_ "github.com/xmlking/toolkit/logger/auto"
 	"github.com/xmlking/toolkit/server"
 	"github.com/xmlking/toolkit/util/endpoint"
@@ -75,7 +76,7 @@ func main() {
 	discoverygrpc.RegisterAggregatedDiscoveryServiceServer(gSrv, adsSrv)
 
 	// Start broker/gRPC daemon services
-	log.Info().Msg(config.GetBuildInfo())
+	log.Info().Object("build_info", version.GetBuildInfo()).Send()
 	log.Info().Msgf("Server(%s) starting at: %s, secure: %t, pid: %d", serviceName, listener.Addr(), cfg.Features.TLS.Enabled, os.Getpid())
 
 	g.Go(func() error {

@@ -6,20 +6,9 @@ import (
 
 	"github.com/rs/zerolog/log"
 	"github.com/stretchr/testify/assert"
-	"github.com/stretchr/testify/mock"
-
 	"github.com/xmlking/grpc-starter-kit/internal/config"
 	"github.com/xmlking/grpc-starter-kit/internal/email"
 )
-
-type FakeEmailSender struct {
-	mock.Mock
-}
-
-func (mock *FakeEmailSender) Send(subject, body string, to []string) error {
-	args := mock.Called(subject, body, to)
-	return args.Error(0)
-}
 
 func TestMain(m *testing.M) {
 	// HINT: CertFile etc., Our schema has `file` path validation, which is relative to project root.
@@ -34,7 +23,7 @@ func TestMain(m *testing.M) {
 }
 
 func TestEmailService_Welcome(t *testing.T) {
-	emailer := &FakeEmailSender{}
+	emailer := new(MockEmailSender)
 	emailer.On("Send",
 		"Welcome", "Hi Bob!", []string{"bob@smith.com"}).Return(nil)
 

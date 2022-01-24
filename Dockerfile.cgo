@@ -36,7 +36,7 @@ ARG TYPE=service
 ARG TARGET=account
 
 RUN go build -a \
-    -ldflags="-w -s -linkmode external -extldflags '-static' $(govvv -flags -version ${VERSION} -pkg $(go list ./internal/config) )" \
+    -ldflags="-w -s -linkmode external -extldflags '-static'" \
     -o /app ./$TYPE/$TARGET/main.go
 
 # Final stage: the running container.

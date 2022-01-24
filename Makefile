@@ -34,11 +34,9 @@ override TYPES:= service
 TARGET = $(word 1,$(subst -, ,$*))
 
 override VERSION_PACKAGE = $(shell go list ./internal/config)
-BUILD_FLAGS = $(shell govvv -flags -version $(VERSION) -pkg $(VERSION_PACKAGE))
 
 # $(warning TYPES = $(TYPE), TARGET = $(TARGET))
 # $(warning VERSION = $(VERSION), HAS_GOVVV = $(HAS_GOVVV), HAS_KO = $(HAS_KO))
-# $(warning VERSION_PACKAGE = $(VERSION_PACKAGE), BUILD_FLAGS = $(BUILD_FLAGS))
 
 .PHONY: all tools check_dirty clean sync
 .PHONY: proto proto_lint proto_breaking proto_format proto_generate proto_shared
@@ -175,26 +173,37 @@ format format-%:
 		echo "✓ Go: Formatted in ${TYPE}/${TARGET}..."; \
 	fi
 
+
+################################################################################
+# Target: generate                                                                #
+################################################################################
+generate:
+	go generate ./...
+
+generate-version:
+	go generate ./internal/version
+
+generate-mockery:
+	go generate ./service/emailer/service
+	go generate ./service/account/repository
+
 ################################################################################
 # Target: build                                                                #
 ################################################################################
 
-build build-%:
-ifndef HAS_GOVVV
-	$(error "No govvv in PATH". Please install via 'go install github.com/ahmetb/govvv@latest'")
-endif
+build build-%: generate-version
 	@if [ -z $(TARGET) ]; then \
 		for type in $(TYPES); do \
 			echo "Building Type: $${type}..."; \
 			for _target in $${type}/*/; do \
 				temp=$${_target%%/}; target=$${temp#*/}; \
 				echo "\tBuilding $${target}-$${type}"; \
-				CGO_ENABLED=0 GOOS=linux go build -o build/$${target}-$${type} -a -trimpath -ldflags "-w -s ${BUILD_FLAGS}" ./$${type}/$${target}; \
+				CGO_ENABLED=0 GOOS=linux go build -o build/$${target}-$${type} -a -trimpath ./$${type}/$${target}; \
 			done \
 		done \
 	else \
 		echo "Building ${TARGET}-${TYPE}"; \
-		go build -o  build/${TARGET}-${TYPE} -a -trimpath -ldflags "-w -s ${BUILD_FLAGS}" ./${TYPE}/${TARGET}; \
+		go build -o  build/${TARGET}-${TYPE} -a -trimpath ./${TYPE}/${TARGET}; \
 	fi
 
 ################################################################################
@@ -211,7 +220,7 @@ test-race:    	ARGS=-race         					## Run tests with race detector
 test-cover:   	ARGS=-cover -short -coverprofile=${CODECOV_FILE} -covermode=atomic ## Run tests in verbose mode with coverage reporting
 $(TEST_TARGETS): NAME=$(MAKECMDGOALS:test-%=%)
 $(TEST_TARGETS): test
-check test tests:
+check test tests: generate-version
 	@if [ -z $(TARGET) ]; then \
 		echo "Running $(NAME:%=% )tests for all"; \
 		go test -timeout $(TIMEOUT) $(ARGS) ./... ; \
@@ -224,7 +233,7 @@ check test tests:
 # Target: run                                                                  #
 ################################################################################
 
-run run-%:
+run run-%: generate-version
 	@if [ -z $(TARGET) ]; then \
 		echo "no  TARGET. example usage: make run TARGET=account"; \
 	else \

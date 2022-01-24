@@ -12,8 +12,6 @@ vars:
   DOCKER_REGISTRY: docker.pkg.github.com/xmlking/grpc-starter-kit
   VERSION:
     sh: git rev-parse --short HEAD
-  GO_PACKAGES:
-    sh: go mod tidy && go list ./...
   TIMEOUT: 60s
   CODECOV_FILE: build/coverage.txt
 
@@ -60,17 +58,26 @@ tasks:
     cmds:
       - go fmt {{catLines .GO_PACKAGES}}
     silent: true
+    vars:
+      GO_PACKAGES:
+        sh: go mod tidy && go list ./...
 
   lint:
     desc: Runs golint
     cmds:
       - golint {{catLines .GO_PACKAGES}}
     silent: true
+    vars:
+      GO_PACKAGES:
+        sh: go mod tidy && go list ./...
 
   test:
     desc: Runs test suite
+    deps: [generate-version]
     vars:
       ARGS: '{{default "-short" .ARGS}}'
+      GO_PACKAGES:
+        sh: go mod tidy && go list ./...
     cmds:
       - go test -timeout {{.TIMEOUT}} {{.ARGS}} {{catLines .GO_PACKAGES}}
     silent: true
@@ -111,7 +118,34 @@ tasks:
     cmds:
       - echo '{{.GO_PACKAGES}}'
     silent: true
+    vars:
+      GO_PACKAGES:
+        sh: go mod tidy && go list ./...
 
-  ent:
+  generate-ent:
     cmds:
       - ent generate --idtype string ./ent/schema
+
+  generate-mockery:
+    desc: Runs go-generate for mockery
+    cmds:
+      - go generate ./service/emailer/service
+      - go generate ./service/account/repository
+    silent: true
+    sources:
+      - 'service/account/repository/*_repository.go'
+      - 'service/emailer/service/email.service_test.go'
+
+  generate-version:
+    desc: Runs go-generate for version
+    cmds:
+      - go generate ./internal/version
+    silent: true
+    generates:
+      - 'internal/version/version.txt'
+      - 'internal/version/branch.txt'
+
+  generate:
+    desc: Runs go-generate
+    #    cmds: go generate ./...
+    deps: [generate-version, generate-mockery, generate-ent]

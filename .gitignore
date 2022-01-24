@@ -61,3 +61,5 @@ micro.csr
 
 ./task
 .task
+/internal/version/branch.txt
+/internal/version/version.txt

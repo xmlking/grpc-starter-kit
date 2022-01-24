@@ -13,7 +13,7 @@ import (
 	"google.golang.org/grpc"
 
 	"github.com/xmlking/grpc-starter-kit/internal/constants"
-	transactionv1 "github.com/xmlking/grpc-starter-kit/mkit/service/transaction/v1"
+	transactionv1 "github.com/xmlking/grpc-starter-kit/mkit/schema/transaction/v1"
 )
 
 func publish(ctx context.Context, publisher broker.Publisher, source string, req, rsp proto.Message) (err error) {

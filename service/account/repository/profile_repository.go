@@ -14,6 +14,7 @@ import (
 )
 
 // ProfileRepository interface
+//go:generate mockery --name=ProfileRepository --case=snake --tags="mock" --inpackage --testonly
 type ProfileRepository interface {
 	Exist(ctx context.Context, model *ent.Profile) (bool, error)
 	List(ctx context.Context, limit, page int, sort string, model *ent.Profile) (total int, profiles []*ent.Profile, err error)

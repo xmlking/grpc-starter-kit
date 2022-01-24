@@ -13,6 +13,7 @@ import (
 	"github.com/soheilhy/cmux"
 	"github.com/xmlking/grpc-starter-kit/internal/config"
 	"github.com/xmlking/grpc-starter-kit/internal/constants"
+	"github.com/xmlking/grpc-starter-kit/internal/version"
 	"github.com/xmlking/grpc-starter-kit/mkit/service/greeter/v1"
 	"github.com/xmlking/grpc-starter-kit/service/greeter/handler"
 	_ "github.com/xmlking/toolkit/logger/auto"
@@ -69,7 +70,7 @@ func main() {
 	greeterv1.RegisterGreeterServiceServer(gSrv, greeterHandler)
 
 	// Start broker/gRPC daemon services
-	log.Info().Msg(config.GetBuildInfo())
+	log.Info().Object("build_info", version.GetBuildInfo()).Send()
 	log.Info().Msgf("Server(%s) starting at: %s, secure: %t, pid: %d", serviceName, listener.Addr(), cfg.Features.TLS.Enabled, os.Getpid())
 
 	g.Go(func() error {
@@ -155,7 +156,7 @@ func main_cmux() {
 
 	// Start server!
 	reflection.Register(grpcS)
-	println(config.GetBuildInfo())
+	log.Info().Object("build_info", version.GetBuildInfo()).Send()
 	log.Info().Msgf("Server (%s) started at: %s, secure: %t", serviceName, lis.Addr(), cfg.Features.TLS.Enabled)
 	mux.Serve()
 }

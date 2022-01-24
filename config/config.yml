@@ -24,7 +24,8 @@ services:
     metadata:
       tenant_id: sumanth
   greeter:
-    authority: "greeter-service"
+#    authority: "greeter-service" TODO
+    authority: "localhost"
     version: v0.1.0
     endpoint: dns:///localhost:8081
     #    endpoint: unix:///tmp/greeter.sock

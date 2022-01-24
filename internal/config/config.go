@@ -1,10 +1,8 @@
 package config
 
 import (
-	"fmt"
 	"io/fs"
 	"os"
-	"runtime"
 	"strings"
 	"sync"
 
@@ -18,9 +16,6 @@ import (
 	"google.golang.org/grpc/credentials"
 	"google.golang.org/grpc/resolver"
 
-	//k8s resolver
-	_ "github.com/tcfw/go-grpc-k8s-resolver"
-
 	embed "github.com/xmlking/grpc-starter-kit"
 )
 
@@ -29,33 +24,7 @@ var (
 	efs        fs.FS
 	cfg        Configuration
 	configLock = new(sync.RWMutex)
-
-	// Version is populated by govvv in compile-time.
-	Version = "untouched"
-	// BuildDate is populated by govvv.
-	BuildDate string
-	// GitCommit is populated by govvv.
-	GitCommit string
-	// GitBranch is populated by govvv.
-	GitBranch string
-	// GitState is populated by govvv.
-	GitState string
-	// GitSummary is populated by govvv.
-	GitSummary string
 )
-
-// VersionMsg is the message that is shown after process started.
-const versionMsg = `
-version     : %s
-build date  : %s
-go version  : %s
-go compiler : %s
-platform    : %s/%s
-git commit  : %s
-git branch  : %s
-git state   : %s
-git summary : %s
-`
 
 // Init you can call `Init()` explicitly one-time when app start, or `GetConfig()` implicitly initialize it.
 func Init() {
@@ -88,12 +57,6 @@ func GetFileSystem() fs.FS {
 	configLock.RLock()
 	defer configLock.RUnlock()
 	return efs
-}
-
-// GetBuildInfo helper
-func GetBuildInfo() string {
-	return fmt.Sprintf(versionMsg, Version, BuildDate, runtime.Version(), runtime.Compiler, runtime.GOOS, runtime.GOARCH,
-		GitCommit, GitBranch, GitState, GitSummary)
 }
 
 // GetConfig helper

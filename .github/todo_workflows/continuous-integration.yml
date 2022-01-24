@@ -1,0 +1,38 @@
+on:
+  push:
+    branches:
+      - "main"
+  pull_request:
+    branches:
+      - "main"
+
+name: CI
+
+jobs:
+
+  build:
+    name: Build, Test, Coverage
+    runs-on: ubuntu-latest
+    steps:
+
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - name: Use Go 1.17.x
+        uses: actions/setup-go@v2
+        with:
+          go-version: 1.17
+
+      - name: Lint
+        uses: golangci/golangci-lint-action@v2
+        with:
+          args: --timeout=15m
+
+      - name: Test Coverage
+        uses: paambaati/codeclimate-action@v3.0.0
+        env:
+          CC_TEST_REPORTER_ID: 2d3a8851c8674e9e2b413dbf555d2a31bbdf8bddd3afe8a7381a2f463fee6944
+        with:
+          coverageCommand: go test -coverprofile c.out -v ./... -run="^Test"
+          coverageLocations: ${{github.workspace}}/c.out:gocov
+          prefix: github.com/huseyinbabal/demory

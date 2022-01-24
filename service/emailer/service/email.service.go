@@ -17,6 +17,7 @@ func init() {
 
 // EmailSender provides an interface so we can swap out the
 // implementation of SendEmail under tests.
+//go:generate mockery --name=EmailSender --case=snake --tags="mock" --inpackage --testonly
 type EmailSender interface {
 	Send(subject, body string, to []string) error
 }

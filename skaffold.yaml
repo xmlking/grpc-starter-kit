@@ -1,13 +1,21 @@
-apiVersion: skaffold/v2beta9
+# example https://github.com/GoogleCloudPlatform/microservices-demo/blob/master/skaffold.yaml
+
+apiVersion: skaffold/v2beta25
 kind: Config
 build:
   artifacts:
-    - image: skaffold-buildpacks
-      buildpacks:
-        builder: "gcr.io/buildpacks/builder:v1"
-        env:
-          - GOPROXY={{.GOPROXY}}
+  - image: skaffold-buildpacks
+    buildpacks:
+      builder: gcr.io/buildpacks/builder:v1
+      env:
+      - GOPROXY={{.GOPROXY}}
 profiles:
-  - name: gcb
-    build:
-      googleCloudBuild: {}
+- name: gcb
+  build:
+    googleCloudBuild: {}
+#- name: gcb
+#  build:
+#    googleCloudBuild:
+#      diskSizeGb: 300
+#      machineType: N1_HIGHCPU_32
+#      timeout: 4000s

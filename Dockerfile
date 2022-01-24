@@ -36,7 +36,7 @@ ARG TYPE=service
 ARG TARGET=account
 
 RUN go build -a \
-    -ldflags="-w -s -linkmode external -extldflags '-static' $(govvv -flags -version ${VERSION} -pkg $(go list ./internal/config) )" \
+    -ldflags="-w -s -linkmode external -extldflags '-static'" \
     -o /app ./$TYPE/$TARGET/main.go
 
 # Final stage: the running container.
@@ -74,6 +74,9 @@ EXPOSE 8080
 
 # Perform any further action as an unprivileged user.
 USER nobody:nobody
+
+# Health Check
+HEALTHCHECK --interval=15s --timeout=5s --retries=3 CMD /bin/grpc_health_probe -addr=:8080 -connect-timeout 250ms -rpc-timeout 100ms || exit 1
 
 # Metadata params
 ARG DOCKER_REGISTRY

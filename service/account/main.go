@@ -15,6 +15,7 @@ import (
 	"github.com/xmlking/grpc-starter-kit/internal/config"
 	"github.com/xmlking/grpc-starter-kit/internal/constants"
 	"github.com/xmlking/grpc-starter-kit/internal/middleware/translog"
+	"github.com/xmlking/grpc-starter-kit/internal/version"
 	profilev1 "github.com/xmlking/grpc-starter-kit/mkit/service/account/profile/v1"
 	userv1 "github.com/xmlking/grpc-starter-kit/mkit/service/account/user/v1"
 	"github.com/xmlking/grpc-starter-kit/service/account/registry"
@@ -122,7 +123,7 @@ func main() {
 	profilev1.RegisterProfileServiceServer(gSrv, profileHandler)
 
 	// Start broker/gRPC daemon services
-	log.Info().Msg(config.GetBuildInfo())
+	log.Info().Object("build_info", version.GetBuildInfo()).Send()
 	log.Info().Msgf("Server(%s) starting at: %s, secure: %t, pid: %d", serviceName, listener.Addr(), cfg.Features.TLS.Enabled, os.Getpid())
 
 	g.Go(func() error {

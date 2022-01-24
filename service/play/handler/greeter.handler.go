@@ -20,7 +20,7 @@ var (
 )
 
 type greeterHandler struct {
-	visitsCounter metric.BoundInt64Counter
+	visitsCounter metric.Int64Counter
 	tracer        trace.Tracer
 	meter         metric.Meter
 }
@@ -73,15 +73,12 @@ func (s *greeterHandler) Hello(ctx context.Context, req *greeterv1.HelloRequest)
 			attribute.String("B", "2"),
 			attribute.String("C", "3"),
 		}
-		valueRecorder := metric.Must(s.meter).NewFloat64ValueRecorder("ex.com.two")
-		boundRecorder := valueRecorder.Bind(commonAttributes...)
-
-		defer boundRecorder.Unbind()
+		histogram := metric.Must(s.meter).NewFloat64Histogram("ex.com.two")
 
 		s.meter.RecordBatch(
 			ctx,
 			commonAttributes,
-			valueRecorder.Measurement(2.0),
+			histogram.Measurement(2.0),
 		)
 
 		return func(ctx context.Context) error {
@@ -91,7 +88,7 @@ func (s *greeterHandler) Hello(ctx context.Context, req *greeterv1.HelloRequest)
 
 			span.SetAttributes(lemonsKey.String("five"))
 			span.AddEvent("Sub span event")
-			boundRecorder.Record(ctx, 1.3)
+			histogram.Record(ctx, 1.3, commonAttributes...)
 			return nil
 		}(ctx)
 	}(ctx)
@@ -101,10 +98,11 @@ func (s *greeterHandler) Hello(ctx context.Context, req *greeterv1.HelloRequest)
 	return &greeterv1.HelloResponse{Msg: "Hello " + req.Name + " from play"}, nil
 }
 
-func createIntCounter(name string, desc string) metric.BoundInt64Counter {
+func createIntCounter(name string, desc string) metric.Int64Counter {
 	meter := global.Meter("otel-switch-backend")
 	counter := metric.Must(meter).NewInt64Counter(name,
 		metric.WithDescription(desc),
-	).Bind(attribute.String("label", "test"))
+	)
+	//.Bind(attribute.String("label", "test"))
 	return counter
 }

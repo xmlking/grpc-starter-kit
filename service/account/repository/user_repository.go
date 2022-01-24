@@ -17,6 +17,7 @@ import (
 // https://github.com/WaranchitPk/funny_todo_list/tree/master/api/v1/tasks
 
 // UserRepository interface
+//go:generate mockery --name=UserRepository --case=snake --tags="mock" --inpackage --testonly
 type UserRepository interface {
 	Exist(ctx context.Context, model *ent.User) (bool, error)
 	List(ctx context.Context, limit, page int, sort string, model *ent.User) (total int, users []*ent.User, err error)

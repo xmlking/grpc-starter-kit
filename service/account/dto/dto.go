@@ -55,7 +55,7 @@ func UserToPB(user *ent.User) (account_entities.User, error) {
 	}
 	to.FirstName = user.FirstName
 	to.LastName = user.LastName
-	to.Email = user.Email
+	to.Email = &user.Email
 	if user.Edges.Profile != nil {
 		tempProfile, err := ProfileToPB(user.Edges.Profile)
 		if err != nil {
@@ -101,7 +101,7 @@ func ProfileToPB(profile *ent.Profile) (account_entities.Profile, error) {
 			return to, err
 		}
 	}
-	to.Tz = profile.Tz
+	to.Tz = &profile.Tz
 	to.Avatar = profile.Avatar.String()
 	to.Gender = account_entities.Profile_GenderType(Profile_GenderType_value[profile.Gender])
 	if !profile.Birthday.IsZero() {

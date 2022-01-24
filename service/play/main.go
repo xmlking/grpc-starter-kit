@@ -12,6 +12,7 @@ import (
 	"github.com/sercand/kuberesolver"
 	"github.com/xmlking/grpc-starter-kit/internal/config"
 	"github.com/xmlking/grpc-starter-kit/internal/constants"
+	"github.com/xmlking/grpc-starter-kit/internal/version"
 	_ "github.com/xmlking/toolkit/logger/auto"
 	"github.com/xmlking/toolkit/middleware/rpclog"
 	"github.com/xmlking/toolkit/server"
@@ -94,7 +95,7 @@ func main() {
 	greeterv1.RegisterGreeterServiceServer(gSrv, greeterHandler)
 
 	// Start broker/gRPC daemon services
-	log.Info().Msg(config.GetBuildInfo())
+	log.Info().Object("build_info", version.GetBuildInfo()).Send()
 	log.Info().Msgf("Server(%s) starting at: %s, secure: %t, pid: %d", serviceName, listener.Addr(), cfg.Features.TLS.Enabled, os.Getpid())
 
 	g.Go(func() error {

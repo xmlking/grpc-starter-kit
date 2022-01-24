@@ -76,7 +76,7 @@ func ExampleGetConfig_check_defaults() {
 }
 
 func TestOverwriteConfigurationWithEnvironmentWithDefaultPrefix(t *testing.T) {
-    t.Setenv("CONFY_SERVICES_ACCOUNT_ENDPOINT", "dns:///localhost:8088")
+	t.Setenv("CONFY_SERVICES_ACCOUNT_ENDPOINT", "dns:///localhost:8088")
 
 	var cfg config.Configuration
 	confy.DefaultConfy = confy.NewConfy(confy.WithFS(config.GetFileSystem()), confy.WithDebugMode())

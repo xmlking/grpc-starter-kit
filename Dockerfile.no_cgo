@@ -36,7 +36,6 @@ ARG TYPE=service
 ARG TARGET=account
 
 RUN go build -a \
-    -ldflags="-w -s $(govvv -flags -version ${VERSION} -pkg $(go list ./internal/config) )" \
     -o /app ./$TYPE/$TARGET/main.go
 
 # Final stage: the running container.
