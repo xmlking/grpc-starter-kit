@@ -40,7 +40,7 @@ go mod download
   ```bash
   go get -u # to use the latest minor or patch releases
   go get -u=patch # to use the latest patch releases
-  go mod tidy
+go mod tidy -compat=1.17
   # to find out why you have specific dependency
   go mod why -m github.com/DATA-DOG/go-sqlmock
   # if you want to get binaries into $GOHOME/bin or $GOBIN
@@ -87,7 +87,7 @@ go mod download
 - How to Prepare for a Release?
 
   ```bash
-  go mod tidy
+  go mod tidy -compat=1.17
   go test all
   ```
 

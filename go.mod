@@ -31,12 +31,12 @@ require (
 	github.com/srikrsna/protoc-gen-gotag v0.6.2
 	github.com/stretchr/testify v1.7.1-0.20210427113832-6241f9ab9942
 	github.com/thoas/go-funk v0.9.1
-	github.com/xmlking/toolkit v0.2.4-0.20220123010153-c9c60cdbaef7
-	github.com/xmlking/toolkit/broker/cloudevents v0.2.4-0.20220123010153-c9c60cdbaef7
-	github.com/xmlking/toolkit/confy v0.2.4-0.20220123010153-c9c60cdbaef7
-	github.com/xmlking/toolkit/logger v0.2.4-0.20220123010153-c9c60cdbaef7
-	github.com/xmlking/toolkit/telemetry v0.2.4-0.20220123010153-c9c60cdbaef7
-	github.com/xmlking/toolkit/xds v0.0.0-20220123010153-c9c60cdbaef7
+	github.com/xmlking/toolkit v0.2.4
+	github.com/xmlking/toolkit/broker/cloudevents v0.2.4
+	github.com/xmlking/toolkit/confy v0.2.4
+	github.com/xmlking/toolkit/logger v0.2.4
+	github.com/xmlking/toolkit/telemetry v0.2.4
+	github.com/xmlking/toolkit/xds v0.2.4
 	go.opentelemetry.io/contrib/instrumentation/google.golang.org/grpc/otelgrpc v0.28.0
 	go.opentelemetry.io/otel v1.3.0
 	go.opentelemetry.io/otel/metric v0.26.0
