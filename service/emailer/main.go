@@ -46,7 +46,7 @@ func main() {
 	if err != nil {
 		log.Fatal().Stack().Err(err).Msg("error creating listener")
 	}
-	srv := server.NewServer(appCtx, server.ServerName(serviceName), server.WithListener(listener))
+	srv := server.NewServer(ctx, server.ServerName(serviceName), server.WithListener(listener))
 
 	// Start broker/gRPC daemon services
 	log.Info().Object("build_info", version.GetBuildInfo()).Send()

@@ -50,7 +50,7 @@ func main() {
 	}
 
 	// Initialize DI Container
-	ctn, err := registry.NewContainer(appCtx, cfg)
+	ctn, err := registry.NewContainer(ctx, cfg)
 	defer ctn.Clean()
 	if err != nil {
 		log.Fatal().Msgf("failed to build container: %v", err)
@@ -113,7 +113,7 @@ func main() {
 	if err != nil {
 		log.Fatal().Stack().Err(err).Msg("error creating listener")
 	}
-	srv := server.NewServer(appCtx, server.ServerName(serviceName), server.WithListener(listener), server.WithServerOptions(grpcOps...))
+	srv := server.NewServer(ctx, server.ServerName(serviceName), server.WithListener(listener), server.WithServerOptions(grpcOps...))
 
 	// greeterClientCon, err := srv.Client(cfg.Services.Greeter.Endpoint, server.ClientName(constants.GREETER_SERVICE), server.WithDialOptions(dialOptions...))
 

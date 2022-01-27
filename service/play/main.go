@@ -86,7 +86,7 @@ func main() {
 	if err != nil {
 		log.Fatal().Stack().Err(err).Msg("error creating listener")
 	}
-	srv := server.NewServer(appCtx, server.ServerName(serviceName), server.WithListener(listener), server.WithServerOptions(grpcOps...))
+	srv := server.NewServer(ctx, server.ServerName(serviceName), server.WithListener(listener), server.WithServerOptions(grpcOps...))
 
 	gSrv := srv.Server()
 

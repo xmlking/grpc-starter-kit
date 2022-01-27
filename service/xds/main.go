@@ -33,9 +33,14 @@ func main() {
 	appCtx, stop := signal.NotifyContext(context.Background(), syscall.SIGHUP, syscall.SIGTERM, syscall.SIGINT, os.Interrupt)
 	defer stop()
 
+	// we use this context to cancel all sibling goroutines in the errgroup, when one of the sibling goroutine throw error.
+	// it also bubble down signals from parent appCtx to all child goroutines tree.
 	g, ctx := errgroup.WithContext(appCtx)
 
-	// ServerOption
+	// gRPC golang library sets a very small upper bound for the number gRPC/h2
+	// streams over a single TCP connection. If a proxy multiplexes requests over
+	// a single connection to the management server, then it might lead to
+	// availability problems.
 	grpcOps := []grpc.ServerOption{
 		grpc.MaxConcurrentStreams(xdsConfig.MaxConcurrentStreams),
 	}
@@ -53,25 +58,23 @@ func main() {
 	if err != nil {
 		log.Fatal().Stack().Err(err).Msg("error creating listener")
 	}
-	srv := server.NewServer(appCtx, server.ServerName(serviceName), server.WithListener(listener), server.WithServerOptions(grpcOps...))
+	srv := server.NewServer(ctx, server.ServerName(serviceName), server.WithListener(listener), server.WithServerOptions(grpcOps...))
 
 	gSrv := srv.Server()
-
-	refresh := xds.NewRefresher(appCtx, xds.WithFS(efs), xds.WithRefreshInterval(xdsConfig.RefreshInterval))
-	g.Go(func() error {
-		return refresh.Start()
-	})
+	refresh := xds.NewRefresher(ctx, xdsConfig.SourceType, xds.WithNodeID(xdsConfig.NodeID), xds.WithRefreshInterval(xdsConfig.RefreshInterval),
+		xds.WithFS(efs),
+		xds.WithHostnames(xdsConfig.DNS.Hostnames),
+		xds.WithNamespace(xdsConfig.Kubernetes.Namespace),
+	)
 
 	var cb serverv3.Callbacks
 	if cfg.Features.Metrics.Enabled {
-		if cb, err = callbacks.NewOTelCallbacks(); err != nil {
-			log.Fatal().Stack().Err(err).Msg("unable to create OTelCallbacks")
-		}
+		cb = callbacks.NewOTelCallbacks()
 	} else {
 		cb = callbacks.NewDefaultCallbacks()
 	}
 
-	adsSrv := serverv3.NewServer(ctx, refresh.GetSnapshotCache(), cb)
+	adsSrv := serverv3.NewServer(ctx, refresh.GetCache(), cb)
 	// register services
 	discoverygrpc.RegisterAggregatedDiscoveryServiceServer(gSrv, adsSrv)
 
@@ -80,12 +83,15 @@ func main() {
 	log.Info().Msgf("Server(%s) starting at: %s, secure: %t, pid: %d", serviceName, listener.Addr(), cfg.Features.TLS.Enabled, os.Getpid())
 
 	g.Go(func() error {
+		return refresh.Start()
+	})
+	g.Go(func() error {
 		return srv.Start()
 	})
 
 	go func() {
 		if err := g.Wait(); err != nil {
-			log.Fatal().Stack().Err(err).Msgf("Unexpected error for service: %s", cfg.Services.Emailer.Endpoint)
+			log.Fatal().Stack().Err(err).Msgf("Unexpected error for service: %s", cfg.Services.Xds.Endpoint)
 		}
 		log.Info().Msg("Goodbye.....")
 		os.Exit(0)

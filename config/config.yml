@@ -77,15 +77,20 @@ services:
 
 xds:
   max_concurrent_streams: 1000
-  source_type: static
+  source_type: dns
   node_id: '25386353-c3e2-42f5-ad65-2b003c3386f5'
   refresh_interval: 30s
+  kubernetes:
+#    namespace: kube-system
+    namespace: default
+  dns:
+    hostnames: ["www.google.com", "www.apple.com"]
 #  static:
 #    fs: all???
 #  file:
 #    fs:
-#  kuberneireis:
-#    namesapce:
+
+
 
 features:
   metrics:
