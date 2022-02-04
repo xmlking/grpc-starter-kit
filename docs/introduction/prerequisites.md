@@ -86,12 +86,23 @@ make build
 go install github.com/rvflash/goup@latest
 ```
 
+### VSCode 
+
+
+
 ### Working with golang 1.18 (beta)
 
+Refer [gotip](https://github.com/golang/tools/blob/master/gopls/doc/advanced.md)
+
 ```bash
-go install golang.org/dl/gotip@latest
-gotip download
+go install golang.org/dl/go1.18beta2@latest
+go1.18beta2 download
+
+cd ~/bin
+ln -s /Users/<username>/sdk/go1.18beta2/bin/go gotip
 ```
 
-This will build the latest beta go SDK in `/Users/<username>/sdk/gotip` and copy **gotip** binary into `/Users/<username>/go/bin/gotip`.<br/>
-`/Users/<username>/go/bin` should be already in your path.
+This will build the latest beta go SDK in `/Users/<username>/sdk/go1.18beta2` <br/>
+make a link from `/Users/<username>/sdk/go1.18beta2/bin/go` to `~/bin/gotip` which is in your path.
+
+Setting VSCode with [1.18 beta](https://github.com/golang/vscode-go/blob/master/docs/advanced.md)

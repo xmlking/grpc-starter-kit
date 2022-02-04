@@ -5,6 +5,7 @@ import (
 	"os"
 	"os/signal"
 	"syscall"
+	"time"
 
 	discoverygrpc "github.com/envoyproxy/go-control-plane/envoy/service/discovery/v3"
 	serverv3 "github.com/envoyproxy/go-control-plane/pkg/server/v3"
@@ -21,6 +22,14 @@ import (
 	"golang.org/x/sync/errgroup"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials"
+	"google.golang.org/grpc/keepalive"
+)
+
+const (
+	grpcKeepaliveTime        = 30 * time.Second
+	grpcKeepaliveTimeout     = 5 * time.Second
+	grpcKeepaliveMinTime     = 30 * time.Second
+	grpcMaxConcurrentStreams = 1000000
 )
 
 func main() {
@@ -40,9 +49,17 @@ func main() {
 	// gRPC golang library sets a very small upper bound for the number gRPC/h2
 	// streams over a single TCP connection. If a proxy multiplexes requests over
 	// a single connection to the management server, then it might lead to
-	// availability problems.
+	// availability problems. Keepalive timeouts based on connection_keepalive parameter https://www.envoyproxy.io/docs/envoy/latest/configuration/overview/examples#dynamic
 	grpcOps := []grpc.ServerOption{
 		grpc.MaxConcurrentStreams(xdsConfig.MaxConcurrentStreams),
+		grpc.KeepaliveParams(keepalive.ServerParameters{
+			Time:    grpcKeepaliveTime,
+			Timeout: grpcKeepaliveTimeout,
+		}),
+		grpc.KeepaliveEnforcementPolicy(keepalive.EnforcementPolicy{
+			MinTime:             grpcKeepaliveMinTime,
+			PermitWithoutStream: true,
+		}),
 	}
 
 	if cfg.Features.TLS.Enabled {
