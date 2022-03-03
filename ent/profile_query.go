@@ -326,8 +326,8 @@ func (pq *ProfileQuery) GroupBy(field string, fields ...string) *ProfileGroupBy 
 //		Select(profile.FieldCreateTime).
 //		Scan(ctx, &v)
 //
-func (pq *ProfileQuery) Select(field string, fields ...string) *ProfileSelect {
-	pq.fields = append([]string{field}, fields...)
+func (pq *ProfileQuery) Select(fields ...string) *ProfileSelect {
+	pq.fields = append(pq.fields, fields...)
 	return &ProfileSelect{ProfileQuery: pq}
 }
 
@@ -416,6 +416,10 @@ func (pq *ProfileQuery) sqlAll(ctx context.Context) ([]*Profile, error) {
 
 func (pq *ProfileQuery) sqlCount(ctx context.Context) (int, error) {
 	_spec := pq.querySpec()
+	_spec.Node.Columns = pq.fields
+	if len(pq.fields) > 0 {
+		_spec.Unique = pq.unique != nil && *pq.unique
+	}
 	return sqlgraph.CountNodes(ctx, pq.driver, _spec)
 }
 
@@ -478,10 +482,17 @@ func (pq *ProfileQuery) querySpec() *sqlgraph.QuerySpec {
 func (pq *ProfileQuery) sqlQuery(ctx context.Context) *sql.Selector {
 	builder := sql.Dialect(pq.driver.Dialect())
 	t1 := builder.Table(profile.Table)
-	selector := builder.Select(t1.Columns(profile.Columns...)...).From(t1)
+	columns := pq.fields
+	if len(columns) == 0 {
+		columns = profile.Columns
+	}
+	selector := builder.Select(t1.Columns(columns...)...).From(t1)
 	if pq.sql != nil {
 		selector = pq.sql
-		selector.Select(selector.Columns(profile.Columns...)...)
+		selector.Select(selector.Columns(columns...)...)
+	}
+	if pq.unique != nil && *pq.unique {
+		selector.Distinct()
 	}
 	for _, p := range pq.predicates {
 		p(selector)
@@ -749,13 +760,22 @@ func (pgb *ProfileGroupBy) sqlScan(ctx context.Context, v interface{}) error {
 }
 
 func (pgb *ProfileGroupBy) sqlQuery() *sql.Selector {
-	selector := pgb.sql
-	columns := make([]string, 0, len(pgb.fields)+len(pgb.fns))
-	columns = append(columns, pgb.fields...)
+	selector := pgb.sql.Select()
+	aggregation := make([]string, 0, len(pgb.fns))
 	for _, fn := range pgb.fns {
-		columns = append(columns, fn(selector))
+		aggregation = append(aggregation, fn(selector))
 	}
-	return selector.Select(columns...).GroupBy(pgb.fields...)
+	// If no columns were selected in a custom aggregation function, the default
+	// selection is the fields used for "group-by", and the aggregation functions.
+	if len(selector.SelectedColumns()) == 0 {
+		columns := make([]string, 0, len(pgb.fields)+len(pgb.fns))
+		for _, f := range pgb.fields {
+			columns = append(columns, selector.C(f))
+		}
+		columns = append(columns, aggregation...)
+		selector.Select(columns...)
+	}
+	return selector.GroupBy(selector.Columns(pgb.fields...)...)
 }
 
 // ProfileSelect is the builder for selecting fields of Profile entities.
@@ -971,16 +991,10 @@ func (ps *ProfileSelect) BoolX(ctx context.Context) bool {
 
 func (ps *ProfileSelect) sqlScan(ctx context.Context, v interface{}) error {
 	rows := &sql.Rows{}
-	query, args := ps.sqlQuery().Query()
+	query, args := ps.sql.Query()
 	if err := ps.driver.Query(ctx, query, args, rows); err != nil {
 		return err
 	}
 	defer rows.Close()
 	return sql.ScanSlice(rows, v)
-}
-
-func (ps *ProfileSelect) sqlQuery() sql.Querier {
-	selector := ps.sql
-	selector.Select(selector.Columns(ps.fields...)...)
-	return selector
 }

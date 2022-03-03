@@ -1,0 +1,39 @@
+# https://github.com/sigstore/cosign/blob/82c9cee299ddd80f2045625611f168125912f2de/.github/workflows/github-oidc.yaml
+name: Test GitHub OIDC
+on:
+  push:
+    branches: [ 'main', 'release-*' ]
+  schedule:
+    - cron: '0 1 * * *' # 1AM UTC
+  workflow_dispatch:
+
+jobs:
+  build:
+    permissions:
+      id-token: write
+      packages: write
+      contents: read
+    env:
+      COSIGN_EXPERIMENTAL: "true"
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-go@v2
+        with:
+          go-version: '1.17.x'
+
+      # Install tools.
+      - uses: sigstore/cosign-installer@main
+      - uses: imjasonh/setup-ko@v0.4
+
+      - name: Build and sign a container image
+        run: |
+          set -e
+          # Build and publish an image.
+          image=$(ko publish --preserve-import-paths ./cmd/cosign)
+          # Sign the image and annotate relevant information.
+          cosign sign \
+            -a sha=${{ github.sha }} \
+            -a run_id=${{ github.run_id }} \
+            -a run_attempt=${{ github.run_attempt }} \
+            ${image}

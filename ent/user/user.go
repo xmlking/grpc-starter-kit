@@ -33,7 +33,7 @@ const (
 	EdgeProfile = "profile"
 	// Table holds the table name of the user in the database.
 	Table = "users"
-	// ProfileTable is the table the holds the profile relation/edge.
+	// ProfileTable is the table that holds the profile relation/edge.
 	ProfileTable = "profiles"
 	// ProfileInverseTable is the table name for the Profile entity.
 	// It exists in this package in order to avoid circular dependency with the "profile" package.

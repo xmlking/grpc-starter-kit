@@ -1,11 +1,12 @@
-FROM golang:1.17.5-alpine
+# argument for Go version
+ARG GO_VERSION=1.17.6
+
+FROM golang:${GO_VERSION}-alpine AS base
 
 RUN mkdir /user \
-    && echo 'nobody:x:65534:65534:nobody:/:' > /user/passwd  \
-    && echo 'nobody:x:65534:' > /user/group \
-    && apk --no-cache add make git gcc libtool musl-dev ca-certificates dumb-init \
+    && apk --no-cache add make git gcc libtool musl-dev dumb-init \
     && rm -rf /var/cache/apk/* /tmp/* \
-    && GRPC_HEALTH_PROBE_VERSION=v0.3.6 \
+    && GRPC_HEALTH_PROBE_VERSION=v0.4.8 \
     && wget -q -O /bin/grpc_health_probe https://github.com/grpc-ecosystem/grpc-health-probe/releases/download/${GRPC_HEALTH_PROBE_VERSION}/grpc_health_probe-linux-amd64 \
     && chmod +x /bin/grpc_health_probe \
     && GRPCURL_VERSION=1.8.0 \

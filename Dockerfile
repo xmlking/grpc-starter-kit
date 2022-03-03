@@ -15,9 +15,6 @@ ENV CGO_ENABLED=1 GOOS=linux GOPROXY="https://proxy.golang.org,direct"
 #ENV GONOSUMDB=github.com/*,gopkg.in/*,google.golang.org/*,cloud.google.com/*
 #ENV GOPROXY="https://nexus.mycomp.com,direct"
 
-# Get tools - will also be cached if we won't add new tools
-RUN go install github.com/ahmetb/govvv@v0.3.0
-
 # Set the working directory outside $GOPATH to enable the support for modules.
 WORKDIR /src
 
@@ -40,10 +37,7 @@ RUN go build -a \
     -o /app ./$TYPE/$TARGET/main.go
 
 # Final stage: the running container.
-FROM scratch AS final
-
-# copy 1 MiB busybox executable
-COPY --from=busybox:1.32.1 /bin/busybox /bin/busybox
+FROM gcr.io/distroless/static:nonroot AS final
 
 # copy grpc-health-probe to use with readinessProbe
 COPY --from=builder /bin/grpc_health_probe /bin/grpc_health_probe
@@ -53,12 +47,6 @@ COPY --from=builder /bin/grpcurl /bin/grpcurl
 
 # copy dumb-ini from base
 COPY --from=builder /usr/bin/dumb-init /usr/bin/dumb-init
-
-# Import the user and group files from the first stage.
-COPY --from=builder /user/group /user/passwd /etc/
-
-# Import the Certificate-Authority certificates for enabling HTTPS.
-COPY --from=builder /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/
 
 # Import the compiled executable from the second stage.
 ARG VERSION=0.0.1
@@ -73,7 +61,7 @@ COPY --from=builder src/config /config
 EXPOSE 8080
 
 # Perform any further action as an unprivileged user.
-USER nobody:nobody
+USER nonroot:nonroot
 
 # Health Check
 HEALTHCHECK --interval=15s --timeout=5s --retries=3 CMD /bin/grpc_health_probe -addr=:8080 -connect-timeout 250ms -rpc-timeout 100ms || exit 1
@@ -87,16 +75,19 @@ ARG VCS_REF=1
 ARG VENDOR=sumo
 
 # Metadata
-LABEL org.label-schema.build-date=$BUILD_DATE \
-    org.label-schema.name="${TARGET}-${TYPE}" \
-    org.label-schema.description="Example of multi-stage docker build" \
-    org.label-schema.url="https://example.com" \
-    org.label-schema.vcs-url=https://github.com/xmlking/$VCS_URL \
-    org.label-schema.vcs-ref=$VCS_REF \
-    org.label-schema.vendor=$VENDOR \
-    org.label-schema.version=$VERSION \
-    org.label-schema.docker.schema-version="1.0" \
-    org.label-schema.docker.cmd="docker run -it -e CONFY_ENV=production -p 8080:8080  ${DOCKER_REGISTRY:+${DOCKER_REGISTRY}/}${DOCKER_CONTEXT_PATH}/${TARGET}-${TYPE}:${VERSION}"
+LABEL org.opencontainers.image.created=$BUILD_DATE \
+    org.opencontainers.image.name="${TARGET}-${TYPE}" \
+    org.opencontainers.image.title="${TARGET}-${TYPE}" \
+    org.opencontainers.image.description="Example of multi-stage docker build" \
+    org.opencontainers.image.url=https://github.com/xmlking/$VCS_UR \
+    org.opencontainers.image.source=https://github.com/xmlking/$VCS_URL \
+    org.opencontainers.image.revision=$VCS_REF \
+    org.opencontainers.image.version=$VERSION \
+    org.opencontainers.image.authors=sumanth \
+    org.opencontainers.image.vendor=$VENDOR \
+    org.opencontainers.image.ref.name=$VCS_REF \
+    org.opencontainers.image.licenses=MIT \
+    org.opencontainers.image.documentation="docker run -it -e CONFY_ENV=production -p 8080:8080  ${DOCKER_REGISTRY:+${DOCKER_REGISTRY}/}${DOCKER_CONTEXT_PATH}/${TARGET}-${TYPE}:${VERSION}"
 
 # Run the compiled binary.
 ENTRYPOINT ["/usr/bin/dumb-init", "/app"]

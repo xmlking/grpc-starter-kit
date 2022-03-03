@@ -1,0 +1,19 @@
+pre_bump_hooks = [
+    "echo {{version}}",
+]
+post_bump_hooks = []
+tag_prefix = "v"
+
+[commit_types]
+
+[changelog]
+path = "CHANGELOG1.md"
+template = "remote"
+remote = "github.com"
+repository = "grpc-starter-kit"
+owner = "xmlking"
+authors = [
+    { username = "xmlking", signature = "Sumanth Chinthagunta"}
+]
+
+[bump_profiles]

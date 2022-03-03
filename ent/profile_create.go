@@ -131,6 +131,14 @@ func (pc *ProfileCreate) SetID(u uuid.UUID) *ProfileCreate {
 	return pc
 }
 
+// SetNillableID sets the "id" field if the given value is not nil.
+func (pc *ProfileCreate) SetNillableID(u *uuid.UUID) *ProfileCreate {
+	if u != nil {
+		pc.SetID(*u)
+	}
+	return pc
+}
+
 // SetUserID sets the "user" edge to the User entity by ID.
 func (pc *ProfileCreate) SetUserID(id uuid.UUID) *ProfileCreate {
 	pc.mutation.SetUserID(id)
@@ -169,11 +177,17 @@ func (pc *ProfileCreate) Save(ctx context.Context) (*Profile, error) {
 				return nil, err
 			}
 			pc.mutation = mutation
-			node, err = pc.sqlSave(ctx)
+			if node, err = pc.sqlSave(ctx); err != nil {
+				return nil, err
+			}
+			mutation.id = &node.ID
 			mutation.done = true
 			return node, err
 		})
 		for i := len(pc.hooks) - 1; i >= 0; i-- {
+			if pc.hooks[i] == nil {
+				return nil, fmt.Errorf("ent: uninitialized hook (forgotten import ent/runtime?)")
+			}
 			mut = pc.hooks[i](mut)
 		}
 		if _, err := mut.Mutate(ctx, pc.mutation); err != nil {
@@ -190,6 +204,19 @@ func (pc *ProfileCreate) SaveX(ctx context.Context) *Profile {
 		panic(err)
 	}
 	return v
+}
+
+// Exec executes the query.
+func (pc *ProfileCreate) Exec(ctx context.Context) error {
+	_, err := pc.Save(ctx)
+	return err
+}
+
+// ExecX is like Exec, but panics if an error occurs.
+func (pc *ProfileCreate) ExecX(ctx context.Context) {
+	if err := pc.Exec(ctx); err != nil {
+		panic(err)
+	}
 }
 
 // defaults sets the default values of the builder before save.
@@ -211,29 +238,29 @@ func (pc *ProfileCreate) defaults() {
 // check runs all checks and user-defined validators on the builder.
 func (pc *ProfileCreate) check() error {
 	if _, ok := pc.mutation.CreateTime(); !ok {
-		return &ValidationError{Name: "create_time", err: errors.New("ent: missing required field \"create_time\"")}
+		return &ValidationError{Name: "create_time", err: errors.New(`ent: missing required field "Profile.create_time"`)}
 	}
 	if _, ok := pc.mutation.UpdateTime(); !ok {
-		return &ValidationError{Name: "update_time", err: errors.New("ent: missing required field \"update_time\"")}
+		return &ValidationError{Name: "update_time", err: errors.New(`ent: missing required field "Profile.update_time"`)}
 	}
 	if _, ok := pc.mutation.Age(); !ok {
-		return &ValidationError{Name: "age", err: errors.New("ent: missing required field \"age\"")}
+		return &ValidationError{Name: "age", err: errors.New(`ent: missing required field "Profile.age"`)}
 	}
 	if v, ok := pc.mutation.Age(); ok {
 		if err := profile.AgeValidator(v); err != nil {
-			return &ValidationError{Name: "age", err: fmt.Errorf("ent: validator failed for field \"age\": %w", err)}
+			return &ValidationError{Name: "age", err: fmt.Errorf(`ent: validator failed for field "Profile.age": %w`, err)}
 		}
 	}
 	if _, ok := pc.mutation.Tz(); !ok {
-		return &ValidationError{Name: "tz", err: errors.New("ent: missing required field \"tz\"")}
+		return &ValidationError{Name: "tz", err: errors.New(`ent: missing required field "Profile.tz"`)}
 	}
 	if v, ok := pc.mutation.Gender(); ok {
 		if err := profile.GenderValidator(v); err != nil {
-			return &ValidationError{Name: "gender", err: fmt.Errorf("ent: validator failed for field \"gender\": %w", err)}
+			return &ValidationError{Name: "gender", err: fmt.Errorf(`ent: validator failed for field "Profile.gender": %w`, err)}
 		}
 	}
 	if _, ok := pc.mutation.UserID(); !ok {
-		return &ValidationError{Name: "user", err: errors.New("ent: missing required edge \"user\"")}
+		return &ValidationError{Name: "user", err: errors.New(`ent: missing required edge "Profile.user"`)}
 	}
 	return nil
 }
@@ -241,10 +268,17 @@ func (pc *ProfileCreate) check() error {
 func (pc *ProfileCreate) sqlSave(ctx context.Context) (*Profile, error) {
 	_node, _spec := pc.createSpec()
 	if err := sqlgraph.CreateNode(ctx, pc.driver, _spec); err != nil {
-		if cerr, ok := isSQLConstraintError(err); ok {
-			err = cerr
+		if sqlgraph.IsConstraintError(err) {
+			err = &ConstraintError{err.Error(), err}
 		}
 		return nil, err
+	}
+	if _spec.ID.Value != nil {
+		if id, ok := _spec.ID.Value.(*uuid.UUID); ok {
+			_node.ID = *id
+		} else if err := _node.ID.Scan(_spec.ID.Value); err != nil {
+			return nil, err
+		}
 	}
 	return _node, nil
 }
@@ -262,7 +296,7 @@ func (pc *ProfileCreate) createSpec() (*Profile, *sqlgraph.CreateSpec) {
 	)
 	if id, ok := pc.mutation.ID(); ok {
 		_node.ID = id
-		_spec.ID.Value = id
+		_spec.ID.Value = &id
 	}
 	if value, ok := pc.mutation.CreateTime(); ok {
 		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
@@ -388,17 +422,19 @@ func (pcb *ProfileCreateBulk) Save(ctx context.Context) ([]*Profile, error) {
 				if i < len(mutators)-1 {
 					_, err = mutators[i+1].Mutate(root, pcb.builders[i+1].mutation)
 				} else {
+					spec := &sqlgraph.BatchCreateSpec{Nodes: specs}
 					// Invoke the actual operation on the latest mutation in the chain.
-					if err = sqlgraph.BatchCreate(ctx, pcb.driver, &sqlgraph.BatchCreateSpec{Nodes: specs}); err != nil {
-						if cerr, ok := isSQLConstraintError(err); ok {
-							err = cerr
+					if err = sqlgraph.BatchCreate(ctx, pcb.driver, spec); err != nil {
+						if sqlgraph.IsConstraintError(err) {
+							err = &ConstraintError{err.Error(), err}
 						}
 					}
 				}
-				mutation.done = true
 				if err != nil {
 					return nil, err
 				}
+				mutation.id = &nodes[i].ID
+				mutation.done = true
 				return nodes[i], nil
 			})
 			for i := len(builder.hooks) - 1; i >= 0; i-- {
@@ -422,4 +458,17 @@ func (pcb *ProfileCreateBulk) SaveX(ctx context.Context) []*Profile {
 		panic(err)
 	}
 	return v
+}
+
+// Exec executes the query.
+func (pcb *ProfileCreateBulk) Exec(ctx context.Context) error {
+	_, err := pcb.Save(ctx)
+	return err
+}
+
+// ExecX is like Exec, but panics if an error occurs.
+func (pcb *ProfileCreateBulk) ExecX(ctx context.Context) {
+	if err := pcb.Exec(ctx); err != nil {
+		panic(err)
+	}
 }

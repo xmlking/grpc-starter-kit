@@ -25,9 +25,15 @@ type ProfileUpdate struct {
 	mutation *ProfileMutation
 }
 
-// Where adds a new predicate for the ProfileUpdate builder.
+// Where appends a list predicates to the ProfileUpdate builder.
 func (pu *ProfileUpdate) Where(ps ...predicate.Profile) *ProfileUpdate {
-	pu.mutation.predicates = append(pu.mutation.predicates, ps...)
+	pu.mutation.Where(ps...)
+	return pu
+}
+
+// SetUpdateTime sets the "update_time" field.
+func (pu *ProfileUpdate) SetUpdateTime(t time.Time) *ProfileUpdate {
+	pu.mutation.SetUpdateTime(t)
 	return pu
 }
 
@@ -191,6 +197,9 @@ func (pu *ProfileUpdate) Save(ctx context.Context) (int, error) {
 			return affected, err
 		})
 		for i := len(pu.hooks) - 1; i >= 0; i-- {
+			if pu.hooks[i] == nil {
+				return 0, fmt.Errorf("ent: uninitialized hook (forgotten import ent/runtime?)")
+			}
 			mut = pu.hooks[i](mut)
 		}
 		if _, err := mut.Mutate(ctx, pu.mutation); err != nil {
@@ -234,16 +243,16 @@ func (pu *ProfileUpdate) defaults() {
 func (pu *ProfileUpdate) check() error {
 	if v, ok := pu.mutation.Age(); ok {
 		if err := profile.AgeValidator(v); err != nil {
-			return &ValidationError{Name: "age", err: fmt.Errorf("ent: validator failed for field \"age\": %w", err)}
+			return &ValidationError{Name: "age", err: fmt.Errorf(`ent: validator failed for field "Profile.age": %w`, err)}
 		}
 	}
 	if v, ok := pu.mutation.Gender(); ok {
 		if err := profile.GenderValidator(v); err != nil {
-			return &ValidationError{Name: "gender", err: fmt.Errorf("ent: validator failed for field \"gender\": %w", err)}
+			return &ValidationError{Name: "gender", err: fmt.Errorf(`ent: validator failed for field "Profile.gender": %w`, err)}
 		}
 	}
 	if _, ok := pu.mutation.UserID(); pu.mutation.UserCleared() && !ok {
-		return errors.New("ent: clearing a required unique edge \"user\"")
+		return errors.New(`ent: clearing a required unique edge "Profile.user"`)
 	}
 	return nil
 }
@@ -397,8 +406,8 @@ func (pu *ProfileUpdate) sqlSave(ctx context.Context) (n int, err error) {
 	if n, err = sqlgraph.UpdateNodes(ctx, pu.driver, _spec); err != nil {
 		if _, ok := err.(*sqlgraph.NotFoundError); ok {
 			err = &NotFoundError{profile.Label}
-		} else if cerr, ok := isSQLConstraintError(err); ok {
-			err = cerr
+		} else if sqlgraph.IsConstraintError(err) {
+			err = &ConstraintError{err.Error(), err}
 		}
 		return 0, err
 	}
@@ -411,6 +420,12 @@ type ProfileUpdateOne struct {
 	fields   []string
 	hooks    []Hook
 	mutation *ProfileMutation
+}
+
+// SetUpdateTime sets the "update_time" field.
+func (puo *ProfileUpdateOne) SetUpdateTime(t time.Time) *ProfileUpdateOne {
+	puo.mutation.SetUpdateTime(t)
+	return puo
 }
 
 // SetDeleteTime sets the "delete_time" field.
@@ -580,6 +595,9 @@ func (puo *ProfileUpdateOne) Save(ctx context.Context) (*Profile, error) {
 			return node, err
 		})
 		for i := len(puo.hooks) - 1; i >= 0; i-- {
+			if puo.hooks[i] == nil {
+				return nil, fmt.Errorf("ent: uninitialized hook (forgotten import ent/runtime?)")
+			}
 			mut = puo.hooks[i](mut)
 		}
 		if _, err := mut.Mutate(ctx, puo.mutation); err != nil {
@@ -623,16 +641,16 @@ func (puo *ProfileUpdateOne) defaults() {
 func (puo *ProfileUpdateOne) check() error {
 	if v, ok := puo.mutation.Age(); ok {
 		if err := profile.AgeValidator(v); err != nil {
-			return &ValidationError{Name: "age", err: fmt.Errorf("ent: validator failed for field \"age\": %w", err)}
+			return &ValidationError{Name: "age", err: fmt.Errorf(`ent: validator failed for field "Profile.age": %w`, err)}
 		}
 	}
 	if v, ok := puo.mutation.Gender(); ok {
 		if err := profile.GenderValidator(v); err != nil {
-			return &ValidationError{Name: "gender", err: fmt.Errorf("ent: validator failed for field \"gender\": %w", err)}
+			return &ValidationError{Name: "gender", err: fmt.Errorf(`ent: validator failed for field "Profile.gender": %w`, err)}
 		}
 	}
 	if _, ok := puo.mutation.UserID(); puo.mutation.UserCleared() && !ok {
-		return errors.New("ent: clearing a required unique edge \"user\"")
+		return errors.New(`ent: clearing a required unique edge "Profile.user"`)
 	}
 	return nil
 }
@@ -650,7 +668,7 @@ func (puo *ProfileUpdateOne) sqlSave(ctx context.Context) (_node *Profile, err e
 	}
 	id, ok := puo.mutation.ID()
 	if !ok {
-		return nil, &ValidationError{Name: "ID", err: fmt.Errorf("missing Profile.ID for update")}
+		return nil, &ValidationError{Name: "id", err: errors.New(`ent: missing "Profile.id" for update`)}
 	}
 	_spec.Node.ID.Value = id
 	if fields := puo.fields; len(fields) > 0 {
@@ -806,8 +824,8 @@ func (puo *ProfileUpdateOne) sqlSave(ctx context.Context) (_node *Profile, err e
 	if err = sqlgraph.UpdateNode(ctx, puo.driver, _spec); err != nil {
 		if _, ok := err.(*sqlgraph.NotFoundError); ok {
 			err = &NotFoundError{profile.Label}
-		} else if cerr, ok := isSQLConstraintError(err); ok {
-			err = cerr
+		} else if sqlgraph.IsConstraintError(err) {
+			err = &ConstraintError{err.Error(), err}
 		}
 		return nil, err
 	}

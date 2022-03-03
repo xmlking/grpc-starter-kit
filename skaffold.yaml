@@ -1,6 +1,7 @@
 # example https://github.com/GoogleCloudPlatform/microservices-demo/blob/master/skaffold.yaml
+# schema https://skaffold.dev/docs/references/yaml/
 
-apiVersion: skaffold/v2beta25
+apiVersion: skaffold/v2beta27
 kind: Config
 build:
   artifacts:
@@ -9,6 +10,18 @@ build:
       builder: gcr.io/buildpacks/builder:v1
       env:
       - GOPROXY={{.GOPROXY}}
+#  ko:
+#    fromImage: gcr.io/distroless/base:debug-nonroot
+#    env:
+#      - GOPRIVATE=git.internal.example.com,source.developers.google.com
+#      - GOPROXY={{.GOPROXY}}
+#    platforms:
+#      - linux/amd64
+#    labels:
+#      org.opencontainers.image.licenses: Apache-2.0
+#      org.opencontainers.image.source: https://github.com/xmlking/grpc-starter-kit
+#      org.opencontainers.image.source: "{{.GITHUB_SERVER_URL}}/{{.GITHUB_REPOSITORY}}
+
 profiles:
 - name: gcb
   build:

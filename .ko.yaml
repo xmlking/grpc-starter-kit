@@ -1,8 +1,39 @@
 # Use :nonroot base image for all containers
 # defaultBaseImage: gcr.io/distroless/static:nonroot
+
+# To override the base image for certain importpaths:
 # Use: busybox to debug container
 # baseImageOverrides:
-#   github.com/xmlking/grpc-starter-kit/account-service: busybox
-#   github.com/xmlking/grpc-starter-kit/emailer-service: busybox
+#   github.com/xmlking/grpc-starter-kit/service/greeter: busybox
+#   github.com/xmlking/grpc-starter-kit/service/emailer: busybox
 
 # defaultBaseImage: gcr.io/distroless/base
+
+labels:
+  org.opencontainers.image.licenses: MIT
+  org.opencontainers.image.source: https://github.com/xmlking/grpc-starter-kit
+
+builds:
+#  - id: foo
+#    dir: .  # default is .
+#    main: ./foobar/foo
+#    env:
+#      - GOPRIVATE=git.internal.example.com,source.developers.google.com
+#    flags:
+#      - -tags
+#      - netgo
+#    ldflags:
+#      - -s -w
+#      - -extldflags "-static"
+#      - -X main.version={{.Env.VERSION}}
+  - id: greeter
+    dir: .  # default is .
+    main: ./service/greeter  # default is .
+    env:
+#      - CGO_ENABLED=1
+#      - GOOS=linux
+#      - GOPROXY="https://proxy.golang.org,direct"
+    ldflags:
+      - -s -w
+      - -extldflags "-static"
+

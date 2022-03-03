@@ -15,9 +15,6 @@ ENV CGO_ENABLED=0 GOOS=linux GOPROXY="https://proxy.golang.org,direct"
 #ENV GONOSUMDB=github.com/*,gopkg.in/*,google.golang.org/*,cloud.google.com/*
 #ENV GOPROXY="https://nexus.mycomp.com,direct"
 
-# Get tools - will also be cached if we won't add new tools
-RUN go install github.com/ahmetb/govvv@v0.3.0
-
 # Set the working directory outside $GOPATH to enable the support for modules.
 WORKDIR /src
 
@@ -36,13 +33,11 @@ ARG TYPE=service
 ARG TARGET=account
 
 RUN go build -a \
+    -installsuffix 'static' \
     -o /app ./$TYPE/$TARGET/main.go
 
 # Final stage: the running container.
-FROM scratch AS final
-
-# copy 1 MiB busybox executable
-COPY --from=busybox:1.32.1 /bin/busybox /bin/busybox
+FROM gcr.io/distroless/static AS final
 
 # copy grpc-health-probe to use with readinessProbe
 COPY --from=builder /bin/grpc_health_probe /bin/grpc_health_probe
@@ -52,12 +47,6 @@ COPY --from=builder /bin/grpcurl /bin/grpcurl
 
 # copy dumb-ini from base
 COPY --from=builder /usr/bin/dumb-init /usr/bin/dumb-init
-
-# Import the user and group files from the first stage.
-COPY --from=builder /user/group /user/passwd /etc/
-
-# Import the Certificate-Authority certificates for enabling HTTPS.
-COPY --from=builder /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/
 
 # Import the compiled executable from the second stage.
 ARG VERSION=0.0.1
@@ -72,7 +61,10 @@ COPY --from=builder src/config /config
 EXPOSE 8080
 
 # Perform any further action as an unprivileged user.
-USER nobody:nobody
+USER nonroot:nonroot
+
+# Health Check
+HEALTHCHECK --interval=15s --timeout=5s --retries=3 CMD /bin/grpc_health_probe -addr=:8080 -connect-timeout 250ms -rpc-timeout 100ms || exit 1
 
 # Metadata params
 ARG DOCKER_REGISTRY
