@@ -18,7 +18,7 @@ jobs:
           go-version: '^1.17'
         id: go
       - name: Check out Code
-        uses: actions/checkout@v2.4.0
+        uses: actions/checkout@v3
       - name: Cache go modules
         id: cache
         uses: actions/cache@preview
@@ -59,7 +59,7 @@ jobs:
   #       with:
   #         go-version: '^1.17'
   #     - name: Checkout code
-  #       uses: actions/checkout@v2.4.0
+  #       uses: actions/checkout@v3
   #     - name: fuzz regression tests
   #       run: ./scripts/fuzzit.sh
   #       env:
