@@ -12,12 +12,19 @@ If you are using ko’s multi-arch functionality, you will get an SBOM for each 
    ```shell
    brew install cosign
    ```
+3. bom (optional) - Create/View SPDX-compliant Bill of Materials
+4. crane (optional) - [crane](https://github.com/google/go-containerregistry/blob/main/cmd/crane/doc/crane.md) is a tool for interacting with remote images and registries.
 
 ## Install
 
 ```shell
+# install ko
 brew install ko
 ko version
+# install bom
+go install sigs.k8s.io/bom/cmd/bom@latest
+# install crane
+brew install crane
 ```
 
 ### Completions
@@ -66,9 +73,14 @@ ko build -v --image-label org.opencontainers.image.source="https://github.com/xm
 You can download the SBOM [ko](https://github.com/google/ko) produces with Sigstore’s [cosign](https://github.com/sigstore/cosign) via:
 
 ```shell
-cosign download sbom ghcr.io/xmlking/grpc-starter-kit/greeter:latest --output-file=sbom.spdx
-bom document outline sbom.spdx
+# Get the digest of an image
 crane digest ghcr.io/xmlking/grpc-starter-kit/greeter:latest
+# cosign download sbom ghcr.io/xmlking/grpc-starter-kit/greeter:latest --output-file=/tmp/sbom.spdx
+cosign download sbom ghcr.io/xmlking/grpc-starter-kit/greeter@sha256:eaef37a8b9422d50dbf5c5b6366ea4a3e1cce2b0d4b5632998cf1ed842aad578 --output-file=/tmp/sbom.spdx
+# show deps
+bom document outline /tmp/sbom.spdx
+# cleanup
+rm -f /tmp/sbom.spdx
 ```
 
 ### Publish
