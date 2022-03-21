@@ -5,7 +5,7 @@
 **ko** produces [SPDX](https://spdx.dev)-based SBOMs, but it can also produce **CycloneDX** with `--sbom=cyclonedx`.
 If you are using ko’s multi-arch functionality, you will get an SBOM for each architecture
 
-### Prerequisites
+## Prerequisites
 
 1. Docker Desktop
 2. Cosign (optional)
