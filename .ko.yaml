@@ -9,6 +9,8 @@
 
 # defaultBaseImage: gcr.io/distroless/base
 
+# example: https://github.com/sigstore/cosign/blob/main/.ko.yaml
+
 labels:
   org.opencontainers.image.licenses: MIT
   org.opencontainers.image.source: https://github.com/xmlking/grpc-starter-kit
@@ -19,7 +21,9 @@ builds:
 #    main: ./foobar/foo
 #    env:
 #      - GOPRIVATE=git.internal.example.com,source.developers.google.com
+#      - CGO_ENABLED=0
 #    flags:
+#      - -trimpath
 #      - -tags
 #      - netgo
 #    ldflags:
@@ -30,7 +34,7 @@ builds:
     dir: .  # default is .
     main: ./service/greeter  # default is .
     env:
-#      - CGO_ENABLED=1
+#      - CGO_ENABLED=0
 #      - GOOS=linux
 #      - GOPROXY="https://proxy.golang.org,direct"
     ldflags:

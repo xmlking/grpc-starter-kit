@@ -119,7 +119,13 @@ make release VERSION=v0.1.1 GITHUB_TOKEN=123...
 This will build and publish base image: `ghcr.io/xmlking/grpc-starter-kit/base`
 
 ```bash
-make docker_base VERSION=v0.1.0
+make docker_base VERSION=v0.2.0
+# Sign the image with Keyless mode
+nerdctl push --sign=cosign ghcr.io/xmlking/grpc-starter-kit/base:v0.2.0
+nerdctl push --sign=cosign ghcr.io/xmlking/grpc-starter-kit/base:latest
+# or keyless
+COSIGN_EXPERIMENTAL=1 cosign sign ghcr.io/xmlking/grpc-starter-kit/base:v0.2.0
+COSIGN_EXPERIMENTAL=1 cosign verify ghcr.io/xmlking/grpc-starter-kit/base:v0.2.0
 ```
 
 #### Services
@@ -148,6 +154,10 @@ make docker_push
 
 # remove all previous microservices images and any dangling images
 make docker_clean
+
+# explore and run
+dive ghcr.io/xmlking/grpc-starter-kit/account-service:v0.1.1
+nerdctl run --rm -it ghcr.io/xmlking/grpc-starter-kit/account-service:v0.1.1
 ```
 
 ### kustomize

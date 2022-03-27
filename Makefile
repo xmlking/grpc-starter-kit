@@ -13,7 +13,6 @@ DOCKER_REGISTRY 				:= ghcr.io
 DOCKER_CONTEXT_PATH 			:= $(GITHUB_REPO_OWNER)/$(GITHUB_REPO_NAME)
 # DOCKER_REGISTRY 				:= docker.io
 # DOCKER_CONTEXT_PATH 			:= xmlking
-BASE_VERSION					:= latest
 
 VERSION					:= $(shell git describe --tags || echo "HEAD")
 GOPATH					:= $(shell go env GOPATH)
@@ -281,7 +280,6 @@ deploy/prod:
 # Target: docker                                                               #
 ################################################################################
 
-# TODO: DOCKER_BUILDKIT=1 docker build --rm
 docker docker-%:
 	@if [ -z $(TARGET) ]; then \
 		echo "Building images for all services..."; \
@@ -290,10 +288,8 @@ docker docker-%:
 			for _target in $${type}/*/; do \
 				temp=$${_target%%/}; target=$${temp#*/}; \
 				echo "Building Image $${target}-$${type}..."; \
-				docker build --rm \
-				--build-arg BUILDKIT_INLINE_CACHE=1 \
+				nerdctl build \
 				--build-arg VERSION=$(VERSION) \
-				--build-arg BASE_VERSION=$(BASE_VERSION) \
 				--build-arg TYPE=$${type} \
 				--build-arg TARGET=$${target} \
 				--build-arg DOCKER_REGISTRY=${DOCKER_REGISTRY} \
@@ -305,10 +301,8 @@ docker docker-%:
 		done \
 	else \
 		echo "Building image for ${TARGET}-${TYPE}..."; \
-		docker build --rm \
-		--build-arg BUILDKIT_INLINE_CACHE=1 \
+		nerdctl build \
 		--build-arg VERSION=$(VERSION) \
-		--build-arg BASE_VERSION=$(BASE_VERSION) \
 		--build-arg TYPE=${TYPE} \
 		--build-arg TARGET=${TARGET} \
 		--build-arg DOCKER_REGISTRY=${DOCKER_REGISTRY} \
@@ -320,25 +314,25 @@ docker docker-%:
 
 docker_clean:
 	@echo "Cleaning dangling images..."
-	@docker images -f "dangling=true" -q  | xargs docker rmi
+	@nerdctl images -f "dangling=true" -q  | xargs docker rmi
 	@echo "Removing microservice images..."
-	@docker images -f "label=org.label-schema.vendor=sumo" -q | xargs docker rmi
+	@nerdctl images -f "label=org.label-schema.vendor=sumo" -q | xargs docker rmi
 	@echo "Pruneing images..."
-	@docker image prune -f
+	@nerdctl image prune -f
 
 docker_push:
-	@echo "Piblishing images with VCS_REF=$(shell git rev-parse --short HEAD)"
-	@docker images -f "label=org.label-schema.vcs-ref=$(shell git rev-parse --short HEAD)" --format {{.Repository}}:{{.Tag}} | \
+	@echo "Publishing images with VCS_REF=$(shell git rev-parse --short HEAD)"
+	@nerdctl images -f "label=org.label-schema.vcs-ref=$(shell git rev-parse --short HEAD)" --format {{.Repository}}:{{.Tag}} | \
 	while read -r image; do \
 		echo Now pushing $$image; \
-		docker push $$image; \
+		nerdctl push $$image; \
 	done;
 
 docker_base:
-	docker build --build-arg BUILD_DATE=$(shell date +%FT%T%Z) -f Dockerfile.base -t ${DOCKER_REGISTRY}/${DOCKER_CONTEXT_PATH}/base:$(VERSION) .
-	docker tag ${DOCKER_REGISTRY}/${DOCKER_CONTEXT_PATH}/base:$(VERSION) ${DOCKER_REGISTRY}/${DOCKER_CONTEXT_PATH}/base:latest
-#	docker push ${DOCKER_REGISTRY}/${DOCKER_CONTEXT_PATH}/base:$(VERSION)
-#	docker push ${DOCKER_REGISTRY}/${DOCKER_CONTEXT_PATH}/base:latest
+	nerdctl build --build-arg BUILD_DATE=$(shell date +%FT%T%Z) --build-arg VERSION=$(VERSION) -f Dockerfile.base -t ${DOCKER_REGISTRY}/${DOCKER_CONTEXT_PATH}/base:$(VERSION) .
+	nerdctl tag ${DOCKER_REGISTRY}/${DOCKER_CONTEXT_PATH}/base:$(VERSION) ${DOCKER_REGISTRY}/${DOCKER_CONTEXT_PATH}/base:latest
+#	nerdctl push ${DOCKER_REGISTRY}/${DOCKER_CONTEXT_PATH}/base:$(VERSION)
+#	nerdctl push ${DOCKER_REGISTRY}/${DOCKER_CONTEXT_PATH}/base:latest
 
 ################################################################################
 # Target: deploy                                                               #

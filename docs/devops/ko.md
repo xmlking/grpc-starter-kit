@@ -43,9 +43,9 @@ This command is same as `docker login ghcr.io --username myusername --password-s
 Will update `.docker/config.json`
 
 ```shell
-# set you GITHUB_TOKEN here:
-GITHUB_TOKEN=ghp_XYZ
-echo "$GITHUB_TOKEN" | ko login ghcr.io --username ignored --password-stdin
+# set you GITHUB_PACKAGES_TOKEN here:
+export GITHUB_PACKAGES_TOKEN=ghp_YOUR_TOKEN
+echo "$GITHUB_PACKAGES_TOKEN" | ko login ghcr.io --username ignored --password-stdin
 ```
 
 ## Configuration
@@ -81,6 +81,10 @@ cosign download sbom ghcr.io/xmlking/grpc-starter-kit/greeter@sha256:eaef37a8b94
 bom document outline /tmp/sbom.spdx
 # cleanup
 rm -f /tmp/sbom.spdx
+# Downloading the signature
+cosign download signature ghcr.io/xmlking/grpc-starter-kit/greeter:latest
+# Downloading the attestations both the sbom and build provenance are here as an attestation…
+cosign download attestation ghcr.io/xmlking/grpc-starter-kit/greeter:latest
 ```
 
 ### Publish

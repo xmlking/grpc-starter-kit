@@ -36,6 +36,9 @@ RUN go build -a \
     -ldflags="-w -s -linkmode external -extldflags '-static'" \
     -o /app ./$TYPE/$TARGET/main.go
 
+# Compress the binary
+# RUN upx --best --lzma /app
+
 # Final stage: the running container.
 FROM gcr.io/distroless/static:nonroot AS final
 
@@ -79,7 +82,7 @@ LABEL org.opencontainers.image.created=$BUILD_DATE \
     org.opencontainers.image.name="${TARGET}-${TYPE}" \
     org.opencontainers.image.title="${TARGET}-${TYPE}" \
     org.opencontainers.image.description="Example of multi-stage docker build" \
-    org.opencontainers.image.url=https://github.com/xmlking/$VCS_UR \
+    org.opencontainers.image.url=https://github.com/xmlking/$VCS_URL \
     org.opencontainers.image.source=https://github.com/xmlking/$VCS_URL \
     org.opencontainers.image.revision=$VCS_REF \
     org.opencontainers.image.version=$VERSION \
