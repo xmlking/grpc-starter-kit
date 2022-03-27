@@ -27,7 +27,7 @@ require (
 	github.com/golang/protobuf v1.5.2
 	github.com/google/uuid v1.3.0
 	github.com/grpc-ecosystem/go-grpc-middleware v1.3.0
-	github.com/mattn/go-sqlite3 v1.14.12
+	github.com/mattn/go-sqlite3 v2.0.3+incompatible
 	github.com/rs/zerolog v1.26.1
 	github.com/sarulabs/di/v2 v2.4.2
 	github.com/sercand/kuberesolver v2.4.0+incompatible
