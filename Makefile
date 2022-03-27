@@ -279,7 +279,6 @@ deploy/prod:
 ################################################################################
 # Target: docker                                                               #
 ################################################################################
-
 docker docker-%:
 	@if [ -z $(TARGET) ]; then \
 		echo "Building images for all services..."; \
@@ -301,7 +300,7 @@ docker docker-%:
 		done \
 	else \
 		echo "Building image for ${TARGET}-${TYPE}..."; \
-		nerdctl build \
+		nerdctl build --progress=plain \
 		--build-arg VERSION=$(VERSION) \
 		--build-arg TYPE=${TYPE} \
 		--build-arg TARGET=${TARGET} \
@@ -322,7 +321,7 @@ docker_clean:
 
 docker_push:
 	@echo "Publishing images with VCS_REF=$(shell git rev-parse --short HEAD)"
-	@nerdctl images -f "label=org.label-schema.vcs-ref=$(shell git rev-parse --short HEAD)" --format {{.Repository}}:{{.Tag}} | \
+	@nerdctl images -f "label=org.opencontainers.image.ref.name=$(shell git rev-parse --short HEAD)" --format {{.Repository}}:{{.Tag}} | \
 	while read -r image; do \
 		echo Now pushing $$image; \
 		nerdctl push $$image; \

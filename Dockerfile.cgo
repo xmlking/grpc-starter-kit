@@ -8,8 +8,9 @@ FROM ghcr.io/xmlking/grpc-starter-kit/base:${BASE_VERSION} AS builder
 # * CGO_ENABLED=0 to build a statically-linked executable
 # * GOFLAGS=-mod=vendor to force `go build` to look into the `/vendor` folder.
 # * GOPROXY="https://nexus.mycomp.com,direct" to set corp nexus goproxy and fallback to direct.
+# * GOWORK=off to desable go.work which is used for local development
 # e.g., ENV CGO_ENABLED=0 GOFLAGS=-mod=vendor
-ENV CGO_ENABLED=1 GOOS=linux GOPROXY="https://proxy.golang.org,direct"
+ENV CGO_ENABLED=1 GOOS=linux GOPROXY="https://proxy.golang.org,direct" GOWORK=off
 # when runing behind corporate proxy, you may need following settings
 #ENV GOPRIVATE=github.com/mycomp
 #ENV GONOSUMDB=github.com/*,gopkg.in/*,google.golang.org/*,cloud.google.com/*
@@ -37,26 +38,26 @@ RUN go build -a \
     -o /app ./$TYPE/$TARGET/main.go
 
 # Compress the binary
-# RUN upx --best --lzma /app
+RUN upx -v --ultra-brute --best /app || true
 
 # Final stage: the running container.
+
+# Use `static:debug` to create debuggable container. for prod, use `static:nonroot`
+#FROM gcr.io/distroless/static:debug AS final
 FROM gcr.io/distroless/static:nonroot AS final
 
 # copy grpc-health-probe to use with readinessProbe
-COPY --from=builder /bin/grpc_health_probe /bin/grpc_health_probe
-
+COPY --from=builder --chown=nonroot:nonroot /bin/grpc_health_probe /bin/grpc_health_probe
 # copygrpcurl to use with livenessProbe
-COPY --from=builder /bin/grpcurl /bin/grpcurl
-
+COPY --from=builder --chown=nonroot:nonroot /bin/grpcurl /bin/grpcurl
 # copy dumb-ini from base
-COPY --from=builder /usr/bin/dumb-init /usr/bin/dumb-init
-
-# Import the compiled executable from the second stage.
+COPY --from=builder --chown=nonroot:nonroot /usr/bin/dumb-init /bin/dumb-init
+# copy the compiled executable from the second stage.
 ARG VERSION=0.0.1
 ARG TYPE=service
 ARG TARGET=account
-COPY --from=builder /app /app
-COPY --from=builder src/config /config
+COPY --from=builder --chown=nonroot:nonroot /app /app
+COPY --from=builder --chown=nonroot:nonroot src/config /config
 
 # Declare the port on which the webserver will be exposed.
 # As we're going to run the executable as an unprivileged user, we can't bind
@@ -93,4 +94,4 @@ LABEL org.opencontainers.image.created=$BUILD_DATE \
     org.opencontainers.image.documentation="docker run -it -e CONFY_ENV=production -p 8080:8080  ${DOCKER_REGISTRY:+${DOCKER_REGISTRY}/}${DOCKER_CONTEXT_PATH}/${TARGET}-${TYPE}:${VERSION}"
 
 # Run the compiled binary.
-ENTRYPOINT ["/usr/bin/dumb-init", "/app"]
+ENTRYPOINT ["/bin/dumb-init", "/app"]

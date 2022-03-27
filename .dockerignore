@@ -1,6 +1,9 @@
 config/base
+config/components
 config/envs
 config/README.md
+config/k3d.yml
+config/Taskfile.yml
 
 .github
 .vscode

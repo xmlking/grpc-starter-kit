@@ -38,26 +38,26 @@ RUN go build -a \
     -o /app ./$TYPE/$TARGET/main.go
 
 # Compress the binary
-# RUN upx --best --lzma /app
+RUN upx -v --ultra-brute --best /app || true
 
 # Final stage: the running container.
-FROM gcr.io/distroless/static:nonroot AS final
+
+# Use `static:debug` to create debuggable container. for prod, use `static:nonroot`
+FROM gcr.io/distroless/static:debug AS final
+#FROM gcr.io/distroless/static:nonroot AS final
 
 # copy grpc-health-probe to use with readinessProbe
-COPY --from=builder /bin/grpc_health_probe /bin/grpc_health_probe
-
+COPY --from=builder --chown=nonroot:nonroot /bin/grpc_health_probe /bin/grpc_health_probe
 # copygrpcurl to use with livenessProbe
-COPY --from=builder /bin/grpcurl /bin/grpcurl
-
+COPY --from=builder --chown=nonroot:nonroot /bin/grpcurl /bin/grpcurl
 # copy dumb-ini from base
-COPY --from=builder /usr/bin/dumb-init /usr/bin/dumb-init
-
-# Import the compiled executable from the second stage.
+COPY --from=builder --chown=nonroot:nonroot /usr/bin/dumb-init /bin/dumb-init
+# copy the compiled executable from the second stage.
 ARG VERSION=0.0.1
 ARG TYPE=service
 ARG TARGET=account
-COPY --from=builder /app /app
-COPY --from=builder src/config /config
+COPY --from=builder --chown=nonroot:nonroot /app /app
+COPY --from=builder --chown=nonroot:nonroot src/config /config
 
 # Declare the port on which the webserver will be exposed.
 # As we're going to run the executable as an unprivileged user, we can't bind
@@ -94,4 +94,4 @@ LABEL org.opencontainers.image.created=$BUILD_DATE \
     org.opencontainers.image.documentation="docker run -it -e CONFY_ENV=production -p 8080:8080  ${DOCKER_REGISTRY:+${DOCKER_REGISTRY}/}${DOCKER_CONTEXT_PATH}/${TARGET}-${TYPE}:${VERSION}"
 
 # Run the compiled binary.
-ENTRYPOINT ["/usr/bin/dumb-init", "/app"]
+ENTRYPOINT ["/bin/dumb-init", "/app"]

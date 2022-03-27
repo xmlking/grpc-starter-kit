@@ -1,0 +1,20 @@
+go 1.18
+
+use (
+	.
+	./apps/hello
+)
+
+//replace github.com/xmlking/toolkit => ../toolkit
+
+//replace github.com/xmlking/toolkit/confy => ../toolkit/confy
+
+//replace github.com/xmlking/toolkit/logger => ../toolkit/logger
+
+//replace github.com/xmlking/toolkit/telemetry => ../toolkit/telemetry
+
+//replace github.com/xmlking/toolkit => github.com/xmlking/toolkit v0.1.2-0.20210125025404-51fc2d71fb2d
+
+//replace github.com/xmlking/toolkit/xds => ../toolkit/xds
+
+replace github.com/xmlking/toolkit/xds => github.com/xmlking/toolkit/xds v0.2.5-0.20220327073200-7a0bd5cf638b

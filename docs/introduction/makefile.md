@@ -117,27 +117,29 @@ make release VERSION=v0.1.1 GITHUB_TOKEN=123...
 
 #### Base
 This will build and publish base image: `ghcr.io/xmlking/grpc-starter-kit/base`
+Optionally set `nerdctl build --progress=plain` in `Makefile` to show **RUN** command output, to debug **nerdctl** builds
 
 ```bash
-make docker_base VERSION=v0.2.0
-# Sign the image with Keyless mode
-nerdctl push --sign=cosign ghcr.io/xmlking/grpc-starter-kit/base:v0.2.0
+make docker_base VERSION=v0.2.1
+# Sign and push the image with Keyless mode.Login if needed
+# echo $GITHUB_PACKAGES_TOKEN | nerdctl login ghcr.io -u xmlking --password-stdin
+nerdctl push --sign=cosign ghcr.io/xmlking/grpc-starter-kit/base:v0.2.1
 nerdctl push --sign=cosign ghcr.io/xmlking/grpc-starter-kit/base:latest
-# or keyless
-COSIGN_EXPERIMENTAL=1 cosign sign ghcr.io/xmlking/grpc-starter-kit/base:v0.2.0
-COSIGN_EXPERIMENTAL=1 cosign verify ghcr.io/xmlking/grpc-starter-kit/base:v0.2.0
+
+# Verify the image with Keyless mode
+nerdctl pull --verify=cosign ghcr.io/xmlking/grpc-starter-kit/base:latest
 ```
 
 #### Services
-Optionally set `export DOCKER_BUILDKIT=1` to use `moby`
+Optionally set `nerdctl build --progress=plain` in `Makefile` to show **RUN** command output, to debug **nerdctl** builds
 
 ```bash
-make docker-account VERSION=v0.1.1
-make docker-account-service VERSION=v0.1.1
-make docker TARGET=account VERSION=v0.1.1
-make docker TARGET=account TYPE=service VERSION=v0.1.1
+make docker-account VERSION=v0.1.5
+make docker-account-service VERSION=v0.1.5
+make docker TARGET=account VERSION=v0.1.5
+make docker TARGET=account TYPE=service VERSION=v0.1.5
 make docker TARGET=account DOCKER_REGISTRY=us.gcr.io DOCKER_CONTEXT_PATH=<MY_PROJECT_ID>/grpc-starter-kit
-make docker TARGET=account DOCKER_REGISTRY=us.gcr.io DOCKER_CONTEXT_PATH=<MY_PROJECT_ID>/grpc-starter-kit BASE_VERSION=v0.1.0
+make docker TARGET=account DOCKER_REGISTRY=us.gcr.io DOCKER_CONTEXT_PATH=<MY_PROJECT_ID>/grpc-starter-kit BASE_VERSION=v0.2.1
 # short hand for TARGET and TYPE args
 make docker-emailer-service
 
@@ -156,9 +158,17 @@ make docker_push
 make docker_clean
 
 # explore and run
-dive ghcr.io/xmlking/grpc-starter-kit/account-service:v0.1.1
-nerdctl run --rm -it ghcr.io/xmlking/grpc-starter-kit/account-service:v0.1.1
+dive ghcr.io/xmlking/grpc-starter-kit/account-service:v0.1.5
+nerdctl run --rm -it ghcr.io/xmlking/grpc-starter-kit/account-service:v0.1.5
+# when built from `gcr.io/distroless/static:debug`, you can debug with:
+nerdctl run --rm -it --entrypoint=sh ghcr.io/xmlking/grpc-starter-kit/account-service:v0.1.5 
+# Sign and push with Keyless mode
+# echo $GITHUB_PACKAGES_TOKEN | nerdctl login ghcr.io -u xmlking --password-stdin
+nerdctl push --sign=cosign ghcr.io/xmlking/grpc-starter-kit/account-service:v0.1.5
+# Verify the image with Keyless mode
+nerdctl pull --verify=cosign ghcr.io/xmlking/grpc-starter-kit/account-service:v0.1.5
 ```
+
 
 ### kustomize
 
