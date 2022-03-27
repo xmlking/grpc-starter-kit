@@ -59,7 +59,7 @@ tools:
 	# go install github.com/ahmetb/govvv@latest
 	# go install github.com/golangci/golangci-lint/cmd/golangci-lint@latest
 	# go install github.com/bufbuild/buf/cmd/buf@latest
-	# go install github.com/rvflash/goup@latest
+	# go install github.com/oligot/go-mod-upgrade@latest
 
 check_dirty:
 ifdef GIT_DIRTY
@@ -87,7 +87,7 @@ sync:
 	    echo delete and sync $$d; \
 	    rm -f go.sum; \
 	    go mod download; \
-	    go mod tidy -compat=1.17; \
+	    go mod tidy -compat=1.18; \
 		popd >/dev/null; \
 	done
 
@@ -97,12 +97,12 @@ verify:
 		pushd `dirname $$d` >/dev/null; \
 		echo verifying $$d; \
 		go mod verify; \
-		go mod tidy -compat=1.17; \
+		go mod tidy -compat=1.18; \
 		popd >/dev/null; \
 	done
 
 outdated:
-	@goup -v -m ./...
+	@go-mod-upgrade
 
 ################################################################################
 # Target: proto                                                                #

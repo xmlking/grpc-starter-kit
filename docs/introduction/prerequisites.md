@@ -79,11 +79,9 @@ go get -d github.com/envoyproxy/protoc-gen-validate
 cd ~/go/src/github.com/envoyproxy/protoc-gen-validate
 git pull
 make build
-
-# goup checks if there are any updates for imports in your module.
-# the main purpose is using it as a linter in continuous integration or in development process.
-# Usage: goup -v -m ./...
-go install github.com/rvflash/goup@latest
+# Update outdated Go dependencies interactively
+# Usage: go-mod-upgrade ./...
+go install github.com/oligot/go-mod-upgrade@latest
 ```
 
 ### VSCode 

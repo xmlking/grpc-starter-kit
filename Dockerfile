@@ -8,8 +8,9 @@ FROM ghcr.io/xmlking/grpc-starter-kit/base:${BASE_VERSION} AS builder
 # * CGO_ENABLED=0 to build a statically-linked executable
 # * GOFLAGS=-mod=vendor to force `go build` to look into the `/vendor` folder.
 # * GOPROXY="https://nexus.mycomp.com,direct" to set corp nexus goproxy and fallback to direct.
+# * GOWORK=off to desable go.work which is used for local development
 # e.g., ENV CGO_ENABLED=0 GOFLAGS=-mod=vendor
-ENV CGO_ENABLED=1 GOOS=linux GOPROXY="https://proxy.golang.org,direct"
+ENV CGO_ENABLED=1 GOOS=linux GOPROXY="https://proxy.golang.org,direct" GOWORK=off
 # when runing behind corporate proxy, you may need following settings
 #ENV GOPRIVATE=github.com/mycomp
 #ENV GONOSUMDB=github.com/*,gopkg.in/*,google.golang.org/*,cloud.google.com/*

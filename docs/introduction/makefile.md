@@ -87,7 +87,7 @@ make lint
 # lint account service
 make lint-account
 make lint-account-service
-# goup checks if there are any updates for imports in your module.
+# go-mod-upgrade checks if there are any updates for imports in your module.
 # the main purpose is using it as a linter in continuous integration or in development process.
 make sync
 ```
