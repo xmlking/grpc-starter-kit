@@ -3,8 +3,9 @@ name: buf.build/chintha/mkit
 deps:
   - buf.build/chintha/dkit
   - buf.build/googleapis/googleapis
-  - buf.build/envoyproxy/protoc-gen-validate
   - buf.build/srikrsna/protoc-gen-gotag
+  #  - buf.build/envoyproxy/protoc-gen-validate
+  - buf.build/go-sdk/protoc-gen-validate:v0.6.7
 
 lint:
   use:

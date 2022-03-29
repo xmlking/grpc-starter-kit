@@ -8,8 +8,9 @@
 
 ## Prerequisites
 
-```bash
+```shell
 # buf: proto tool https://buf.build/docs/tour-1
+brew install bufbuild/buf/buf
 # or use `go install` to install Buf
 go install github.com/bufbuild/buf/cmd/buf@latest
 
@@ -17,25 +18,38 @@ go install github.com/bufbuild/buf/cmd/buf@latest
 go install google.golang.org/protobuf/cmd/protoc-gen-go@latest
 go install google.golang.org/grpc/cmd/protoc-gen-go-grpc@latest
 go install github.com/srikrsna/protoc-gen-gotag@latest
+
+go install google.golang.org/protobuf/cmd/protoc-gen-go@latest
+# Installing PGV can currently only be done from source: 
+# from user's home directory, run
+go get -d github.com/envoyproxy/protoc-gen-validate
+cd ~/go/src/github.com/envoyproxy/protoc-gen-validate
+git pull
+make build
 ```
+
+[Editor Integration](https://docs.buf.build/editor-integration) (Optional)
+![goland-buf-watch](../images/goland-buf-watch.png)
+Add `Import Paths` and `google/protobuf/descriptor.proto` in **GoLand/IntelliJ** as described [here](https://github.com/jvolkman/intellij-protobuf-editor/issues/33#issuecomment-898466971) 👇 
+![goland-proto-import](../images/goland-proto-import.png)
 
 ## Developer Workflow
 
 ### Info
 
-```bash
+```shell
 # To list all files Buf is configured to use:
 buf ls-files
 # To see your currently configured lint or breaking checkers:
-buf config ls-lint-rules
-buf config ls-breaking-rules
+buf mod ls-lint-rules
+buf mod ls-breaking-rules
 # To see all available lint checkers independent of configuration/defaults:
-buf config ls-lint-rules --all
+buf mod ls-lint-rules --all
 ```
 
 ### Build
 
-```bash
+```shell
 # check
 buf build -o /dev/null
 buf build -o image.bin
@@ -43,7 +57,7 @@ buf build -o image.bin
 
 ### Lint
 
-```bash
+```shell
 buf lint
 # We can also output errors in a format you can then copy into your buf.yaml file
 buf lint --error-format=config-ignore-yaml
@@ -61,13 +75,13 @@ buf breaking --against "$(HTTPS_GIT)#branch=main"
 ### Generate
 
 Cleanup
-```bash
+```shell
 rm -rf dkit
 rm -rf mkit
 ```
 
 Generate
-```bash
+```shell
 buf generate proto/dkit
 buf generate proto/mkit
 buf generate
@@ -84,16 +98,18 @@ Buf support modules [dependencies](https://docs.buf.build/tour/add-a-dependency)
 #### Login to buf registry. 
 This command will create `/Users/<username>/.netrc` file
 
-```bash
+```shell
 # fill the username and token
-BUF_USER=
-BUF_API_TOKEN=
+export BUF_USER=chintha
+export BUF_API_TOKEN=
 echo ${BUF_API_TOKEN} | buf registry login --username ${BUF_USER} --token-stdin
+# to logout
+buf registry logout
 ```
 
 #### Create buf lock files
 one-time-setup
-```bash
+```shell
 cd proto/dkit
 buf mod update
 cd proto/mkit
@@ -102,7 +118,7 @@ buf mod update
 This will pull deps into `$HOME/.cache/buf`
 
 #### Create a Repository
-```bash
+```shell
 buf beta registry repository create buf.build/chintha/dkit --visibility private
 buf beta registry repository create buf.build/chintha/dkit --visibility public
 
@@ -110,13 +126,13 @@ buf beta registry repository create buf.build/chintha/mkit --visibility private
 ```
 
 #### List Modules
-```bash
+```shell
 buf beta registry repository list  buf.build --page-size 100
 buf beta registry repository get    buf.build/googleapis/googleapis
 ```
 
 #### Push the Module
-```bash
+```shell
 cd proto/dkit
 buf push
 cd proto/mkit
@@ -125,7 +141,7 @@ buf push
 
 ### Format
 
-```bash
+```shell
 # FIXME buf don't have proto formatter yet 
 prototool format -w proto;
 ```
@@ -134,14 +150,14 @@ prototool format -w proto;
 
 ### grpcurl
 
-```bash
+```shell
 # To use Buf-produced FileDescriptorSets with grpcurl on the fly:
 grpcurl -protoset <(buf build -o -) ...
 ```
 
 ### ghz
 
-```bash
+```shell
 # To use Buf-produced FileDescriptorSets with ghz on the fly:
 ghz --protoset <(buf build -o -) ...
 ```

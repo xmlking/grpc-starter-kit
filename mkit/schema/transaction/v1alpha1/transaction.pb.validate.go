@@ -11,11 +11,12 @@ import (
 	"net/mail"
 	"net/url"
 	"regexp"
+	"sort"
 	"strings"
 	"time"
 	"unicode/utf8"
 
-	"github.com/golang/protobuf/ptypes"
+	"google.golang.org/protobuf/types/known/anypb"
 )
 
 // ensure the imports are used
@@ -30,18 +31,52 @@ var (
 	_ = time.Duration(0)
 	_ = (*url.URL)(nil)
 	_ = (*mail.Address)(nil)
-	_ = ptypes.DynamicAny{}
+	_ = anypb.Any{}
+	_ = sort.Sort
 )
 
 // Validate checks the field values on TransactionEvent1 with the rules defined
-// in the proto definition for this message. If any rules are violated, an
-// error is returned.
+// in the proto definition for this message. If any rules are violated, the
+// first error encountered is returned, or nil if there are no violations.
 func (m *TransactionEvent1) Validate() error {
+	return m.validate(false)
+}
+
+// ValidateAll checks the field values on TransactionEvent1 with the rules
+// defined in the proto definition for this message. If any rules are
+// violated, the result is a list of violation errors wrapped in
+// TransactionEvent1MultiError, or nil if none found.
+func (m *TransactionEvent1) ValidateAll() error {
+	return m.validate(true)
+}
+
+func (m *TransactionEvent1) validate(all bool) error {
 	if m == nil {
 		return nil
 	}
 
-	if v, ok := interface{}(m.GetReq()).(interface{ Validate() error }); ok {
+	var errors []error
+
+	if all {
+		switch v := interface{}(m.GetReq()).(type) {
+		case interface{ ValidateAll() error }:
+			if err := v.ValidateAll(); err != nil {
+				errors = append(errors, TransactionEvent1ValidationError{
+					field:  "Req",
+					reason: "embedded message failed validation",
+					cause:  err,
+				})
+			}
+		case interface{ Validate() error }:
+			if err := v.Validate(); err != nil {
+				errors = append(errors, TransactionEvent1ValidationError{
+					field:  "Req",
+					reason: "embedded message failed validation",
+					cause:  err,
+				})
+			}
+		}
+	} else if v, ok := interface{}(m.GetReq()).(interface{ Validate() error }); ok {
 		if err := v.Validate(); err != nil {
 			return TransactionEvent1ValidationError{
 				field:  "Req",
@@ -51,7 +86,26 @@ func (m *TransactionEvent1) Validate() error {
 		}
 	}
 
-	if v, ok := interface{}(m.GetRsp()).(interface{ Validate() error }); ok {
+	if all {
+		switch v := interface{}(m.GetRsp()).(type) {
+		case interface{ ValidateAll() error }:
+			if err := v.ValidateAll(); err != nil {
+				errors = append(errors, TransactionEvent1ValidationError{
+					field:  "Rsp",
+					reason: "embedded message failed validation",
+					cause:  err,
+				})
+			}
+		case interface{ Validate() error }:
+			if err := v.Validate(); err != nil {
+				errors = append(errors, TransactionEvent1ValidationError{
+					field:  "Rsp",
+					reason: "embedded message failed validation",
+					cause:  err,
+				})
+			}
+		}
+	} else if v, ok := interface{}(m.GetRsp()).(interface{ Validate() error }); ok {
 		if err := v.Validate(); err != nil {
 			return TransactionEvent1ValidationError{
 				field:  "Rsp",
@@ -61,8 +115,29 @@ func (m *TransactionEvent1) Validate() error {
 		}
 	}
 
+	if len(errors) > 0 {
+		return TransactionEvent1MultiError(errors)
+	}
+
 	return nil
 }
+
+// TransactionEvent1MultiError is an error wrapping multiple validation errors
+// returned by TransactionEvent1.ValidateAll() if the designated constraints
+// aren't met.
+type TransactionEvent1MultiError []error
+
+// Error returns a concatenation of all the error messages it wraps.
+func (m TransactionEvent1MultiError) Error() string {
+	var msgs []string
+	for _, err := range m {
+		msgs = append(msgs, err.Error())
+	}
+	return strings.Join(msgs, "; ")
+}
+
+// AllErrors returns a list of validation violation errors.
+func (m TransactionEvent1MultiError) AllErrors() []error { return m }
 
 // TransactionEvent1ValidationError is the validation error returned by
 // TransactionEvent1.Validate if the designated constraints aren't met.

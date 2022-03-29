@@ -11,11 +11,12 @@ import (
 	"net/mail"
 	"net/url"
 	"regexp"
+	"sort"
 	"strings"
 	"time"
 	"unicode/utf8"
 
-	"github.com/golang/protobuf/ptypes"
+	"google.golang.org/protobuf/types/known/anypb"
 
 	entitiesv1 "github.com/xmlking/grpc-starter-kit/mkit/service/account/entities/v1"
 )
@@ -32,9 +33,8 @@ var (
 	_ = time.Duration(0)
 	_ = (*url.URL)(nil)
 	_ = (*mail.Address)(nil)
-	_ = ptypes.DynamicAny{}
-
-	_ = entitiesv1.Profile_GenderType(0)
+	_ = anypb.Any{}
+	_ = sort.Sort
 
 	_ = entitiesv1.Profile_GenderType(0)
 )
@@ -43,20 +43,38 @@ var (
 var _profile_service_uuidPattern = regexp.MustCompile("^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$")
 
 // Validate checks the field values on ListRequest with the rules defined in
-// the proto definition for this message. If any rules are violated, an error
-// is returned.
+// the proto definition for this message. If any rules are violated, the first
+// error encountered is returned, or nil if there are no violations.
 func (m *ListRequest) Validate() error {
+	return m.validate(false)
+}
+
+// ValidateAll checks the field values on ListRequest with the rules defined in
+// the proto definition for this message. If any rules are violated, the
+// result is a list of violation errors wrapped in ListRequestMultiError, or
+// nil if none found.
+func (m *ListRequest) ValidateAll() error {
+	return m.validate(true)
+}
+
+func (m *ListRequest) validate(all bool) error {
 	if m == nil {
 		return nil
 	}
 
+	var errors []error
+
 	if wrapper := m.GetLimit(); wrapper != nil {
 
 		if val := wrapper.GetValue(); val < 1 || val > 100 {
-			return ListRequestValidationError{
+			err := ListRequestValidationError{
 				field:  "Limit",
 				reason: "value must be inside range [1, 100]",
 			}
+			if !all {
+				return err
+			}
+			errors = append(errors, err)
 		}
 
 	}
@@ -64,15 +82,38 @@ func (m *ListRequest) Validate() error {
 	if wrapper := m.GetPage(); wrapper != nil {
 
 		if wrapper.GetValue() < 1 {
-			return ListRequestValidationError{
+			err := ListRequestValidationError{
 				field:  "Page",
 				reason: "value must be greater than or equal to 1",
 			}
+			if !all {
+				return err
+			}
+			errors = append(errors, err)
 		}
 
 	}
 
-	if v, ok := interface{}(m.GetSort()).(interface{ Validate() error }); ok {
+	if all {
+		switch v := interface{}(m.GetSort()).(type) {
+		case interface{ ValidateAll() error }:
+			if err := v.ValidateAll(); err != nil {
+				errors = append(errors, ListRequestValidationError{
+					field:  "Sort",
+					reason: "embedded message failed validation",
+					cause:  err,
+				})
+			}
+		case interface{ Validate() error }:
+			if err := v.Validate(); err != nil {
+				errors = append(errors, ListRequestValidationError{
+					field:  "Sort",
+					reason: "embedded message failed validation",
+					cause:  err,
+				})
+			}
+		}
+	} else if v, ok := interface{}(m.GetSort()).(interface{ Validate() error }); ok {
 		if err := v.Validate(); err != nil {
 			return ListRequestValidationError{
 				field:  "Sort",
@@ -85,23 +126,51 @@ func (m *ListRequest) Validate() error {
 	if wrapper := m.GetPreferredTheme(); wrapper != nil {
 
 		if _, ok := _ListRequest_PreferredTheme_InLookup[wrapper.GetValue()]; !ok {
-			return ListRequestValidationError{
+			err := ListRequestValidationError{
 				field:  "PreferredTheme",
 				reason: "value must be in list [dark light cosmic corporate]",
 			}
+			if !all {
+				return err
+			}
+			errors = append(errors, err)
 		}
 
 	}
 
 	if _, ok := _ListRequest_Gender_InLookup[m.GetGender()]; !ok {
-		return ListRequestValidationError{
+		err := ListRequestValidationError{
 			field:  "Gender",
 			reason: "value must be in list [0 1 2]",
 		}
+		if !all {
+			return err
+		}
+		errors = append(errors, err)
+	}
+
+	if len(errors) > 0 {
+		return ListRequestMultiError(errors)
 	}
 
 	return nil
 }
+
+// ListRequestMultiError is an error wrapping multiple validation errors
+// returned by ListRequest.ValidateAll() if the designated constraints aren't met.
+type ListRequestMultiError []error
+
+// Error returns a concatenation of all the error messages it wraps.
+func (m ListRequestMultiError) Error() string {
+	var msgs []string
+	for _, err := range m {
+		msgs = append(msgs, err.Error())
+	}
+	return strings.Join(msgs, "; ")
+}
+
+// AllErrors returns a list of validation violation errors.
+func (m ListRequestMultiError) AllErrors() []error { return m }
 
 // ListRequestValidationError is the validation error returned by
 // ListRequest.Validate if the designated constraints aren't met.
@@ -172,8 +241,33 @@ var _ListRequest_Gender_InLookup = map[entitiesv1.Profile_GenderType]struct{}{
 
 // Validate is disabled for ListResponse. This method will always return nil.
 func (m *ListResponse) Validate() error {
+	return m.validate(false)
+}
+
+// ValidateAll is disabled for ListResponse. This method will always return nil.
+func (m *ListResponse) ValidateAll() error {
+	return m.validate(true)
+}
+
+func (m *ListResponse) validate(all bool) error {
 	return nil
 }
+
+// ListResponseMultiError is an error wrapping multiple validation errors
+// returned by ListResponse.ValidateAll() if the designated constraints aren't met.
+type ListResponseMultiError []error
+
+// Error returns a concatenation of all the error messages it wraps.
+func (m ListResponseMultiError) Error() string {
+	var msgs []string
+	for _, err := range m {
+		msgs = append(msgs, err.Error())
+	}
+	return strings.Join(msgs, "; ")
+}
+
+// AllErrors returns a list of validation violation errors.
+func (m ListResponseMultiError) AllErrors() []error { return m }
 
 // ListResponseValidationError is the validation error returned by
 // ListResponse.Validate if the designated constraints aren't met.
@@ -230,11 +324,26 @@ var _ interface {
 } = ListResponseValidationError{}
 
 // Validate checks the field values on GetRequest with the rules defined in the
-// proto definition for this message. If any rules are violated, an error is returned.
+// proto definition for this message. If any rules are violated, the first
+// error encountered is returned, or nil if there are no violations.
 func (m *GetRequest) Validate() error {
+	return m.validate(false)
+}
+
+// ValidateAll checks the field values on GetRequest with the rules defined in
+// the proto definition for this message. If any rules are violated, the
+// result is a list of violation errors wrapped in GetRequestMultiError, or
+// nil if none found.
+func (m *GetRequest) ValidateAll() error {
+	return m.validate(true)
+}
+
+func (m *GetRequest) validate(all bool) error {
 	if m == nil {
 		return nil
 	}
+
+	var errors []error
 
 	switch m.Id.(type) {
 
@@ -243,11 +352,15 @@ func (m *GetRequest) Validate() error {
 		if wrapper := m.GetProfileId(); wrapper != nil {
 
 			if err := m._validateUuid(wrapper.GetValue()); err != nil {
-				return GetRequestValidationError{
+				err = GetRequestValidationError{
 					field:  "ProfileId",
 					reason: "value must be a valid UUID",
 					cause:  err,
 				}
+				if !all {
+					return err
+				}
+				errors = append(errors, err)
 			}
 
 		}
@@ -257,15 +370,23 @@ func (m *GetRequest) Validate() error {
 		if wrapper := m.GetUserId(); wrapper != nil {
 
 			if err := m._validateUuid(wrapper.GetValue()); err != nil {
-				return GetRequestValidationError{
+				err = GetRequestValidationError{
 					field:  "UserId",
 					reason: "value must be a valid UUID",
 					cause:  err,
 				}
+				if !all {
+					return err
+				}
+				errors = append(errors, err)
 			}
 
 		}
 
+	}
+
+	if len(errors) > 0 {
+		return GetRequestMultiError(errors)
 	}
 
 	return nil
@@ -278,6 +399,22 @@ func (m *GetRequest) _validateUuid(uuid string) error {
 
 	return nil
 }
+
+// GetRequestMultiError is an error wrapping multiple validation errors
+// returned by GetRequest.ValidateAll() if the designated constraints aren't met.
+type GetRequestMultiError []error
+
+// Error returns a concatenation of all the error messages it wraps.
+func (m GetRequestMultiError) Error() string {
+	var msgs []string
+	for _, err := range m {
+		msgs = append(msgs, err.Error())
+	}
+	return strings.Join(msgs, "; ")
+}
+
+// AllErrors returns a list of validation violation errors.
+func (m GetRequestMultiError) AllErrors() []error { return m }
 
 // GetRequestValidationError is the validation error returned by
 // GetRequest.Validate if the designated constraints aren't met.
@@ -335,8 +472,33 @@ var _ interface {
 
 // Validate is disabled for GetResponse. This method will always return nil.
 func (m *GetResponse) Validate() error {
+	return m.validate(false)
+}
+
+// ValidateAll is disabled for GetResponse. This method will always return nil.
+func (m *GetResponse) ValidateAll() error {
+	return m.validate(true)
+}
+
+func (m *GetResponse) validate(all bool) error {
 	return nil
 }
+
+// GetResponseMultiError is an error wrapping multiple validation errors
+// returned by GetResponse.ValidateAll() if the designated constraints aren't met.
+type GetResponseMultiError []error
+
+// Error returns a concatenation of all the error messages it wraps.
+func (m GetResponseMultiError) Error() string {
+	var msgs []string
+	for _, err := range m {
+		msgs = append(msgs, err.Error())
+	}
+	return strings.Join(msgs, "; ")
+}
+
+// AllErrors returns a list of validation violation errors.
+func (m GetResponseMultiError) AllErrors() []error { return m }
 
 // GetResponseValidationError is the validation error returned by
 // GetResponse.Validate if the designated constraints aren't met.
@@ -393,26 +555,63 @@ var _ interface {
 } = GetResponseValidationError{}
 
 // Validate checks the field values on CreateRequest with the rules defined in
-// the proto definition for this message. If any rules are violated, an error
-// is returned.
+// the proto definition for this message. If any rules are violated, the first
+// error encountered is returned, or nil if there are no violations.
 func (m *CreateRequest) Validate() error {
+	return m.validate(false)
+}
+
+// ValidateAll checks the field values on CreateRequest with the rules defined
+// in the proto definition for this message. If any rules are violated, the
+// result is a list of violation errors wrapped in CreateRequestMultiError, or
+// nil if none found.
+func (m *CreateRequest) ValidateAll() error {
+	return m.validate(true)
+}
+
+func (m *CreateRequest) validate(all bool) error {
 	if m == nil {
 		return nil
 	}
 
+	var errors []error
+
 	if wrapper := m.GetUserId(); wrapper != nil {
 
 		if err := m._validateUuid(wrapper.GetValue()); err != nil {
-			return CreateRequestValidationError{
+			err = CreateRequestValidationError{
 				field:  "UserId",
 				reason: "value must be a valid UUID",
 				cause:  err,
 			}
+			if !all {
+				return err
+			}
+			errors = append(errors, err)
 		}
 
 	}
 
-	if v, ok := interface{}(m.GetTz()).(interface{ Validate() error }); ok {
+	if all {
+		switch v := interface{}(m.GetTz()).(type) {
+		case interface{ ValidateAll() error }:
+			if err := v.ValidateAll(); err != nil {
+				errors = append(errors, CreateRequestValidationError{
+					field:  "Tz",
+					reason: "embedded message failed validation",
+					cause:  err,
+				})
+			}
+		case interface{ Validate() error }:
+			if err := v.Validate(); err != nil {
+				errors = append(errors, CreateRequestValidationError{
+					field:  "Tz",
+					reason: "embedded message failed validation",
+					cause:  err,
+				})
+			}
+		}
+	} else if v, ok := interface{}(m.GetTz()).(interface{ Validate() error }); ok {
 		if err := v.Validate(); err != nil {
 			return CreateRequestValidationError{
 				field:  "Tz",
@@ -425,52 +624,81 @@ func (m *CreateRequest) Validate() error {
 	if wrapper := m.GetAvatar(); wrapper != nil {
 
 		if _, err := url.Parse(wrapper.GetValue()); err != nil {
-			return CreateRequestValidationError{
+			err = CreateRequestValidationError{
 				field:  "Avatar",
 				reason: "value must be a valid URI",
 				cause:  err,
 			}
+			if !all {
+				return err
+			}
+			errors = append(errors, err)
 		}
 
 	}
 
 	if _, ok := _CreateRequest_Gender_InLookup[m.GetGender()]; !ok {
-		return CreateRequestValidationError{
+		err := CreateRequestValidationError{
 			field:  "Gender",
 			reason: "value must be in list [0 1 2]",
 		}
+		if !all {
+			return err
+		}
+		errors = append(errors, err)
 	}
 
 	if t := m.GetBirthday(); t != nil {
-		ts, err := ptypes.Timestamp(t)
+		ts, err := t.AsTime(), t.CheckValid()
 		if err != nil {
-			return CreateRequestValidationError{
+			err = CreateRequestValidationError{
 				field:  "Birthday",
 				reason: "value is not a valid timestamp",
 				cause:  err,
 			}
-		}
-
-		now := time.Now()
-
-		if ts.Sub(now) >= 0 {
-			return CreateRequestValidationError{
-				field:  "Birthday",
-				reason: "value must be less than now",
+			if !all {
+				return err
 			}
-		}
+			errors = append(errors, err)
+		} else {
 
+			now := time.Now()
+
+			if ts.Sub(now) >= 0 {
+				err := CreateRequestValidationError{
+					field:  "Birthday",
+					reason: "value must be less than now",
+				}
+				if !all {
+					return err
+				}
+				errors = append(errors, err)
+			}
+
+		}
 	}
 
 	if wrapper := m.GetPreferredTheme(); wrapper != nil {
 
-		if _, ok := _CreateRequest_PreferredTheme_InLookup[wrapper.GetValue()]; !ok {
-			return CreateRequestValidationError{
-				field:  "PreferredTheme",
-				reason: "value must be in list [dark light cosmic corporate]",
+		if wrapper.GetValue() != "" {
+
+			if _, ok := _CreateRequest_PreferredTheme_InLookup[wrapper.GetValue()]; !ok {
+				err := CreateRequestValidationError{
+					field:  "PreferredTheme",
+					reason: "value must be in list [dark light cosmic corporate]",
+				}
+				if !all {
+					return err
+				}
+				errors = append(errors, err)
 			}
+
 		}
 
+	}
+
+	if len(errors) > 0 {
+		return CreateRequestMultiError(errors)
 	}
 
 	return nil
@@ -483,6 +711,23 @@ func (m *CreateRequest) _validateUuid(uuid string) error {
 
 	return nil
 }
+
+// CreateRequestMultiError is an error wrapping multiple validation errors
+// returned by CreateRequest.ValidateAll() if the designated constraints
+// aren't met.
+type CreateRequestMultiError []error
+
+// Error returns a concatenation of all the error messages it wraps.
+func (m CreateRequestMultiError) Error() string {
+	var msgs []string
+	for _, err := range m {
+		msgs = append(msgs, err.Error())
+	}
+	return strings.Join(msgs, "; ")
+}
+
+// AllErrors returns a list of validation violation errors.
+func (m CreateRequestMultiError) AllErrors() []error { return m }
 
 // CreateRequestValidationError is the validation error returned by
 // CreateRequest.Validate if the designated constraints aren't met.
@@ -553,8 +798,34 @@ var _CreateRequest_PreferredTheme_InLookup = map[string]struct{}{
 
 // Validate is disabled for CreateResponse. This method will always return nil.
 func (m *CreateResponse) Validate() error {
+	return m.validate(false)
+}
+
+// ValidateAll is disabled for CreateResponse. This method will always return nil.
+func (m *CreateResponse) ValidateAll() error {
+	return m.validate(true)
+}
+
+func (m *CreateResponse) validate(all bool) error {
 	return nil
 }
+
+// CreateResponseMultiError is an error wrapping multiple validation errors
+// returned by CreateResponse.ValidateAll() if the designated constraints
+// aren't met.
+type CreateResponseMultiError []error
+
+// Error returns a concatenation of all the error messages it wraps.
+func (m CreateResponseMultiError) Error() string {
+	var msgs []string
+	for _, err := range m {
+		msgs = append(msgs, err.Error())
+	}
+	return strings.Join(msgs, "; ")
+}
+
+// AllErrors returns a list of validation violation errors.
+func (m CreateResponseMultiError) AllErrors() []error { return m }
 
 // CreateResponseValidationError is the validation error returned by
 // CreateResponse.Validate if the designated constraints aren't met.

@@ -1,38 +1,32 @@
 version: v1
-
 managed:
   enabled: true
   go_package_prefix:
     default: github.com/xmlking/grpc-starter-kit
     except:
       - buf.build/googleapis/googleapis
-      - buf.build/envoyproxy/protoc-gen-validate
       - buf.build/srikrsna/protoc-gen-gotag
+      - buf.build/go-sdk/protoc-gen-validate
   java_multiple_files: true
 #  java_package_prefix: com
 
 plugins:
-  - name: go
-    out: .
-    opt: paths=source_relative
 # FIXME: https://github.com/srikrsna/protoc-gen-gotag/issues/26
 #  - name: gotag
 #    out: .
 #    opt:
 #      - paths=source_relative
-  - name: go-grpc
+  - remote: buf.build/protocolbuffers/plugins/go:v1.28.0-1
+    out: .
+    opt:
+      - paths=source_relative
+  - remote: buf.build/grpc/plugins/go:v1.2.0-1
     out: .
     opt:
       - paths=source_relative
       - require_unimplemented_servers=false
-  - name: validate
+  - remote: buf.build/go-sdk/plugins/protoc-gen-validate:v0.6.7-1
     out: .
     opt:
-      - paths=source_relative
       - lang=go
-
-#  - name: descriptor_set
-#    out: ./descriptor
-#    file_sufix: bin
-#    include_imports: true
-#    include_source_info: true
+      - paths=source_relative

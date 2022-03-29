@@ -11,11 +11,12 @@ import (
 	"net/mail"
 	"net/url"
 	"regexp"
+	"sort"
 	"strings"
 	"time"
 	"unicode/utf8"
 
-	"github.com/golang/protobuf/ptypes"
+	"google.golang.org/protobuf/types/known/anypb"
 )
 
 // ensure the imports are used
@@ -30,7 +31,8 @@ var (
 	_ = time.Duration(0)
 	_ = (*url.URL)(nil)
 	_ = (*mail.Address)(nil)
-	_ = ptypes.DynamicAny{}
+	_ = anypb.Any{}
+	_ = sort.Sort
 )
 
 // define the regex for a UUID once up-front
@@ -38,6 +40,15 @@ var _entities_uuidPattern = regexp.MustCompile("^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[
 
 // Validate is disabled for User. This method will always return nil.
 func (m *User) Validate() error {
+	return m.validate(false)
+}
+
+// ValidateAll is disabled for User. This method will always return nil.
+func (m *User) ValidateAll() error {
+	return m.validate(true)
+}
+
+func (m *User) validate(all bool) error {
 	return nil
 }
 
@@ -48,6 +59,22 @@ func (m *User) _validateUuid(uuid string) error {
 
 	return nil
 }
+
+// UserMultiError is an error wrapping multiple validation errors returned by
+// User.ValidateAll() if the designated constraints aren't met.
+type UserMultiError []error
+
+// Error returns a concatenation of all the error messages it wraps.
+func (m UserMultiError) Error() string {
+	var msgs []string
+	for _, err := range m {
+		msgs = append(msgs, err.Error())
+	}
+	return strings.Join(msgs, "; ")
+}
+
+// AllErrors returns a list of validation violation errors.
+func (m UserMultiError) AllErrors() []error { return m }
 
 // UserValidationError is the validation error returned by User.Validate if the
 // designated constraints aren't met.
@@ -105,6 +132,15 @@ var _ interface {
 
 // Validate is disabled for Profile. This method will always return nil.
 func (m *Profile) Validate() error {
+	return m.validate(false)
+}
+
+// ValidateAll is disabled for Profile. This method will always return nil.
+func (m *Profile) ValidateAll() error {
+	return m.validate(true)
+}
+
+func (m *Profile) validate(all bool) error {
 	return nil
 }
 
@@ -115,6 +151,22 @@ func (m *Profile) _validateUuid(uuid string) error {
 
 	return nil
 }
+
+// ProfileMultiError is an error wrapping multiple validation errors returned
+// by Profile.ValidateAll() if the designated constraints aren't met.
+type ProfileMultiError []error
+
+// Error returns a concatenation of all the error messages it wraps.
+func (m ProfileMultiError) Error() string {
+	var msgs []string
+	for _, err := range m {
+		msgs = append(msgs, err.Error())
+	}
+	return strings.Join(msgs, "; ")
+}
+
+// AllErrors returns a list of validation violation errors.
+func (m ProfileMultiError) AllErrors() []error { return m }
 
 // ProfileValidationError is the validation error returned by Profile.Validate
 // if the designated constraints aren't met.

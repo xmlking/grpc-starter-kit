@@ -11,11 +11,12 @@ import (
 	"net/mail"
 	"net/url"
 	"regexp"
+	"sort"
 	"strings"
 	"time"
 	"unicode/utf8"
 
-	"github.com/golang/protobuf/ptypes"
+	"google.golang.org/protobuf/types/known/anypb"
 )
 
 // ensure the imports are used
@@ -30,21 +31,56 @@ var (
 	_ = time.Duration(0)
 	_ = (*url.URL)(nil)
 	_ = (*mail.Address)(nil)
-	_ = ptypes.DynamicAny{}
+	_ = anypb.Any{}
+	_ = sort.Sort
 )
 
 // Validate checks the field values on HelloRequest with the rules defined in
-// the proto definition for this message. If any rules are violated, an error
-// is returned.
+// the proto definition for this message. If any rules are violated, the first
+// error encountered is returned, or nil if there are no violations.
 func (m *HelloRequest) Validate() error {
+	return m.validate(false)
+}
+
+// ValidateAll checks the field values on HelloRequest with the rules defined
+// in the proto definition for this message. If any rules are violated, the
+// result is a list of violation errors wrapped in HelloRequestMultiError, or
+// nil if none found.
+func (m *HelloRequest) ValidateAll() error {
+	return m.validate(true)
+}
+
+func (m *HelloRequest) validate(all bool) error {
 	if m == nil {
 		return nil
 	}
 
+	var errors []error
+
 	// no validation rules for Name
+
+	if len(errors) > 0 {
+		return HelloRequestMultiError(errors)
+	}
 
 	return nil
 }
+
+// HelloRequestMultiError is an error wrapping multiple validation errors
+// returned by HelloRequest.ValidateAll() if the designated constraints aren't met.
+type HelloRequestMultiError []error
+
+// Error returns a concatenation of all the error messages it wraps.
+func (m HelloRequestMultiError) Error() string {
+	var msgs []string
+	for _, err := range m {
+		msgs = append(msgs, err.Error())
+	}
+	return strings.Join(msgs, "; ")
+}
+
+// AllErrors returns a list of validation violation errors.
+func (m HelloRequestMultiError) AllErrors() []error { return m }
 
 // HelloRequestValidationError is the validation error returned by
 // HelloRequest.Validate if the designated constraints aren't met.
@@ -101,17 +137,52 @@ var _ interface {
 } = HelloRequestValidationError{}
 
 // Validate checks the field values on HelloResponse with the rules defined in
-// the proto definition for this message. If any rules are violated, an error
-// is returned.
+// the proto definition for this message. If any rules are violated, the first
+// error encountered is returned, or nil if there are no violations.
 func (m *HelloResponse) Validate() error {
+	return m.validate(false)
+}
+
+// ValidateAll checks the field values on HelloResponse with the rules defined
+// in the proto definition for this message. If any rules are violated, the
+// result is a list of violation errors wrapped in HelloResponseMultiError, or
+// nil if none found.
+func (m *HelloResponse) ValidateAll() error {
+	return m.validate(true)
+}
+
+func (m *HelloResponse) validate(all bool) error {
 	if m == nil {
 		return nil
 	}
 
+	var errors []error
+
 	// no validation rules for Msg
+
+	if len(errors) > 0 {
+		return HelloResponseMultiError(errors)
+	}
 
 	return nil
 }
+
+// HelloResponseMultiError is an error wrapping multiple validation errors
+// returned by HelloResponse.ValidateAll() if the designated constraints
+// aren't met.
+type HelloResponseMultiError []error
+
+// Error returns a concatenation of all the error messages it wraps.
+func (m HelloResponseMultiError) Error() string {
+	var msgs []string
+	for _, err := range m {
+		msgs = append(msgs, err.Error())
+	}
+	return strings.Join(msgs, "; ")
+}
+
+// AllErrors returns a list of validation violation errors.
+func (m HelloResponseMultiError) AllErrors() []error { return m }
 
 // HelloResponseValidationError is the validation error returned by
 // HelloResponse.Validate if the designated constraints aren't met.
