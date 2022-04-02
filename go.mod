@@ -6,7 +6,7 @@ require (
 	entgo.io/contrib v0.2.0
 	entgo.io/ent v0.10.1
 	github.com/DATA-DOG/go-sqlmock v1.5.0
-	github.com/cloudevents/sdk-go/v2 v2.8.0
+	github.com/cloudevents/sdk-go/v2 v2.9.0
 	github.com/cockroachdb/errors v1.9.0
 	github.com/envoyproxy/go-control-plane v0.10.1
 	github.com/envoyproxy/protoc-gen-validate v0.6.7
