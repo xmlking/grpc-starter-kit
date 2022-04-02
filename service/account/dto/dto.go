@@ -6,7 +6,7 @@ import (
 
 	"github.com/xmlking/grpc-starter-kit/ent"
 	"github.com/xmlking/grpc-starter-kit/ent/profile"
-	account_entities "github.com/xmlking/grpc-starter-kit/mkit/service/account/entities/v1"
+	account_entities "github.com/xmlking/grpc-starter-kit/gen/go/gkit/service/account/entities/v1"
 )
 
 // ListMetadata struct

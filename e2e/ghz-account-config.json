@@ -5,7 +5,7 @@
   "import-paths": [
     "/Users/schintha/go/src"
   ],
-  "call": "mkit.service.account.UserService.Create",
+  "call": "gkit.service.account.UserService.Create",
   "data": {
     "username": "sumo{{.RequestNumber}}",
     "firstName": "demo{{.RequestNumber}}",

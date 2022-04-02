@@ -4,7 +4,7 @@ we are using [GitFlow](https://www.atlassian.com/git/tutorials/comparing-workflo
 
 ## Branches
 
-- Production branch: master
+- Production branch: main
 - Develop branch: develop
 - Feature prefix: feature/
 - Release prefix: release/

@@ -1,15 +1,15 @@
 syntax = "proto3";
 
-package mkit.service.account.profile.v1;
+package gkit.service.account.profile.v1;
 
 option go_package = "github.com/xmlking/grpc-starter-kit/service/account/proto/profile";
 option java_multiple_files = true;
-option java_package = "mkit.service.account.profile.v1";
+option java_package = "gkit.service.account.profile.v1";
 
 import "google/protobuf/timestamp.proto";
 // import "shared/proto/common/common.proto";
 import "google/protobuf/wrappers.proto";
-import "proto/mkit/service/account/entities/v1/entities.proto";
+import "proto/demoapis/gkit/service/account/entities/v1/entities.proto";
 import "third_party/proto/validate/validate.proto";
 
 service ProfileService {
@@ -25,12 +25,12 @@ message ListRequest {
     google.protobuf.UInt32Value page = 2 [(validate.rules).uint32.gte = 1];
     google.protobuf.StringValue sort = 3;
     google.protobuf.StringValue preferred_theme = 4;
-    mkit.service.account.entities.v1.Profile.GenderType gender = 5;
+    gkit.service.account.entities.v1.Profile.GenderType gender = 5;
 }
 
 message ListResponse {
     option (validate.disabled) = true;
-    repeated mkit.service.account.entities.v1.Profile results = 1;
+    repeated gkit.service.account.entities.v1.Profile results = 1;
     uint32 total = 2;
 }
 
@@ -43,19 +43,19 @@ message GetRequest {
 
 message GetResponse {
     option (validate.disabled) = true;
-    mkit.service.account.entities.v1.Profile result = 1;
+    gkit.service.account.entities.v1.Profile result = 1;
 }
 
 message CreateRequest {
     google.protobuf.StringValue user_id = 2 [(validate.rules).string.uuid = true]; // Not Working
     google.protobuf.StringValue tz = 3;
     google.protobuf.StringValue avatar = 4 [(validate.rules).string.uri_ref = true];
-    mkit.service.account.entities.v1.Profile.GenderType gender = 5;
+    gkit.service.account.entities.v1.Profile.GenderType gender = 5;
     google.protobuf.Timestamp birthday = 6 [(validate.rules).timestamp.lt_now = true];
     google.protobuf.StringValue preferred_theme = 7;
 }
 
 message CreateResponse {
     option (validate.disabled) = true;
-    mkit.service.account.entities.v1.Profile result = 1;
+    gkit.service.account.entities.v1.Profile result = 1;
 }

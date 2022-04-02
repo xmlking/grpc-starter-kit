@@ -1,0 +1,21 @@
+syntax = "proto3";
+
+package gkit.schema.transaction.v1;
+
+option java_multiple_files = true;
+option java_package = "gkit.schema.transaction.v1";
+
+import "google/protobuf/any.proto";
+import "validate/validate.proto";
+
+// Transaction Event
+message TransactionEvent {
+  option (validate.ignored) = true;
+
+  google.protobuf.Any req = 1;
+  google.protobuf.Any rsp = 2;
+}
+
+// google.protobuf.Value used on typescript
+// https://github.com/CatsMiaow/node-grpc-typescript/tree/master
+// https://github.com/CatsMiaow/node-grpc-typescript/blob/master/src/client.ts#L65

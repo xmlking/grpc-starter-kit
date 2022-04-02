@@ -1,0 +1,19 @@
+syntax = "proto3";
+
+package gkit.service.greeter.v1;
+
+option java_multiple_files = true;
+option java_package = "gkit.service.greeter.v1";
+
+service GreeterService {
+  // Hello is echo method
+  rpc Hello(HelloRequest) returns (HelloResponse);
+}
+
+message HelloRequest {
+  string name = 1;
+}
+
+message HelloResponse {
+  string msg = 1;
+}

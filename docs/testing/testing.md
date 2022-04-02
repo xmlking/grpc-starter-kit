@@ -34,7 +34,7 @@ go test -v -run Integration ./service/emailer/service
 grpcurl -plaintext -proto service/greeter/proto/greeter/greeter.proto list
 grpcurl -plaintext -proto service/greeter/proto/greeter/greeter.proto describe
 grpcurl -plaintext -proto service/greeter/proto/greeter/greeter.proto -d '{"name": "sumo"}' \
-localhost:8080  mkit.service.greeter.Greeter/Hello
+localhost:8080  gkit.service.greeter.Greeter/Hello
 ```
 
 ### Micro CLI
@@ -43,29 +43,29 @@ localhost:8080  mkit.service.greeter.Greeter/Hello
 
 ```bash
 micro list services
-micro get service mkit.service.account
-micro get service mkit.service.emailer
+micro get service gkit.service.account
+micro get service gkit.service.emailer
 ```
 
 ```bash
-micro call  mkit.service.account UserService.Create \
+micro call  gkit.service.account UserService.Create \
 '{"username": "sumo", "firstName": "sumo", "lastName": "demo", "email": "sumo@demo.com"}'
-micro call mkit.service.account UserService.Create \
+micro call gkit.service.account UserService.Create \
 '{"username": "sumo1", "firstName": "sumo1", "lastName": "demo1", "email": "sumo1@demo.com"}'
-micro call mkit.service.account UserService.List '{}'
-micro call mkit.service.account UserService.List '{ "limit": 10, "page": 1}'
-micro call mkit.service.account UserService.Get '{"id": "UserIdFromList"}'
-micro call mkit.service.account UserService.Exist '{"username": "sumo", "email": "sumo@demo.com"}'
-micro call mkit.service.account UserService.Update \
+micro call gkit.service.account UserService.List '{}'
+micro call gkit.service.account UserService.List '{ "limit": 10, "page": 1}'
+micro call gkit.service.account UserService.Get '{"id": "UserIdFromList"}'
+micro call gkit.service.account UserService.Exist '{"username": "sumo", "email": "sumo@demo.com"}'
+micro call gkit.service.account UserService.Update \
 '{"id": "UserIdFromGet", "firstName": "sumoto222","email": "sumo222@demo.com"}'
-micro call mkit.service.account UserService.Delete '{ "id": "UserIdFromGet" }'
+micro call gkit.service.account UserService.Delete '{ "id": "UserIdFromGet" }'
 ```
 
 > For k8s: SSH to gateway container and run micro cli....
 
 ```bash
 kubectl exec -it -c service gateway-service-c86cb8667-g2rmc -- busybox sh
-micro call mkit.service.account UserService.List '{}'
+micro call gkit.service.account UserService.List '{}'
 ```
 
 ### Micro Web UI
@@ -108,14 +108,14 @@ micro api --enable_rpc=true
 ```bash
 # with `grpcurl`
 # micro proxy --protocol=grpc
-grpcurl -plaintext -proto service/greeter/proto/greeter/greeter.proto -d '{"name": "sumo"}' localhost:8081  mkit.service.greeter.GreeterService/Hello
+grpcurl -plaintext -proto service/greeter/proto/greeter/greeter.proto -d '{"name": "sumo"}' localhost:8081  gkit.service.greeter.GreeterService/Hello
 # with Micro CLI
 MICRO_PROXY_ADDRESS=localhost:8081 micro list services
-MICRO_PROXY_ADDRESS=localhost:8081 micro call mkit.service.greeter GreeterService.Hello  '{"name": "John"}'
-MICRO_PROXY_ADDRESS=localhost:8081 micro call --metadata trans-id=1234 mkit.service.greeter GreeterService.Hello  '{"name": "John"}'
-MICRO_PROXY_ADDRESS=localhost:8081 micro call  mkit.service.account UserService.List '{}'
-MICRO_PROXY_ADDRESS=localhost:8081 micro health mkit.service.greeter
-MICRO_PROXY_ADDRESS=localhost:8081 micro publish  mkit.service.emailer  '{ "to" : "sumo@demo.com", "from": "demo@sumo.com", "subject": "sub", "body": "mybody" }'
+MICRO_PROXY_ADDRESS=localhost:8081 micro call gkit.service.greeter GreeterService.Hello  '{"name": "John"}'
+MICRO_PROXY_ADDRESS=localhost:8081 micro call --metadata trans-id=1234 gkit.service.greeter GreeterService.Hello  '{"name": "John"}'
+MICRO_PROXY_ADDRESS=localhost:8081 micro call  gkit.service.account UserService.List '{}'
+MICRO_PROXY_ADDRESS=localhost:8081 micro health gkit.service.greeter
+MICRO_PROXY_ADDRESS=localhost:8081 micro publish  gkit.service.emailer  '{ "to" : "sumo@demo.com", "from": "demo@sumo.com", "subject": "sub", "body": "mybody" }'
 ```
 
 ### E2E tests via code

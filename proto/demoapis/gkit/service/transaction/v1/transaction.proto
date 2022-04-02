@@ -1,0 +1,31 @@
+syntax = "proto3";
+
+package gkit.service.transaction.v1;
+
+option java_multiple_files = true;
+option java_package = "gkit.service.transaction.v1";
+
+import "google/protobuf/empty.proto";
+
+import "gkit/schema/transaction/v1/transaction.proto";
+
+
+service TransactionService {
+  rpc Read(ReadRequest) returns (ReadResponse);
+  rpc Write(WriteRequest) returns (google.protobuf.Empty);
+}
+
+message ReadRequest {
+  string key = 1;
+}
+
+message ReadResponse {
+  string key = 1;
+  gkit.schema.transaction.v1.TransactionEvent event = 2;
+}
+
+message WriteRequest {
+  string key = 1;
+  gkit.schema.transaction.v1.TransactionEvent event = 2;
+}
+

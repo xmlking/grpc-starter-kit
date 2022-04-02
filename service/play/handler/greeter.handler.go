@@ -11,7 +11,7 @@ import (
 	"go.opentelemetry.io/otel/metric/global"
 	"go.opentelemetry.io/otel/trace"
 
-	"github.com/xmlking/grpc-starter-kit/mkit/service/greeter/v1"
+	"github.com/xmlking/grpc-starter-kit/gen/go/gkit/service/greeter/v1"
 )
 
 var (

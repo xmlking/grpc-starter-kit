@@ -6,13 +6,12 @@ Running mock gRPC server from proto files for testing.
 
 ```bash
 # gRPC mock server for testing
-yarn global add bloomrpc-mock
-# bloomrpc is a UI client for gRPC
+npm i bloomrpc-mock -g
 # install `bloomrpc` via `brew` into ~/Applications)
-brew cask install --appdir=~/Applications bloomrpc
+brew install --cask --appdir=~/Applications bloomrpc
 ```
 
-> use certs generated from [mtls](mtls.md)
+> use certs generated from [mtls](../../config/certs/README.md)
 
 ### Run
 

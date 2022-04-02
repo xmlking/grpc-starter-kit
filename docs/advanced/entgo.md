@@ -6,8 +6,9 @@
 
 ```bash
 go install entgo.io/ent/cmd/ent@latest
-# project repo, run:
-go get -u github.com/masseelch/elk
+go get -u entgo.io/contrib/entproto
+# optional - in project repo, run:
+go get ariga.io/ogent@main
 ```
 
 ## Commands 
@@ -17,7 +18,7 @@ go get -u github.com/masseelch/elk
 ```bash
 ent init User Profile
 # or
-go run -mod=mod entgo.io/ent/cmd/ent init User Profile
+go run entgo.io/ent/cmd/ent init User Profile
 ```
 
 Edit **schema** in `ent/schema` then:
@@ -27,6 +28,8 @@ Edit **schema** in `ent/schema` then:
 Run `entc generate` from the root directory of the project, or use `go generate`:
 ```bash
 go generate ./ent
+# temp fix for workspace mode
+GOWORK=off go generate ./ent
 # or
 ent generate --idtype string ./ent/schema
 ```
@@ -41,3 +44,4 @@ ent describe ./ent/schema
 
 * [Generate a fully-working Go gRPC server in two minutes with Ent](https://entgo.io/blog/2021/03/18/generating-a-grpc-server-with-ent/)
 * [Generate a fully-working Go CRUD HTTP API with Ent](https://entgo.io/blog/2021/07/29/generate-a-fully-working-go-crud-http-api-with-ent/)
+* [Sync Changes to External Data Systems using Ent Hooks](https://entgo.io/blog/2021/11/1/sync-to-external-data-systems-using-hooks/)

@@ -18,6 +18,7 @@ go install github.com/bufbuild/buf/cmd/buf@latest
 go install google.golang.org/protobuf/cmd/protoc-gen-go@latest
 go install google.golang.org/grpc/cmd/protoc-gen-go-grpc@latest
 go install github.com/srikrsna/protoc-gen-gotag@latest
+go install entgo.io/contrib/entproto/cmd/protoc-gen-entgrpc@latest
 
 go install google.golang.org/protobuf/cmd/protoc-gen-go@latest
 # Installing PGV can currently only be done from source: 
@@ -65,7 +66,7 @@ buf lint --error-format=config-ignore-yaml
 # for dev local
 buf breaking --against image.bin
 buf breaking --against '.git#branch=main'
-buf breaking --against '.git#branch=main,subdir=proto/mkit'
+buf breaking --against '.git#branch=main,subdir=proto/dataapis'
 
 # for CI
 export HTTPS_GIT=https://github.com/xmlking/yeti.git
@@ -76,20 +77,21 @@ buf breaking --against "$(HTTPS_GIT)#branch=main"
 
 Cleanup
 ```shell
-rm -rf dkit
-rm -rf mkit
+rm -rf gen
 ```
 
 Generate
 ```shell
-buf generate proto/dkit
-buf generate proto/mkit
+buf generate proto/dataapis
+buf generate proto/demoapis
 buf generate
 # FIXME: https://github.com/bufbuild/buf/issues/560  
 # WORKAROUND: https://github.com/srikrsna/protoc-gen-gotag/issues/26
 buf generate --template buf.gen.tag.yaml
-# to generate into `gen` directory
+# to generate into custom directory i.e., `gen`
 buf generate -o gen
+# to generate from BSR 
+buf generate buf.build/micro/demoapis -o gen/go
 ```
 
 ### Buf Modules
@@ -100,29 +102,33 @@ This command will create `/Users/<username>/.netrc` file
 
 ```shell
 # fill the username and token
-export BUF_USER=chintha
+export BUF_USER=sumanth
 export BUF_API_TOKEN=
 echo ${BUF_API_TOKEN} | buf registry login --username ${BUF_USER} --token-stdin
 # to logout
 buf registry logout
 ```
 
+CI authentication
+```shell
+echo ${BUF_API_TOKEN} | buf registry login --username ${BUF_USER} --token-stdin
+```
 #### Create buf lock files
 one-time-setup
 ```shell
-cd proto/dkit
+cd proto/dataapis
 buf mod update
-cd proto/mkit
+cd proto/demoapis
 buf mod update
 ```
 This will pull deps into `$HOME/.cache/buf`
 
 #### Create a Repository
 ```shell
-buf beta registry repository create buf.build/chintha/dkit --visibility private
-buf beta registry repository create buf.build/chintha/dkit --visibility public
+buf beta registry repository create buf.build/micro/dataapis --visibility public
+buf beta registry repository create buf.build/micro/demoapis --visibility public
 
-buf beta registry repository create buf.build/chintha/mkit --visibility private
+buf beta registry repository create buf.build/micro/myapis --visibility private
 ```
 
 #### List Modules
@@ -133,10 +139,12 @@ buf beta registry repository get    buf.build/googleapis/googleapis
 
 #### Push the Module
 ```shell
-cd proto/dkit
+cd proto/dataapis
 buf push
-cd proto/mkit
+cd proto/demoapis
 buf push
+# Create a tagged commit from the CLI with the command:
+buf push --tag <TAG_NAME>
 ```
 
 ### Format
@@ -169,3 +177,4 @@ ghz --protoset <(buf build -o -) ...
 3. [Buf Example](https://github.com/bufbuild/buf-example/blob/master/Makefile)
 4. [Buf Schema Registry](https://buf.build/docs/roadmap)
 5. [Why adopt ProtoBuf](https://itnext.io/a-minimalist-guide-to-protobuf-1f24fbca0e2d)
+6. [Buf, gRPC, gRPC-Web,Svelte UX](https://www.polarsignals.com/blog/posts/2022/02/22/how-we-build-our-apis-from-scratch/)

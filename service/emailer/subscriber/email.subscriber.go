@@ -7,7 +7,7 @@ import (
 	cloudevents "github.com/cloudevents/sdk-go/v2"
 	"github.com/rs/zerolog/log"
 
-	"github.com/xmlking/grpc-starter-kit/mkit/service/emailer/v1"
+	"github.com/xmlking/grpc-starter-kit/gen/go/gkit/service/emailer/v1"
 	"github.com/xmlking/grpc-starter-kit/service/emailer/service"
 )
 

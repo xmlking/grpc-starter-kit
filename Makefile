@@ -110,11 +110,11 @@ outdated:
 
 proto_clean:
 	@echo "Deleting generated Go files....";
-	@for f in ./mkit/**/**/**/**/*.pb.*; do \
+	@for f in ./gen/**/**/**/**/*.pb.*; do \
 		echo ✓ deleting: $$f; \
 		rm -f $$f; \
 	done
-	@for f in ./mkit/**/**/**/*.pb.*; do \
+	@for f in ./gen/**/**/**/*.pb.*; do \
 		echo ✓ deleting: $$f; \
 		rm -f $$f; \
 	done
@@ -140,7 +140,8 @@ proto_check: proto_lint proto_breaking proto_format
 
 proto_generate:
 	@echo "Generating protos";
-	@${GOPATH}/bin/buf generate --path proto/mkit;
+	@${GOPATH}/bin/buf generate ;
+	@${GOPATH}/bin/buf generate --template buf.gen.tag.yaml ;
 
 proto: proto_check proto_clean proto_generate
 

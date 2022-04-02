@@ -25,7 +25,7 @@ import (
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials"
 
-	"github.com/xmlking/grpc-starter-kit/mkit/service/greeter/v1"
+	"github.com/xmlking/grpc-starter-kit/gen/go/gkit/service/greeter/v1"
 	"github.com/xmlking/grpc-starter-kit/service/play/handler"
 )
 

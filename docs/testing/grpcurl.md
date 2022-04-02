@@ -15,30 +15,30 @@ API testing with **grpcurl** via Envoy
 ### Test API directly (go greeter)
 ```bash
 ### plaintext ###
-grpcurl -plaintext -proto proto/mkit/service/greeter/v1/greeter.proto list
-grpcurl -plaintext -proto proto/mkit/service/greeter/v1/greeter.proto describe
-grpcurl -plaintext -proto proto/mkit/service/greeter/v1/greeter.proto -d '{"name": "sumo"}' localhost:8081  mkit.service.greeter.v1.GreeterService/Hello
+grpcurl -plaintext -proto proto/demoapis/gkit/service/greeter/v1/greeter.proto list
+grpcurl -plaintext -proto proto/demoapis/gkit/service/greeter/v1/greeter.proto describe
+grpcurl -plaintext -proto proto/demoapis/gkit/service/greeter/v1/greeter.proto -d '{"name": "sumo"}' localhost:8081  gkit.service.greeter.v1.GreeterService/Hello
 # OR 
 grpcurl -plaintext \
 -protoset <(buf build -o -) \
--d '{"name": "sumo"}' 0.0.0.0:8081 mkit.service.greeter.v1.GreeterService/Hello
+-d '{"name": "sumo"}' 0.0.0.0:8081 gkit.service.greeter.v1.GreeterService/Hello
 
 ### TLS ###
 grpcurl -insecure \
 -protoset <(buf build -o -) \
--d '{"name": "sumo"}' 0.0.0.0:8081 mkit.service.greeter.v1.GreeterService/Hello
+-d '{"name": "sumo"}' 0.0.0.0:8081 gkit.service.greeter.v1.GreeterService/Hello
 ```
 ### Test API via envoy
 ```bash
 ### plaintext ###
 grpcurl -plaintext  \
 -protoset <(buf build -o -) \
--d '{"name": "sumo"}' 0.0.0.0:9090 mkit.service.greeter.v1.GreeterService/Hello
+-d '{"name": "sumo"}' 0.0.0.0:9090 gkit.service.greeter.v1.GreeterService/Hello
 
 ### TLS ###
 grpcurl -cacert=config/certs/ca-cert.pem \
 -protoset <(buf build -o -) \
--d '{"name": "sumo"}' localhost:9444 mkit.service.greeter.v1.GreeterService/Hello
+-d '{"name": "sumo"}' localhost:9444 gkit.service.greeter.v1.GreeterService/Hello
 ```
 
 ### Test API via Envoy with TLS, and client cert
@@ -54,20 +54,20 @@ grpcurl -cacert=config/certs/ca-cert.pem \
 -cert=config/certs/client-cert.pem \
 -key=config/certs/client-key.pem \
 -protoset <(buf build -o -) \
--d '{"name": "sumo"}' localhost:9444 mkit.service.greeter.v1.GreeterService/Hello
+-d '{"name": "sumo"}' localhost:9444 gkit.service.greeter.v1.GreeterService/Hello
 
 # test with wrong client cert. This will fail! You will see `TLS error:` in envoy logs
 grpcurl -cacert=config/certs/ca-cert.pem \
 -cert=config/certs/upstream-cert.pem \
 -key=config/certs/upstream-key.pem \
 -protoset <(buf build -o -) \
--d '{"name": "sumo"}' localhost:9444 mkit.service.greeter.v1.GreeterService/Hello
+-d '{"name": "sumo"}' localhost:9444 gkit.service.greeter.v1.GreeterService/Hello
 
 # testing with request data from file.
 grpcurl -cacert=config/certs/ca-cert.pem \
 -protoset <(buf build -o -) \
 -v -H trans_id=abc123 \
--d @ localhost:9444 mkit.service.greeter.v1.GreeterService/Hello <test/echo-request.json
+-d @ localhost:9444 gkit.service.greeter.v1.GreeterService/Hello <test/echo-request.json
 ```
 
 ### Test gRPC-Web
@@ -75,7 +75,7 @@ grpcurl -cacert=config/certs/ca-cert.pem \
 ```bash
 # without TLS
 
- curl 'http://localhost:9090/mkit.service.greeter.v1.GreeterService/Hello' \
+ curl 'http://localhost:9090/gkit.service.greeter.v1.GreeterService/Hello' \
  -H 'Content-Type: application/grpc-web+proto' \
  -H 'X-Grpc-Web: 1' \
  -H 'custom-header-1: value1' \
@@ -85,7 +85,7 @@ grpcurl -cacert=config/certs/ca-cert.pem \
 
 # ???
 
-curl 'http://localhost:9090/mkit.service.greeter.v1.GreeterService/Hello' \
+curl 'http://localhost:9090/gkit.service.greeter.v1.GreeterService/Hello' \
 -H 'Accept: application/grpc-web-text' \
 -H 'X-User-Agent: grpc-web-javascript/0.1' \
 -H 'X-Grpc-Web: 1' \

@@ -32,9 +32,9 @@ static_resources:
                     - name: local_service
                       domains: ["*"]
                       routes:
-                        - match: { prefix: '/mkit.service.account.user.v1.UserService' }
+                        - match: { prefix: '/gkit.service.account.user.v1.UserService' }
                           route: { cluster: account_service, max_grpc_timeout: 15.0s }
-                        - match: { prefix: '/mkit.service.greeter.v1.GreeterService' }
+                        - match: { prefix: '/gkit.service.greeter.v1.GreeterService' }
                           route: { cluster: greeter_service, max_grpc_timeout: 15.0s }
                       cors:
                         allow_origin_string_match:

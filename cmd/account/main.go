@@ -14,9 +14,9 @@ import (
 	"github.com/xmlking/toolkit/util"
 	"google.golang.org/grpc"
 
+	userv1 "github.com/xmlking/grpc-starter-kit/gen/go/gkit/service/account/user/v1"
 	"github.com/xmlking/grpc-starter-kit/internal/config"
 	"github.com/xmlking/grpc-starter-kit/internal/constants"
-	userv1 "github.com/xmlking/grpc-starter-kit/mkit/service/account/user/v1"
 )
 
 var (

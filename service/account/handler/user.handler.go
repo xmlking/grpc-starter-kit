@@ -17,11 +17,11 @@ import (
 	"github.com/xmlking/toolkit/auth"
 
 	"github.com/xmlking/grpc-starter-kit/ent"
+	account_entities "github.com/xmlking/grpc-starter-kit/gen/go/gkit/service/account/entities/v1"
+	"github.com/xmlking/grpc-starter-kit/gen/go/gkit/service/account/user/v1"
+	"github.com/xmlking/grpc-starter-kit/gen/go/gkit/service/emailer/v1"
+	"github.com/xmlking/grpc-starter-kit/gen/go/gkit/service/greeter/v1"
 	"github.com/xmlking/grpc-starter-kit/internal/constants"
-	account_entities "github.com/xmlking/grpc-starter-kit/mkit/service/account/entities/v1"
-	"github.com/xmlking/grpc-starter-kit/mkit/service/account/user/v1"
-	"github.com/xmlking/grpc-starter-kit/mkit/service/emailer/v1"
-	"github.com/xmlking/grpc-starter-kit/mkit/service/greeter/v1"
 	"github.com/xmlking/grpc-starter-kit/service/account/dto"
 	"github.com/xmlking/grpc-starter-kit/service/account/repository"
 )

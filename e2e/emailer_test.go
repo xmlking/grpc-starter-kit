@@ -2,99 +2,99 @@
 package e2e
 
 import (
-	"context"
-	"os"
-	"testing"
-	"time"
+    "context"
+    "os"
+    "testing"
+    "time"
 
-	_ "github.com/xmlking/toolkit/logger/auto"
+    _ "github.com/xmlking/toolkit/logger/auto"
 
-	cloudevents "github.com/cloudevents/sdk-go/v2"
-	broker "github.com/xmlking/toolkit/broker/cloudevents"
-	// cecontext "github.com/cloudevents/sdk-go/v2/context"
-	"github.com/rs/zerolog/log"
-	"github.com/xmlking/grpc-starter-kit/internal/config"
-	"github.com/xmlking/grpc-starter-kit/mkit/service/emailer/v1"
+    cloudevents "github.com/cloudevents/sdk-go/v2"
+    broker "github.com/xmlking/toolkit/broker/cloudevents"
+    // cecontext "github.com/cloudevents/sdk-go/v2/context"
+    "github.com/rs/zerolog/log"
+    "github.com/xmlking/grpc-starter-kit/gen/go/gkit/service/emailer/v1"
+    "github.com/xmlking/grpc-starter-kit/internal/config"
 )
 
 func TestMain(m *testing.M) {
-	// HINT: CertFile etc., Our schema has `file` path validation, which is relative to project root.
-	if err := os.Chdir(".."); err != nil {
-		log.Fatal().Err(err).Send()
-	}
-	wd, _ := os.Getwd()
-	log.Debug().Msgf("Changing working directory to: %s", wd)
+    // HINT: CertFile etc., Our schema has `file` path validation, which is relative to project root.
+    if err := os.Chdir(".."); err != nil {
+        log.Fatal().Err(err).Send()
+    }
+    wd, _ := os.Getwd()
+    log.Debug().Msgf("Changing working directory to: %s", wd)
 
-	code := m.Run()
-	os.Exit(code)
+    code := m.Run()
+    os.Exit(code)
 }
 
 func TestEmailSubscriber_Handle_Send_E2E(t *testing.T) {
-	if testing.Short() {
-		t.Skip("skipping e2e test")
-	}
+    if testing.Short() {
+        t.Skip("skipping e2e test")
+    }
 
-	cfg := config.GetConfig()
-	topic := cfg.Services.Emailer.Endpoint
-	bkr := broker.NewBroker(context.Background())
-	client, _ := bkr.NewPublisher(topic)
+    cfg := config.GetConfig()
+    topic := cfg.Services.Emailer.Endpoint
+    bkr := broker.NewBroker(context.Background())
+    client, _ := bkr.NewPublisher(topic)
 
-	// Create an Event.
-	event := cloudevents.NewEvent()
-	event.SetSource("github.com/xmlking/grpc-starter-kit/service/emailer")
-	event.SetType("account.welcome.email")
-	// Setting the extension as a string as the CloudEvents sdk does not support non-string extensions.
-	event.SetExtension("EventSentTime", cloudevents.Timestamp{Time: time.Now()})
-	_ = event.SetData(cloudevents.ApplicationJSON, &emailerv1.Message{Subject: "Sumo", To: "sumo@demo.com"})
+    // Create an Event.
+    event := cloudevents.NewEvent()
+    event.SetSource("github.com/xmlking/grpc-starter-kit/service/emailer")
+    event.SetType("account.welcome.email")
+    // Setting the extension as a string as the CloudEvents sdk does not support non-string extensions.
+    event.SetExtension("EventSentTime", cloudevents.Timestamp{Time: time.Now()})
+    _ = event.SetData(cloudevents.ApplicationJSON, &emailerv1.Message{Subject: "Sumo", To: "sumo@demo.com"})
 
-	// Set a target.
-	// ctx := cecontext.WithTopic(context.Background(), topic) // for GCP PubSub
-	//ctx := cloudevents.ContextWithTarget(context.Background(), "http://localhost:8082/")
-	ctxWithRetries := cloudevents.ContextWithRetriesLinearBackoff(context.Background(), 10*time.Millisecond, 3)
-	// if you want to send raw like Avro or protobuf
-	// ctx = cloudevents.WithEncodingBinary(ctx)
+    // Set a target.
+    // ctx := cecontext.WithTopic(context.Background(), topic) // for GCP PubSub
+    //ctx := cloudevents.ContextWithTarget(context.Background(), "http://localhost:8082/")
+    ctxWithRetries := cloudevents.ContextWithRetriesLinearBackoff(context.Background(), 10*time.Millisecond, 3)
+    // if you want to send raw like Avro or protobuf
+    // ctx = cloudevents.WithEncodingBinary(ctx)
 
-	// Send that Event.
-	if result := client.Publish(ctxWithRetries, event); !cloudevents.IsACK(result) {
-		log.Fatal().Msgf("failed to send, %+v", result)
-	}
+    // Send that Event.
+    if result := client.Publish(ctxWithRetries, event); !cloudevents.IsACK(result) {
+        log.Fatal().Msgf("failed to send, %+v", result)
+    }
 
-	t.Logf("Successfully published to: %s", topic)
+    t.Logf("Successfully published to: %s", topic)
 }
 
 func TestEmailSubscriber_Handle_Request_E2E(t *testing.T) {
-	if testing.Short() {
-		t.Skip("skipping e2e test")
-	}
+    if testing.Short() {
+        t.Skip("skipping e2e test")
+    }
 
-	cfg := config.GetConfig()
-	topic := cfg.Services.Emailer.Endpoint
-	bkr := broker.NewBroker(context.Background())
-	client, _ := bkr.NewPublisher(topic)
+    cfg := config.GetConfig()
+    topic := cfg.Services.Emailer.Endpoint
+    bkr := broker.NewBroker(context.Background())
+    client, _ := bkr.NewPublisher(topic)
 
-	// Create an Event.
-	event := cloudevents.NewEvent()
-	event.SetSource("github.com/xmlking/grpc-starter-kit/service/emailer")
-	event.SetType("account.welcome.email")
-	_ = event.SetData(cloudevents.ApplicationJSON, &emailerv1.Message{Subject: "Sumo", To: "sumo@demo.com"})
+    // Create an Event.
+    event := cloudevents.NewEvent()
+    event.SetSource("github.com/xmlking/grpc-starter-kit/service/emailer")
+    event.SetType("account.welcome.email")
+    _ = event.SetData(cloudevents.ApplicationJSON, &emailerv1.Message{Subject: "Sumo", To: "sumo@demo.com"})
 
-	// Set a target.
-	// ctx := cecontext.WithTopic(context.Background(), topic) // for GCP PubSub
-	ctxWithRetries := cloudevents.ContextWithRetriesLinearBackoff(context.Background(), 10*time.Millisecond, 3)
-	// if you want to send raw like Avro or protobuf
-	// ctx = cloudevents.WithEncodingBinary(ctx)
+    // Set a target.
+    // ctx := cecontext.WithTopic(context.Background(), topic) // for GCP PubSub
+    ctxWithRetries := cloudevents.ContextWithRetriesLinearBackoff(context.Background(), 10*time.Millisecond, 3)
+    // if you want to send raw like Avro or protobuf
+    // ctx = cloudevents.WithEncodingBinary(ctx)
 
-	if err := client.Publish(ctxWithRetries, event); err != nil {
-		log.Error().Err(err).Msg("failed publishing")
-	}
+    if err := client.Publish(ctxWithRetries, event); err != nil {
+        log.Error().Err(err).Msg("failed publishing")
+    }
 
-	// Request that Event.
-	//if resp, res := client.Request(ctxWithRetries, event); !cloudevents.IsACK(res) {
-	//	log.Fatal().Msgf("failed to send, %+v", res)
-	//} else if resp != nil {
-	//	log.Debug().Msg(resp.String())
-	//	log.Debug().Msgf("Got Event Response Context: %+v\n", resp.Context)
-	//}
+    // Request that Event.
+    //if resp, res := client.Request(ctxWithRetries, event); !cloudevents.IsACK(res) {
+    //	log.Fatal().Msgf("failed to send, %+v", res)
+    //} else if resp != nil {
+    //	log.Debug().Msg(resp.String())
+    //	log.Debug().Msgf("Got Event Response Context: %+v\n", resp.Context)
+    //}
 
-	t.Logf("Successfully published to: %s", topic)
+    t.Logf("Successfully published to: %s", topic)
 }

@@ -9,12 +9,12 @@ go mod init github.com/xmlking/grpc-starter-kit
 mkdir service api fnc
 
 # scaffold modules
-micro new --fqdn mkit.service.account --type srv --alias account service/account
-micro new --fqdn mkit.service.greeter --type srv --alias greeter service/greeter
-micro new --fqdn mkit.service.emailer --type srv --alias emailer service/emailer
-# micro new --fqdn="mkit.service.emailer" --type="service"  \
+micro new --fqdn gkit.service.account --type srv --alias account service/account
+micro new --fqdn gkit.service.greeter --type srv --alias greeter service/greeter
+micro new --fqdn gkit.service.emailer --type srv --alias emailer service/emailer
+# micro new --fqdn="gkit.service.emailer" --type="service"  \
 # --alias="emailer"  --plugin=client/selector=static:broker=nats service/emailer
-micro new --fqdn mkit.service.recorder --type srv --alias recorder service/recorder
+micro new --fqdn gkit.service.recorder --type srv --alias recorder service/recorder
 ```
 
 ## Setup project

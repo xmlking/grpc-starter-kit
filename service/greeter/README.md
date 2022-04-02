@@ -42,18 +42,18 @@ make docker TARGET=greeter TYPE=service VERSION=v0.1.1
 ####  test API directly  (go greeter)
 ```bash
 ### plaintext ###
-grpcurl -plaintext -proto proto/mkit/service/greeter/v1/greeter.proto list
-grpcurl -plaintext -proto proto/mkit/service/greeter/v1/greeter.proto describe
-grpcurl -plaintext -proto proto/mkit/service/greeter/v1/greeter.proto -d '{"name": "sumo"}' localhost:8081  mkit.service.greeter.v1.GreeterService/Hello
+grpcurl -plaintext -proto proto/demoapis/gkit/service/greeter/v1/greeter.proto list
+grpcurl -plaintext -proto proto/demoapis/gkit/service/greeter/v1/greeter.proto describe
+grpcurl -plaintext -proto proto/demoapis/gkit/service/greeter/v1/greeter.proto -d '{"name": "sumo"}' localhost:8081  gkit.service.greeter.v1.GreeterService/Hello
 # OR
 grpcurl -plaintext \
 -protoset <(buf build -o -) \
--d '{"name": "sumo"}' 0.0.0.0:8081 mkit.service.greeter.v1.GreeterService/Hello
+-d '{"name": "sumo"}' 0.0.0.0:8081 gkit.service.greeter.v1.GreeterService/Hello
 
 ### TLS ###
 grpcurl -insecure \
 -protoset <(buf build -o -) \
--d '{"name": "sumo"}' 0.0.0.0:8081 mkit.service.greeter.v1.GreeterService/Hello
+-d '{"name": "sumo"}' 0.0.0.0:8081 gkit.service.greeter.v1.GreeterService/Hello
 ```
 #### test API via envoy
 ```bash
@@ -61,12 +61,12 @@ grpcurl -insecure \
 # with `docker-compose up envoy_http`
 grpcurl -plaintext  \
 -protoset <(buf build -o -) \
--d '{"name": "sumo"}' 0.0.0.0:9090 mkit.service.greeter.v1.GreeterService/Hello
+-d '{"name": "sumo"}' 0.0.0.0:9090 gkit.service.greeter.v1.GreeterService/Hello
 
 ### TLS ###
 grpcurl -cacert=config/certs/ca-cert.pem \
 -protoset <(buf build -o -) \
--d '{"name": "sumo"}' localhost:9444 mkit.service.greeter.v1.GreeterService/Hello
+-d '{"name": "sumo"}' localhost:9444 gkit.service.greeter.v1.GreeterService/Hello
 ```
 
 For full examples, see [Testing with grpcurl](/docs/testing/grpcurl.md)

@@ -11,15 +11,15 @@ tasks:
     cmds:
       - echo "Deleting generated files...."
       - |
-        for f in ./mkit/**/**/**/**/*.pb.*; do
+        for f in ./gen/**/**/**/**/*.pb.*; do
           echo ✓ deleting: $f
           rm -f $f
         done
-        for f in ./mkit/**/**/**/*.pb.*; do
+        for f in ./gen/**/**/**/*.pb.*; do
           echo ✓ deleting: $f
           rm -f $f
         done
-        for f in ./dkit/**/**/*.pb.*; do
+        for f in ./gen/**/**/*.pb.*; do
           echo ✓ deleting: $f
           rm -f $f
         done
@@ -69,8 +69,7 @@ tasks:
     sources:
       - 'proto/**/*.proto'
     generates:
-      - 'dkit/**/*.pb.*'
-      - 'mkit/**/*.pb.*'
+      - 'gen/**/*.pb.*'
   default:
     desc: Do all proto.
     cmds:
@@ -82,5 +81,4 @@ tasks:
     sources:
       - 'proto/**/*.proto'
     generates:
-      - 'dkit/**/*.pb.*'
-      - 'mkit/**/*.pb.*'
+      - 'gen/**/*.pb.*'

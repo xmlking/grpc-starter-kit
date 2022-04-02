@@ -1,0 +1,20 @@
+syntax = "proto3";
+
+package gkit.schema.transaction.v1alpha1;
+
+option java_multiple_files = true;
+option java_package = "gkit.schema.transaction.v1alpha1";
+
+import "google/protobuf/struct.proto";
+
+// Transaction Event
+message TransactionEvent1 {
+  // request
+  google.protobuf.Value req = 1;
+  // response
+  google.protobuf.Value rsp = 2;
+}
+
+// google.protobuf.Value used on typescript
+// https://github.com/CatsMiaow/node-grpc-typescript/tree/master
+// https://github.com/CatsMiaow/node-grpc-typescript/blob/master/src/client.ts#L65

@@ -3,7 +3,7 @@ codecov:
 
 ignore:
   - "ent/**/*"
-  - "mkit/**/*"
+  - "gen/**/*"
 
 coverage:
   precision: 1

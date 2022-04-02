@@ -2,7 +2,7 @@ version: v1
 managed:
   enabled: true
   go_package_prefix:
-    default: github.com/xmlking/grpc-starter-kit
+    default: github.com/xmlking/grpc-starter-kit/gen/go
     except:
       - buf.build/googleapis/googleapis
       - buf.build/srikrsna/protoc-gen-gotag
@@ -11,22 +11,39 @@ managed:
 #  java_package_prefix: com
 
 plugins:
+
+  ### go ###
 # FIXME: https://github.com/srikrsna/protoc-gen-gotag/issues/26
 #  - name: gotag
-#    out: .
+#    out: gen/go
 #    opt:
 #      - paths=source_relative
   - remote: buf.build/protocolbuffers/plugins/go:v1.28.0-1
-    out: .
+    out: gen/go
     opt:
       - paths=source_relative
   - remote: buf.build/grpc/plugins/go:v1.2.0-1
-    out: .
+    out: gen/go
     opt:
       - paths=source_relative
       - require_unimplemented_servers=false
   - remote: buf.build/go-sdk/plugins/protoc-gen-validate:v0.6.7-1
-    out: .
+    out: gen/go
     opt:
       - lang=go
       - paths=source_relative
+
+  ### typescript ###
+  - remote: buf.build/timostamm/plugins/protobuf-ts:v2.4.0-1
+    out: gen/ts
+    opt:
+      - long_type_string
+      - generate_dependencies
+#      - add_pb_suffix
+#      - ts_nocheck
+#      - output_javascript
+#    strategy: all
+
+  ### node ###
+  - remote: buf.build/grpc/plugins/node:v1.11.2-1
+    out: gen/node

@@ -36,7 +36,7 @@ services:
         {
           "name": [
           {
-            "service": "mkit.service.greeter.v1.GreeterService",
+            "service": "gkit.service.greeter.v1.GreeterService",
             "method": "Hello"
           }
           ],
@@ -118,5 +118,5 @@ features:
   rpclog:
     enabled: true
   translog:
-    topic: mkit.service.recorder
+    topic: gkit.service.recorder
     enabled: true

@@ -1,0 +1,22 @@
+version: v1
+name: buf.build/micro/demoapis
+deps:
+  - buf.build/micro/dataapis
+  - buf.build/googleapis/googleapis
+  - buf.build/srikrsna/protoc-gen-gotag
+  #  - buf.build/envoyproxy/protoc-gen-validate
+  - buf.build/go-sdk/protoc-gen-validate:v0.6.7
+
+lint:
+  use:
+    - DEFAULT
+    - FILE_LOWER_SNAKE_CASE
+  ignore_only:
+    RPC_RESPONSE_STANDARD_NAME:
+      - gkit/service/transaction/v1/transaction.proto
+  rpc_allow_google_protobuf_empty_requests: true
+  rpc_allow_google_protobuf_empty_responses: true
+
+breaking:
+  use:
+    - WIRE_JSON

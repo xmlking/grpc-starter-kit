@@ -60,10 +60,10 @@ We'll account for that in our `grpcurl` invocation by omitting the `-plaintext` 
 
 ```bash
 grpcurl \
-    -proto proto/mkit/service/greeter/v1/greeter.proto \
+    -proto proto/demoapi/gkit/service/greeter/v1/greeter.proto \
     -d '{"firstName": "sumo", "lastName": "demo", "email": "sumo@demo.com"}' \
     ${ENDPOINT}:443 \
-    mkit.service.account.v1.AccountService
+    gkit.service.account.v1.AccountService
 ```
 
 There's a simple Golang client too:

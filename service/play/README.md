@@ -37,7 +37,7 @@ http://localhost:9213/metrics
 ### TLS ###
 grpcurl -insecure \
 -protoset <(buf build -o -) \
--d '{"name": "sumo"}' 0.0.0.0:8084 mkit.service.greeter.v1.GreeterService/Hello
+-d '{"name": "sumo"}' 0.0.0.0:8084 gkit.service.greeter.v1.GreeterService/Hello
 ```
 
 ### Reference 
