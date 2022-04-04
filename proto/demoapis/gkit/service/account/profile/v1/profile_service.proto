@@ -2,14 +2,14 @@ syntax = "proto3";
 
 package gkit.service.account.profile.v1;
 
-option java_multiple_files = true;
-option java_package = "gkit.service.account.profile.v1";
-
+import "gkit/service/account/entities/v1/entities.proto";
 import "google/protobuf/timestamp.proto";
 // import "shared/proto/common/common.proto";
 import "google/protobuf/wrappers.proto";
-import "gkit/service/account/entities/v1/entities.proto";
 import "validate/validate.proto";
+
+option java_multiple_files = true;
+option java_package = "gkit.service.account.profile.v1";
 
 service ProfileService {
   rpc List(ListRequest) returns (ListResponse);
@@ -20,33 +20,27 @@ service ProfileService {
 // FIXME: https://github.com/envoyproxy/protoc-gen-validate/issues/223
 // Workaround in .override.go
 message ListRequest {
-  google.protobuf.UInt32Value limit = 1 [
-    (validate.rules).uint32 = {
-      gte: 1
-      lte: 100
-    }
-  ];
+  google.protobuf.UInt32Value limit = 1 [(validate.rules).uint32 = {
+    gte: 1
+    lte: 100
+  }];
   google.protobuf.UInt32Value page = 2 [(validate.rules).uint32.gte = 1];
   google.protobuf.StringValue sort = 3;
-  google.protobuf.StringValue preferred_theme = 4 [
-    (validate.rules).string = {
-      in: [
-        "dark",
-        "light",
-        "cosmic",
-        "corporate"
-      ]
-    }
-  ];
-  gkit.service.account.entities.v1.Profile.GenderType gender = 5 [
-    (validate.rules).enum = {
-      in: [
-        0,
-        1,
-        2
-      ]
-    }
-  ];
+  google.protobuf.StringValue preferred_theme = 4 [(validate.rules).string = {
+    in: [
+      "dark",
+      "light",
+      "cosmic",
+      "corporate"
+    ]
+  }];
+  gkit.service.account.entities.v1.Profile.GenderType gender = 5 [(validate.rules).enum = {
+    in: [
+      0,
+      1,
+      2
+    ]
+  }];
 }
 
 message ListResponse {
@@ -71,27 +65,23 @@ message CreateRequest {
   google.protobuf.StringValue user_id = 2 [(validate.rules).string.uuid = true]; // Not Working
   google.protobuf.StringValue tz = 3;
   google.protobuf.StringValue avatar = 4 [(validate.rules).string.uri_ref = true];
-  gkit.service.account.entities.v1.Profile.GenderType gender = 5 [
-    (validate.rules).enum = {
-      in: [
-        0,
-        1,
-        2
-      ]
-    }
-  ];
+  gkit.service.account.entities.v1.Profile.GenderType gender = 5 [(validate.rules).enum = {
+    in: [
+      0,
+      1,
+      2
+    ]
+  }];
   google.protobuf.Timestamp birthday = 6 [(validate.rules).timestamp.lt_now = true];
-  google.protobuf.StringValue preferred_theme = 7 [
-    (validate.rules).string = {
-      ignore_empty: true,
-      in: [
-        "dark",
-        "light",
-        "cosmic",
-        "corporate"
-      ]
-    }
-  ];
+  google.protobuf.StringValue preferred_theme = 7 [(validate.rules).string = {
+    ignore_empty: true,
+    in: [
+      "dark",
+      "light",
+      "cosmic",
+      "corporate"
+    ]
+  }];
 }
 
 message CreateResponse {

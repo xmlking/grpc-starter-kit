@@ -2,10 +2,10 @@ syntax = "proto3";
 
 package data.bigquery.v1;
 
+import "google/protobuf/descriptor.proto";
+
 option java_multiple_files = true;
 option java_package = "data.bigquery.v1";
-
-import "google/protobuf/descriptor.proto";
 
 extend google.protobuf.MessageOptions {
   string BigQueryTableReference = 66666667;

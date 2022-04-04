@@ -2,13 +2,13 @@ syntax = "proto3";
 
 package gkit.service.account.entities.v1;
 
-option java_multiple_files = true;
-option java_package = "gkit.service.account.entities.v1";
-
 import "google/protobuf/timestamp.proto";
 import "google/protobuf/wrappers.proto";
-import "validate/validate.proto";
 import "tagger/tagger.proto";
+import "validate/validate.proto";
+
+option java_multiple_files = true;
+option java_package = "gkit.service.account.entities.v1";
 
 // User Entity
 message User {
@@ -20,7 +20,7 @@ message User {
   google.protobuf.StringValue username = 7;
   string first_name = 8;
   string last_name = 9;
-  optional string email = 10 [(tagger.tags) = "avro:\"email\" graphql:\"withNewTags,optional\"" ];
+  optional string email = 10 [(tagger.tags) = "avro:\"email\" graphql:\"withNewTags,optional\""];
   gkit.service.account.entities.v1.Profile profile = 11;
 }
 

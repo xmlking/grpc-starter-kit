@@ -150,8 +150,12 @@ buf push --tag <TAG_NAME>
 ### Format
 
 ```shell
-# FIXME buf don't have proto formatter yet 
-prototool format -w proto;
+# dry-run, show changes 
+buf format --diff
+# format and write 
+buf format -w
+# use the --exit-code flag to exit with a non-zero exit code if there is a diff
+buf format -w --exit-code
 ```
 
 ## Tools
