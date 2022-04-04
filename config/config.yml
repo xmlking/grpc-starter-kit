@@ -18,7 +18,7 @@ email:
 
 services:
   account:
-    authority: "account-service"
+    authority: "localhost"
     version: v0.1.0
     endpoint: dns:///localhost:8080
     metadata:

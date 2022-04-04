@@ -66,7 +66,7 @@ Microservices starter kit for **Golang**, aims to be developer friendly.
   - [ ] _Option 2 (autoCert)_: With [AutoCert](https://github.com/smallstep/autocert/tree/master/examples/hello-mtls/go-grpc)
   - [ ] _Option 3 (Step xDS)_: With Smallstep's Secret Discovery Service [SDS](https://github.com/smallstep/step-sds)
 - [ ] [supply-chain](https://github.com/goreleaser/supply-chain-example) GoReleaser + Go Mod proxying + Cosign keyless signing + Syft SBOM generation example.
-
+- [ ] [Multi-arch container image ]()
 ## Getting Started
 
 ### Prerequisite

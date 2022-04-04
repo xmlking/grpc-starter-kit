@@ -4,13 +4,14 @@ import (
 	"context"
 	"database/sql"
 	"fmt"
+	"github.com/xmlking/grpc-starter-kit/internal/events"
 
 	"entgo.io/ent/dialect"
 	entsql "entgo.io/ent/dialect/sql"
 	"github.com/cockroachdb/errors"
 	"github.com/rs/zerolog/log"
-
 	"github.com/xmlking/grpc-starter-kit/ent"
+	"github.com/xmlking/grpc-starter-kit/ent/hook"
 	"github.com/xmlking/grpc-starter-kit/internal/config"
 )
 
@@ -71,6 +72,12 @@ func InitDatabase(dbConf config.DatabaseConfiguration) (client *ent.Client, err 
 		log.Fatal().Err(err).Msgf("failed creating schema resources")
 		return nil, err
 	}
+
+	// Add a hook only on update operations for TZPolicy
+	// client.TZPolicy.Use(hook.On(events.PolicyChangeEvents(), ent.OpUpdate|ent.OpUpdateOne))
+	client.Profile.Use(events.ProfileChangeEvents())
+	// Reject delete operations.
+	client.Use(hook.Reject(ent.OpDelete | ent.OpDeleteOne))
 
 	return
 }

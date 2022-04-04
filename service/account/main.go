@@ -7,9 +7,13 @@ import (
     "syscall"
     "time"
 
+    _ "github.com/mattn/go-sqlite3"
+    _ "github.com/xmlking/toolkit/logger/auto"
+    // required by schema hooks.
+    _ "github.com/xmlking/grpc-starter-kit/ent/runtime"
+
     grpc_middleware "github.com/grpc-ecosystem/go-grpc-middleware"
     grpc_validator "github.com/grpc-ecosystem/go-grpc-middleware/validator"
-    _ "github.com/mattn/go-sqlite3"
     "github.com/rs/zerolog/log"
     "github.com/sercand/kuberesolver"
     profilev1 "github.com/xmlking/grpc-starter-kit/gen/go/gkit/service/account/profile/v1"
@@ -20,7 +24,6 @@ import (
     "github.com/xmlking/grpc-starter-kit/internal/version"
     "github.com/xmlking/grpc-starter-kit/service/account/registry"
     broker "github.com/xmlking/toolkit/broker/cloudevents"
-    _ "github.com/xmlking/toolkit/logger/auto"
     "github.com/xmlking/toolkit/middleware/rpclog"
     appendTags "github.com/xmlking/toolkit/middleware/tags/append"
     forwardTags "github.com/xmlking/toolkit/middleware/tags/forward"
