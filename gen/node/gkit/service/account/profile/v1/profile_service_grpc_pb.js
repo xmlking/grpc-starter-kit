@@ -3,9 +3,9 @@
 'use strict';
 var grpc = require('grpc');
 var gkit_service_account_profile_v1_profile_service_pb = require('../../../../../gkit/service/account/profile/v1/profile_service_pb.js');
+var gkit_service_account_entities_v1_entities_pb = require('../../../../../gkit/service/account/entities/v1/entities_pb.js');
 var google_protobuf_timestamp_pb = require('google-protobuf/google/protobuf/timestamp_pb.js');
 var google_protobuf_wrappers_pb = require('google-protobuf/google/protobuf/wrappers_pb.js');
-var gkit_service_account_entities_v1_entities_pb = require('../../../../../gkit/service/account/entities/v1/entities_pb.js');
 var validate_validate_pb = require('../../../../../validate/validate_pb.js');
 
 function serialize_gkit_service_account_profile_v1_CreateRequest(arg) {

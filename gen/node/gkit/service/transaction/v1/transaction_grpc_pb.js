@@ -3,8 +3,8 @@
 'use strict';
 var grpc = require('grpc');
 var gkit_service_transaction_v1_transaction_pb = require('../../../../gkit/service/transaction/v1/transaction_pb.js');
-var google_protobuf_empty_pb = require('google-protobuf/google/protobuf/empty_pb.js');
 var gkit_schema_transaction_v1_transaction_pb = require('../../../../gkit/schema/transaction/v1/transaction_pb.js');
+var google_protobuf_empty_pb = require('google-protobuf/google/protobuf/empty_pb.js');
 
 function serialize_gkit_service_transaction_v1_ReadRequest(arg) {
   if (!(arg instanceof gkit_service_transaction_v1_transaction_pb.ReadRequest)) {

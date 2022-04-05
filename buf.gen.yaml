@@ -39,6 +39,7 @@ plugins:
     opt:
       - long_type_string
       - generate_dependencies
+      - enable_angular_annotations
 #      - add_pb_suffix
 #      - ts_nocheck
 #      - output_javascript
