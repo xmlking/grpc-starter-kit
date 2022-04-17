@@ -22,17 +22,17 @@ export interface User {
      */
     id?: StringValue; // primary key
     /**
-     * @generated from protobuf field: google.protobuf.Timestamp created_at = 2;
+     * @generated from protobuf field: google.protobuf.Timestamp created_time = 2;
      */
-    createdAt?: Timestamp;
+    createdTime?: Timestamp;
     /**
-     * @generated from protobuf field: google.protobuf.Timestamp updated_at = 3;
+     * @generated from protobuf field: google.protobuf.Timestamp updated_time = 3;
      */
-    updatedAt?: Timestamp;
+    updatedTime?: Timestamp;
     /**
-     * @generated from protobuf field: google.protobuf.Timestamp deleted_at = 4;
+     * @generated from protobuf field: google.protobuf.Timestamp deleted_time = 4;
      */
-    deletedAt?: Timestamp;
+    deletedTime?: Timestamp;
     /**
      * @generated from protobuf field: google.protobuf.StringValue username = 7;
      */
@@ -65,17 +65,17 @@ export interface Profile {
      */
     id?: StringValue; // primary key
     /**
-     * @generated from protobuf field: google.protobuf.Timestamp created_at = 2;
+     * @generated from protobuf field: google.protobuf.Timestamp created_time = 2;
      */
-    createdAt?: Timestamp;
+    createdTime?: Timestamp;
     /**
-     * @generated from protobuf field: google.protobuf.Timestamp updated_at = 3;
+     * @generated from protobuf field: google.protobuf.Timestamp updated_time = 3;
      */
-    updatedAt?: Timestamp;
+    updatedTime?: Timestamp;
     /**
-     * @generated from protobuf field: google.protobuf.Timestamp deleted_at = 4;
+     * @generated from protobuf field: google.protobuf.Timestamp deleted_time = 4;
      */
-    deletedAt?: Timestamp;
+    deletedTime?: Timestamp;
     /**
      * @generated from protobuf field: optional string tz = 5;
      */
@@ -123,9 +123,9 @@ class User$Type extends MessageType<User> {
     constructor() {
         super("gkit.service.account.entities.v1.User", [
             { no: 1, name: "id", kind: "message", T: () => StringValue, options: { "validate.rules": { string: { uuid: true } } } },
-            { no: 2, name: "created_at", kind: "message", T: () => Timestamp },
-            { no: 3, name: "updated_at", kind: "message", T: () => Timestamp },
-            { no: 4, name: "deleted_at", kind: "message", T: () => Timestamp },
+            { no: 2, name: "created_time", kind: "message", T: () => Timestamp },
+            { no: 3, name: "updated_time", kind: "message", T: () => Timestamp },
+            { no: 4, name: "deleted_time", kind: "message", T: () => Timestamp },
             { no: 7, name: "username", kind: "message", T: () => StringValue },
             { no: 8, name: "first_name", kind: "scalar", T: 9 /*ScalarType.STRING*/ },
             { no: 9, name: "last_name", kind: "scalar", T: 9 /*ScalarType.STRING*/ },
@@ -148,14 +148,14 @@ class User$Type extends MessageType<User> {
                 case /* google.protobuf.StringValue id */ 1:
                     message.id = StringValue.internalBinaryRead(reader, reader.uint32(), options, message.id);
                     break;
-                case /* google.protobuf.Timestamp created_at */ 2:
-                    message.createdAt = Timestamp.internalBinaryRead(reader, reader.uint32(), options, message.createdAt);
+                case /* google.protobuf.Timestamp created_time */ 2:
+                    message.createdTime = Timestamp.internalBinaryRead(reader, reader.uint32(), options, message.createdTime);
                     break;
-                case /* google.protobuf.Timestamp updated_at */ 3:
-                    message.updatedAt = Timestamp.internalBinaryRead(reader, reader.uint32(), options, message.updatedAt);
+                case /* google.protobuf.Timestamp updated_time */ 3:
+                    message.updatedTime = Timestamp.internalBinaryRead(reader, reader.uint32(), options, message.updatedTime);
                     break;
-                case /* google.protobuf.Timestamp deleted_at */ 4:
-                    message.deletedAt = Timestamp.internalBinaryRead(reader, reader.uint32(), options, message.deletedAt);
+                case /* google.protobuf.Timestamp deleted_time */ 4:
+                    message.deletedTime = Timestamp.internalBinaryRead(reader, reader.uint32(), options, message.deletedTime);
                     break;
                 case /* google.protobuf.StringValue username */ 7:
                     message.username = StringValue.internalBinaryRead(reader, reader.uint32(), options, message.username);
@@ -187,15 +187,15 @@ class User$Type extends MessageType<User> {
         /* google.protobuf.StringValue id = 1; */
         if (message.id)
             StringValue.internalBinaryWrite(message.id, writer.tag(1, WireType.LengthDelimited).fork(), options).join();
-        /* google.protobuf.Timestamp created_at = 2; */
-        if (message.createdAt)
-            Timestamp.internalBinaryWrite(message.createdAt, writer.tag(2, WireType.LengthDelimited).fork(), options).join();
-        /* google.protobuf.Timestamp updated_at = 3; */
-        if (message.updatedAt)
-            Timestamp.internalBinaryWrite(message.updatedAt, writer.tag(3, WireType.LengthDelimited).fork(), options).join();
-        /* google.protobuf.Timestamp deleted_at = 4; */
-        if (message.deletedAt)
-            Timestamp.internalBinaryWrite(message.deletedAt, writer.tag(4, WireType.LengthDelimited).fork(), options).join();
+        /* google.protobuf.Timestamp created_time = 2; */
+        if (message.createdTime)
+            Timestamp.internalBinaryWrite(message.createdTime, writer.tag(2, WireType.LengthDelimited).fork(), options).join();
+        /* google.protobuf.Timestamp updated_time = 3; */
+        if (message.updatedTime)
+            Timestamp.internalBinaryWrite(message.updatedTime, writer.tag(3, WireType.LengthDelimited).fork(), options).join();
+        /* google.protobuf.Timestamp deleted_time = 4; */
+        if (message.deletedTime)
+            Timestamp.internalBinaryWrite(message.deletedTime, writer.tag(4, WireType.LengthDelimited).fork(), options).join();
         /* google.protobuf.StringValue username = 7; */
         if (message.username)
             StringValue.internalBinaryWrite(message.username, writer.tag(7, WireType.LengthDelimited).fork(), options).join();
@@ -226,9 +226,9 @@ class Profile$Type extends MessageType<Profile> {
     constructor() {
         super("gkit.service.account.entities.v1.Profile", [
             { no: 1, name: "id", kind: "message", T: () => StringValue, options: { "validate.rules": { string: { uuid: true } } } },
-            { no: 2, name: "created_at", kind: "message", T: () => Timestamp },
-            { no: 3, name: "updated_at", kind: "message", T: () => Timestamp },
-            { no: 4, name: "deleted_at", kind: "message", T: () => Timestamp },
+            { no: 2, name: "created_time", kind: "message", T: () => Timestamp },
+            { no: 3, name: "updated_time", kind: "message", T: () => Timestamp },
+            { no: 4, name: "deleted_time", kind: "message", T: () => Timestamp },
             { no: 5, name: "tz", kind: "scalar", opt: true, T: 9 /*ScalarType.STRING*/ },
             { no: 6, name: "avatar", kind: "scalar", T: 9 /*ScalarType.STRING*/ },
             { no: 7, name: "gender", kind: "enum", T: () => ["gkit.service.account.entities.v1.Profile.GenderType", Profile_GenderType, "GENDER_TYPE_"] },
@@ -252,14 +252,14 @@ class Profile$Type extends MessageType<Profile> {
                 case /* google.protobuf.StringValue id */ 1:
                     message.id = StringValue.internalBinaryRead(reader, reader.uint32(), options, message.id);
                     break;
-                case /* google.protobuf.Timestamp created_at */ 2:
-                    message.createdAt = Timestamp.internalBinaryRead(reader, reader.uint32(), options, message.createdAt);
+                case /* google.protobuf.Timestamp created_time */ 2:
+                    message.createdTime = Timestamp.internalBinaryRead(reader, reader.uint32(), options, message.createdTime);
                     break;
-                case /* google.protobuf.Timestamp updated_at */ 3:
-                    message.updatedAt = Timestamp.internalBinaryRead(reader, reader.uint32(), options, message.updatedAt);
+                case /* google.protobuf.Timestamp updated_time */ 3:
+                    message.updatedTime = Timestamp.internalBinaryRead(reader, reader.uint32(), options, message.updatedTime);
                     break;
-                case /* google.protobuf.Timestamp deleted_at */ 4:
-                    message.deletedAt = Timestamp.internalBinaryRead(reader, reader.uint32(), options, message.deletedAt);
+                case /* google.protobuf.Timestamp deleted_time */ 4:
+                    message.deletedTime = Timestamp.internalBinaryRead(reader, reader.uint32(), options, message.deletedTime);
                     break;
                 case /* optional string tz */ 5:
                     message.tz = reader.string();
@@ -294,15 +294,15 @@ class Profile$Type extends MessageType<Profile> {
         /* google.protobuf.StringValue id = 1; */
         if (message.id)
             StringValue.internalBinaryWrite(message.id, writer.tag(1, WireType.LengthDelimited).fork(), options).join();
-        /* google.protobuf.Timestamp created_at = 2; */
-        if (message.createdAt)
-            Timestamp.internalBinaryWrite(message.createdAt, writer.tag(2, WireType.LengthDelimited).fork(), options).join();
-        /* google.protobuf.Timestamp updated_at = 3; */
-        if (message.updatedAt)
-            Timestamp.internalBinaryWrite(message.updatedAt, writer.tag(3, WireType.LengthDelimited).fork(), options).join();
-        /* google.protobuf.Timestamp deleted_at = 4; */
-        if (message.deletedAt)
-            Timestamp.internalBinaryWrite(message.deletedAt, writer.tag(4, WireType.LengthDelimited).fork(), options).join();
+        /* google.protobuf.Timestamp created_time = 2; */
+        if (message.createdTime)
+            Timestamp.internalBinaryWrite(message.createdTime, writer.tag(2, WireType.LengthDelimited).fork(), options).join();
+        /* google.protobuf.Timestamp updated_time = 3; */
+        if (message.updatedTime)
+            Timestamp.internalBinaryWrite(message.updatedTime, writer.tag(3, WireType.LengthDelimited).fork(), options).join();
+        /* google.protobuf.Timestamp deleted_time = 4; */
+        if (message.deletedTime)
+            Timestamp.internalBinaryWrite(message.deletedTime, writer.tag(4, WireType.LengthDelimited).fork(), options).join();
         /* optional string tz = 5; */
         if (message.tz !== undefined)
             writer.tag(5, WireType.LengthDelimited).string(message.tz);

@@ -15,6 +15,4 @@ use (
 
 //replace github.com/xmlking/toolkit/xds => ../toolkit/xds
 
-replace github.com/xmlking/toolkit/xds => github.com/xmlking/toolkit/xds v0.2.5-0.20220329222226-895ec254c86c
-
-replace github.com/xmlking/toolkit => github.com/xmlking/toolkit v0.2.5-0.20220329222226-895ec254c86c
+replace github.com/xmlking/toolkit => github.com/xmlking/toolkit v0.2.6

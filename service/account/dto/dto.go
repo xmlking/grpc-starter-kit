@@ -36,17 +36,17 @@ func UserToPB(user *ent.User) (account_entities.User, error) {
 
 	to.Id = &google_protobuf1.StringValue{Value: user.ID.String()}
 	if user.CreateTime.IsZero() {
-		if to.CreatedAt, err = ptypes1.TimestampProto(user.CreateTime); err != nil {
+		if to.CreatedTime, err = ptypes1.TimestampProto(user.CreateTime); err != nil {
 			return to, err
 		}
 	}
 	if !user.UpdateTime.IsZero() {
-		if to.UpdatedAt, err = ptypes1.TimestampProto(user.UpdateTime); err != nil {
+		if to.UpdatedTime, err = ptypes1.TimestampProto(user.UpdateTime); err != nil {
 			return to, err
 		}
 	}
 	if user.DeleteTime != nil && !user.DeleteTime.IsZero() {
-		if to.DeletedAt, err = ptypes1.TimestampProto(*user.DeleteTime); err != nil {
+		if to.DeletedTime, err = ptypes1.TimestampProto(*user.DeleteTime); err != nil {
 			return to, err
 		}
 	}
@@ -87,17 +87,17 @@ func ProfileToPB(profile *ent.Profile) (account_entities.Profile, error) {
 
 	to.Id = &google_protobuf1.StringValue{Value: profile.ID.String()}
 	if !profile.CreateTime.IsZero() {
-		if to.CreatedAt, err = ptypes1.TimestampProto(profile.CreateTime); err != nil {
+		if to.CreatedTime, err = ptypes1.TimestampProto(profile.CreateTime); err != nil {
 			return to, err
 		}
 	}
 	if !profile.UpdateTime.IsZero() {
-		if to.UpdatedAt, err = ptypes1.TimestampProto(profile.UpdateTime); err != nil {
+		if to.UpdatedTime, err = ptypes1.TimestampProto(profile.UpdateTime); err != nil {
 			return to, err
 		}
 	}
 	if profile.DeleteTime != nil && !profile.DeleteTime.IsZero() {
-		if to.DeletedAt, err = ptypes1.TimestampProto(*profile.DeleteTime); err != nil {
+		if to.DeletedTime, err = ptypes1.TimestampProto(*profile.DeleteTime); err != nil {
 			return to, err
 		}
 	}

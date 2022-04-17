@@ -114,7 +114,11 @@ proto_clean:
 		echo ✓ deleting: $$f; \
 		rm -f $$f; \
 	done
-	@for f in ./gen/**/**/**/*.pb.*; do \
+	@for f in ./gen/**/**/**/**/**/*.pb.*; do \
+		echo ✓ deleting: $$f; \
+		rm -f $$f; \
+	done
+	@for f in ./gen/**/**/**/**/**/**/*.pb.*; do \
 		echo ✓ deleting: $$f; \
 		rm -f $$f; \
 	done
@@ -133,7 +137,7 @@ proto_breaking:
 # I prefer VS Code's proto plugin to format my code then prototool
 proto_format: proto_lint
 	@echo "Formatting protos";
-#	@${GOPATH}/bin/prototool format -w proto;
+	@${GOPATH}/bin/buf format -w --exit-code
 	@echo "✓ Proto: Formatted"
 
 proto_check: proto_lint proto_breaking proto_format
@@ -186,6 +190,9 @@ generate-version:
 generate-mockery:
 	go generate ./service/emailer/service
 	go generate ./service/account/repository
+
+generate-entgo:
+	go generate ./ent
 
 ################################################################################
 # Target: build                                                                #

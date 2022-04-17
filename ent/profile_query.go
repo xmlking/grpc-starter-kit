@@ -133,7 +133,7 @@ func (pq *ProfileQuery) FirstIDX(ctx context.Context) uuid.UUID {
 }
 
 // Only returns a single Profile entity found by the query, ensuring it only returns one.
-// Returns a *NotSingularError when exactly one Profile entity is not found.
+// Returns a *NotSingularError when more than one Profile entity is found.
 // Returns a *NotFoundError when no Profile entities are found.
 func (pq *ProfileQuery) Only(ctx context.Context) (*Profile, error) {
 	nodes, err := pq.Limit(2).All(ctx)
@@ -160,7 +160,7 @@ func (pq *ProfileQuery) OnlyX(ctx context.Context) *Profile {
 }
 
 // OnlyID is like Only, but returns the only Profile ID in the query.
-// Returns a *NotSingularError when exactly one Profile ID is not found.
+// Returns a *NotSingularError when more than one Profile ID is found.
 // Returns a *NotFoundError when no entities are found.
 func (pq *ProfileQuery) OnlyID(ctx context.Context) (id uuid.UUID, err error) {
 	var ids []uuid.UUID
@@ -270,8 +270,9 @@ func (pq *ProfileQuery) Clone() *ProfileQuery {
 		predicates: append([]predicate.Profile{}, pq.predicates...),
 		withUser:   pq.withUser.Clone(),
 		// clone intermediate query.
-		sql:  pq.sql.Clone(),
-		path: pq.path,
+		sql:    pq.sql.Clone(),
+		path:   pq.path,
+		unique: pq.unique,
 	}
 }
 

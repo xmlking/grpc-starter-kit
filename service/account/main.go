@@ -7,10 +7,10 @@ import (
     "syscall"
     "time"
 
-    _ "github.com/mattn/go-sqlite3"
-    _ "github.com/xmlking/toolkit/logger/auto"
+    _ "github.com/xiaoqidun/entps"
     // required by schema hooks.
     _ "github.com/xmlking/grpc-starter-kit/ent/runtime"
+    _ "github.com/xmlking/toolkit/logger/auto"
 
     grpc_middleware "github.com/grpc-ecosystem/go-grpc-middleware"
     grpc_validator "github.com/grpc-ecosystem/go-grpc-middleware/validator"

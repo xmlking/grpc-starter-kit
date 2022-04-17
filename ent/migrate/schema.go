@@ -20,7 +20,7 @@ var (
 		{Name: "birthday", Type: field.TypeTime, Nullable: true},
 		{Name: "gender", Type: field.TypeEnum, Nullable: true, Enums: []string{"male", "female", "unspecified"}},
 		{Name: "preferred_theme", Type: field.TypeString, Nullable: true},
-		{Name: "user_profile", Type: field.TypeUUID, Unique: true, Nullable: true},
+		{Name: "user_profile", Type: field.TypeUUID, Unique: true},
 	}
 	// ProfilesTable holds the schema information for the "profiles" table.
 	ProfilesTable = &schema.Table{
@@ -32,7 +32,7 @@ var (
 				Symbol:     "profiles_users_profile",
 				Columns:    []*schema.Column{ProfilesColumns[10]},
 				RefColumns: []*schema.Column{UsersColumns[0]},
-				OnDelete:   schema.SetNull,
+				OnDelete:   schema.NoAction,
 			},
 		},
 		Indexes: []*schema.Index{

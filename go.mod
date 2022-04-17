@@ -13,7 +13,6 @@ require (
 	github.com/golang/protobuf v1.5.2
 	github.com/google/uuid v1.3.0
 	github.com/grpc-ecosystem/go-grpc-middleware v1.3.0
-	github.com/mattn/go-sqlite3 v1.14.12
 	github.com/rs/zerolog v1.26.1
 	github.com/sarulabs/di/v2 v2.4.2
 	github.com/sercand/kuberesolver v2.4.0+incompatible
@@ -21,6 +20,7 @@ require (
 	github.com/srikrsna/protoc-gen-gotag v0.6.2
 	github.com/stretchr/testify v1.7.1
 	github.com/thoas/go-funk v0.9.2
+	github.com/xiaoqidun/entps v0.0.0-20220405071449-20888c44a32a
 	github.com/xmlking/toolkit v0.2.6
 	github.com/xmlking/toolkit/broker/cloudevents v0.2.6
 	github.com/xmlking/toolkit/confy v0.2.6
@@ -70,9 +70,11 @@ require (
 	github.com/imdario/mergo v0.3.5 // indirect
 	github.com/jhump/protoreflect v1.10.1 // indirect
 	github.com/json-iterator/go v1.1.12 // indirect
+	github.com/kballard/go-shellquote v0.0.0-20180428030007-95032a82bc51 // indirect
 	github.com/kr/pretty v0.3.0 // indirect
 	github.com/kr/text v0.2.0 // indirect
 	github.com/leodido/go-urn v1.2.1 // indirect
+	github.com/mattn/go-isatty v0.0.14 // indirect
 	github.com/matttproud/golang_protobuf_extensions v1.0.1 // indirect
 	github.com/mitchellh/go-wordwrap v0.0.0-20150314170334-ad45545899c7 // indirect
 	github.com/mitchellh/mapstructure v1.4.3 // indirect
@@ -84,6 +86,7 @@ require (
 	github.com/prometheus/client_model v0.2.0 // indirect
 	github.com/prometheus/common v0.32.1 // indirect
 	github.com/prometheus/procfs v0.7.3 // indirect
+	github.com/remyoudompheng/bigfft v0.0.0-20200410134404-eec4a21b6bb0 // indirect
 	github.com/rogpeppe/go-internal v1.8.1 // indirect
 	github.com/spf13/pflag v1.0.5 // indirect
 	github.com/stoewer/go-strcase v1.2.0 // indirect
@@ -122,6 +125,16 @@ require (
 	k8s.io/klog/v2 v2.30.0 // indirect
 	k8s.io/kube-openapi v0.0.0-20211115234752-e816edb12b65 // indirect
 	k8s.io/utils v0.0.0-20211116205334-6203023598ed // indirect
+	lukechampine.com/uint128 v1.1.1 // indirect
+	modernc.org/cc/v3 v3.35.24 // indirect
+	modernc.org/ccgo/v3 v3.15.18 // indirect
+	modernc.org/libc v1.14.12 // indirect
+	modernc.org/mathutil v1.4.1 // indirect
+	modernc.org/memory v1.0.7 // indirect
+	modernc.org/opt v0.1.1 // indirect
+	modernc.org/sqlite v1.16.0 // indirect
+	modernc.org/strutil v1.1.1 // indirect
+	modernc.org/token v1.0.0 // indirect
 	sigs.k8s.io/json v0.0.0-20211020170558-c049b76a60c6 // indirect
 	sigs.k8s.io/structured-merge-diff/v4 v4.2.1 // indirect
 	sigs.k8s.io/yaml v1.2.0 // indirect

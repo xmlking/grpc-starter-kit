@@ -111,30 +111,35 @@ docker system prune --volumes
 
 ```bash
 # dev mode
-make run-account
-# or
-make run-account ARGS="--server_address=localhost:55011 --broker_address=localhost:55021"
-# or
-go run srv/account/main.go \
---configDir deploy/bases/account-srv/config \
---server_address=localhost:55011 --broker_address=localhost:55021
-
-make run-greeter
-# or
-make run-emailer ARGS="--server_address=localhost:55012 --broker_address=localhost:55022"
+make run-recorder
 
 make run-emailer
-# or
-make run-emailer ARGS="--server_address=localhost:55013 --broker_address=localhost:55023"
 
+make run-greeter
 
-# integration tests for config module via CMD
-make run TARGET=demo TYPE=cmd
-go run cmd/demo/main.go --help
-go run cmd/demo/main.go --database_host=1.1.1.1 --database_port=7777
+make run-account
 
+# experiments 
+make run-cedemo
+make run-play
+make run-xds
+```
+
+> optionally specify any **Confy** environment variable
+
+```bash
+```shell
 export CONFY_ENV=production
-go run cmd/demo/main.go
+export CONFY_FILES=/config/config.yml
+# (or) export CONFY_FILES=/config/config.yml,/config/config.pg.yml
+export CONFY_DEBUG_MODE=true
+export CONFY_VERBOSE_MODE=true
+export CONFY_SILENT_MODE=true
+export CONFY_ENV=production
+
+export CONFY_ENV_PREFIX=APP
+export APP_FEATURES_TLS_ENABLED=true
+make run-account
 ```
 
 ### Test
