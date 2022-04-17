@@ -12,9 +12,6 @@ import (
 	"github.com/rs/zerolog/log"
 )
 
-//go:generate sh -c "git describe --tags --dirty --always > version.txt"
-//go:generate sh -c "git branch --show-current > branch.txt"
-
 var (
 	//go:embed version.txt
 	vcsTag      string

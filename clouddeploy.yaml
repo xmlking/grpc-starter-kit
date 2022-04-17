@@ -1,0 +1,43 @@
+# replace "project-id-here" in the three targets below with your actual project(s)
+apiVersion: deploy.cloud.google.com/v1
+kind: DeliveryPipeline
+metadata:
+  name: pop-stats-pipeline
+description: pop-stats application delivery pipeline
+serialPipeline:
+  stages:
+    - targetId: test
+    - targetId: staging
+      profiles:
+        - staging
+    - targetId: prod
+      profiles:
+        - prod
+---
+
+apiVersion: deploy.cloud.google.com/v1
+kind: Target
+metadata:
+  name: test
+description: test cluster
+gke:
+  cluster: projects/project-id-here/locations/us-central1/clusters/testcluster
+---
+
+apiVersion: deploy.cloud.google.com/v1
+kind: Target
+metadata:
+  name: staging
+description: staging cluster
+gke:
+  cluster: projects/project-id-here/locations/us-central1/clusters/stagingcluster
+---
+
+apiVersion: deploy.cloud.google.com/v1
+kind: Target
+metadata:
+  name: prod
+description: prod cluster
+requireApproval: true
+gke:
+  cluster: projects/project-id-here/locations/us-central1/clusters/prodcluster
