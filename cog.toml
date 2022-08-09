@@ -1,8 +1,15 @@
+tag_prefix = "v"
+ignore_merge_commits = true
+branch_whitelist = ["master", "main"]
+
 pre_bump_hooks = [
     "echo {{version}}",
 ]
-post_bump_hooks = []
-tag_prefix = "v"
+post_bump_hooks = [
+    "git push",
+    "git push origin {{version}}",
+]
+
 
 [commit_types]
 
@@ -12,8 +19,6 @@ template = "remote"
 remote = "github.com"
 repository = "grpc-starter-kit"
 owner = "xmlking"
-authors = [
-    { username = "xmlking", signature = "Sumanth Chinthagunta"}
-]
+authors = [{ username = "xmlking", signature = "Sumanth Chinthagunta"}]
 
 [bump_profiles]

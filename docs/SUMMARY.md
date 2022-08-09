@@ -1,6 +1,6 @@
 # Table of Contents
 
-- [Micro Starter Kit](../README.md)
+- [gRPC Starter Kit](../README.md)
 - [Features](features.md)
 - Getting Started
   - [Why](introduction/why.md)

@@ -23,7 +23,7 @@ var err error
 
 func TestMain(m *testing.M) {
 	dur := time.Hour
-	dbClient, err = database.InitDatabase(config.DatabaseConfiguration{
+	dbClient, _, err = database.InitDatabase(config.DatabaseConfiguration{
 		Dialect:         dialect.SQLite,
 		Host:            "127.0.0.1",
 		Port:            3306,

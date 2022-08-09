@@ -6,7 +6,7 @@
 
 - How to download all dependencies after cloning the repo?
 
-```bash
+```shell
 # by default this will download all modules in go.mod
 go mod download
 # with golang 1.14, some modules are not compatible yet. please use this as temp solution.
@@ -37,10 +37,10 @@ go mod download
 
 - How to update 3rd party dependencies?
 
-  ```bash
+  ```shell
   go get -u # to use the latest minor or patch releases
   go get -u=patch # to use the latest patch releases
-go mod tidy -compat=1.18
+  go mod tidy -compat=1.19
   # to find out why you have specific dependency
   go mod why -m github.com/DATA-DOG/go-sqlmock
   # if you want to get binaries into $GOHOME/bin or $GOBIN
@@ -49,6 +49,37 @@ go mod tidy -compat=1.18
   go list -m all
   ```
 
+- How to check which files get **embedded** in `embed.go`?
+
+    When you run `go list -json`, it will show `EmbedFiles` like this:
+    ```json
+        "EmbedFiles": [
+                "config/certs/ca-cert.pem",
+                "config/certs/ca-key.pem",
+                "config/certs/client-cert.pem",
+                "config/certs/client-ecdsa-cert.pem",
+                "config/certs/client-ecdsa-key.pem",
+                "config/certs/client-key.pem",
+                "config/certs/proxy-cert.pem",
+                "config/certs/proxy-ecdsa-cert.pem",
+                "config/certs/proxy-ecdsa-key.pem",
+                "config/certs/proxy-key.pem",
+                "config/certs/upstream-ca-cert.pem",
+                "config/certs/upstream-ca-key.pem",
+                "config/certs/upstream-cert.pem",
+                "config/certs/upstream-key.pem",
+                "config/certs/upstream-localhost-cert.pem",
+                "config/certs/upstream-localhost-key.pem",
+                "config/config.pg.yml",
+                "config/config.production.yml",
+                "config/config.test.yml",
+                "config/config.yml"
+        ],
+        "Imports": [
+                "embed"
+        ],
+    ```
+   
 - Why do we need to register reflection service on gRPC server?
 
     This is a special instruction which exposes all the publicly accessible gRPC services on a gRPC server.<br/>
@@ -87,7 +118,7 @@ go mod tidy -compat=1.18
 - How to Prepare for a Release?
 
   ```bash
-  go mod tidy -compat=1.18
+  go mod tidy -compat=1.19
   go test all
   ```
 

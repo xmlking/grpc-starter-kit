@@ -54,20 +54,23 @@ echo "$GITHUB_PACKAGES_TOKEN" | ko login ghcr.io --username ignored --password-s
 
 ### Build
 
-Use `--platform=linux/amd64,linux/arm64` flag for multi-arch functionality<br/>
-Use `-v` flag for verbose
+Use `--platform=linux/amd64,linux/arm64` or `--platform=all` flag for multi-arch functionality<br/>
+Use `-v` flag for verbose<br/>
+Use `GGCR_EXPERIMENT_ESTARGZ=1` for optimize images for [eStargz support](https://github.com/containerd/stargz-snapshotter/blob/v0.7.0/docs/stargz-estargz.md)
 
 ```shell
 KO_DOCKER_REPO=ghcr.io/xmlking/grpc-starter-kit \
-ko build --image-label org.opencontainers.image.source="https://github.com/xmlking/grpc-starter-kit" -B  ./service/greeter/
+ko build --image-label org.opencontainers.image.source="https://github.com/xmlking/grpc-starter-kit"  -B  ./service/greeter/
 ```
 
 KO_DOCKER_REPO=ghcr.io/mattmoor ko build -B ./test/
 
 Push to local docker registry 
 ```shell
+
 KO_DOCKER_REPO=ko.local \
-ko build -v --image-label org.opencontainers.image.source="https://github.com/xmlking/grpc-starter-kit" -B ./service/greeter/
+#KO_DOCKER_REPO=k3s.local \ 
+ko build -v --image-label org.opencontainers.image.source="https://github.com/xmlking/grpc-starter-kit"  -B ./service/greeter/
 ```
 
 You can download the SBOM [ko](https://github.com/google/ko) produces with Sigstore’s [cosign](https://github.com/sigstore/cosign) via:
@@ -102,9 +105,21 @@ Print Go module dependency information about the ko-built binary in the image
 ### Kustomize
 
 ```shell
-ustomize build config | ko resolve -f -
+kustomize build config | ko resolve -f -
 ```
 
+## Deploy
+
+will replace `image: ko://github.com/xmlking/grpc-starter-kit/service/account` in yaml with latest built image and deploy it to k8s
+
+```shell
+ko apply -f config/
+```
+
+To teardown resources applied using ko apply, you can run `ko delete`:
+```shell
+ko delete -f config/
+```
 
 ## Reference
 

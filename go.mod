@@ -1,6 +1,6 @@
 module github.com/xmlking/grpc-starter-kit
 
-go 1.18
+go 1.19
 
 require (
 	entgo.io/contrib v0.2.0
@@ -13,7 +13,9 @@ require (
 	github.com/golang/protobuf v1.5.2
 	github.com/google/uuid v1.3.0
 	github.com/grpc-ecosystem/go-grpc-middleware v1.3.0
+	github.com/jackc/pgx/v4 v4.16.1
 	github.com/rs/zerolog v1.26.1
+	github.com/samber/do v1.2.0
 	github.com/sarulabs/di/v2 v2.4.2
 	github.com/sercand/kuberesolver v2.4.0+incompatible
 	github.com/soheilhy/cmux v0.1.5
@@ -68,6 +70,13 @@ require (
 	github.com/googleapis/gnostic v0.5.5 // indirect
 	github.com/hashicorp/hcl/v2 v2.11.1 // indirect
 	github.com/imdario/mergo v0.3.5 // indirect
+	github.com/jackc/chunkreader/v2 v2.0.1 // indirect
+	github.com/jackc/pgconn v1.12.1 // indirect
+	github.com/jackc/pgio v1.0.0 // indirect
+	github.com/jackc/pgpassfile v1.0.0 // indirect
+	github.com/jackc/pgproto3/v2 v2.3.0 // indirect
+	github.com/jackc/pgservicefile v0.0.0-20200714003250-2b9c44734f2b // indirect
+	github.com/jackc/pgtype v1.11.0 // indirect
 	github.com/jhump/protoreflect v1.10.1 // indirect
 	github.com/json-iterator/go v1.1.12 // indirect
 	github.com/kballard/go-shellquote v0.0.0-20180428030007-95032a82bc51 // indirect

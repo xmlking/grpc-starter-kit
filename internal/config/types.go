@@ -51,7 +51,7 @@ func (d *DatabaseConfiguration) URL() (url string, err error) {
 		return d.Database, nil
 	case dialect.Postgres:
 		return fmt.Sprintf(
-			"host=%s port=%v user=%s dbname=%s sslmode=disable password=%s",
+			"host=%s port=%v user=%s dbname=%s sslmode=disable TimeZone=UTC password=%s",
 			d.Host, d.Port, d.Username, d.Database, d.Password,
 		), nil
 	case dialect.MySQL:

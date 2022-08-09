@@ -27,6 +27,6 @@ func ExampleGetBuildInfo() {
 	//fmt.Printf("build_info:%s", version.GetBuildInfo().PrettyString())
 
 	// Output:
-	//{"tag":"v0.1.0-74-g5f16c94-dirty","commit":"","branch":"develop","state":"dirty","build_time":"","go_version":"go1.18","compiler":"gc","platform":"darwin/amd64"}
+	//{"tag":"v0.1.0-74-g5f16c94-dirty","commit":"","branch":"develop","state":"dirty","build_time":"","go_version":"go1.19","compiler":"gc","platform":"darwin/amd64"}
 	//not built in module mode
 }

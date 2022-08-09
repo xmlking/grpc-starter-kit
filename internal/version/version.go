@@ -53,7 +53,7 @@ type BuildInfo struct {
 	GitState string `json:"state"`
 	// GitBuildTime is populated from last VCS commit time. e.g., "2021-12-16T11:41:01Z"
 	GitBuildTime string `json:"build_time"`
-	// GoVersion is populated build-time go version. e.g.,  "go1.18"
+	// GoVersion is populated build-time go version. e.g.,  "go1.19"
 	GoVersion string `json:"go_version"`
 	// GoCompiler is populated build-time go compiler. e.g., "gc" or "gccgo"
 	GoCompiler string `json:"compiler"`

@@ -4,7 +4,6 @@ import (
 	"context"
 	"database/sql"
 	"fmt"
-	"github.com/xmlking/grpc-starter-kit/internal/events"
 
 	"entgo.io/ent/dialect"
 	entsql "entgo.io/ent/dialect/sql"
@@ -13,11 +12,11 @@ import (
 	"github.com/xmlking/grpc-starter-kit/ent"
 	"github.com/xmlking/grpc-starter-kit/ent/hook"
 	"github.com/xmlking/grpc-starter-kit/internal/config"
+	"github.com/xmlking/grpc-starter-kit/internal/events"
 )
 
 // InitDatabase database
-// https://github.com/reddydodda/magmatest/blob/master/orc8r/cloud/go/blobstore/ent/client.go
-func InitDatabase(dbConf config.DatabaseConfiguration) (client *ent.Client, err error) {
+func InitDatabase(dbConf config.DatabaseConfiguration) (client *ent.Client, db *sql.DB, err error) {
 
 	var url string
 	url, err = dbConf.URL()
@@ -25,8 +24,14 @@ func InitDatabase(dbConf config.DatabaseConfiguration) (client *ent.Client, err 
 		return
 	}
 
-	var db *sql.DB
-	db, err = sql.Open(dbConf.Dialect, url)
+	var dt string
+	if dbConf.Dialect == dialect.Postgres {
+		dt = "pgx"
+	} else {
+		dt = dbConf.Dialect
+	}
+
+	db, err = sql.Open(dt, url)
 	if err != nil {
 		return
 	}
@@ -51,10 +56,10 @@ func InitDatabase(dbConf config.DatabaseConfiguration) (client *ent.Client, err 
 		case dialect.MySQL:
 			timezoneCommand = "SET time_zone = '+00:00'"
 		default:
-			return nil, fmt.Errorf("database dialect %s not supported", dbConf.Dialect)
+			return nil, nil, fmt.Errorf("database dialect %s not supported", dbConf.Dialect)
 		}
 		if _, err = db.Exec(timezoneCommand); err != nil {
-			return nil, errors.Wrapf(err, "error setting UTC timezone: %s", timezoneCommand)
+			return nil, nil, errors.Wrapf(err, "error setting UTC timezone: %s", timezoneCommand)
 		}
 	}
 
@@ -70,7 +75,7 @@ func InitDatabase(dbConf config.DatabaseConfiguration) (client *ent.Client, err 
 	// Run Database Setup/Migrations
 	if err = client.Schema.Create(context.Background()); err != nil {
 		log.Fatal().Err(err).Msgf("failed creating schema resources")
-		return nil, err
+		return nil, nil, err
 	}
 
 	// Add a hook only on update operations for TZPolicy

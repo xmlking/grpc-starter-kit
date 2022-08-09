@@ -90,3 +90,60 @@ put a new release on the [release page].
 ### Update release notes
 
 Visit the [release page] and edit the release notes as desired.
+
+# New Release Process
+
+## Release
+
+Following command bump **VERSION** number and push `changes` and `tag` to remote<br/>
+Then, [GitHub Action](.github/workflows/release.yml) trigger `GoReleaser` process.
+
+> NOTE: make sure you commit all changes before running this command.
+
+```shell
+### 
+```shell
+# dry-run: calculate the next version based on the commit types since the latest tag
+cog bump --auto --dry-run 
+# calculate the next version based on the commit types since the latest tag
+cog bump --auto
+```
+
+* check [cog](https://docs.cocogitto.io/guide/#automatic-versioning) docs
+
+## Test release
+
+```shell
+# you can verify your .goreleaser.yaml is valid by running the check command:
+goreleaser check
+# dry-run: lets run a "local-only" release to see if it works using the release command: 
+goreleaser release --snapshot --rm-dist --skip-sign
+# You can also use GoReleaser to build the binary only for a given GOOS/GOARCH, which is useful for local development:
+# goreleaser build --single-target --snapshot --rm-dist
+goreleaser build --snapshot --rm-dist
+```
+
+## Final Release
+
+In order to release to GitHub, you'll need to export a `GITHUB_TOKEN` environment variable, which should contain a valid
+GitHub token with the repository scope.
+
+```shell
+export GITHUB_TOKEN="YOUR_GH_TOKEN"
+export SLACK_WEBHOOK=https://hooks.slack.com/services/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
+# Now, change to main branch, create a tag and push it to GitHub:
+git tag v0.1.1 -m "build(release): bump version to v0.1.1"
+git push origin v0.1.1
+# Now you can run GoReleaser at the root of your repository:
+goreleaser release --rm-dist --skip-sign 
+# That's all it takes!
+```
+
+
+Test multi-platform docker images
+```shell
+docker run --rm --platform linux/amd64 \
+	ghcr.io/xmlking/grpc-starter-kit/account:latest
+docker run --rm --platform linux/arm64 \
+	ghcr.io/xmlking/grpc-starter-kit/account:latest
+```

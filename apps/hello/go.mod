@@ -1,6 +1,6 @@
 module github.com/xmlking/grpc-starter-kit/apps/hello
 
-go 1.18
+go 1.19
 
 require github.com/maxence-charriere/go-app/v9 v9.4.1
 

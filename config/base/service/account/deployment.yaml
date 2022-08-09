@@ -8,6 +8,7 @@ spec:
       containers:
         - name: service
           image: xmlking/account-service:latest
+#          image: ko://github.com/xmlking/grpc-starter-kit/service/account
           imagePullPolicy: Always
           ports:
             - name: grpc-port

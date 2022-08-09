@@ -42,19 +42,20 @@ Microservices starter kit for **Golang**, aims to be developer friendly.
         [Netflix's concurrency-limits](https://medium.com/@NetflixTechBlog/performance-under-load-3e6fa9a60581), 
         [go-concurrency-limits](https://github.com/platinummonkey/go-concurrency-limits)
 - [x] multi-stage-multi-target Dockerfile
+- [x] [Reproducible builds](https://reproducible-builds.org/) and [Verifiable Builds](https://goreleaser.com/customization/verifiable_builds/) with [GoReleaser](https://goreleaser.com/customization/build/#reproducible-builds)
 - [x] One Step _build/publish/deploy_ with [ko](https://github.com/google/ko)
 - [x] BuildInfo with [govvv](https://github.com/ahmetb/govvv)
+- [ ] Switch to [Bazel Build](https://bazel.build/)
 - [x] Linting with [GolangCI](https://github.com/golangci/golangci-lint) linters aggregator
 - [x] Linting Protos with [Buf](https://buf.build/docs/introduction)
 - [x] Linting rest with [super-linter](https://github.com/github/super-linter/blob/master/docs/disabling-linters.md)
 - [x] CICD Pipelines with [GitHub Actions](https://github.com/features/actions)
 - [x] Kubernetes _Matrix Deployment_ with [Kustomize](https://kustomize.io/)
 - [ ] Add k8s [healthchecks](https://github.com/heptiolabs/healthcheck) with [cmux](https://medium.com/@drgarcia1986/listen-grpc-and-http-requests-on-the-same-port-263c40cb45ff)
-- [x] Feature Flags (enable/disable with zero cost)
+- [x] Feature Flags & [Feature Gating](https://codeburst.io/designing-feature-gates-with-firebase-8b2a2394a88e) (enable/disable with zero cost)
 - [x] Observability via [OpenTelemetry](https://github.com/open-telemetry/opentelemetry-go)
 - [ ] Service Mesh with [Istio](https://istio.io/)
 - [ ] GraphQL Gateway with [gqlgen](https://gqlgen.com/), [rejoiner](https://github.com/google/rejoiner),[gqlgen](https://github.com/Shpota/skmz)
-- [ ] Switch to [Bazel Build](https://bazel.build/)
 - [ ] Graceful / zero downtime upgrades [tableflip](https://github.com/cloudflare/tableflip)
 - [ ] Cache — Ephemeral key-value storage with TTLs
 - [ ] Secondary Index  — Ephemeral Index with Redis Search
@@ -188,6 +189,7 @@ kubectl delete -f build/kubernetes.yaml
 6. [gitops](docs/advanced/gitops.md)
 7. [Protobuf Style Guide](https://buf.build/docs/style-guide)
 8. [Google Protobuf Style Guide](https://github.com/uber-go/guide/blob/master/style.md)
+9. [Spine Protobuf Style Guide](https://spine.io/docs/introduction/naming-conventions)
 
 ### External Docs
 1. [Go Repo Layout](https://christine.website/blog/within-go-repo-layout-2020-09-07)
