@@ -53,7 +53,7 @@ jobs:
           gpg_private_key: ${{ secrets.GPG_PRIVATE_KEY }}
           passphrase: ${{ secrets.GPG_PASSPHRASE }}
       - name: Install cosign
-        uses: sigstore/cosign-installer@v2.5.0
+        uses: sigstore/cosign-installer@v2.8.0
       - name: Install syft
         uses: anchore/sbom-action/download-syft@v0.11.0
       - name: login to GitHub Container Registry
