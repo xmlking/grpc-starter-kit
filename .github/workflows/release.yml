@@ -36,7 +36,7 @@ jobs:
         with:
           go-version: 1.19
       - name: Set up buf
-        uses: bufbuild/buf-setup-action@v1.7.0
+        uses: bufbuild/buf-setup-action@v1.13.1
         with:
           github_token: ${{ github.token }}
         env:
