@@ -1,6 +1,7 @@
 # grpc-starter-kit
 
-Microservices starter kit for **Golang**, aims to be developer friendly.
+Microservices starter kit for **Golang**, aims to be developer friendly.  
+An _open source_ framework for building and deploying distributed applications. This template _monorepo_ style project allows you to write your application as a modular monolith and deploy it as a set of microservices.
 
 [![GoDoc](https://godoc.org/github.com/xmlking/grpc-starter-kit?status.svg)](https://godoc.org/github.com/xmlking/grpc-starter-kit)
 [![Go](https://img.shields.io/github/go-mod/go-version/xmlking/grpc-starter-kit/develop)](https://golang.org/dl/)
@@ -193,16 +194,17 @@ kubectl delete -f build/kubernetes.yaml
 
 ### External Docs
 1. [Go Repo Layout](https://christine.website/blog/within-go-repo-layout-2020-09-07)
-1. [examples](https://github.com/micro/examples) - example usage code for micro
-1. [microhq](https://github.com/microhq) - a place for prebuilt microservices
-1. [explorer](https://micro.mu/explore/) - which aggregates micro based open source projects
-1. [micro-plugins](https://github.com/micro/go-plugins) extensible micro plugins
-1. [step-by-step-guide-micro](https://github.com/micro-in-cn/tutorials/tree/master/microservice-in-micro)
-1. [micro-in-cn](https://github.com/micro-in-cn/tutorials/tree/master/examples)
-1. [Platform Web](https://github.com/micro-in-cn/platform-web)
-1. [grpc template](https://github.com/vtolstov/micro-template-grpc)
-1. [Simple API backed by PostgresQL, Golang and gRPC](https://medium.com/@vptech/complexity-is-the-bane-of-every-software-engineer-e2878d0ad45a)
-1. [securing gRPC connections with TLS](https://itnext.io/practical-guide-to-securing-grpc-connections-with-go-and-tls-part-2-994ef93b8ea9) via [certify](https://github.com/johanbrandhorst/certify)
+2. [examples](https://github.com/micro/examples) - example usage code for micro
+3. [microhq](https://github.com/microhq) - a place for prebuilt microservices
+4. [explorer](https://micro.mu/explore/) - which aggregates micro based open source projects
+5. [micro-plugins](https://github.com/micro/go-plugins) extensible micro plugins
+6. [step-by-step-guide-micro](https://github.com/micro-in-cn/tutorials/tree/master/microservice-in-micro)
+7. [micro-in-cn](https://github.com/micro-in-cn/tutorials/tree/master/examples)
+8. [Platform Web](https://github.com/micro-in-cn/platform-web)
+9. [grpc template](https://github.com/vtolstov/micro-template-grpc)
+10. [Simple API backed by PostgresQL, Golang and gRPC](https://medium.com/@vptech/complexity-is-the-bane-of-every-software-engineer-e2878d0ad45a)
+11. [securing gRPC connections with TLS](https://itnext.io/practical-guide-to-securing-grpc-connections-with-go-and-tls-part-2-994ef93b8ea9) via [certify](https://github.com/johanbrandhorst/certify)
+12. [Google Service Weaver: A Framework for Writing Distributed Applications](https://opensource.googleblog.com/2023/03/introducing-service-weaver-framework-for-writing-distributed-applications.html)
 
 ## 🔗 Credits
 - [atlas-app-toolkit](https://github.com/infobloxopen/atlas-app-toolkit)

@@ -21,7 +21,7 @@ Contents:
 
 
 ## Summary
-
+![monolith-microservices.png](..%2Fimages%2Fmonolith-microservices.png)
 
 ### Issue
 
