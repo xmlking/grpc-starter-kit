@@ -20,7 +20,7 @@ require (
 	github.com/sercand/kuberesolver v2.4.0+incompatible
 	github.com/soheilhy/cmux v0.1.5
 	github.com/srikrsna/protoc-gen-gotag v0.6.2
-	github.com/stretchr/testify v1.7.1
+	github.com/stretchr/testify v1.8.2
 	github.com/thoas/go-funk v0.9.2
 	github.com/xiaoqidun/entps v0.0.0-20220405071449-20888c44a32a
 	github.com/xmlking/toolkit v0.2.6
@@ -30,9 +30,9 @@ require (
 	github.com/xmlking/toolkit/telemetry v0.2.6
 	github.com/xmlking/toolkit/xds v0.2.6
 	go.opentelemetry.io/contrib/instrumentation/google.golang.org/grpc/otelgrpc v0.31.0
-	go.opentelemetry.io/otel v1.6.1
-	go.opentelemetry.io/otel/metric v0.26.0
-	go.opentelemetry.io/otel/trace v1.6.1
+	go.opentelemetry.io/otel v1.14.0
+	go.opentelemetry.io/otel/metric v0.37.0
+	go.opentelemetry.io/otel/trace v1.14.0
 	golang.org/x/sync v0.0.0-20210220032951-036812b2e83c
 	google.golang.org/grpc v1.45.0
 	google.golang.org/protobuf v1.28.0
@@ -64,7 +64,7 @@ require (
 	github.com/go-playground/validator/v10 v10.10.1 // indirect
 	github.com/gogo/protobuf v1.3.2 // indirect
 	github.com/golang/groupcache v0.0.0-20210331224755-41bb18bfe9da // indirect
-	github.com/google/go-cmp v0.5.7 // indirect
+	github.com/google/go-cmp v0.5.9 // indirect
 	github.com/google/gofuzz v1.1.0 // indirect
 	github.com/googleapis/gax-go/v2 v2.1.1 // indirect
 	github.com/googleapis/gnostic v0.5.5 // indirect
@@ -99,7 +99,7 @@ require (
 	github.com/rogpeppe/go-internal v1.8.1 // indirect
 	github.com/spf13/pflag v1.0.5 // indirect
 	github.com/stoewer/go-strcase v1.2.0 // indirect
-	github.com/stretchr/objx v0.3.0 // indirect
+	github.com/stretchr/objx v0.5.0 // indirect
 	github.com/zclconf/go-cty v1.10.0 // indirect
 	go.opencensus.io v0.23.0 // indirect
 	go.opentelemetry.io/otel/exporters/prometheus v0.26.0 // indirect
@@ -127,7 +127,7 @@ require (
 	google.golang.org/genproto v0.0.0-20220324131243-acbaeb5b85eb // indirect
 	gopkg.in/inf.v0 v0.9.1 // indirect
 	gopkg.in/yaml.v2 v2.4.0 // indirect
-	gopkg.in/yaml.v3 v3.0.0-20210107192922-496545a6307b // indirect
+	gopkg.in/yaml.v3 v3.0.1 // indirect
 	k8s.io/api v0.23.5 // indirect
 	k8s.io/apimachinery v0.23.5 // indirect
 	k8s.io/client-go v0.23.5 // indirect
