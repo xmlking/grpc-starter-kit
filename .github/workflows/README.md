@@ -15,7 +15,7 @@
 ## FAQ
 
 - How do I install private modules?
-
+  Ref: [How to use private go module in GitHub Actions](https://blog.fabianmendez.dev/how-to-use-private-go-module-in-github-actions)
   ```yaml
   - name: Configure git for private modules
     env:

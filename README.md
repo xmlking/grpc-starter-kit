@@ -69,6 +69,7 @@ An _open source_ framework for building and deploying distributed applications. 
   - [ ] _Option 3 (Step xDS)_: With Smallstep's Secret Discovery Service [SDS](https://github.com/smallstep/step-sds)
 - [ ] [supply-chain](https://github.com/goreleaser/supply-chain-example) GoReleaser + Go Mod proxying + Cosign keyless signing + Syft SBOM generation example.
 - [ ] [Multi-arch container image ]()
+- [ ] [gkit](https://github.com/songzhibin97/gkit)
 ## Getting Started
 
 ### Prerequisite

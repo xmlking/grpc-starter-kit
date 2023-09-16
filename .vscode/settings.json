@@ -18,7 +18,7 @@
     "source.fixAll": true
   },
   "editor.cursorBlinking": "solid",
-  "editor.cursorSmoothCaretAnimation": true,
+  "editor.cursorSmoothCaretAnimation": "on",
   "editor.cursorStyle": "line",
   // "editor.fontSize": 16, // or "window.zoomLevel": 1,
   "editor.fontFamily": " SourceCodePro-Regular, FiraCode-Retina, Menlo",

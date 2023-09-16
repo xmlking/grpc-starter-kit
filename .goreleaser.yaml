@@ -144,6 +144,7 @@ signs:
 
 # create multi-arch docker images
 # https://goreleaser.com/customization/docker
+# TODO: https://goreleaser.com/customization/ko/
 dockers:
   - id: account-amd64
     use: buildx
