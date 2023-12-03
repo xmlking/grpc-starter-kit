@@ -70,6 +70,7 @@ An _open source_ framework for building and deploying distributed applications. 
 - [ ] [supply-chain](https://github.com/goreleaser/supply-chain-example) GoReleaser + Go Mod proxying + Cosign keyless signing + Syft SBOM generation example.
 - [ ] [Multi-arch container image ]()
 - [ ] [gkit](https://github.com/songzhibin97/gkit)
+- [ ] [Continuous Profiling for Go Applications](https://betterprogramming.pub/continuous-profiling-go-applications-8cdbdfdfc5ab) with [Pyroscope](https://github.com/grafana/pyroscope)
 ## Getting Started
 
 ### Prerequisite

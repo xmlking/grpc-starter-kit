@@ -10,7 +10,6 @@ post_bump_hooks = [
     "git push origin {{version}}",
 ]
 
-
 [commit_types]
 
 [changelog]
@@ -22,3 +21,5 @@ owner = "xmlking"
 authors = [{ username = "xmlking", signature = "Sumanth Chinthagunta"}]
 
 [bump_profiles]
+
+skip_ci = "[skip ci]"

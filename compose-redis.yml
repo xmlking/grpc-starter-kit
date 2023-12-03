@@ -1,0 +1,36 @@
+version: "3.9"
+
+services:
+
+  redis:
+    image: redislabs/redismod:edge
+    environment:
+      # make a test user and database
+      - REDIS_PASSWORD=redis
+      # redis rdb backup config.
+      # Save if 100 keys are added in every 10 seconds: --save 10 100
+      - "REDIS_ARGS=--appendonly yes"
+    ports:
+      - "6379:6379"
+    volumes:
+      - redisdata:/data
+    deploy:
+      replicas: 1
+      restart_policy:
+        condition: on-failure
+    healthcheck:
+      test: [ "CMD", "redis-cli", "--raw", "incr", "ping" ]
+
+  insight:
+    image: redislabs/redisinsight:latest
+    ports:
+      - '8001:8001'
+    depends_on:
+      redis:
+        condition: service_healthy
+    volumes:
+      - redisinsight:/db
+
+volumes:
+  redisdata:
+  redisinsight:
