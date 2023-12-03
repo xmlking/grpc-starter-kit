@@ -22,4 +22,3 @@ authors = [{ username = "xmlking", signature = "Sumanth Chinthagunta"}]
 
 [bump_profiles]
 
-skip_ci = "[skip ci]"
